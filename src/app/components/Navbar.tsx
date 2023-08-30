@@ -1,0 +1,140 @@
+"use client";
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  AiOutlineMenu,
+  AiOutlineClose,
+  AiOutlineInstagram,
+  AiOutlineFacebook,
+  AiOutlineYoutube,
+} from "react-icons/ai";
+import Logo from "../../../public/Flystick_logo.svg";
+import { useState } from "react";
+
+const Navbar = () => {
+  const [menuOpen, setMenuopen] = useState(false);
+  const handleNav = () => {
+    setMenuopen(!menuOpen);
+  };
+
+  return (
+    <nav className=" fixed w-full h-20 shadow-xl bg-white z-[100]">
+      <div className="flex justify-between items-center h-full w-full px-4 lg:px-16 ">
+        <Link href="/">
+          <Image
+            src={Logo}
+            width={25}
+            height={1}
+            alt="Logo"
+            className="cursor-pointer"
+            priority
+          />
+        </Link>
+        <div className="hidden sm:flex">
+          <ul className="hidden sm:flex">
+            <Link href="/About">
+              <li className="ml-10 uppercase hover:text-[#fe6b2a]  text-xl">
+                About
+              </li>
+            </Link>
+            <Link href="/Contact">
+              <li className="ml-10 uppercase hover:text-[#fe6b2a]  text-xl">
+                Contact Me
+              </li>
+            </Link>
+            <Link href="/Pricing ">
+              <li className="ml-10 uppercase hover:text-[#fe6b2a]  text-xl">
+                Pricing
+              </li>
+            </Link>
+            <Link href="/Login ">
+              <li className="ml-10 uppercase hover:text-[#fe6b2a]  text-xl">
+                Login
+              </li>
+            </Link>
+          </ul>
+        </div>
+        <div onClick={handleNav} className="sm:hidden cursor-pointer pl-20">
+          <AiOutlineMenu size={25} className="hover:text-[#fe6b2a]" />
+        </div>
+      </div>
+      <div
+        className={
+          menuOpen
+            ? "fixed left-0 top-0 w-[65%] sm:hidden h-screen bg-[#ecf0f3] p-10 ease-in duration-500"
+            : "fixed left-[100%] top-0 p-10 "
+        }
+      >
+        <div className="flex w-full items-center justify-end">
+          <div onClick={handleNav} className="cursor-pointer">
+            <AiOutlineClose size={25} className="hover:text-[#fe6b2a]" />
+          </div>
+        </div>
+        <div className="flex-col py-4">
+          <ul>
+            <Link href="/Login">
+              <li
+                onClick={() => setMenuopen(false)}
+                className="py-4 cursor-pointer hover:text-[#fe6b2a]"
+              >
+                Login
+              </li>
+            </Link>
+            <Link href="/">
+              <li
+                onClick={() => setMenuopen(false)}
+                className="py-4 cursor-pointer hover:text-[#fe6b2a]"
+              >
+                Home
+              </li>
+            </Link>
+            <Link href="/About">
+              <li
+                onClick={() => setMenuopen(false)}
+                className="py-4 cursor-pointer hover:text-[#fe6b2a]"
+              >
+                About
+              </li>
+            </Link>
+            <Link href="/Contact">
+              <li
+                onClick={() => setMenuopen(false)}
+                className="py-4 cursor-pointer hover:text-[#fe6b2a]"
+              >
+                Contact Me
+              </li>
+            </Link>
+            <Link href="/Pricing">
+              <li
+                onClick={() => setMenuopen(false)}
+                className="py-4 cursor-pointer hover:text-[#fe6b2a]"
+              >
+                Pricing
+              </li>
+            </Link>
+          </ul>
+        </div>
+        <div className="flex flex-row justify-around pt-10 items-center">
+          <AiOutlineFacebook
+            size={30}
+            className="cursor-pointer hover:text-[#fe6b2a]"
+          />
+          <AiOutlineInstagram
+            size={30}
+            className="cursor-pointer hover:text-[#fe6b2a]"
+          />
+          <AiOutlineYoutube
+            size={30}
+            className="cursor-pointer hover:text-[#fe6b2a]"
+          />
+        </div>
+        <div className="flex justify-center items-center pt-20">
+          <Image src={Logo} width={45} height={1} alt="Logo" priority />
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
