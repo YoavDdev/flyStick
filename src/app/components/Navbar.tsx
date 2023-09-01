@@ -19,44 +19,45 @@ const Navbar = () => {
   };
 
   return (
-    <nav className=" fixed w-full h-20 shadow-xl bg-white z-[100]">
-      <div className="flex justify-between items-center h-full w-full px-4 lg:px-16 ">
+    <nav className="w-full fixed h-20 shadow-xl bg-[#FCF6F5] z-[100]">
+      <div className="flex justify-between items-center h-full w-full px-4 lg:px-16  ">
         <Link href="/">
           <Image
             src={Logo}
             width={25}
             height={1}
             alt="Logo"
-            className="cursor-pointer"
+            className="cursor-pointer ml-11"
             priority
           />
         </Link>
+
         <div className="hidden sm:flex">
           <ul className="hidden sm:flex">
-            <Link href="/About">
-              <li className="ml-10 uppercase hover:text-[#fe6b2a]  text-xl">
+            <Link href="/about">
+              <li className="ml-10 uppercase hover:text-[#990011]  text-xl">
                 About
               </li>
             </Link>
             <Link href="/Contact">
-              <li className="ml-10 uppercase hover:text-[#fe6b2a]  text-xl">
+              <li className="ml-10 uppercase hover:text-[#990011]  text-xl">
                 Contact Me
               </li>
             </Link>
-            <Link href="/Pricing ">
-              <li className="ml-10 uppercase hover:text-[#fe6b2a]  text-xl">
+            <Link href="/#Pricing ">
+              <li className="ml-10 uppercase hover:text-[#990011]  text-xl">
                 Pricing
               </li>
             </Link>
             <Link href="/Login ">
-              <li className="ml-10 uppercase hover:text-[#fe6b2a]  text-xl">
+              <li className="ml-10 uppercase hover:text-[#990011]  text-xl">
                 Login
               </li>
             </Link>
           </ul>
         </div>
         <div onClick={handleNav} className="sm:hidden cursor-pointer pl-20">
-          <AiOutlineMenu size={25} className="hover:text-[#fe6b2a]" />
+          <AiOutlineMenu size={25} className="hover:text-[#990011]" />
         </div>
       </div>
       <div
@@ -68,7 +69,7 @@ const Navbar = () => {
       >
         <div className="flex w-full items-center justify-end">
           <div onClick={handleNav} className="cursor-pointer">
-            <AiOutlineClose size={25} className="hover:text-[#fe6b2a]" />
+            <AiOutlineClose size={25} className="hover:text-[#990011]" />
           </div>
         </div>
         <div className="flex-col py-4">
@@ -76,7 +77,7 @@ const Navbar = () => {
             <Link href="/Login">
               <li
                 onClick={() => setMenuopen(false)}
-                className="py-4 cursor-pointer hover:text-[#fe6b2a]"
+                className="py-4 cursor-pointer hover:text-[#990011]"
               >
                 Login
               </li>
@@ -84,7 +85,7 @@ const Navbar = () => {
             <Link href="/">
               <li
                 onClick={() => setMenuopen(false)}
-                className="py-4 cursor-pointer hover:text-[#fe6b2a]"
+                className="py-4 cursor-pointer hover:text-[#990011]"
               >
                 Home
               </li>
@@ -92,7 +93,7 @@ const Navbar = () => {
             <Link href="/About">
               <li
                 onClick={() => setMenuopen(false)}
-                className="py-4 cursor-pointer hover:text-[#fe6b2a]"
+                className="py-4 cursor-pointer hover:text-[#990011]"
               >
                 About
               </li>
@@ -100,7 +101,7 @@ const Navbar = () => {
             <Link href="/Contact">
               <li
                 onClick={() => setMenuopen(false)}
-                className="py-4 cursor-pointer hover:text-[#fe6b2a]"
+                className="py-4 cursor-pointer hover:text-[#990011]"
               >
                 Contact Me
               </li>
@@ -108,7 +109,7 @@ const Navbar = () => {
             <Link href="/Pricing">
               <li
                 onClick={() => setMenuopen(false)}
-                className="py-4 cursor-pointer hover:text-[#fe6b2a]"
+                className="py-4 cursor-pointer hover:text-[#990011]"
               >
                 Pricing
               </li>
@@ -118,15 +119,15 @@ const Navbar = () => {
         <div className="flex flex-row justify-around pt-10 items-center">
           <AiOutlineFacebook
             size={30}
-            className="cursor-pointer hover:text-[#fe6b2a]"
+            className="cursor-pointer hover:text-[#990011]"
           />
           <AiOutlineInstagram
             size={30}
-            className="cursor-pointer hover:text-[#fe6b2a]"
+            className="cursor-pointer hover:text-[#990011]"
           />
           <AiOutlineYoutube
             size={30}
-            className="cursor-pointer hover:text-[#fe6b2a]"
+            className="cursor-pointer hover:text-[#990011]"
           />
         </div>
         <div className="flex justify-center items-center pt-20">

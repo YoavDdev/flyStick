@@ -1,13 +1,13 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Lilita_One } from "next/font/google";
 import { Footer, Navbar } from "./components";
 
-const poppins = Poppins({ weight: "400", subsets: ["latin"] });
+const poppins = Lilita_One({ weight: "400", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Fly Stick",
-  description: "" 
+  description: "",
 };
 
 export default function RootLayout({
@@ -21,7 +21,7 @@ export default function RootLayout({
         <Navbar />
         {children}
         <Footer />
-        </body>
+      </body>
     </html>
   );
 }

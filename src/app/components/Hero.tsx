@@ -1,39 +1,29 @@
 import React from "react";
-import Image from "next/image";
-import BoazMain_Clean from "../../../public/BoazMain_Clean.png";
+import Link from "next/link";
 
 const Hero = () => {
   return (
-    <section className=" bg-scroll bg-[url(/BoazMain_Clean.png)] h-[972px]  bg-[center_left_-40rem] sm:bg-center">
-      <div>
-        <div className=" mx-auto max-w-screen-xl py-80 lg:flex lg:h-screen lg:items-center justify-end md:px-10 ">
-          <div className="lg-w-xl text-center ltr:sm:text-left rtl:sm:text-right pt-16 ">
-            <h1 className=" font-extrabold text-5xl">
-              The flyStick move your
-              <strong className="block font-extrabold text-[#fe6b2a]">
-                Heart.
-              </strong>
+    <div>
+      <div className="bg-[url(/BoazMain_Clean.png)] h-screen w-screen bg-no-repeat md:bg-center bg-[center_left_-50rem] bg-cover">
+        <div className="h-screen flex items-center md:justify-end ">
+          <div className="text-center mx-auto ">
+            <h1 className="sm:text-8xl text-5xl  text-[#990011] ">
+              Elevate Your Movement Mastery
             </h1>
+            <p className="font-light text-5xl mt-5">
+              Discover The Flystick Technique
+            </p>
+            <Link
+              href="/"
+              className="px-5 py-2 inline-block bg-slate-600 text-white hover:bg-[#990011] transition-colors mt-10"
+            >
+              Get Started
+            </Link>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
 export default Hero;
-
-/*     <section className="static bg-no-repeat bg-[url(/BoazMain_Clean.png)] bg-cover bg-center ">
-      {" "}
-      <div className="absolute inset-0 bg-white/75 sm:bg-transparent sm:from-white/95 sm:to-white/25 ltr:sm:bg-gradient-to-r rtl:sm:bg-gradient-to-l"></div>{" "}
-      <div className="  mx-auto max-w-screen-xl px-4 py-32 sm:px-6 lg:flex lg:h-screen lg:items-center justify-end ">
-        <div className="lg-w-xl text-center ltr:sm:text-left rtl:sm:text-right ">
-          <h1 className="text-3xl font-extrabold sm:text-5xl">
-            The flyStick move your
-            <strong className="block font-extrabold text-[#fe6b2a]">
-              Heart.
-            </strong>
-          </h1>
-        </div>
-      </div>
-    </section> */

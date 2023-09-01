@@ -1,10 +1,19 @@
-import Image from 'next/image'
-import { Hero } from './components'
+import {
+  Hero,
+  Feature,
+  ProductSell,
+  Pricing,
+  VideoCarusel,
+} from "./components";
 
 export default function HomePage() {
   return (
-    <main >
+    <main className="bg-[#FCF6F5]">
       <Hero />
+      <Feature />
+      <ProductSell />
+      <Pricing />
+      <VideoCarusel />
     </main>
-  )
+  );
 }
