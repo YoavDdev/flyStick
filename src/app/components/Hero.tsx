@@ -14,8 +14,8 @@ const Hero = () => {
               Discover The Flystick Technique
             </p>
             <Link
-              href="/"
-              className="px-5 py-2 inline-block bg-slate-600 text-white hover:bg-[#990011] transition-colors mt-10"
+              href="/#Pricing"
+              className="px-6 py-3 inline-block bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-full hover:bg-gradient-to-r hover:from-blue-700 hover:to-blue-900 transition-colors mt-5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             >
               Get Started
             </Link>

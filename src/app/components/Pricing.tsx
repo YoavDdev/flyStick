@@ -17,32 +17,32 @@ const Pricing = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="bg-white w-full md:w-2/3 ">
-              <div className="h-full mx-auto px-6 md:px-0 md:pt-6 md:-ml-6 ">
+            <div className="bg-white w-full md:w-2/3">
+              <div className="h-full mx-auto px-6 md:px-0 md:pt-6 md:-ml-6">
                 <div className="bg-white lg:h-full p-6 -mt-6 md:mt-0  mb-4 md:mb-0 flex flex-wrap md:flex-wrap items-center">
                   <div className="w-full lg:border-right lg:border-solid text-center md:text-left">
-                    <h3 className="text-lg font-semibold">
+                    <h3 className="text-lg font-semibold mb-2">
                       Monthly Subscription - 220 NIS Only
                     </h3>
-                    <p>What You Get:</p>
-                    <div className="w-1/4 md:ml-0 mt-4 border lg:hidden"></div>
-                    <div className="w-full lg:w-3/5 lg:px-3">
-                      <p>
-                        Unlock the world of movement and wellness with our
-                        comprehensive monthly subscription. For just 220 NIS per
-                        month, you'll have unlimited access to a treasure trove
-                        of content, expert insights, and a supportive community.
-                        Join us on this exciting journey towards improved health
-                        and well-being!
-                      </p>
-                    </div>
+                    <p className="text-gray-600">
+                      Unlock the world of movement and wellness with our
+                      comprehensive monthly subscription.
+                    </p>
+                    <ul className="list-disc pl-4 mt-4">
+                      <li>Unlimited access to expert content</li>
+                      <li>Supportive community</li>
+                      <li>Improved health and well-being</li>
+                    </ul>
                     <div className="w-full lg:w-1/5 mt-6 lg:mt-0 lg:px-4 text-center md:text-left">
                       <Link
                         href="/"
-                        className="px-5 py-2 inline-block bg-slate-600 text-white hover:bg-[#990011] transition-colors mt-5"
+                        className="px-6 py-3 inline-block bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-full hover:bg-gradient-to-r hover:from-blue-700 hover:to-blue-900 transition-colors mt-5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                       >
-                        Get Started
+                        Subscribe Now
                       </Link>
+                      <p className="text-gray-500 text-sm mt-2">
+                        Limited time offer!
+                      </p>
                     </div>
                   </div>
                 </div>

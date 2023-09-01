@@ -39,7 +39,7 @@ const Navbar = () => {
                 About
               </li>
             </Link>
-            <Link href="/Contact">
+            <Link href="/contact">
               <li className="ml-10 uppercase hover:text-[#990011]  text-xl">
                 Contact Me
               </li>
@@ -98,7 +98,7 @@ const Navbar = () => {
                 About
               </li>
             </Link>
-            <Link href="/Contact">
+            <Link href="/ContactMe">
               <li
                 onClick={() => setMenuopen(false)}
                 className="py-4 cursor-pointer hover:text-[#990011]"
