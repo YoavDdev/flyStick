@@ -19,7 +19,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full fixed h-20 shadow-xl bg-[#FCF6F5] z-[100]">
+    <nav className="w-full relative  h-20 shadow-xl bg-[#FCF6F5] z-[100]">
       <div className="flex justify-between items-center h-full w-full px-4 lg:px-16  ">
         <Link href="/">
           <Image
@@ -49,11 +49,20 @@ const Navbar = () => {
                 Pricing
               </li>
             </Link>
-            <Link href="/Login ">
+
+            <Link href="/video ">
               <li className="ml-10 uppercase hover:text-[#990011]  text-xl">
-                Login
+                Video
               </li>
             </Link>
+
+            <div className="ml-10  hover:text-[#990011]  text-xl">
+              <button className="uppercase">Sign Out</button>
+            </div>
+
+            <div className="ml-10  hover:text-[#990011]  text-xl">
+              <button className="uppercase">Sign In</button>
+            </div>
           </ul>
         </div>
         <div onClick={handleNav} className="sm:hidden cursor-pointer pl-20">

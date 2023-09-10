@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import boazAbout from "../../../public/BoazAbout.jpeg";
+import boazAbout from "../../../../public/BoazAbout.jpeg";
 
 const About = () => {
   return (
@@ -13,30 +13,30 @@ const About = () => {
                 <h2 className="mb-8 text-4xl md:text-5xl lg:text-6xl font-bold text-[#990011]">
                   Greetings!
                 </h2>
-                <p className="mb-8 pb-2 text-lg md:text-xl lg:pb-0">
+                <p className="text-lg text-gray-700 mb-8">
                   I'm Boaz Nahaisi, and I invite you to explore my profound
                   journey through the world of movement. Let me take you behind
                   the scenes of my story:
                 </p>
-                <p className="mb-0 text-lg md:text-xl">
+                <p className="text-lg text-gray-700">
                   I am the heart behind the 'Boaz Nahaisi School,' a place of
                   innovation and transformation. My passion led to the birth of
                   the Flystick method—a revolutionary technique that has made
                   waves not only across Israel but worldwide.
                 </p>
-                <p className="mb-0 text-lg md:text-xl">
+                <p className="text-lg text-gray-700">
                   Diving deep into Pilates/Controlology and Playistic training,
                   I've honed expertise that extends beyond conventional
                   boundaries. Beyond the studio, I share my knowledge in gyms,
                   workshops, and training sessions across the globe.
                 </p>
-                <p className="mb-0 text-lg md:text-xl">
+                <p className="text-lg text-gray-700">
                   I believe movement wields immense power, fostering bodily
                   balance, function, self-discovery, and resilience in life's
                   challenges. Just as water flows, movement courses through us.
                   We are water - we are movement.
                 </p>
-                <p className="mb-0 text-lg md:text-xl">
+                <p className="text-lg text-gray-700">
                   Join me, and together, let's nurture your body and soul along
                   this transformative path.
                 </p>

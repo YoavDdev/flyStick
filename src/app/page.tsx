@@ -1,9 +1,10 @@
 import {
   Hero,
   Feature,
-  ProductSell,
   Pricing,
   VideoCarusel,
+  Quiz,
+  ProductSell,
 } from "./components";
 
 export default function HomePage() {
@@ -11,9 +12,10 @@ export default function HomePage() {
     <main className="bg-[#FCF6F5]">
       <Hero />
       <Feature />
-      <ProductSell />
+      <Quiz />
       <Pricing />
-      <VideoCarusel />
+      <ProductSell />
+      {/* <VideoCarusel /> */}
     </main>
   );
 }
