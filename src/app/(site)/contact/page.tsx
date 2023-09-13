@@ -2,7 +2,6 @@ import React from "react";
 import Image from "next/image";
 import contacMe from "../../../../public/contacMe.jpeg";
 import Link from "next/link";
-import { FaWhatsapp } from "react-icons/fa";
 
 const Contact = () => {
   return (

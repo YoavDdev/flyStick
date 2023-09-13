@@ -11,8 +11,10 @@ import {
 } from "react-icons/ai";
 import Logo from "../../../public/Flystick_logo.svg";
 import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 
 const Navbar = () => {
+  const { data: session } = useSession();
   const [menuOpen, setMenuopen] = useState(false);
   const handleNav = () => {
     setMenuopen(!menuOpen);
@@ -56,12 +58,23 @@ const Navbar = () => {
               </li>
             </Link>
 
-            <div className="ml-10  hover:text-[#990011]  text-xl">
-              <button className="uppercase">Sign Out</button>
-            </div>
+            <div className="ml-10 hover:text-[#990011] text-xl">
+              {session?.user ? (
+                <>
+                  <button className="uppercase">{session.user.name}</button>
 
-            <div className="ml-10  hover:text-[#990011]  text-xl">
-              <button className="uppercase">Sign In</button>
+                  <button
+                    className=" px-4 uppercase ml-2"
+                    onClick={() => signOut()}
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link href={"/login"} className="uppercase">
+                  Log In
+                </Link>
+              )}
             </div>
           </ul>
         </div>

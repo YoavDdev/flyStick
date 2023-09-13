@@ -6,6 +6,7 @@ import ProductSell from "./ProductSell";
 import Pricing from "./Pricing";
 import VideoCarusel from "./VideoCarusel";
 import Quiz from "./Quiz";
+import User from "./User";
 
 export {
   Hero,
@@ -16,4 +17,5 @@ export {
   VideoCarusel,
   Quiz,
   ProductSell,
+  User,
 };

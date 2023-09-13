@@ -5,6 +5,7 @@ import {
   VideoCarusel,
   Quiz,
   ProductSell,
+  User,
 } from "./components";
 
 export default function HomePage() {
@@ -15,6 +16,7 @@ export default function HomePage() {
       <Quiz />
       <Pricing />
       <ProductSell />
+      <User />
       {/* <VideoCarusel /> */}
     </main>
   );
