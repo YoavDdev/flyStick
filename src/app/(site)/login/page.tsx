@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Link from "next/dist/client/link";
 
 const page = () => {
   const session = useSession();
@@ -101,6 +102,15 @@ const page = () => {
           </div>
         </form>
         <div className="p-6">
+          <p className="m-10 text-center text-sm text-gray-500">
+            Not a member?
+            <Link
+              href="/register"
+              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+            >
+              Register here
+            </Link>
+          </p>
           <button
             onClick={() => signIn("google")}
             className="flex w-full justify-center vpx-4 py-1.5 px-3 border gap-2 border-slate-200 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150"

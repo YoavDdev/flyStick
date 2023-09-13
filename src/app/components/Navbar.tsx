@@ -10,10 +10,36 @@ import {
   AiOutlineYoutube,
 } from "react-icons/ai";
 import Logo from "../../../public/Flystick_logo.svg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 
 const Navbar = () => {
+  const [isTransparent, setIsTransparent] = useState(true);
+
+  useEffect(() => {
+    // Add a scroll event listener to toggle transparency
+    function handleScroll() {
+      if (window.scrollY > 0) {
+        setIsTransparent(false);
+      } else {
+        setIsTransparent(true);
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!dropdownVisible);
+  };
+
   const { data: session } = useSession();
   const [menuOpen, setMenuopen] = useState(false);
   const handleNav = () => {
@@ -21,7 +47,11 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full relative  h-20 shadow-xl bg-[#FCF6F5] z-[100]">
+    <nav
+      className={`w-full fixed top-0 left-0 h-20 shadow-xl z-50 ${
+        !isTransparent ? " bg-[#FCF6F5] bg-opacity-75 " : "bg-[#FCF6F5]"
+      }`}
+    >
       <div className="flex justify-between items-center h-full w-full px-4 lg:px-16  ">
         <Link href="/">
           <Image
@@ -52,26 +82,46 @@ const Navbar = () => {
               </li>
             </Link>
 
-            <Link href="/video ">
-              <li className="ml-10 uppercase hover:text-[#990011]  text-xl">
-                Video
-              </li>
-            </Link>
-
             <div className="ml-10 hover:text-[#990011] text-xl">
               {session?.user ? (
                 <>
-                  <button className="uppercase">{session.user.name}</button>
+                  <div className="relative inline-block group">
+                    <button
+                      className="uppercase text-[#990011] hover:text-[#990011] group-hover:text-white focus:outline-none"
+                      onClick={toggleDropdown}
+                    >
+                      {session.user.name}
+                      <span
+                        className={`${
+                          dropdownVisible ? "rotate-180" : "rotate-0"
+                        } transition-transform inline-block ml-2`}
+                      >
+                        &#9660;
+                      </span>
+                    </button>
 
-                  <button
-                    className=" px-4 uppercase ml-2"
-                    onClick={() => signOut()}
-                  >
-                    Logout
-                  </button>
+                    {dropdownVisible && (
+                      <div className="absolute right-0 mt-2 bg-white border rounded-lg shadow-lg divide-y divide-gray-300">
+                        <Link href="/video">
+                          <li className="block px-4 py-2 text-[#990011] hover:bg-[#990011] hover:text-white w-full text-left focus:outline-none rounded-lg shadow-lg divide-y">
+                            Video
+                          </li>
+                        </Link>
+                        <button
+                          className="block px-4 py-2 text-[#990011] hover:bg-[#990011] hover:text-white w-full text-left focus:outline-none rounded-lg shadow-lg divide-y"
+                          onClick={() => {
+                            signOut();
+                            toggleDropdown();
+                          }}
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </>
               ) : (
-                <Link href={"/login"} className="uppercase">
+                <Link href="/login" className="uppercase">
                   Log In
                 </Link>
               )}

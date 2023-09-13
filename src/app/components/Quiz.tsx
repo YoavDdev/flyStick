@@ -97,72 +97,74 @@ const Quiz = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-4xl font-semibold mb-4 text-center">
-        Discover Your Custom Video Experience: 3 Quick Questions Await!
-      </h1>
-      <div>
-        <h2 className="text-xl mb-4">
-          Question: {activeQuestion + 1}/{questions.length}
-        </h2>
-      </div>
-      <div>
-        {!showResult ? (
-          <div>
-            <h3 className="mb-2 text-[#990011] text-2xl sm:text-4xl">
-              {questions[activeQuestion].question}
-            </h3>
-            {answers.map((answer, idx) => (
-              <li
-                key={idx}
-                onClick={() => onAnswerSelected(answer, idx)}
-                className={`cursor-pointer border border-gray-300 p-4 mb-2 rounded-lg ${
-                  selectedAnswerIndex[activeQuestion] === idx
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-100"
-                } hover:bg-blue-300`}
+    <div className="bg-[#FCF6F5] py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <h1 className="text-4xl font-semibold mb-4 text-center">
+          Discover Your Custom Video Experience:
+        </h1>
+        <div>
+          <h2 className="text-xl mb-4">
+            {activeQuestion + 1}/{questions.length}
+          </h2>
+        </div>
+        <div>
+          {!showResult ? (
+            <div>
+              <h3 className="mb-2 text-[#990011] text-2xl sm:text-4xl">
+                {questions[activeQuestion].question}
+              </h3>
+              {answers.map((answer, idx) => (
+                <li
+                  key={idx}
+                  onClick={() => onAnswerSelected(answer, idx)}
+                  className={`cursor-pointer border border-gray-300 p-4 mb-2 rounded-lg ${
+                    selectedAnswerIndex[activeQuestion] === idx
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-100"
+                  } hover:bg-blue-300`}
+                >
+                  <span>{answer}</span>
+                </li>
+              ))}
+              <button
+                onClick={nextQuestion}
+                disabled={selectedAnswerIndex[activeQuestion] === null}
+                className={`py-4 px-8 w-full mt-4 text-lg rounded-md cursor-pointer ${
+                  selectedAnswerIndex[activeQuestion] === null
+                    ? "bg-gray-500 text-white"
+                    : "bg-blue-600 text-white"
+                }`}
               >
-                <span>{answer}</span>
-              </li>
-            ))}
-            <button
-              onClick={nextQuestion}
-              disabled={selectedAnswerIndex[activeQuestion] === null}
-              className={`py-4 px-8 w-full mt-4 text-lg rounded-md cursor-pointer ${
-                selectedAnswerIndex[activeQuestion] === null
-                  ? "bg-gray-500 text-white"
-                  : "bg-blue-600 text-white"
-              }`}
-            >
-              {activeQuestion === questions.length - 1
-                ? "To the Video"
-                : "Next"}
-            </button>
-          </div>
-        ) : (
-          <div className="container mx-auto p-4">
-            {videoLink && (
-              <div className="container mx-auto ">
-                <div className=" max-w-[900px] h-[600px] w-full m-auto  px-4 relative group">
-                  <iframe
-                    id="ytplayer"
-                    width="50%"
-                    height="360"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    src={videoLink}
-                    className="w-full h-full top-0 left-0 object-cover rounded-2xl"
-                  ></iframe>
+                {activeQuestion === questions.length - 1
+                  ? "To the Video"
+                  : "Next"}
+              </button>
+            </div>
+          ) : (
+            <div className="container mx-auto p-4">
+              {videoLink && (
+                <div className="container mx-auto ">
+                  <div className=" max-w-[900px] h-[600px] w-full m-auto  px-4 relative group">
+                    <iframe
+                      id="ytplayer"
+                      width="50%"
+                      height="360"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      src={videoLink}
+                      className="w-full h-full top-0 left-0 object-cover rounded-2xl"
+                    ></iframe>
+                  </div>
                 </div>
-              </div>
-            )}
-            <button
-              onClick={() => window.location.reload()}
-              className="py-4 px-8 w-full mt-4 text-lg rounded-md cursor-pointer bg-blue-600 text-white"
-            >
-              Restart
-            </button>
-          </div>
-        )}
+              )}
+              <button
+                onClick={() => window.location.reload()}
+                className="py-4 px-8 w-full mt-4 text-lg rounded-md cursor-pointer bg-blue-600 text-white"
+              >
+                Restart
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -14,9 +14,9 @@ export default function HomePage() {
       <Hero />
       <Feature />
       <Quiz />
-      <Pricing />
       <ProductSell />
-      <User />
+      <Pricing />
+      {/* <User /> */}
       {/* <VideoCarusel /> */}
     </main>
   );
