@@ -30,7 +30,8 @@
     "react-icons": "^4.10.1",
     "react-modal": "^3.16.1",
     "react-player": "^2.13.0",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "vimeo": "^2.3.1"
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",

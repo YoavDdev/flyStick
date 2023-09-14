@@ -2,18 +2,55 @@
 
 import React from "react";
 import { useState } from "react";
+import Image from "next/image";
+
+import flystikClass from "../../../../../public/flystickClass.png";
+import flystikClass2 from "../../../../../public/flystikClass2.png";
+import flystikClass3 from "../../../../../public/flystikClass3.png";
+import flystikClass4 from "../../../../../public/flystikClass4.png";
+import flystikClass5 from "../../../../../public/flystikClass5.png";
 
 const page = () => {
   const products = [
     {
       id: 1,
-      title: "פירוט תרגילים חלק 2",
-      subtitle: "$48",
-      imageSrc:
-        "https://videoapi-muybridge.vimeocdn.com/animated-thumbnails/image/cc7f7368-0586-4f7e-a097-b4091b1064ce.gif?ClientID=vimeo-core-prod&Date=1694679909&Signature=5bca2c79fc30c066b6b30857f172e35def0b7130",
-      imageAlt: "פירוט תרגילים חלק 2",
-      videoUrl:
-        "https://player.vimeo.com/video/831156544?h=8ad41f8601&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+      title: "FlyStick fill good",
+      subtitle: "3 video classes",
+      imageSrc: flystikClass.src,
+      imageAlt: "FlyStick fill good",
+      videoUrl: "https://vimeo.com/showcase/5908428/embed",
+    },
+    {
+      id: 2,
+      title: "FlyStick fill good",
+      subtitle: "3 video classes",
+      imageSrc: flystikClass2.src,
+      imageAlt: "FlyStick fill good",
+      videoUrl: "https://vimeo.com/showcase/5908428/embed",
+    },
+    {
+      id: 3,
+      title: "FlyStick fill good",
+      subtitle: "3 video classes",
+      imageSrc: flystikClass3.src,
+      imageAlt: "FlyStick fill good",
+      videoUrl: "https://vimeo.com/showcase/5908428/embed",
+    },
+    {
+      id: 4,
+      title: "FlyStick fill good",
+      subtitle: "3 video classes",
+      imageSrc: flystikClass4.src,
+      imageAlt: "FlyStick fill good",
+      videoUrl: "https://vimeo.com/showcase/5908428/embed",
+    },
+    {
+      id: 5,
+      title: "FlyStick fill good",
+      subtitle: "3 video classes",
+      imageSrc: flystikClass5.src,
+      imageAlt: "FlyStick fill good",
+      videoUrl: "https://vimeo.com/showcase/5908428/embed",
     },
 
     // More products...
@@ -80,3 +117,7 @@ const page = () => {
 };
 
 export default page;
+
+{
+  /* <div style='padding:47.2% 0 0 0;position:relative;'><iframe src='https://vimeo.com/showcase/9082139/embed' allowfullscreen frameborder='0' style='position:absolute;top:0;left:0;width:100%;height:100%;'></iframe></div> */
+}

@@ -1,11 +1,33 @@
 "use client";
 import React from "react";
 import Link from "next/link"; // Import Link from react-router-dom
+import flystikClassMain from "../../../../public/flystickClassMain.jpg";
 
 const Page = () => {
   const products = [
     {
       id: 1,
+      name: "FlyStick technique",
+      // Update the 'to' prop with the desired URL
+      to: "classes/flystick",
+      imageSrc: flystikClassMain.src,
+      imageAlt: "Front of men's Basic Tee in black.",
+      price: "",
+      description:
+        "The FlyStick technique is an innovative and dynamic approach to movement and exercise that draws inspiration from aerial arts and dance.",
+    },
+    {
+      id: 2,
+      name: "Basic Tee",
+      // Update the 'to' prop with the desired URL
+      to: "classes/basin-series",
+      imageSrc: "",
+      imageAlt: "Front of men's Basic Tee in black.",
+      price: "$35",
+      description: "Black",
+    },
+    {
+      id: 3,
       name: "Basic Tee",
       // Update the 'to' prop with the desired URL
       to: "classes/basin-series",
@@ -13,16 +35,48 @@ const Page = () => {
         "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
       imageAlt: "Front of men's Basic Tee in black.",
       price: "$35",
-      color: "Black",
+      description: "Black",
     },
-    // More products...
+    {
+      id: 4,
+      name: "Basic Tee",
+      // Update the 'to' prop with the desired URL
+      to: "classes/basin-series",
+      imageSrc:
+        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+      imageAlt: "Front of men's Basic Tee in black.",
+      price: "$35",
+      description: "Black",
+    },
+    {
+      id: 5,
+      name: "Basic Tee",
+      // Update the 'to' prop with the desired URL
+      to: "classes/basin-series",
+      imageSrc:
+        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+      imageAlt: "Front of men's Basic Tee in black.",
+      price: "$35",
+      description: "Black",
+    },
+    {
+      id: 6,
+      name: "Basic Tee",
+      // Update the 'to' prop with the desired URL
+      to: "classes/basin-series",
+      imageSrc:
+        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+      imageAlt: "Front of men's Basic Tee in black.",
+      price: "$35",
+      description: "Black",
+    },
   ];
 
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-          Customers also purchased
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900 text-center">
+          All Styles
         </h2>
 
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
@@ -38,12 +92,14 @@ const Page = () => {
                   />
                 </Link>
               </div>
-              <div className="mt-4 flex justify-between">
+              <div className="mt-4 flex justify-between ">
                 <div>
-                  <h3 className="text-sm text-gray-700">
+                  <h3 className="text-lg text-[#990011] font-semibold ">
                     <Link href={product.to}>{product.name}</Link>
                   </h3>
-                  <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    {product.description}
+                  </p>
                 </div>
                 <p className="text-sm font-medium text-gray-900">
                   {product.price}
