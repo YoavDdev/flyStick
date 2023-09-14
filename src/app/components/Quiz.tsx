@@ -117,28 +117,31 @@ const Quiz = () => {
                 <li
                   key={idx}
                   onClick={() => onAnswerSelected(answer, idx)}
-                  className={`cursor-pointer border border-gray-300 p-4 mb-2 rounded-lg ${
+                  className={`list-none cursor-pointer border border-gray-300 p-4 mb-2 rounded-lg ${
                     selectedAnswerIndex[activeQuestion] === idx
-                      ? "bg-blue-500 text-white"
+                      ? "bg-white text-black selected"
                       : "bg-gray-100"
-                  } hover:bg-blue-300`}
+                  } transition duration-300`}
                 >
                   <span>{answer}</span>
                 </li>
               ))}
-              <button
-                onClick={nextQuestion}
-                disabled={selectedAnswerIndex[activeQuestion] === null}
-                className={`py-4 px-8 w-full mt-4 text-lg rounded-md cursor-pointer ${
+              <div className="flex flex-col items-center justify-center">
+                <button
+                  onClick={nextQuestion}
+                  disabled={selectedAnswerIndex[activeQuestion] === null}
+                  className={`rounded-md bg-red-600 px-40 py-2.5 text-sm  text-white shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-5 "
+                > ${
                   selectedAnswerIndex[activeQuestion] === null
                     ? "bg-gray-500 text-white"
                     : "bg-blue-600 text-white"
                 }`}
-              >
-                {activeQuestion === questions.length - 1
-                  ? "To the Video"
-                  : "Next"}
-              </button>
+                >
+                  {activeQuestion === questions.length - 1
+                    ? "To the Video"
+                    : "Next"}
+                </button>
+              </div>
             </div>
           ) : (
             <div className="container mx-auto p-4">
@@ -156,12 +159,14 @@ const Quiz = () => {
                   </div>
                 </div>
               )}
-              <button
-                onClick={() => window.location.reload()}
-                className="py-4 px-8 w-full mt-4 text-lg rounded-md cursor-pointer bg-blue-600 text-white"
-              >
-                Restart
-              </button>
+              <div className="flex flex-col items-center justify-center">
+                <button
+                  onClick={() => window.location.reload()}
+                  className="rounded-md bg-indigo-600 px-40 py-2.5 mt-5 text-sm  text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Restart
+                </button>
+              </div>
             </div>
           )}
         </div>

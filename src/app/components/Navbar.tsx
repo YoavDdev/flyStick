@@ -87,7 +87,7 @@ const Navbar = () => {
                 <>
                   <div className="relative inline-block group">
                     <button
-                      className="uppercase text-[#990011] hover:text-[#990011] group-hover:text-white focus:outline-none"
+                      className="uppercase text-[#990011] hover:text-[#990011] group-hover:text-black focus:outline-none"
                       onClick={toggleDropdown}
                     >
                       {session.user.name}
@@ -101,14 +101,14 @@ const Navbar = () => {
                     </button>
 
                     {dropdownVisible && (
-                      <div className="absolute right-0 mt-2 bg-white border rounded-lg shadow-lg divide-y divide-gray-300">
+                      <div className="absolute mt-2 flex flex-col gap-2">
                         <Link href="/video">
-                          <li className="block px-4 py-2 text-[#990011] hover:bg-[#990011] hover:text-white w-full text-left focus:outline-none rounded-lg shadow-lg divide-y">
-                            Video
+                          <li className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]">
+                            Classes
                           </li>
                         </Link>
                         <button
-                          className="block px-4 py-2 text-[#990011] hover:bg-[#990011] hover:text-white w-full text-left focus:outline-none rounded-lg shadow-lg divide-y"
+                          className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white  text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] "
                           onClick={() => {
                             signOut();
                             toggleDropdown();

@@ -11,3 +11,8 @@
   color: #fff;
   background-color: #000925;
 }
+
+.selected {
+  background-color: #990011; /* Set your desired background color */
+  color: white; /* Set your desired text color */
+}
