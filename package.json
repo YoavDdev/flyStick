@@ -33,6 +33,7 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "autoprefixer": "^10.4.15",
     "concurrently": "^8.2.1",
     "postcss": "^8.4.29",
