@@ -10,10 +10,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  name       String?
+  name           String?
   email          String?   @unique
   emailVerified  DateTime?
   image          String?
@@ -41,4 +40,49 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+}
+
+model ProductType1 {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  title    String
+  subtitle String
+  imageSrc String
+  imageAlt String
+  videoUrl String
+}
+
+model ProductType2 {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  title    String
+  subtitle String
+  imageSrc String
+  imageAlt String
+  videoUrl String
+}
+
+model ProductType3 {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  title    String
+  subtitle String
+  imageSrc String
+  imageAlt String
+  videoUrl String
+}
+
+model ProductType4 {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  title    String
+  subtitle String
+  imageSrc String
+  imageAlt String
+  videoUrl String
+}
+
+model ProductType5 {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  title    String
+  subtitle String
+  imageSrc String
+  imageAlt String
+  videoUrl String
 }

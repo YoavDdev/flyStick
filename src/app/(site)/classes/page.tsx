@@ -2,7 +2,10 @@
 import React from "react";
 import Link from "next/link"; // Import Link from react-router-dom
 import flystikClassMain from "../../../../public/flystickClassMain.jpg";
-
+import pilatisMainCalss from "../../../../public/pilatisMainClass.jpg";
+import yogaMainClass from "../../../../public/yoagaMainClass.jpg";
+import backser from "../../../../public/backser.jpg";
+import pecStretches from "../../../../public/Pec-Stretches-Back-Muscles1.jpg";
 const Page = () => {
   const products = [
     {
@@ -11,40 +14,40 @@ const Page = () => {
       // Update the 'to' prop with the desired URL
       to: "classes/flystick",
       imageSrc: flystikClassMain.src,
-      imageAlt: "Front of men's Basic Tee in black.",
+      imageAlt: "",
       price: "",
       description:
         "The FlyStick technique is an innovative and dynamic approach to movement and exercise that draws inspiration from aerial arts and dance.",
     },
     {
       id: 2,
-      name: "Basic Tee",
+      name: "Yoga technique",
       // Update the 'to' prop with the desired URL
-      to: "classes/basin-series",
-      imageSrc: "",
-      imageAlt: "Front of men's Basic Tee in black.",
-      price: "$35",
-      description: "Black",
+      to: "classes/yoga",
+      imageSrc: yogaMainClass.src,
+      imageAlt: "",
+      price: "",
+      description:
+        "Yoga is a holistic and ancient practice that harmonizes the mind, body, and spirit. Rooted in Indian philosophy, yoga encompasses a wide range of techniques and disciplines aimed at promoting physical health, mental clarity, and emotional well-being",
     },
     {
       id: 3,
-      name: "Basic Tee",
+      name: "Pilatis technique",
       // Update the 'to' prop with the desired URL
       to: "classes/basin-series",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-      imageAlt: "Front of men's Basic Tee in black.",
+      imageSrc: pilatisMainCalss.src,
+      imageAlt: "",
       price: "$35",
-      description: "Black",
+      description:
+        "Pilates is a comprehensive and low-impact fitness system that focuses on strengthening the core, improving flexibility, and enhancing overall body awareness",
     },
     {
       id: 4,
       name: "Basic Tee",
       // Update the 'to' prop with the desired URL
       to: "classes/basin-series",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-      imageAlt: "Front of men's Basic Tee in black.",
+      imageSrc: backser.src,
+      imageAlt: "",
       price: "$35",
       description: "Black",
     },
@@ -53,19 +56,7 @@ const Page = () => {
       name: "Basic Tee",
       // Update the 'to' prop with the desired URL
       to: "classes/basin-series",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-      imageAlt: "Front of men's Basic Tee in black.",
-      price: "$35",
-      description: "Black",
-    },
-    {
-      id: 6,
-      name: "Basic Tee",
-      // Update the 'to' prop with the desired URL
-      to: "classes/basin-series",
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+      imageSrc: pecStretches.src,
       imageAlt: "Front of men's Basic Tee in black.",
       price: "$35",
       description: "Black",
@@ -75,8 +66,8 @@ const Page = () => {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <h2 className="text-2xl font-bold tracking-tight text-gray-900 text-center">
-          All Styles
+        <h2 className="text-5xl font-bold tracking-tight text-gray-900 text-center">
+          Choose your style
         </h2>
 
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">

@@ -4,11 +4,9 @@ import React from "react";
 import { useState } from "react";
 import Image from "next/image";
 
-import flystikClass from "../../../../../public/flystickClass.png";
-import flystikClass2 from "../../../../../public/flystikClass2.png";
-import flystikClass3 from "../../../../../public/flystikClass3.png";
-import flystikClass4 from "../../../../../public/flystikClass4.png";
-import flystikClass5 from "../../../../../public/flystikClass5.png";
+import yogaClass from "../../../../../public/yogaClass.jpg";
+import yogaClass2 from "../../../../../public/yogaClass2.jpg";
+import yogaClass3 from "../../../../../public/yogaClass3.jpg";
 
 const page = () => {
   const products = [
@@ -16,7 +14,7 @@ const page = () => {
       id: 1,
       title: "FlyStick fill good",
       subtitle: "3 video classes",
-      imageSrc: flystikClass.src,
+      imageSrc: yogaClass.src,
       imageAlt: "FlyStick fill good",
       videoUrl: "https://vimeo.com/showcase/5908428/embed",
     },
@@ -24,7 +22,7 @@ const page = () => {
       id: 2,
       title: "FlyStick fill good",
       subtitle: "3 video classes",
-      imageSrc: flystikClass2.src,
+      imageSrc: yogaClass2.src,
       imageAlt: "FlyStick fill good",
       videoUrl: "https://vimeo.com/showcase/5908428/embed",
     },
@@ -32,23 +30,7 @@ const page = () => {
       id: 3,
       title: "FlyStick fill good",
       subtitle: "3 video classes",
-      imageSrc: flystikClass3.src,
-      imageAlt: "FlyStick fill good",
-      videoUrl: "https://vimeo.com/showcase/5908428/embed",
-    },
-    {
-      id: 4,
-      title: "FlyStick fill good",
-      subtitle: "3 video classes",
-      imageSrc: flystikClass4.src,
-      imageAlt: "FlyStick fill good",
-      videoUrl: "https://vimeo.com/showcase/5908428/embed",
-    },
-    {
-      id: 5,
-      title: "FlyStick fill good",
-      subtitle: "3 video classes",
-      imageSrc: flystikClass5.src,
+      imageSrc: yogaClass3.src,
       imageAlt: "FlyStick fill good",
       videoUrl: "https://vimeo.com/showcase/5908428/embed",
     },
