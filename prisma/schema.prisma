@@ -42,7 +42,7 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-model ProductType1 {
+model ProductFlyStick {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   title    String
   subtitle String
@@ -51,7 +51,7 @@ model ProductType1 {
   videoUrl String
 }
 
-model ProductType2 {
+model ProductYoga {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   title    String
   subtitle String
@@ -60,25 +60,7 @@ model ProductType2 {
   videoUrl String
 }
 
-model ProductType3 {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  title    String
-  subtitle String
-  imageSrc String
-  imageAlt String
-  videoUrl String
-}
-
-model ProductType4 {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  title    String
-  subtitle String
-  imageSrc String
-  imageAlt String
-  videoUrl String
-}
-
-model ProductType5 {
+model ProductPilatis {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   title    String
   subtitle String

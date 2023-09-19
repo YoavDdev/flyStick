@@ -49,7 +49,7 @@ const Navbar = () => {
   return (
     <nav
       className={`w-full fixed top-0 left-0 h-20 shadow-xl z-50 ${
-        !isTransparent ? " bg-[#FCF6F5] bg-opacity-75 " : "bg-[#FCF6F5]"
+        !isTransparent ? " bg-[#FCF6F5] bg-opacity-75 " : "bg-[#FCF6F5] "
       }`}
     >
       <div className="flex justify-between items-center h-full w-full px-4 lg:px-16  ">
@@ -105,6 +105,11 @@ const Navbar = () => {
                         <Link href="/classes">
                           <li className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]">
                             Classes
+                          </li>
+                        </Link>
+                        <Link href="/explore">
+                          <li className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]">
+                            Explore
                           </li>
                         </Link>
                         <button

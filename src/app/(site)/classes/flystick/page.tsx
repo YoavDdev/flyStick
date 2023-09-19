@@ -88,31 +88,6 @@ const page = () => {
                 />
 
                 {/* Play icon (custom SVG) */}
-                <div className="absolute inset-0 flex justify-center items-center">
-                  <svg
-                    width="64px"
-                    height="64px"
-                    viewBox="-1.28 -1.28 18.56 18.56"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="#ffffff"
-                    className="bi bi-play-circle"
-                    stroke="#ffffff"
-                    stroke-width="0.00016"
-                    transform="rotate(0)"
-                  >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      {" "}
-                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>{" "}
-                      <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"></path>{" "}
-                    </g>
-                  </svg>
-                </div>
               </div>
               <h3 className="mt-4 text-sm text-gray-700">{product.title}</h3>
               <p className="mt-1 text-lg font-medium text-gray-900">

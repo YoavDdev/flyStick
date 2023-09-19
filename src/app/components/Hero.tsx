@@ -5,7 +5,7 @@ import BoazMain_Clean from "../../../public/BoazMain_Clean.png";
 
 const Hero = () => {
   return (
-    <div className="relative">
+    <div className="relative pt-20">
       <div className="mx-auto max-w-7xl">
         <div className="relative z-10 pt-14 lg:w-full lg:max-w-2xl">
           <svg
