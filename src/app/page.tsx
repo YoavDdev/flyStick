@@ -13,11 +13,11 @@ export default function HomePage() {
     <main className="bg-[#FCF6F5]">
       <Hero />
       <Feature />
-      <Quiz />
-      <ProductSell />
+      <VideoCarusel />
+      {/* <Quiz /> */}
+      {/* <ProductSell /> */}
       <Pricing />
       {/* <User /> */}
-      {/* <VideoCarusel /> */}
     </main>
   );
 }

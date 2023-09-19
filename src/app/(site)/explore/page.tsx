@@ -67,7 +67,8 @@ const Page = () => {
 
   const loadMore = () => {
     // Increment the current page to fetch the next page of videos
-    fetchVideos(currentPage + 1);
+    setCurrentPage(currentPage + 1); // Increment currentPage here
+    fetchVideos(currentPage + 1); // Pass the updated currentPage
   };
 
   const [showFullDescription, setShowFullDescription] =
@@ -78,7 +79,7 @@ const Page = () => {
   };
 
   return (
-    <div className="bg-black min-h-screen text-white pt-20">
+    <div className="bg-white min-h-screen text-white pt-20">
       <div className="container mx-auto p-6">
         <h1 className="text-4xl font-bold mb-8">Explore Videos</h1>
         <form onSubmit={handleSearch} className="mb-8">
@@ -86,7 +87,7 @@ const Page = () => {
             <input
               type="text"
               placeholder="Search for videos..."
-              className="w-full p-4 rounded-l-md bg-gray-800 text-white focus:outline-none"
+              className="w-full p-4 rounded-l-md bg-white text-black focus:outline-none"
             />
             <button
               type="submit"
@@ -100,7 +101,7 @@ const Page = () => {
           {videos.map((video) => (
             <div
               key={video.uri}
-              className="bg-gray-800 rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
+              className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
             >
               <div className="aspect-w-16 aspect-h-9">
                 <img
@@ -110,8 +111,10 @@ const Page = () => {
                 />
               </div>
               <div className="p-4">
-                <h2 className="text-lg font-semibold mb-2">{video.name}</h2>
-                <p className="text-sm mb-2">
+                <h2 className="text-lg font-semibold mb-2 text-black">
+                  {video.name}
+                </h2>
+                <p className="text-sm mb-2 text-gray-600 ">
                   {showFullDescription && video.description}
                   {!showFullDescription &&
                     (video.description
@@ -160,7 +163,7 @@ const Page = () => {
       {selectedVideo && (
         // Display the selected video player
 
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 z-50 flex items-center justify-center">
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
           <div className="video-container">
             <div dangerouslySetInnerHTML={{ __html: selectedVideo }} />
           </div>
