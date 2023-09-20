@@ -9,6 +9,9 @@ const Page = () => {
   const [descriptionQuery, setDescriptionQuery] = useState<string>("");
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null); // Track the selected video URI
   const [selectedVideoData, setSelectedVideoData] = useState<any | null>(null); // Track the selected video data
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [showHashtagDropdown, setShowHashtagDropdown] = useState(false);
+  const [selectedHashtags, setSelectedHashtags] = useState<string[]>([]);
 
   useEffect(() => {
     // Reset the videos and currentPage when a new search is performed
@@ -59,10 +62,49 @@ const Page = () => {
     }
   };
 
+  const hashtagOptions = [
+    "תרגול",
+    "לב",
+    "flystick",
+    "רגלים",
+    "גב",
+    "useclient",
+    "webdevelopment",
+    "coding",
+    "frontend",
+    "reactjs",
+    "useclient",
+    "webdevelopment",
+    "coding",
+    "frontend",
+    "reactjs",
+  ];
+  const handleHashtagClick = (hashtag: string) => {
+    setSearchQuery((prevQuery) => {
+      // Check if the selected hashtag is already in the search query
+      if (prevQuery.includes(hashtag)) {
+        // If it's already in the query, remove it
+        return prevQuery
+          .replace(new RegExp(`\\s*${hashtag}\\s*`, "g"), " ")
+          .trim();
+      } else {
+        // If it's not in the query, add it
+        return prevQuery ? `${prevQuery} ${hashtag}` : hashtag;
+      }
+    });
+    // Close the dropdown after clicking
+  };
+  const toggleHashtagDropdown = () => {
+    setShowHashtagDropdown(!showHashtagDropdown);
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Set the descriptionQuery state when the user submits the search form
-    setDescriptionQuery(e.currentTarget.querySelector("input")?.value || "");
+
+    // Close the hashtag dropdown
+
+    // Set the search query
+    setDescriptionQuery(searchQuery);
   };
 
   const loadMore = () => {
@@ -83,19 +125,43 @@ const Page = () => {
       <div className="container mx-auto p-6">
         <h1 className="text-4xl font-bold mb-8">Explore Videos</h1>
         <form onSubmit={handleSearch} className="mb-8">
-          <div className="flex items-center">
+          <div className="flex items-center relative">
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for videos..."
               className="w-full p-4 rounded-l-md bg-white text-black focus:outline-none"
             />
             <button
               type="submit"
               className="bg-red-600 hover:bg-red-700 px-6 py-4 rounded-r-md focus:outline-none"
+              onClick={handleSearch}
             >
               Search
             </button>
+            <button
+              className="bg-blue-600 hover:bg-blue-700 px-4 py-4 rounded-md ml-2 focus:outline-none"
+              onClick={toggleHashtagDropdown} // Toggle dropdown visibility
+            >
+              Hashtag
+            </button>
           </div>
+          {showHashtagDropdown && (
+            <div className="dropdown relative top-full left-0 mt-1 bg-white border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
+              <div className="grid grid-cols-5">
+                {hashtagOptions.map((hashtag, index) => (
+                  <div
+                    key={index}
+                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleHashtagClick(hashtag)}
+                  >
+                    {hashtag}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </form>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {videos.map((video) => (

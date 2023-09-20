@@ -102,9 +102,9 @@ const Navbar = () => {
 
                     {dropdownVisible && (
                       <div className="absolute mt-2 flex flex-col gap-2">
-                        <Link href="/classes">
+                        <Link href="/styles">
                           <li className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]">
-                            Classes
+                            Styles
                           </li>
                         </Link>
                         <Link href="/explore">
