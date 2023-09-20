@@ -149,7 +149,7 @@ const Page = () => {
           </div>
           {showHashtagDropdown && (
             <div className="dropdown relative top-full left-0 mt-1 bg-white border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
-              <div className="grid grid-cols-5">
+              <div className="grid md:grid-cols-5 sm:grid-cols-3">
                 {hashtagOptions.map((hashtag, index) => (
                   <div
                     key={index}
