@@ -121,40 +121,17 @@ const Page = () => {
     setShowFullDescription(!showFullDescription);
   };
 
-  /*  const addToFavorites = (videoUri: any) => {
-    // Log the video URI
-    console.log("Video URI added to favorites:", videoUri);
-    console.log(session);
-
-    // Add your logic for adding the video to favorites here
-    // For now, let's just log the URI
-  }; */
-
   const addToFavorites = async (videoUri: any) => {
     try {
       // Check if session exists and session.user is defined
       if (session && session.user) {
         // Make an HTTP request to your backend API to add the video to favorites
-        const response = await axios.post(
-          "/api/add-to-favorites",
-          {
-            userEmail: session.user.email, // Pass the user's email
-            videoUri: videoUri, // Pass the video URI
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
-        );
+        const response = await axios.post("/api/add-to-favorites", {
+          userEmail: session.user.email, // Pass the user's email
+          videoUri: videoUri, // Pass the video URI
+        });
 
-        /*        const response = await axios({
-          method:"POST",
-          headers:{}
-        }); */
-
-        // Log the response or perform any additional actions as needed
-        console.log(response.data.message);
+        console.log(response.data);
       } else {
         console.error("User session is not available.");
       }
@@ -308,12 +285,3 @@ const Page = () => {
 };
 
 export default Page;
-
-{
-  /* <div className=" absolute video-info bottom-0 left-0 bg-black  text-white sm:px-20 ">
-            <h2 className="text-lg font-semibold mb-2">
-              {selectedVideoData.name}
-            </h2>
-            <p className="text-sm mb-2">{selectedVideoData.description}</p>
-          </div> */
-}

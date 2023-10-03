@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { email, videoUri } = body;
+    const { userEmail: email, videoUri } = body;
 
     if (!email || !videoUri) {
       return new NextResponse("Missing Fields", { status: 400 });
@@ -31,7 +31,7 @@ export async function POST(request) {
       },
     });
 
-    return NextResponse.json(updatedUser);
+    return Response.json({ message: "OK" });
   } catch (error) {
     console.error("Error adding video to favorites:", error);
     return new NextResponse("Internal Server Error", { status: 500 });

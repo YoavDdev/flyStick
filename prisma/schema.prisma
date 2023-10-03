@@ -16,7 +16,7 @@ model User {
   email          String?   @unique
   emailVerified  DateTime?
   image          String?
-  favorites      String[] // Add this field to store video URIs in an array
+  favoriteVideos String[] // Add this field to store video URIs in an array
   hashedPassword String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
