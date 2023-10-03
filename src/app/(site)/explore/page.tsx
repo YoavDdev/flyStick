@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
+import { useSession, signOut } from "next-auth/react";
 
 const Page = () => {
   const [videos, setVideos] = useState<any[]>([]);
@@ -11,7 +12,7 @@ const Page = () => {
   const [selectedVideoData, setSelectedVideoData] = useState<any | null>(null); // Track the selected video data
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showHashtagDropdown, setShowHashtagDropdown] = useState(false);
-  const [selectedHashtags, setSelectedHashtags] = useState<string[]>([]);
+  const { data: session } = useSession();
 
   useEffect(() => {
     // Reset the videos and currentPage when a new search is performed
@@ -120,6 +121,47 @@ const Page = () => {
     setShowFullDescription(!showFullDescription);
   };
 
+  /*  const addToFavorites = (videoUri: any) => {
+    // Log the video URI
+    console.log("Video URI added to favorites:", videoUri);
+    console.log(session);
+
+    // Add your logic for adding the video to favorites here
+    // For now, let's just log the URI
+  }; */
+
+  const addToFavorites = async (videoUri: any) => {
+    try {
+      // Check if session exists and session.user is defined
+      if (session && session.user) {
+        // Make an HTTP request to your backend API to add the video to favorites
+        const response = await axios.post(
+          "/api/add-to-favorites",
+          {
+            userEmail: session.user.email, // Pass the user's email
+            videoUri: videoUri, // Pass the video URI
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        /*        const response = await axios({
+          method:"POST",
+          headers:{}
+        }); */
+
+        // Log the response or perform any additional actions as needed
+        console.log(response.data.message);
+      } else {
+        console.error("User session is not available.");
+      }
+    } catch (error) {
+      console.error("Error adding video to favorites:", error);
+    }
+  };
   return (
     <div className="bg-white min-h-screen text-white pt-20">
       <div className="container mx-auto p-6">
@@ -214,6 +256,12 @@ const Page = () => {
                   Play
                 </button>
               </div>
+              <button
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
+                onClick={() => addToFavorites(video.uri)} // Call addToFavorites with the video URI
+              >
+                Add to Favorites
+              </button>
             </div>
           ))}
         </div>
