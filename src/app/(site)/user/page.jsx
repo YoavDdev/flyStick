@@ -9,7 +9,7 @@ const Page = () => {
     <div className="ml-10 pt-28">
       {session?.user ? (
         <div>
-          <h1 className="text-4xl">Welcome, {session.user.name}!,</h1>
+          <h1 className="text-4xl">Welcome, {session.user.name}!</h1>
           <button
             className="hover:text-[#990011] text-2xl"
             onClick={() => signOut()}

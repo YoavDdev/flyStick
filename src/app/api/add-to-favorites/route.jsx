@@ -20,6 +20,16 @@ export async function POST(request) {
       return new NextResponse("User not found", { status: 404 });
     }
 
+    // Check if the video URI already exists in user's favoriteVideos
+    const videoIndex = user.favoriteVideos.findIndex(
+      (favVideo) => favVideo === videoUri,
+    );
+
+    if (videoIndex !== -1) {
+      // Video URI already exists in favorites
+      return Response.json({ message: "Video already in favorites" });
+    }
+
     const updatedUser = await prisma.user.update({
       where: {
         email,

@@ -1,11 +1,17 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 
-const Page = () => {
+interface pageProps {
+  params: { name: string };
+}
+
+const Page: FC<pageProps> = ({ params }) => {
+  const value = params.name; // Extract the value
+
+  const [folderName, setFolderName] = useState<string>(""); // Initialize folderName state
   const [videos, setVideos] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [descriptionQuery, setDescriptionQuery] = useState<string>("");
@@ -16,6 +22,34 @@ const Page = () => {
   const { data: session } = useSession();
 
   useEffect(() => {
+    // Fetch folder name based on folder ID (value)
+    const fetchFolderName = async () => {
+      try {
+        const accessToken = "a7acf4dcfec3abd4ebab0f8162956c65";
+        const headers = {
+          Authorization: `Bearer ${accessToken}`,
+        };
+
+        const folderDetailsResponse: AxiosResponse = await axios.get(
+          `https://api.vimeo.com/me/projects/${value}`,
+          {
+            headers,
+          },
+        );
+
+        const folderDetails = folderDetailsResponse.data;
+        const name = folderDetails.name; // Extract the folder name
+        setFolderName(name); // Update folderName state with the folder name
+      } catch (error) {
+        console.error("Error fetching folder details:", error);
+      }
+    };
+
+    // Call the fetchFolderName function when the component mounts
+    fetchFolderName();
+  }, [value]); // Include value as a dependency to re-fetch when it changes
+
+  useEffect(() => {
     // Reset the videos and currentPage when a new search is performed
     setVideos([]);
     setCurrentPage(1);
@@ -23,7 +57,7 @@ const Page = () => {
   }, [descriptionQuery]); // Include descriptionQuery as a dependency
 
   const accessToken = "a7acf4dcfec3abd4ebab0f8162956c65";
-  const apiUrl = "https://api.vimeo.com/me/videos";
+  const apiUrl = `https://api.vimeo.com/me/projects/${value}/videos`;
   const headers = {
     Authorization: `Bearer ${accessToken}`,
   };
@@ -62,42 +96,6 @@ const Page = () => {
     } catch (error) {
       console.error("Error:", error);
     }
-  };
-
-  const hashtagOptions = [
-    "#תרגול",
-    "לב",
-    "flystick",
-    "רגלים",
-    "גב",
-    "useclient",
-    "webdevelopment",
-    "coding",
-    "frontend",
-    "reactjs",
-    "useclient",
-    "webdevelopment",
-    "coding",
-    "frontend",
-    "reactjs",
-  ];
-  const handleHashtagClick = (hashtag: string) => {
-    setSearchQuery((prevQuery) => {
-      // Check if the selected hashtag is already in the search query
-      if (prevQuery.includes(hashtag)) {
-        // If it's already in the query, remove it
-        return prevQuery
-          .replace(new RegExp(`\\s*${hashtag}\\s*`, "g"), " ")
-          .trim();
-      } else {
-        // If it's not in the query, add it
-        return prevQuery ? `${prevQuery} ${hashtag}` : hashtag;
-      }
-    });
-    // Close the dropdown after clicking
-  };
-  const toggleHashtagDropdown = () => {
-    setShowHashtagDropdown(!showHashtagDropdown);
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -148,17 +146,18 @@ const Page = () => {
       toast.error("An error occurred");
     }
   };
+
   return (
     <div className="bg-white min-h-screen text-white pt-20">
       <div className="container mx-auto p-6">
-        <h1 className="text-4xl font-bold mb-8  text-black">Explore Videos</h1>
+        <h1 className="text-4xl font-bold mb-8 text-black">{folderName}</h1>
         <form onSubmit={handleSearch} className="mb-8">
           <div className="flex items-center relative">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search for videos..."
+              placeholder={folderName}
               className="w-full p-4 rounded-l-md bg-white text-black focus:outline-none"
             />
             <button
@@ -168,28 +167,7 @@ const Page = () => {
             >
               Search
             </button>
-            <button
-              className="bg-blue-600 hover:bg-blue-700 px-4 py-4 rounded-md ml-2 focus:outline-none"
-              onClick={toggleHashtagDropdown} // Toggle dropdown visibility
-            >
-              Hashtag
-            </button>
           </div>
-          {showHashtagDropdown && (
-            <div className="dropdown relative top-full left-0 mt-1 bg-white border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
-              <div className="grid md:grid-cols-5 sm:grid-cols-3">
-                {hashtagOptions.map((hashtag, index) => (
-                  <div
-                    key={index}
-                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleHashtagClick(hashtag)}
-                  >
-                    {hashtag}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </form>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {videos.map((video) => (
