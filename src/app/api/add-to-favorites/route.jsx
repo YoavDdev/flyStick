@@ -7,6 +7,7 @@ export async function POST(request) {
     const { userEmail: email, videoUri } = body;
 
     if (!email || !videoUri) {
+      console.log("Missing Fields");
       return new NextResponse("Missing Fields", { status: 400 });
     }
 
@@ -17,6 +18,7 @@ export async function POST(request) {
     });
 
     if (!user) {
+      console.log("User not found");
       return new NextResponse("User not found", { status: 404 });
     }
 
@@ -26,8 +28,8 @@ export async function POST(request) {
     );
 
     if (videoIndex !== -1) {
-      // Video URI already exists in favorites
-      return Response.json({ message: "Video already in favorites" });
+      console.log("Video already in favorites");
+      return NextResponse.json({ message: "Video already in favorites" });
     }
 
     const updatedUser = await prisma.user.update({
@@ -41,9 +43,11 @@ export async function POST(request) {
       },
     });
 
-    return Response.json({ message: "OK" });
+    console.log("Add to favorites");
+    return NextResponse.json({ message: "Add to favorites" });
   } catch (error) {
     console.error("Error adding video to favorites:", error);
+    console.log("Internal Server Error");
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

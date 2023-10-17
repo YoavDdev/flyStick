@@ -65,21 +65,11 @@ const Page = () => {
   };
 
   const hashtagOptions = [
-    "#תרגול",
-    "לב",
-    "flystick",
-    "רגלים",
-    "גב",
-    "useclient",
-    "webdevelopment",
-    "coding",
-    "frontend",
-    "reactjs",
-    "useclient",
-    "webdevelopment",
-    "coding",
-    "frontend",
-    "reactjs",
+    "#זרימה",
+    "#נשימות",
+    "#סנכרון",
+    "#עמודשדרה",
+    "#פלייסטיק",
   ];
   const handleHashtagClick = (hashtag: string) => {
     setSearchQuery((prevQuery) => {
@@ -129,7 +119,7 @@ const Page = () => {
         });
 
         if (response.status === 200) {
-          if (response.data.message === "OK") {
+          if (response.data.message === "Add to favorites") {
             toast.success("Added to favorites");
           } else if (response.data.message === "Video already in favorites") {
             toast.error("Video is already in favorites");
