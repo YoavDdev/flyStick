@@ -14,6 +14,10 @@ const Page = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showHashtagDropdown, setShowHashtagDropdown] = useState(false);
   const { data: session } = useSession();
+  const [showModal, setShowModal] = useState(false);
+  const [selectedVideoUri, setSelectedVideoUri] = useState<string>("");
+  const [showForm, setShowForm] = useState(false);
+  const [playlistName, setPlaylistName] = useState("");
 
   useEffect(() => {
     // Reset the videos and currentPage when a new search is performed
@@ -138,6 +142,33 @@ const Page = () => {
       toast.error("An error occurred");
     }
   };
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setShowForm(false);
+  };
+
+  const openForm = () => {
+    setShowForm(true);
+  };
+
+  const handlePlaylistNameChange = (event: any) => {
+    setPlaylistName(event.target.value);
+  };
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    // Handle form submission, e.g., save the playlist name
+    console.log("Playlist Name:", playlistName);
+    setPlaylistName("");
+    setShowForm(false);
+    closeModal();
+  };
+
   return (
     <div className="bg-white min-h-screen text-white pt-20">
       <div className="container mx-auto p-6">
@@ -235,7 +266,10 @@ const Page = () => {
                 </div>
                 <button
                   className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
-                  onClick={() => addToFavorites(video.uri)}
+                  onClick={() => {
+                    setSelectedVideoUri(video.uri); // Set the selected video URI
+                    openModal(); // Open the modal
+                  }}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -251,6 +285,60 @@ const Page = () => {
               </div>
             </div>
           ))}
+          {showModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-70">
+              <div className="absolute w-96 p-4 rounded-lg shadow-lg bg-white text-black">
+                <button
+                  className="absolute top-2 right-2 text-2xl text-red-600 hover:text-red-800 px-2"
+                  onClick={closeModal}
+                >
+                  X
+                </button>
+                <h2 className="text-2xl mb-4">Save video to ...</h2>
+                <ul>
+                  <li>
+                    <input
+                      type="checkbox"
+                      onChange={() => addToFavorites(selectedVideoUri)}
+                    />
+                    <label className="px-4">Favorites</label>
+                  </li>
+                </ul>
+                <div>
+                  {showForm ? null : (
+                    <button
+                      className="text-red-600 hover:text-red-800 pt-4"
+                      onClick={openForm}
+                    >
+                      Create new playlist
+                    </button>
+                  )}
+                </div>
+                {showForm && (
+                  <form onSubmit={handleSubmit} className="p-2">
+                    <label>
+                      Name:
+                      <input
+                        type="text"
+                        value={playlistName}
+                        onChange={handlePlaylistNameChange}
+                        className="w-full  rounded-md bg-white text-black focus:outline-none"
+                        placeholder="Enter Playlist name..."
+                      />
+                    </label>
+                    <div>
+                      <button
+                        className="text-red-600 hover:text-red-800 pt-4"
+                        type="submit"
+                      >
+                        Create
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            </div>
+          )}
         </div>
         <div className="mt-8">
           <button

@@ -127,7 +127,7 @@ const Page: FC<pageProps> = ({ params }) => {
         });
 
         if (response.status === 200) {
-          if (response.data.message === "OK") {
+          if (response.data.message === "Add to favorites") {
             toast.success("Added to favorites");
           } else if (response.data.message === "Video already in favorites") {
             toast.error("Video is already in favorites");
