@@ -18,6 +18,7 @@ const Page = () => {
   const [selectedVideoUri, setSelectedVideoUri] = useState<string>("");
   const [showForm, setShowForm] = useState(false);
   const [playlistName, setPlaylistName] = useState("");
+  const [folderNames, setFolderNames] = useState([]);
 
   useEffect(() => {
     // Reset the videos and currentPage when a new search is performed
@@ -25,6 +26,23 @@ const Page = () => {
     setCurrentPage(1);
     fetchVideos(currentPage);
   }, [descriptionQuery]); // Include descriptionQuery as a dependency
+
+  useEffect(() => {
+    async function fetchFolderNames() {
+      try {
+        const response = await axios.get("/api/get-folder-names");
+        if (response.status === 200) {
+          setFolderNames(response.data.folderNames);
+        } else {
+          console.error("Failed to fetch folder names");
+        }
+      } catch (error) {
+        console.error("Error fetching folder names:", error);
+      }
+    }
+
+    fetchFolderNames();
+  }, []);
 
   const accessToken = "a7acf4dcfec3abd4ebab0f8162956c65";
   const apiUrl = "https://api.vimeo.com/me/videos";
@@ -114,12 +132,13 @@ const Page = () => {
     setShowFullDescription(!showFullDescription);
   };
 
-  const addToFavorites = async (videoUri: string) => {
+  const addToFavorites = async (videoUri: string, folderName: string) => {
     try {
       if (session && session.user) {
         const response = await axios.post("/api/add-to-favorites", {
           userEmail: session.user.email,
           videoUri: videoUri,
+          folderName: folderName,
         });
 
         if (response.status === 200) {
@@ -127,6 +146,10 @@ const Page = () => {
             toast.success("Added to favorites");
           } else if (response.data.message === "Video already in favorites") {
             toast.error("Video is already in favorites");
+          } else if (
+            response.data.message === "videoUri already exists in the folder"
+          ) {
+            toast.error("videoUri already exists in the folder");
           } else {
             toast.error("An error occurred");
           }
@@ -299,10 +322,23 @@ const Page = () => {
                   <li>
                     <input
                       type="checkbox"
-                      onChange={() => addToFavorites(selectedVideoUri)}
+                      onChange={() => addToFavorites(selectedVideoUri, "ori")}
                     />
                     <label className="px-4">Favorites</label>
                   </li>
+                  <ul>
+                    {folderNames.map((folderName) => (
+                      <li key={folderName}>
+                        <input
+                          type="checkbox"
+                          onChange={() =>
+                            addToFavorites(selectedVideoUri, folderName)
+                          }
+                        />
+                        <label className="px-4">{folderName}</label>
+                      </li>
+                    ))}
+                  </ul>
                 </ul>
                 <div>
                   {showForm ? null : (

@@ -16,12 +16,21 @@ model User {
   email          String?   @unique
   emailVerified  DateTime?
   image          String?
-  favoriteVideos String[] // Add this field to store video URIs in an array
+  favorites      Folder[] // Add this field to store video URIs in an array
+  favoritesIds   String[]  @db.ObjectId
   hashedPassword String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
   accounts Account[]
+}
+
+model Folder {
+  id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  urls   String[]
+  user   User?    @relation(fields: [userId], references: [id])
+  userId String   @db.ObjectId
 }
 
 model Account {

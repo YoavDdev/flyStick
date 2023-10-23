@@ -21,6 +21,11 @@ const Page: FC<pageProps> = ({ params }) => {
   const [showHashtagDropdown, setShowHashtagDropdown] = useState(false);
   const { data: session } = useSession();
 
+  const [showModal, setShowModal] = useState(false);
+  const [selectedVideoUri, setSelectedVideoUri] = useState<string>("");
+  const [showForm, setShowForm] = useState(false);
+  const [playlistName, setPlaylistName] = useState("");
+
   useEffect(() => {
     // Fetch folder name based on folder ID (value)
     const fetchFolderName = async () => {
@@ -118,12 +123,13 @@ const Page: FC<pageProps> = ({ params }) => {
     setShowFullDescription(!showFullDescription);
   };
 
-  const addToFavorites = async (videoUri: string) => {
+  const addToFavorites = async (videoUri: string, folderName: string) => {
     try {
       if (session && session.user) {
         const response = await axios.post("/api/add-to-favorites", {
           userEmail: session.user.email,
           videoUri: videoUri,
+          folderName: folderName,
         });
 
         if (response.status === 200) {
@@ -131,6 +137,10 @@ const Page: FC<pageProps> = ({ params }) => {
             toast.success("Added to favorites");
           } else if (response.data.message === "Video already in favorites") {
             toast.error("Video is already in favorites");
+          } else if (
+            response.data.message === "videoUri already exists in the folder"
+          ) {
+            toast.error("videoUri already exists in the folder");
           } else {
             toast.error("An error occurred");
           }
@@ -145,6 +155,32 @@ const Page: FC<pageProps> = ({ params }) => {
       console.error("Error adding video to favorites:", error);
       toast.error("An error occurred");
     }
+  };
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setShowForm(false);
+  };
+
+  const openForm = () => {
+    setShowForm(true);
+  };
+
+  const handlePlaylistNameChange = (event: any) => {
+    setPlaylistName(event.target.value);
+  };
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    // Handle form submission, e.g., save the playlist name
+    console.log("Playlist Name:", playlistName);
+    setPlaylistName("");
+    setShowForm(false);
+    closeModal();
   };
 
   return (
@@ -223,7 +259,10 @@ const Page: FC<pageProps> = ({ params }) => {
                 </div>
                 <button
                   className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
-                  onClick={() => addToFavorites(video.uri)}
+                  onClick={() => {
+                    setSelectedVideoUri(video.uri); // Set the selected video URI
+                    openModal(); // Open the modal
+                  }}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -239,6 +278,62 @@ const Page: FC<pageProps> = ({ params }) => {
               </div>
             </div>
           ))}
+          {showModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-70">
+              <div className="absolute w-96 p-4 rounded-lg shadow-lg bg-white text-black">
+                <button
+                  className="absolute top-2 right-2 text-2xl text-red-600 hover:text-red-800 px-2"
+                  onClick={closeModal}
+                >
+                  X
+                </button>
+                <h2 className="text-2xl mb-4">Save video to ...</h2>
+                <ul>
+                  <li>
+                    <input
+                      type="checkbox"
+                      onChange={() =>
+                        addToFavorites(selectedVideoUri, "Favorites")
+                      }
+                    />
+                    <label className="px-4">Favorites</label>
+                  </li>
+                </ul>
+                <div>
+                  {showForm ? null : (
+                    <button
+                      className="text-red-600 hover:text-red-800 pt-4"
+                      onClick={openForm}
+                    >
+                      Create new playlist
+                    </button>
+                  )}
+                </div>
+                {showForm && (
+                  <form onSubmit={handleSubmit} className="p-2">
+                    <label>
+                      Name:
+                      <input
+                        type="text"
+                        value={playlistName}
+                        onChange={handlePlaylistNameChange}
+                        className="w-full  rounded-md bg-white text-black focus:outline-none"
+                        placeholder="Enter Playlist name..."
+                      />
+                    </label>
+                    <div>
+                      <button
+                        className="text-red-600 hover:text-red-800 pt-4"
+                        type="submit"
+                      >
+                        Create
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            </div>
+          )}
         </div>
         <div className="mt-8">
           <button
