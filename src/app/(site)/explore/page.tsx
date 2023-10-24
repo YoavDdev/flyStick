@@ -27,22 +27,23 @@ const Page = () => {
     fetchVideos(currentPage);
   }, [descriptionQuery]); // Include descriptionQuery as a dependency
 
-  useEffect(() => {
-    async function fetchFolderNames() {
-      try {
-        const response = await axios.get("/api/get-folder-names");
+  const theUserId = async () => {
+    try {
+      if (session && session.user) {
+        const response = await axios.post("/api/all-user-folder-names", {
+          userEmail: session.user.email,
+        });
+
         if (response.status === 200) {
           setFolderNames(response.data.folderNames);
-        } else {
-          console.error("Failed to fetch folder names");
         }
-      } catch (error) {
-        console.error("Error fetching folder names:", error);
+      } else {
+        console.error("Failed to fetch folder names. Status code:");
       }
+    } catch (error) {
+      console.error("Error fetching folder names:", error);
     }
-
-    fetchFolderNames();
-  }, []);
+  };
 
   const accessToken = "a7acf4dcfec3abd4ebab0f8162956c65";
   const apiUrl = "https://api.vimeo.com/me/videos";
@@ -72,7 +73,7 @@ const Page = () => {
         // Extract the video title from the API response
       }));
 
-      console.log("Response Data:", response.data);
+      //console.log("Response Data:", response.data);
       // Append the new videos to the existing list of videos
       setVideos((prevVideos) => [...prevVideos, ...newVideos]);
 
@@ -186,7 +187,8 @@ const Page = () => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
     // Handle form submission, e.g., save the playlist name
-    console.log("Playlist Name:", playlistName);
+    //console.log("Playlist Name:", playlistName);
+    addToFavorites(selectedVideoUri, playlistName);
     setPlaylistName("");
     setShowForm(false);
     closeModal();
@@ -292,6 +294,7 @@ const Page = () => {
                   onClick={() => {
                     setSelectedVideoUri(video.uri); // Set the selected video URI
                     openModal(); // Open the modal
+                    theUserId();
                   }}
                   style={{
                     display: "flex",
@@ -319,13 +322,6 @@ const Page = () => {
                 </button>
                 <h2 className="text-2xl mb-4">Save video to ...</h2>
                 <ul>
-                  <li>
-                    <input
-                      type="checkbox"
-                      onChange={() => addToFavorites(selectedVideoUri, "ori")}
-                    />
-                    <label className="px-4">Favorites</label>
-                  </li>
                   <ul>
                     {folderNames.map((folderName) => (
                       <li key={folderName}>

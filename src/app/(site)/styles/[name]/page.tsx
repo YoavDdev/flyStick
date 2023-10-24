@@ -25,6 +25,7 @@ const Page: FC<pageProps> = ({ params }) => {
   const [selectedVideoUri, setSelectedVideoUri] = useState<string>("");
   const [showForm, setShowForm] = useState(false);
   const [playlistName, setPlaylistName] = useState("");
+  const [folderNames, setFolderNames] = useState([]);
 
   useEffect(() => {
     // Fetch folder name based on folder ID (value)
@@ -60,6 +61,24 @@ const Page: FC<pageProps> = ({ params }) => {
     setCurrentPage(1);
     fetchVideos(currentPage);
   }, [descriptionQuery]); // Include descriptionQuery as a dependency
+
+  const theUserId = async () => {
+    try {
+      if (session && session.user) {
+        const response = await axios.post("/api/all-user-folder-names", {
+          userEmail: session.user.email,
+        });
+
+        if (response.status === 200) {
+          setFolderNames(response.data.folderNames);
+        }
+      } else {
+        console.error("Failed to fetch folder names. Status code:");
+      }
+    } catch (error) {
+      console.error("Error fetching folder names:", error);
+    }
+  };
 
   const accessToken = "a7acf4dcfec3abd4ebab0f8162956c65";
   const apiUrl = `https://api.vimeo.com/me/projects/${value}/videos`;
@@ -101,6 +120,34 @@ const Page: FC<pageProps> = ({ params }) => {
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  const hashtagOptions = [
+    "#זרימה",
+    "#נשימות",
+    "#סנכרון",
+    "#עמודשדרה",
+    "#פלייסטיק",
+  ];
+
+  const handleHashtagClick = (hashtag: string) => {
+    setSearchQuery((prevQuery) => {
+      // Check if the selected hashtag is already in the search query
+      if (prevQuery.includes(hashtag)) {
+        // If it's already in the query, remove it
+        return prevQuery
+          .replace(new RegExp(`\\s*${hashtag}\\s*`, "g"), " ")
+          .trim();
+      } else {
+        // If it's not in the query, add it
+        return prevQuery ? `${prevQuery} ${hashtag}` : hashtag;
+      }
+    });
+    // Close the dropdown after clicking
+  };
+
+  const toggleHashtagDropdown = () => {
+    setShowHashtagDropdown(!showHashtagDropdown);
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -178,6 +225,7 @@ const Page: FC<pageProps> = ({ params }) => {
     event.preventDefault();
     // Handle form submission, e.g., save the playlist name
     console.log("Playlist Name:", playlistName);
+    addToFavorites(selectedVideoUri, playlistName);
     setPlaylistName("");
     setShowForm(false);
     closeModal();
@@ -203,7 +251,28 @@ const Page: FC<pageProps> = ({ params }) => {
             >
               Search
             </button>
+            <button
+              className="bg-blue-600 hover:bg-blue-700 px-4 py-4 rounded-md ml-2 focus:outline-none"
+              onClick={toggleHashtagDropdown} // Toggle dropdown visibility
+            >
+              Hashtag
+            </button>
           </div>
+          {showHashtagDropdown && (
+            <div className="dropdown relative top-full left-0 mt-1 bg-white border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
+              <div className="grid md:grid-cols-5 sm:grid-cols-3">
+                {hashtagOptions.map((hashtag, index) => (
+                  <div
+                    key={index}
+                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleHashtagClick(hashtag)}
+                  >
+                    {hashtag}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </form>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {videos.map((video) => (
@@ -262,6 +331,7 @@ const Page: FC<pageProps> = ({ params }) => {
                   onClick={() => {
                     setSelectedVideoUri(video.uri); // Set the selected video URI
                     openModal(); // Open the modal
+                    theUserId();
                   }}
                   style={{
                     display: "flex",
@@ -289,15 +359,19 @@ const Page: FC<pageProps> = ({ params }) => {
                 </button>
                 <h2 className="text-2xl mb-4">Save video to ...</h2>
                 <ul>
-                  <li>
-                    <input
-                      type="checkbox"
-                      onChange={() =>
-                        addToFavorites(selectedVideoUri, "Favorites")
-                      }
-                    />
-                    <label className="px-4">Favorites</label>
-                  </li>
+                  <ul>
+                    {folderNames.map((folderName) => (
+                      <li key={folderName}>
+                        <input
+                          type="checkbox"
+                          onChange={() =>
+                            addToFavorites(selectedVideoUri, folderName)
+                          }
+                        />
+                        <label className="px-4">{folderName}</label>
+                      </li>
+                    ))}
+                  </ul>
                 </ul>
                 <div>
                   {showForm ? null : (

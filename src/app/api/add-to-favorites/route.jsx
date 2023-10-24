@@ -63,7 +63,7 @@ export async function POST(request) {
           },
         },
       });
-      console.log(newFolder);
+      //console.log(newFolder);
     }
 
     console.log("Add to favorites");
@@ -74,24 +74,3 @@ export async function POST(request) {
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
-
-// // Check if the video URI already exists in user's favoriteVideos
-// const videoIndex = user.favoriteVideos.findIndex(
-//   (favVideo) => favVideo === videoUri,
-// );
-
-// if (videoIndex !== -1) {
-//   console.log("Video already in favorites");
-//   return NextResponse.json({ message: "Video already in favorites" });
-// }
-
-// const updatedUser = await prisma.user.update({
-//   where: {
-//     email,
-//   },
-//   data: {
-//     favoriteVideos: {
-//       push: videoUri,
-//     },
-//   },
-// });

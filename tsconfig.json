@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/(site)/user/page.jsx",
+    "src/app/(site)/user/page.tsx",
     "src/app/api/add-to-favorites/route.js",
     "src/app/(site)/VideoItem/page.jsx"
   ],
