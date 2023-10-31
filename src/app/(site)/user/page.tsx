@@ -41,10 +41,10 @@ const Page = () => {
           </div>
         )}
 
-        <div className="mx-auto max-w-7xl px-6 lg:px-8 pb-10">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 p-10">
           <div className="mx-auto max-w-2xl lg:text-center">
-            <h2 className="text-base font-semibold leading-7 text-[#990011]">
-              All you favorites folder
+            <h2 className="text-2xl font-semibold leading-7 text-[#990011] ">
+              My library...
             </h2>
           </div>
         </div>
