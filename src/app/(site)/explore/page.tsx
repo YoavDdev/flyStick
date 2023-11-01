@@ -88,11 +88,44 @@ const Page = () => {
   };
 
   const hashtagOptions = [
-    "#זרימה",
-    "#נשימות",
-    "#סנכרון",
+    "#הריון",
+    "#לידה",
+    "#רצפתאגן",
+    "#בריאותהאשה",
+    "#לחצים",
     "#עמודשדרה",
-    "#פלייסטיק",
+    "#סנכרון",
+    "#זרימה",
+    "#ליבה",
+    "#רקמות",
+    "#פאשיה",
+    "#משטחים",
+    "#נשימה",
+    "#קול",
+    "#סקרבינג",
+    "#שיעורפתיחה",
+    "#שכמות",
+    "#חגורתכתפיים",
+    "#פלגגוףעליון",
+    "#שורשים",
+    "#שורשכףיד",
+    "#ניעורים",
+    "#ניעוריגוף",
+    "#צוואר",
+    "#Flystick",
+    "#אקסטנשיין",
+    "#גב",
+    "#רגליים",
+    "#ברכיים",
+    "#פלגגוףתחתון",
+    "#אגן",
+    "#גבתחתון",
+    "#בטן",
+    "#שלושתהפופיקים",
+    "#אלכסונים",
+    "#הליכה",
+    "#ריצה",
+    "#אביזרים",
   ];
   const handleHashtagClick = (hashtag: string) => {
     setSearchQuery((prevQuery) => {
@@ -205,29 +238,36 @@ const Page = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for videos..."
-              className="w-full p-4 rounded-l-md bg-white text-black focus:outline-none"
+              className="w-full p-3 rounded-l-xl bg-white text-black focus:outline-none border-slate-500 border-2 focus:ring-0 "
             />
             <button
               type="submit"
-              className="bg-red-600 hover:bg-red-700 px-6 py-4 rounded-r-md focus:outline-none"
+              className="bg-slate-500 hover:bg-slate-700 p-3
+               rounded-r-xl focus:outline-none border-slate-500 border-2 "
               onClick={handleSearch}
             >
-              Search
+              <span role="img" aria-label="Search icon" className="">
+                🔍
+              </span>
             </button>
             <button
-              className="bg-blue-600 hover:bg-blue-700 px-4 py-4 rounded-md ml-2 focus:outline-none"
-              onClick={toggleHashtagDropdown} // Toggle dropdown visibility
+              className="bg-slate-500 hover:bg-slate-700 w-12 h-12 rounded-full ml-2 focus:outline-none text-2xl"
+              onClick={toggleHashtagDropdown}
             >
-              Hashtag
+              #
             </button>
           </div>
           {showHashtagDropdown && (
-            <div className="dropdown relative top-full left-0 mt-1 bg-white border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
-              <div className="grid md:grid-cols-5 sm:grid-cols-3">
+            <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
+              <div className="grid sm:grid-cols-5 md:grid-cols-8">
                 {hashtagOptions.map((hashtag, index) => (
                   <div
                     key={index}
-                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                    className={`px-4 py-2 cursor-pointer rounded-md ${
+                      searchQuery.includes(hashtag)
+                        ? "bg-slate-700 text-white"
+                        : "bg-[#FCF6F5]"
+                    } hover:bg-slate-500`}
                     onClick={() => handleHashtagClick(hashtag)}
                   >
                     {hashtag}

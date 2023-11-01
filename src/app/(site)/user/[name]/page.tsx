@@ -155,20 +155,9 @@ const Page: FC<pageProps> = ({ params }) => {
                   className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
                   onClick={() => {
                     setSelectedVideoUri(video.uri); // Set the selected video URI
-                    // Open the modal
-                    // theUserId();
-                  }}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "50%",
-                    fontSize: "24px",
                   }}
                 >
-                  +
+                  Remove video
                 </button>
               </div>
             </div>

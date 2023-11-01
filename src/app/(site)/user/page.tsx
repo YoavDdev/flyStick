@@ -49,7 +49,10 @@ const Page = () => {
             </h2>
           </div>
         </div>
-        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+        <div
+          className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 
+        lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
+        >
           {folderNames.map((folderName) => (
             <Link href={`/user/${folderName}`} key={folderName}>
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-[#FCF6F5] xl:aspect-h-8 xl:aspect-w-7">
@@ -58,6 +61,12 @@ const Page = () => {
                     {folderName}
                   </h3>
                   <p className="text-sm text-gray-700">Click to explore</p>
+                  <Link
+                    href={"/user"}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
+                  >
+                    Delete
+                  </Link>
                 </div>
               </div>
             </Link>

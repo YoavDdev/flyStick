@@ -67,19 +67,15 @@ const Navbar = () => {
         <div className="hidden sm:flex">
           <ul className="hidden sm:flex">
             <Link href="/about">
-              <li className="ml-10 uppercase hover:text-[#990011]  text-xl">
-                About
-              </li>
+              <li className="ml-10  hover:text-[#990011]  text-xl">About</li>
             </Link>
             <Link href="/contact">
-              <li className="ml-10 uppercase hover:text-[#990011]  text-xl">
+              <li className="ml-10  hover:text-[#990011]  text-xl">
                 Contact Me
               </li>
             </Link>
             <Link href="/#Pricing ">
-              <li className="ml-10 uppercase hover:text-[#990011]  text-xl">
-                Pricing
-              </li>
+              <li className="ml-10  hover:text-[#990011]  text-xl">Pricing</li>
             </Link>
 
             <div className="ml-10 hover:text-[#990011] text-xl">
@@ -87,7 +83,7 @@ const Navbar = () => {
                 <>
                   <div className="relative inline-block group">
                     <button
-                      className="uppercase text-[#990011] hover:text-[#990011] group-hover:text-black focus:outline-none"
+                      className=" text-[#990011] hover:text-[#990011] group-hover:text-black focus:outline-none"
                       onClick={toggleDropdown}
                     >
                       {session.user.name}
@@ -103,17 +99,26 @@ const Navbar = () => {
                     {dropdownVisible && (
                       <div className="absolute mt-2 flex flex-col gap-2">
                         <Link href="/user">
-                          <li className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]">
+                          <li
+                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
+                            onClick={toggleDropdown}
+                          >
                             User
                           </li>
                         </Link>
                         <Link href="/styles">
-                          <li className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]">
+                          <li
+                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
+                            onClick={toggleDropdown}
+                          >
                             Styles
                           </li>
                         </Link>
                         <Link href="/explore">
-                          <li className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]">
+                          <li
+                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
+                            onClick={toggleDropdown}
+                          >
                             Explore
                           </li>
                         </Link>
@@ -143,62 +148,89 @@ const Navbar = () => {
         </div>
       </div>
       <div
-        className={
-          menuOpen
-            ? "fixed left-0 top-0 w-[65%] sm:hidden h-screen bg-[#ecf0f3] p-10 ease-in duration-500"
-            : "fixed left-[100%] top-0 p-10 "
-        }
+        className={`fixed top-0 h-screen ${
+          menuOpen ? "w-3/4" : "left-full"
+        } sm:hidden bg-[#ecf0f3] p-10 ease-in duration-500`}
       >
-        <div className="flex w-full items-center justify-end">
+        <div className="flex justify-end items-center">
           <div onClick={handleNav} className="cursor-pointer">
             <AiOutlineClose size={25} className="hover:text-[#990011]" />
           </div>
         </div>
-        <div className="flex-col py-4">
-          <ul>
-            <Link href="/Login">
-              <li
-                onClick={() => setMenuopen(false)}
-                className="py-4 cursor-pointer hover:text-[#990011]"
-              >
-                Login
+        <div className="flex-col pt-5">
+          <ul className="text-xl">
+            {session?.user ? (
+              <li className="">
+                <div className="relative inline-block group">
+                  <button
+                    className="  my-5 group-hover:text-black text-[#990011] focus:outline-none"
+                    onClick={toggleDropdown}
+                  >
+                    {session.user.name}
+                    <span
+                      className={`${
+                        dropdownVisible ? "rotate-180" : "rotate-0"
+                      } transition-transform inline-block ml-2`}
+                    >
+                      &#9660;
+                    </span>
+                  </button>
+                  {dropdownVisible && (
+                    <div className="flex flex-col gap-3 mx-5 mb-4 ">
+                      <Link href="/user" onClick={() => setMenuopen(false)}>
+                        <li className="  hover:text-[#990011] text-left focus:outline-none rounded-lg  ">
+                          User
+                        </li>
+                      </Link>
+                      <Link href="/styles" onClick={() => setMenuopen(false)}>
+                        <li className="  hover:text-[#990011] text-left focus:outline-none rounded-lg ">
+                          Styles
+                        </li>
+                      </Link>
+                      <Link href="/explore" onClick={() => setMenuopen(false)}>
+                        <li className="  hover:text-[#990011] text-left focus:outline-none rounded-lg  ">
+                          Explore
+                        </li>
+                      </Link>
+                      <button
+                        className=" text-[#990011] text-left focus:outline-none rounded-lg  "
+                        onClick={() => {
+                          signOut();
+                          toggleDropdown();
+                        }}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
               </li>
-            </Link>
-            <Link href="/">
+            ) : (
               <li
+                className=" hover:text-[#990011] py-4"
                 onClick={() => setMenuopen(false)}
-                className="py-4 cursor-pointer hover:text-[#990011]"
               >
-                Home
+                <Link href="/login">Log In</Link>
               </li>
-            </Link>
-            <Link href="/About">
-              <li
-                onClick={() => setMenuopen(false)}
-                className="py-4 cursor-pointer hover:text-[#990011]"
-              >
+            )}
+            <li className="py-4 cursor-pointer hover:text-[#990011]">
+              <Link href="/about" onClick={() => setMenuopen(false)}>
                 About
-              </li>
-            </Link>
-            <Link href="/ContactMe">
-              <li
-                onClick={() => setMenuopen(false)}
-                className="py-4 cursor-pointer hover:text-[#990011]"
-              >
+              </Link>
+            </li>
+            <li className="py-4 cursor-pointer hover:text-[#990011]">
+              <Link href="/contact" onClick={() => setMenuopen(false)}>
                 Contact Me
-              </li>
-            </Link>
-            <Link href="/Pricing">
-              <li
-                onClick={() => setMenuopen(false)}
-                className="py-4 cursor-pointer hover:text-[#990011]"
-              >
+              </Link>
+            </li>
+            <li className="py-4 cursor-pointer hover:text-[#990011]">
+              <Link href="/#Pricing" onClick={() => setMenuopen(false)}>
                 Pricing
-              </li>
-            </Link>
+              </Link>
+            </li>
           </ul>
         </div>
-        <div className="flex flex-row justify-around pt-10 items-center">
+        <div className="flex justify-around items-center pt-10">
           <AiOutlineFacebook
             size={30}
             className="cursor-pointer hover:text-[#990011]"
