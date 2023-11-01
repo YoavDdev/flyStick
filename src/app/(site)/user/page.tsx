@@ -19,7 +19,8 @@ const Page = () => {
         .then((response) => {
           if (response.status === 200) {
             setFolderNames(response.data.folderNames);
-            console.log(response.data);
+
+            // console.log(response.data);
           }
         })
         .catch((error) => {

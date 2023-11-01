@@ -1,63 +1,54 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useSession, signOut } from "next-auth/react";
 import { toast } from "react-hot-toast";
 
-const Page = () => {
+interface pageProps {
+  params: { name: string };
+}
+
+const Page: FC<pageProps> = ({ params }) => {
+  const value = params.name; // Extract the value
+  const decodedString = decodeURIComponent(value);
+
   const [videos, setVideos] = useState<any[]>([]);
-
   const [descriptionQuery, setDescriptionQuery] = useState<string>("");
-  const [selectedVideo, setSelectedVideo] = useState<string | null>(null); // Track the selected video URI
-  const [selectedVideoData, setSelectedVideoData] = useState<any | null>(null); // Track the selected video data
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [showHashtagDropdown, setShowHashtagDropdown] = useState(false);
-  const { data: session } = useSession();
-  const [showModal, setShowModal] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [selectedVideoData, setSelectedVideoData] = useState<any | null>(null);
   const [selectedVideoUri, setSelectedVideoUri] = useState<string>("");
-  const [showForm, setShowForm] = useState(false);
-  const [playlistName, setPlaylistName] = useState("");
-  const [folderNames, setFolderNames] = useState([]);
-
-  const videoIds = ["874531983", "822936523", "822654166"];
+  const [folderUrls, setFolderUrls] = useState([]);
+  const { data: session } = useSession();
 
   useEffect(() => {
-    setVideos([]);
+    if (session && session.user) {
+      const folderName = decodedString;
 
-    videoIds.forEach((videoId) => {
-      fetchVideo(videoId);
-    });
-  }, [descriptionQuery]);
-
-  const theUserId = async () => {
-    try {
-      if (session && session.user) {
-        const response = await axios.post("/api/all-user-folder-names", {
+      axios
+        .post("/api/urls-video", {
           userEmail: session.user.email,
+          folderName,
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setFolderUrls(response.data.folderUrls);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching folder URLs:", error);
         });
-
-        if (response.status === 200) {
-          setFolderNames(response.data.folderNames);
-        }
-      } else {
-        console.error("Failed to fetch folder names. Status code:");
-      }
-    } catch (error) {
-      console.error("Error fetching folder names:", error);
     }
-  };
+  }, []);
 
   const accessToken = "a7acf4dcfec3abd4ebab0f8162956c65";
-  const videoId = [""];
-  const apiUrl = `https://api.vimeo.com/videos/${videoId}`;
   const headers = {
     Authorization: `Bearer ${accessToken}`,
   };
 
   const fetchVideo = async (videoId: string) => {
     try {
-      const apiUrl = `https://api.vimeo.com/videos/${videoId}`;
+      const apiUrl = `https://api.vimeo.com/${videoId}`;
       const response: AxiosResponse = await axios.get(apiUrl, {
         headers,
         params: {
@@ -82,6 +73,17 @@ const Page = () => {
     }
   };
 
+  const videoIds = ["/videos/874526658", "/videos/874531983"];
+  console.log(folderUrls);
+
+  useEffect(() => {
+    setVideos([]);
+
+    videoIds.forEach((videoId: any) => {
+      fetchVideo(videoId);
+    });
+  }, [descriptionQuery]);
+
   const [showFullDescription, setShowFullDescription] =
     useState<boolean>(false);
 
@@ -89,71 +91,10 @@ const Page = () => {
     setShowFullDescription(!showFullDescription);
   };
 
-  const addToFavorites = async (videoUri: string, folderName: string) => {
-    try {
-      if (session && session.user) {
-        const response = await axios.post("/api/add-to-favorites", {
-          userEmail: session.user.email,
-          videoUri: videoUri,
-          folderName: folderName,
-        });
-
-        if (response.status === 200) {
-          if (response.data.message === "Add to favorites") {
-            toast.success("Added to favorites");
-          } else if (response.data.message === "Video already in favorites") {
-            toast.error("Video is already in favorites");
-          } else if (
-            response.data.message === "videoUri already exists in the folder"
-          ) {
-            toast.error("videoUri already exists in the folder");
-          } else {
-            toast.error("An error occurred");
-          }
-        } else {
-          toast.error("An error occurred");
-        }
-      } else {
-        console.error("User session is not available.");
-        toast.error("Please logIn");
-      }
-    } catch (error) {
-      console.error("Error adding video to favorites:", error);
-      toast.error("An error occurred");
-    }
-  };
-
-  const openModal = () => {
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    setShowForm(false);
-  };
-
-  const openForm = () => {
-    setShowForm(true);
-  };
-
-  const handlePlaylistNameChange = (event: any) => {
-    setPlaylistName(event.target.value);
-  };
-
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    // Handle form submission, e.g., save the playlist name
-    //console.log("Playlist Name:", playlistName);
-    addToFavorites(selectedVideoUri, playlistName);
-    setPlaylistName("");
-    setShowForm(false);
-    closeModal();
-  };
-
   return (
     <div className="bg-white min-h-screen text-white pt-20">
       <div className="container mx-auto p-6">
-        <h1 className="text-4xl font-bold mb-8  text-black">Explore Videos</h1>
+        <h1 className="text-4xl font-bold mb-8  text-black">{decodedString}</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {videos.map((video) => (
@@ -211,8 +152,8 @@ const Page = () => {
                   className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
                   onClick={() => {
                     setSelectedVideoUri(video.uri); // Set the selected video URI
-                    openModal(); // Open the modal
-                    theUserId();
+                    // Open the modal
+                    // theUserId();
                   }}
                   style={{
                     display: "flex",
@@ -229,66 +170,6 @@ const Page = () => {
               </div>
             </div>
           ))}
-          {showModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-70">
-              <div className="absolute w-96 p-4 rounded-lg shadow-lg bg-white text-black">
-                <button
-                  className="absolute top-2 right-2 text-2xl text-red-600 hover:text-red-800 px-2"
-                  onClick={closeModal}
-                >
-                  X
-                </button>
-                <h2 className="text-2xl mb-4">Save video to ...</h2>
-                <ul>
-                  <ul>
-                    {folderNames.map((folderName) => (
-                      <li key={folderName}>
-                        <input
-                          type="checkbox"
-                          onChange={() =>
-                            addToFavorites(selectedVideoUri, folderName)
-                          }
-                        />
-                        <label className="px-4">{folderName}</label>
-                      </li>
-                    ))}
-                  </ul>
-                </ul>
-                <div>
-                  {showForm ? null : (
-                    <button
-                      className="text-red-600 hover:text-red-800 pt-4"
-                      onClick={openForm}
-                    >
-                      Create new playlist
-                    </button>
-                  )}
-                </div>
-                {showForm && (
-                  <form onSubmit={handleSubmit} className="p-2">
-                    <label>
-                      Name:
-                      <input
-                        type="text"
-                        value={playlistName}
-                        onChange={handlePlaylistNameChange}
-                        className="w-full  rounded-md bg-white text-black focus:outline-none"
-                        placeholder="Enter Playlist name..."
-                      />
-                    </label>
-                    <div>
-                      <button
-                        className="text-red-600 hover:text-red-800 pt-4"
-                        type="submit"
-                      >
-                        Create
-                      </button>
-                    </div>
-                  </form>
-                )}
-              </div>
-            </div>
-          )}
         </div>
       </div>
       {selectedVideo && (
