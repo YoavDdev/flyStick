@@ -30,11 +30,13 @@ export async function POST(request) {
       },
     });
     const folderNames = folders.map((folder) => folder.name);
+    const folderId = folders.map((folder) => folder.id);
 
+    //console.log(folderId);
     // console.log(folders);
     // console.log(folderNames);
 
-    return NextResponse.json({ folderNames });
+    return NextResponse.json({ folderNames, folderId });
   } catch (error) {
     console.error("Error logging userId:", error);
     console.log("Internal Server Error");

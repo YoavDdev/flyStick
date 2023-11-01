@@ -14,11 +14,10 @@ const Page: FC<pageProps> = ({ params }) => {
   const decodedString = decodeURIComponent(value);
 
   const [videos, setVideos] = useState<any[]>([]);
-  const [descriptionQuery, setDescriptionQuery] = useState<string>("");
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [selectedVideoData, setSelectedVideoData] = useState<any | null>(null);
   const [selectedVideoUri, setSelectedVideoUri] = useState<string>("");
-  const [folderUrls, setFolderUrls] = useState([]);
+  const [folderUrls, setFolderUrls] = useState<string[]>([]); // Assuming folderUrls is an array of strings
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -32,7 +31,10 @@ const Page: FC<pageProps> = ({ params }) => {
         })
         .then((response) => {
           if (response.status === 200) {
-            setFolderUrls(response.data.folderUrls);
+            setFolderUrls(response.data.newFolderUrls);
+
+            // Fetch videos using folderUrls
+            fetchVideos(response.data.newFolderUrls);
           }
         })
         .catch((error) => {
@@ -46,43 +48,44 @@ const Page: FC<pageProps> = ({ params }) => {
     Authorization: `Bearer ${accessToken}`,
   };
 
-  const fetchVideo = async (videoId: string) => {
+  interface Video {
+    uri: string;
+    embedHtml: string;
+    name: string;
+    description: string;
+    thumbnailUri: string;
+  }
+
+  const fetchVideos = async (videoIds: string[]) => {
     try {
-      const apiUrl = `https://api.vimeo.com/${videoId}`;
-      const response: AxiosResponse = await axios.get(apiUrl, {
-        headers,
-        params: {
-          fields: "uri,embed.html,name,description,pictures",
-        },
-      });
+      const fetchedVideos: Video[] = [];
 
-      const videoData = response.data;
+      for (const videoId of videoIds) {
+        const apiUrl = `https://api.vimeo.com${videoId}`;
+        const response: AxiosResponse = await axios.get(apiUrl, {
+          headers,
+          params: {
+            fields: "uri,embed.html,name,description,pictures",
+          },
+        });
 
-      const video = {
-        uri: videoData.uri,
-        embedHtml: videoData.embed.html,
-        name: videoData.name,
-        description: videoData.description,
-        thumbnailUri: videoData.pictures.sizes[5].link,
-      };
+        const videoData = response.data;
+        const video: Video = {
+          uri: videoData.uri,
+          embedHtml: videoData.embed.html,
+          name: videoData.name,
+          description: videoData.description,
+          thumbnailUri: videoData.pictures.sizes[5].link,
+        };
 
-      // Add the retrieved video to the 'videos' array
-      setVideos((prevVideos) => [...prevVideos, video]);
+        fetchedVideos.push(video);
+      }
+
+      setVideos(fetchedVideos);
     } catch (error) {
-      console.error("Error fetching video:", error);
+      console.error("Error fetching videos:", error);
     }
   };
-
-  const videoIds = ["/videos/874526658", "/videos/874531983"];
-  console.log(folderUrls);
-
-  useEffect(() => {
-    setVideos([]);
-
-    videoIds.forEach((videoId: any) => {
-      fetchVideo(videoId);
-    });
-  }, [descriptionQuery]);
 
   const [showFullDescription, setShowFullDescription] =
     useState<boolean>(false);

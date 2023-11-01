@@ -40,7 +40,7 @@ export async function POST(request) {
 
     const array = folderUrls;
     const newFolderUrls = array[0];
-    console.log(newFolderUrls); // [ '/videos/874531983', '/videos/831159208' ]
+    // console.log(newFolderUrls); // [ '/videos/874531983', '/videos/831159208' ]
 
     return NextResponse.json({ newFolderUrls });
   } catch (error) {
