@@ -14,31 +14,31 @@ const About = () => {
                   Greetings!
                 </h2>
                 <p className="text-lg text-gray-700 mb-8">
-                  I'm Boaz Nahaisi, and I invite you to explore my profound
+                  I&apos;m Boaz Nahaisi, and I invite you to explore my profound
                   journey through the world of movement. Let me take you behind
                   the scenes of my story:
                 </p>
                 <p className="text-lg text-gray-700">
-                  I am the heart behind the 'Boaz Nahaisi School,' a place of
-                  innovation and transformation. My passion led to the birth of
-                  the Flystick method—a revolutionary technique that has made
-                  waves not only across Israel but worldwide.
+                  I am the heart behind the &apos;Boaz Nahaisi School,&apos; a
+                  place of innovation and transformation. My passion led to the
+                  birth of the Flystick method—a revolutionary technique that
+                  has made waves not only across Israel but worldwide.
                 </p>
                 <p className="text-lg text-gray-700">
                   Diving deep into Pilates/Controlology and Playistic training,
-                  I've honed expertise that extends beyond conventional
+                  I&apos;ve honed expertise that extends beyond conventional
                   boundaries. Beyond the studio, I share my knowledge in gyms,
                   workshops, and training sessions across the globe.
                 </p>
                 <p className="text-lg text-gray-700">
                   I believe movement wields immense power, fostering bodily
-                  balance, function, self-discovery, and resilience in life's
-                  challenges. Just as water flows, movement courses through us.
-                  We are water - we are movement.
+                  balance, function, self-discovery, and resilience in
+                  life&apos;s challenges. Just as water flows, movement courses
+                  through us. We are water - we are movement.
                 </p>
                 <p className="text-lg text-gray-700">
-                  Join me, and together, let's nurture your body and soul along
-                  this transformative path.
+                  Join me, and together, let&apos;s nurture your body and soul
+                  along this transformative path.
                 </p>
                 <p className="mb-0 text-lg md:text-xl pt-10 ">Boaz Nahaisi.</p>
               </div>
