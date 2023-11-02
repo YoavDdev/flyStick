@@ -39,7 +39,7 @@ const Feature = () => {
           <p className="mt-6 text-lg leading-8 text-gray-600">
             Streamlined Learning for All Levels: Dive deep into movement
             intricacies, unearth the connection between outer and inner self,
-            and empower your teaching as an instructor with our studio's
+            and empower your teaching as an instructor with our studio&apos;s
             resources.
           </p>
         </div>

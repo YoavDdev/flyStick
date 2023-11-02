@@ -20,7 +20,7 @@ const Hero = () => {
           <div className="relative px-6 py-32 sm:py-40 lg:px-8 lg:py-56 lg:pr-0">
             <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl">
               <h1 className="text-4xl font-bold tracking-tight text-[#990011] sm:text-6xl  mb-4 text-center">
-                Boaz Nahaisi's Online Studio
+                Boaz Nahaisi&apos;s Online Studio
               </h1>
               <p className="mt-6 text-gray-600 sm:text-xl">
                 Dive into a Vast Collection of Lessons and Exercises, Expertly
