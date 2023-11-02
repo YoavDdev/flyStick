@@ -46,6 +46,7 @@ const Page = () => {
         .then((response) => {
           if (response.status === 200) {
             toast.success("Folder deleted");
+
             // Folder deleted successfully, you can update the UI accordingly
           }
         })
@@ -71,33 +72,32 @@ const Page = () => {
 
         <div className="mx-auto max-w-7xl px-6 lg:px-8 p-10">
           <div className="mx-auto max-w-2xl lg:text-center">
-            <h2 className="text-2xl font-semibold leading-7 text-[#990011] ">
+            <h2 className="text-2xl font-semibold leading-7 text-[#990011]">
               My library...
             </h2>
           </div>
         </div>
-        <div
-          className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 
-        lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
-        >
+        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           {folderNames.map((folderName) => (
-            <Link href={`/user/${folderName}`} key={folderName}>
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-[#FCF6F5] xl:aspect-h-8 xl:aspect-w-7">
-                <div className="h-full w-full flex flex-col justify-center items-center text-center">
-                  <h3 className="text-2xl font-semibold text-[#990011] mb-2">
-                    {folderName}
-                  </h3>
-                  <p className="text-sm text-gray-700">Click to explore</p>
-                  <Link
-                    href={"/"}
-                    onClick={() => handleDeleteFolder(folderName)}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
-                  >
-                    Delete
-                  </Link>
+            <div key={folderName}>
+              <Link href={`/user/${folderName}`}>
+                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-[#FCF6F5] xl:aspect-h-8 xl:aspect-w-7">
+                  <div className="h-full w-full flex flex-col justify-center items-center text-center">
+                    <h3 className="text-2xl font-semibold text-[#990011] mb-2">
+                      {folderName}
+                    </h3>
+                    <p className="text-sm text-gray-700">Click to explore</p>
+                    <Link
+                      href={"/"}
+                      onClick={() => handleDeleteFolder(folderName)}
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
+                    >
+                      Delete
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </div>
           ))}
         </div>
       </div>

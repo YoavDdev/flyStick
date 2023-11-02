@@ -52,12 +52,12 @@ const Navbar = () => {
         !isTransparent ? " bg-[#FCF6F5] bg-opacity-75 " : "bg-[#FCF6F5] "
       }`}
     >
-      <div className="flex justify-between items-center h-full w-full px-4 lg:px-16  ">
+      <div className="flex justify-between items-center h-full w-full px-4 lg:px-16">
         <Link href="/">
           <Image
             src={Logo}
             width={25}
-            height={1}
+            // Set the height to "auto" to maintain aspect ratio
             alt="Logo"
             className="cursor-pointer ml-11"
             priority
@@ -66,17 +66,30 @@ const Navbar = () => {
 
         <div className="hidden sm:flex">
           <ul className="hidden sm:flex">
-            <Link href="/about">
-              <li className="ml-10  hover:text-[#990011]  text-xl">About</li>
-            </Link>
-            <Link href="/contact">
-              <li className="ml-10  hover:text-[#990011]  text-xl">
+            <li>
+              <Link
+                href="/about"
+                className="ml-10 hover:text-[#990011] text-xl"
+              >
+                About
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/contact"
+                className="ml-10 hover:text-[#990011] text-xl"
+              >
                 Contact Me
-              </li>
-            </Link>
-            <Link href="/#Pricing ">
-              <li className="ml-10  hover:text-[#990011]  text-xl">Pricing</li>
-            </Link>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/#Pricing"
+                className="ml-10 hover-text-[#990011] text-xl"
+              >
+                Pricing
+              </Link>
+            </li>
 
             <div className="ml-10 hover:text-[#990011] text-xl">
               {session?.user ? (
@@ -103,7 +116,7 @@ const Navbar = () => {
                             className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
                             onClick={toggleDropdown}
                           >
-                            User
+                            Library
                           </li>
                         </Link>
                         <Link href="/styles">
@@ -122,7 +135,8 @@ const Navbar = () => {
                             Explore
                           </li>
                         </Link>
-                        <button
+                        <Link
+                          href={"/"}
                           className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white  text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] "
                           onClick={() => {
                             signOut();
@@ -130,13 +144,13 @@ const Navbar = () => {
                           }}
                         >
                           Logout
-                        </button>
+                        </Link>
                       </div>
                     )}
                   </div>
                 </>
               ) : (
-                <Link href="/login" className="uppercase">
+                <Link href="/login" className="">
                   Log In
                 </Link>
               )}
@@ -160,10 +174,10 @@ const Navbar = () => {
         <div className="flex-col pt-5">
           <ul className="text-xl">
             {session?.user ? (
-              <li className="">
+              <>
                 <div className="relative inline-block group">
                   <button
-                    className="  my-5 group-hover:text-black text-[#990011] focus:outline-none"
+                    className="text-[#990011] hover:text-[#990011] group-hover:text-black focus:outline-none"
                     onClick={toggleDropdown}
                   >
                     {session.user.name}
@@ -175,43 +189,60 @@ const Navbar = () => {
                       &#9660;
                     </span>
                   </button>
+
                   {dropdownVisible && (
-                    <div className="flex flex-col gap-3 mx-5 mb-4 ">
-                      <Link href="/user" onClick={() => setMenuopen(false)}>
-                        <li className="  hover:text-[#990011] text-left focus:outline-none rounded-lg  ">
-                          User
-                        </li>
-                      </Link>
-                      <Link href="/styles" onClick={() => setMenuopen(false)}>
-                        <li className="  hover:text-[#990011] text-left focus:outline-none rounded-lg ">
-                          Styles
-                        </li>
-                      </Link>
-                      <Link href="/explore" onClick={() => setMenuopen(false)}>
-                        <li className="  hover:text-[#990011] text-left focus:outline-none rounded-lg  ">
-                          Explore
-                        </li>
-                      </Link>
-                      <button
-                        className=" text-[#990011] text-left focus:outline-none rounded-lg  "
-                        onClick={() => {
-                          signOut();
-                          toggleDropdown();
-                        }}
-                      >
-                        Logout
-                      </button>
-                    </div>
+                    <ul className="absolute mt-2 flex flex-col gap-2">
+                      <li>
+                        <Link href="/user">
+                          <span
+                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
+                            onClick={toggleDropdown}
+                          >
+                            Library
+                          </span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/styles">
+                          <span
+                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover-text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
+                            onClick={toggleDropdown}
+                          >
+                            Styles
+                          </span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/explore">
+                          <span
+                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover-text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
+                            onClick={toggleDropdown}
+                          >
+                            Explore
+                          </span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/">
+                          <span
+                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover-text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
+                            onClick={() => {
+                              signOut();
+                              toggleDropdown();
+                            }}
+                          >
+                            Logout
+                          </span>
+                        </Link>
+                      </li>
+                    </ul>
                   )}
                 </div>
-              </li>
+              </>
             ) : (
-              <li
-                className=" hover:text-[#990011] py-4"
-                onClick={() => setMenuopen(false)}
-              >
-                <Link href="/login">Log In</Link>
-              </li>
+              <Link href="/login" className="">
+                Log In
+              </Link>
             )}
             <li className="py-4 cursor-pointer hover:text-[#990011]">
               <Link href="/about" onClick={() => setMenuopen(false)}>

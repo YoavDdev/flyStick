@@ -50,6 +50,7 @@ const Page = () => {
   const headers = {
     Authorization: `Bearer ${accessToken}`,
   };
+  //console.log("VIMEO_ACCESS_TOKEN:", process.env.VIMEO_TOKEN);
 
   const fetchVideos = async (page: number) => {
     try {
@@ -221,10 +222,14 @@ const Page = () => {
     event.preventDefault();
     // Handle form submission, e.g., save the playlist name
     //console.log("Playlist Name:", playlistName);
-    addToFavorites(selectedVideoUri, playlistName);
-    setPlaylistName("");
-    setShowForm(false);
-    closeModal();
+    if (playlistName.trim() === "") {
+      alert("Please enter a valid playlist name");
+    } else {
+      addToFavorites(selectedVideoUri, playlistName);
+      setPlaylistName("");
+      setShowForm(false);
+      closeModal();
+    }
   };
 
   return (

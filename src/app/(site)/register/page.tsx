@@ -17,7 +17,8 @@ const Register = () => {
 
   useEffect(() => {
     if (session?.status === "authenticated") {
-      router.push("https://www.paypal.com/il/business");
+      // router.push("https://www.paypal.com/il/business");
+      router.push("/#Pricing ");
     }
   });
 
@@ -29,7 +30,8 @@ const Register = () => {
       .then(() => {
         toast.success("User is registered");
         // Redirect the user to the home page after successful registration
-        router.push("https://www.paypal.com/il/business");
+        // router.push("https://www.paypal.com/il/business");
+        router.push("/#Pricing ");
       })
       .catch(() => toast.error("Somthing went wrong"));
   };

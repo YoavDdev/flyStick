@@ -257,11 +257,15 @@ const Page: FC<pageProps> = ({ params }) => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
     // Handle form submission, e.g., save the playlist name
-    console.log("Playlist Name:", playlistName);
-    addToFavorites(selectedVideoUri, playlistName);
-    setPlaylistName("");
-    setShowForm(false);
-    closeModal();
+    //console.log("Playlist Name:", playlistName);
+    if (playlistName.trim() === "") {
+      alert("Please enter a valid playlist name");
+    } else {
+      addToFavorites(selectedVideoUri, playlistName);
+      setPlaylistName("");
+      setShowForm(false);
+      closeModal();
+    }
   };
 
   return (
