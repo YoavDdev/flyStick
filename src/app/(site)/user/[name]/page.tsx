@@ -3,6 +3,7 @@
 import { FC, useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useSession, signOut } from "next-auth/react";
+import Link from "next/link";
 import { toast } from "react-hot-toast";
 
 interface pageProps {
@@ -94,6 +95,34 @@ const Page: FC<pageProps> = ({ params }) => {
     setShowFullDescription(!showFullDescription);
   };
 
+  const removeVideo = async (videoUri: any) => {
+    try {
+      const folderName = decodedString; // Get the folder name
+      const userEmail = session?.user?.email;
+
+      const response = await axios.delete("/api/delete-a-video", {
+        data: {
+          userEmail,
+          folderName,
+          videoUrl: videoUri, // Assuming videoUri is the URL of the video to remove
+        },
+      });
+
+      if (response.status === 200) {
+        // Video removed successfully, you can update the UI accordingly
+        toast.success("Folder deleted");
+        // Refresh the list of videos or perform any other necessary UI updates
+        // For example, you can filter the videos array to remove the deleted video
+        setVideos((prevVideos) =>
+          prevVideos.filter((video) => video.uri !== videoUri),
+        );
+      }
+    } catch (error) {
+      console.error("Error removing video:", error);
+      // Handle error, show a notification, or take appropriate action
+    }
+  };
+
   return (
     <div className="bg-white min-h-screen text-white pt-20">
       <div className="container mx-auto p-6">
@@ -151,14 +180,13 @@ const Page: FC<pageProps> = ({ params }) => {
                     Play
                   </button>
                 </div>
-                <button
+                <Link
+                  href={`/user/${value}`}
+                  onClick={() => removeVideo(video.uri)}
                   className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
-                  onClick={() => {
-                    setSelectedVideoUri(video.uri); // Set the selected video URI
-                  }}
                 >
                   Remove video
-                </button>
+                </Link>
               </div>
             </div>
           ))}

@@ -31,7 +31,7 @@ export async function POST(request) {
     });
 
     if (existingFolder) {
-      console.log("Folder already exists");
+      // console.log("Folder already exists");
 
       // Check if the videoUri already exists in the urls array
       if (!existingFolder.urls.includes(videoUri)) {
@@ -66,7 +66,7 @@ export async function POST(request) {
       //console.log(newFolder);
     }
 
-    console.log("Add to favorites");
+    // console.log("Add to favorites");
     return NextResponse.json({ message: "Add to favorites" });
   } catch (error) {
     console.error("Error adding video to favorites:", error);

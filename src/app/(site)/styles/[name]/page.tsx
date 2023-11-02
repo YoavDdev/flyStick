@@ -269,7 +269,7 @@ const Page: FC<pageProps> = ({ params }) => {
       <div className="container mx-auto p-6">
         <h1 className="text-4xl font-bold mb-8 text-black">{folderName}</h1>
         <form onSubmit={handleSearch} className="mb-8">
-          <div className="flex items-center relative">
+          <div className="flex items-center justify-center relative">
             <input
               type="text"
               value={searchQuery}
@@ -296,7 +296,7 @@ const Page: FC<pageProps> = ({ params }) => {
           </div>
           {showHashtagDropdown && (
             <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
-              <div className="grid sm:grid-cols-5 md:grid-cols-8">
+              <div className="grid sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-10">
                 {hashtagOptions.map((hashtag, index) => (
                   <div
                     key={index}

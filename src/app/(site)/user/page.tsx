@@ -4,6 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { toast } from "react-hot-toast";
 
 const Page = () => {
   const { data: session } = useSession();
@@ -28,6 +29,32 @@ const Page = () => {
         });
     }
   }, [session]); // Run this effect whenever the 'session' variable changes
+
+  const handleDeleteFolder = (folderName: any) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete ${folderName}?`,
+    );
+
+    if (confirmDelete) {
+      axios
+        .delete("/api/delete-a-folder", {
+          data: {
+            userEmail: session?.user?.email,
+            folderName,
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            toast.success("Folder deleted");
+            // Folder deleted successfully, you can update the UI accordingly
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting folder:", error);
+          toast.success("Error to delete the folder");
+        });
+    }
+  };
 
   return (
     <div className="bg-white py-10">
@@ -62,7 +89,8 @@ const Page = () => {
                   </h3>
                   <p className="text-sm text-gray-700">Click to explore</p>
                   <Link
-                    href={"/user"}
+                    href={"/"}
+                    onClick={() => handleDeleteFolder(folderName)}
                     className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
                   >
                     Delete

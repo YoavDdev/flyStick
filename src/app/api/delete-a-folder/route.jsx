@@ -3,16 +3,29 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(request) {
   try {
-    const { folderId } = request.params; // Assuming the folderId is passed as a parameter in the URL
+    const body = await request.json();
+    const { userEmail: email, folderName } = body;
 
-    if (!folderId) {
-      console.log("Missing Folder ID");
-      return new NextResponse("Missing Folder ID", { status: 400 });
+    if (!email || !folderName) {
+      console.log("Missing Email or Folder Name");
+      return new NextResponse("Missing Email or Folder Name", { status: 400 });
     }
 
-    const folder = await prisma.folder.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
-        id: folderId,
+        email,
+      },
+    });
+
+    if (!user) {
+      console.log("User not found");
+      return new NextResponse("User not found", { status: 404 });
+    }
+
+    const folder = await prisma.folder.findFirst({
+      where: {
+        userId: user.id,
+        name: folderName,
       },
     });
 
@@ -24,15 +37,11 @@ export async function DELETE(request) {
     // Delete the folder
     await prisma.folder.delete({
       where: {
-        id: folderId,
+        id: folder.id,
       },
     });
 
-    // Optionally, you can delete associated data, like folder contents, here
-
-    console.log("Folder deleted:", folderId);
-
-    return new NextResponse("Folder deleted", { status: 204 }); // 204 means No Content
+    return new NextResponse("Folder deleted successfully", { status: 200 });
   } catch (error) {
     console.error("Error deleting folder:", error);
     console.log("Internal Server Error");
