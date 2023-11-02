@@ -20,13 +20,6 @@ const Page = () => {
   const [playlistName, setPlaylistName] = useState("");
   const [folderNames, setFolderNames] = useState([]);
 
-  useEffect(() => {
-    // Reset the videos and currentPage when a new search is performed
-    setVideos([]);
-    setCurrentPage(1);
-    fetchVideos(currentPage);
-  }, [descriptionQuery]); // Include descriptionQuery as a dependency
-
   const theUserId = async () => {
     try {
       if (session && session.user) {
@@ -87,6 +80,13 @@ const Page = () => {
       console.error("Error:", error);
     }
   };
+
+  useEffect(() => {
+    // Reset the videos and currentPage when a new search is performed
+    setVideos([]);
+    setCurrentPage(1);
+    fetchVideos(currentPage);
+  }, [descriptionQuery, currentPage]);
 
   const hashtagOptions = [
     "#הריון",
