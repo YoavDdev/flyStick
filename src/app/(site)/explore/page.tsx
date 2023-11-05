@@ -19,6 +19,7 @@ const Page = () => {
   const [showForm, setShowForm] = useState(false);
   const [playlistName, setPlaylistName] = useState("");
   const [folderNames, setFolderNames] = useState([]);
+  const [fetchingPage, setFetchingPage] = useState<number>(1);
 
   const theUserId = async () => {
     try {
@@ -121,6 +122,7 @@ const Page = () => {
     "#ריצה",
     "#אביזרים",
   ];
+
   const handleHashtagClick = (hashtag: string) => {
     setSearchQuery((prevQuery) => {
       // Check if the selected hashtag is already in the search query
@@ -227,10 +229,8 @@ const Page = () => {
 
   useEffect(() => {
     setVideos([]);
-    setCurrentPage(1);
-    fetchVideos(currentPage);
+    fetchVideos(1); // Initialize with page 1
   }, []);
-
   return (
     <div className="bg-white min-h-screen text-white pt-20">
       <div className="container mx-auto p-6">
