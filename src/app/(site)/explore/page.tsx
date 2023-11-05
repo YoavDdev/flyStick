@@ -230,7 +230,7 @@ const Page = () => {
     setVideos([]);
     setCurrentPage(1);
     fetchVideos(currentPage);
-  }, [descriptionQuery]); // Include descriptionQuery as a dependency
+  }); // Include descriptionQuery as a dependency
 
   return (
     <div className="bg-white min-h-screen text-white pt-20">

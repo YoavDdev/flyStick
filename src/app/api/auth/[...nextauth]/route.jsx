@@ -58,13 +58,5 @@ export const authOption = {
   debug: process.env.NODE_ENV === "development",
 };
 
-const NextAuthHandler = NextAuth(authOption);
-
-// Export named functions for each HTTP method
-export const GET = (req, res) => {
-  return NextAuthHandler(req, res);
-};
-
-export const POST = (req, res) => {
-  return NextAuthHandler(req, res);
-};
+const handler = NextAuth(authOption);
+export { handler as GET, handler as POST };
