@@ -30,10 +30,10 @@ const Feature = () => {
     <div className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:text-center">
-          <h2 className="text-base font-semibold leading-7 text-[#990011]">
+          <h2 className="text-base font-semibold leading-7 text-[#2D3142]">
             Elevate Movement
           </h2>
-          <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <p className="mt-2 text-3xl font-bold tracking-tight text-[#EF8354] sm:text-4xl">
             Your Journey to Movement Mastery Begins Here
           </p>
           <p className="mt-6 text-lg leading-8 text-gray-600">
@@ -47,7 +47,7 @@ const Feature = () => {
           <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
             {features.map((feature) => (
               <div key={feature.name} className="flex flex-col">
-                <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
+                <dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-[#2D3142]">
                   {feature.name}
                 </dt>
                 <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
@@ -55,7 +55,7 @@ const Feature = () => {
                   <p className="mt-6">
                     <a
                       href={feature.href}
-                      className="text-sm font-semibold leading-6 text-[#990011]"
+                      className="text-sm font-semibold leading-6 text-[#EF8354]"
                     >
                       Learn more <span aria-hidden="true">→</span>
                     </a>

@@ -5,7 +5,7 @@ const Footer = () => {
     social: [
       {
         name: "Facebook",
-        href: "#",
+        href: "https://www.facebook.com/groups/boazit",
         icon: (
           props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>,
         ) => (
@@ -20,7 +20,7 @@ const Footer = () => {
       },
       {
         name: "Instagram",
-        href: "#",
+        href: "https://www.instagram.com/",
         icon: (
           props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>,
         ) => (
@@ -36,7 +36,7 @@ const Footer = () => {
 
       {
         name: "YouTube",
-        href: "#",
+        href: "https://www.youtube.com/@BoazNahaissi",
         icon: (
           props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>,
         ) => (
@@ -57,7 +57,7 @@ const Footer = () => {
         Footer
       </h2>
       <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
-        <div className="mt-16 border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24 lg:flex lg:items-center lg:justify-between">
+        {/* <div className="mt-16 border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24 lg:flex lg:items-center lg:justify-between">
           <div>
             <h3 className="text-sm font-semibold leading-6 text-gray-900">
               Subscribe to our newsletter
@@ -89,7 +89,7 @@ const Footer = () => {
               </button>
             </div>
           </form>
-        </div>
+        </div> */}
         <div className="mt-8 border-t border-gray-900/10 pt-8 md:flex md:items-center md:justify-between">
           <div className="flex space-x-6 md:order-2">
             {navigation.social.map((item) => (
@@ -104,7 +104,8 @@ const Footer = () => {
             ))}
           </div>
           <p className="mt-8 text-xs leading-5 text-gray-500 md:order-1 md:mt-0">
-            &copy; 2020 Your Company, Inc. All rights reserved.
+            &copy; 2023 Boaz Nahaisi&apos;s Online Studio, Inc. All rights
+            reserved.
           </p>
         </div>
       </div>
