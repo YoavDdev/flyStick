@@ -177,7 +177,7 @@ const Navbar = () => {
         <div className="flex-col pt-5">
           <ul className="text-xl">
             <li className="py-4 cursor-pointer hover:text-[#990011]">
-              <Link href="/#Pricing" onClick={() => setMenuopen(false)}>
+              <Link href="/" onClick={() => setMenuopen(false)}>
                 Home
               </Link>
             </li>
