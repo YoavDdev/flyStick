@@ -19,7 +19,6 @@ const Page = () => {
   const [showForm, setShowForm] = useState(false);
   const [playlistName, setPlaylistName] = useState("");
   const [folderNames, setFolderNames] = useState([]);
-  const [fetchingPage, setFetchingPage] = useState<number>(1);
 
   const theUserId = async () => {
     try {
@@ -46,48 +45,41 @@ const Page = () => {
   };
   //console.log("VIMEO_ACCESS_TOKEN:", process.env.VIMEO_TOKEN);
 
-  const requestedFields = "uri,embed.html,name,description,pictures";
-
   const fetchVideos = async (page: number) => {
     try {
       const response: AxiosResponse = await axios.get(apiUrl, {
         headers,
         params: {
           page,
-          query: descriptionQuery,
-          fields: requestedFields,
+          query: descriptionQuery, // Include the description query in the API request
+          fields: "uri,embed.html,name,description,pictures", // Request embed HTML and video title
         },
       });
 
-      const { data, paging } = response.data;
-      const { total_pages } = paging;
-      const videosData = data;
+      const data = response.data;
+      const videosData = data.data;
+      const newVideos = videosData.map((video: any) => ({
+        uri: video.uri,
+        embedHtml: video.embed.html,
+        name: video.name,
+        description: video.description,
+        thumbnailUri: video.pictures.sizes[5].link,
+        // Extract the video title from the API response
+      }));
 
-      const newVideos: Vimeo[] = videosData.map((video: any) => {
-        const { uri, embed, name, description, pictures } = video;
-        return {
-          uri,
-          embedHtml: embed.html,
-          name,
-          description,
-          thumbnailUri: pictures.sizes[5].link,
-        };
-      });
-
+      //console.log("Response Data:", response.data);
+      // Append the new videos to the existing list of videos
       setVideos((prevVideos) => [...prevVideos, ...newVideos]);
 
-      if (page < total_pages) {
+      // Check if there are more pages to fetch
+      if (page < data.paging.total_pages) {
+        // If there are more pages, increment the current page
         setCurrentPage(page + 1);
       }
     } catch (error) {
-      console.error("Error fetching videos from", apiUrl, ":", error);
+      console.error("Error:", error);
     }
   };
-
-  useEffect(() => {
-    setVideos([]);
-    fetchVideos(1);
-  }, []);
 
   const hashtagOptions = [
     "#הריון",
@@ -129,7 +121,6 @@ const Page = () => {
     "#ריצה",
     "#אביזרים",
   ];
-
   const handleHashtagClick = (hashtag: string) => {
     setSearchQuery((prevQuery) => {
       // Check if the selected hashtag is already in the search query
@@ -233,6 +224,13 @@ const Page = () => {
       closeModal();
     }
   };
+
+  useEffect(() => {
+    // Reset the videos and currentPage when a new search is performed
+    setVideos([]);
+    setCurrentPage(1);
+    fetchVideos(currentPage);
+  }, [descriptionQuery]); // Include descriptionQuery as a dependency
 
   return (
     <div className="bg-white min-h-screen text-white pt-20">

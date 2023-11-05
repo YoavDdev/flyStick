@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/dist/client/link";
 
-const page = () => {
+const Page = () => {
   const session = useSession();
   const router = useRouter();
   const [data, setData] = useState({
@@ -136,4 +136,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
