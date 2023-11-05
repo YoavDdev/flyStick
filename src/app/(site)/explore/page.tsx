@@ -46,41 +46,48 @@ const Page = () => {
   };
   //console.log("VIMEO_ACCESS_TOKEN:", process.env.VIMEO_TOKEN);
 
+  const requestedFields = "uri,embed.html,name,description,pictures";
+
   const fetchVideos = async (page: number) => {
     try {
       const response: AxiosResponse = await axios.get(apiUrl, {
         headers,
         params: {
           page,
-          query: descriptionQuery, // Include the description query in the API request
-          fields: "uri,embed.html,name,description,pictures", // Request embed HTML and video title
+          query: descriptionQuery,
+          fields: requestedFields,
         },
       });
 
-      const data = response.data;
-      const videosData = data.data;
-      const newVideos = videosData.map((video: any) => ({
-        uri: video.uri,
-        embedHtml: video.embed.html,
-        name: video.name,
-        description: video.description,
-        thumbnailUri: video.pictures.sizes[5].link,
-        // Extract the video title from the API response
-      }));
+      const { data, paging } = response.data;
+      const { total_pages } = paging;
+      const videosData = data;
 
-      //console.log("Response Data:", response.data);
-      // Append the new videos to the existing list of videos
+      const newVideos: Vimeo[] = videosData.map((video: any) => {
+        const { uri, embed, name, description, pictures } = video;
+        return {
+          uri,
+          embedHtml: embed.html,
+          name,
+          description,
+          thumbnailUri: pictures.sizes[5].link,
+        };
+      });
+
       setVideos((prevVideos) => [...prevVideos, ...newVideos]);
 
-      // Check if there are more pages to fetch
-      if (page < data.paging.total_pages) {
-        // If there are more pages, increment the current page
+      if (page < total_pages) {
         setCurrentPage(page + 1);
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error fetching videos from", apiUrl, ":", error);
     }
   };
+
+  useEffect(() => {
+    setVideos([]);
+    fetchVideos(1);
+  }, []);
 
   const hashtagOptions = [
     "#הריון",
@@ -227,10 +234,6 @@ const Page = () => {
     }
   };
 
-  useEffect(() => {
-    setVideos([]);
-    fetchVideos(1); // Initialize with page 1
-  }, []);
   return (
     <div className="bg-white min-h-screen text-white pt-20">
       <div className="container mx-auto p-6">
