@@ -20,6 +20,13 @@ const Page = () => {
   const [playlistName, setPlaylistName] = useState("");
   const [folderNames, setFolderNames] = useState([]);
 
+  useEffect(() => {
+    // Reset the videos and currentPage when a new search is performed
+    setVideos([]);
+    setCurrentPage(1);
+    fetchVideos(currentPage);
+  }, [descriptionQuery]); // Include descriptionQuery as a dependency
+
   const theUserId = async () => {
     try {
       if (session && session.user) {
@@ -224,13 +231,6 @@ const Page = () => {
       closeModal();
     }
   };
-
-  useEffect(() => {
-    // Reset the videos and currentPage when a new search is performed
-    setVideos([]);
-    setCurrentPage(1);
-    fetchVideos(currentPage);
-  }, []); // Include descriptionQuery as a dependency
 
   return (
     <div className="bg-white min-h-screen text-white pt-20">
