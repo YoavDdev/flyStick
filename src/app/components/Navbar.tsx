@@ -15,6 +15,9 @@ import { useSession, signOut } from "next-auth/react";
 
 const Navbar = () => {
   const [isTransparent, setIsTransparent] = useState(true);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [menuOpen, setMenuopen] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     // Add a scroll event listener to toggle transparency
@@ -25,7 +28,6 @@ const Navbar = () => {
         setIsTransparent(true);
       }
     }
-
     window.addEventListener("scroll", handleScroll);
 
     // Clean up the event listener when the component unmounts
@@ -34,14 +36,10 @@ const Navbar = () => {
     };
   }, []);
 
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
-  const { data: session } = useSession();
-  const [menuOpen, setMenuopen] = useState(false);
   const handleNav = () => {
     setMenuopen(!menuOpen);
   };
@@ -67,38 +65,19 @@ const Navbar = () => {
         <div className="hidden sm:flex">
           <ul className="hidden sm:flex">
             <li>
-              <Link
-                href="/about"
-                className="ml-10 hover:text-[#990011] text-xl"
-              >
-                About
+              <Link href="/" className="ml-10 hover:text-[#990011] text-xl">
+                Home
               </Link>
             </li>
-            <li>
-              <Link
-                href="/contact"
-                className="ml-10 hover:text-[#990011] text-xl"
-              >
-                Contact Me
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/#Pricing"
-                className="ml-10 hover-text-[#990011] text-xl"
-              >
-                Pricing
-              </Link>
-            </li>
-
-            <div className="ml-10 hover:text-[#990011] text-xl">
+            <div
+              className="ml-10 hover:text-[#990011] text-xl"
+              onMouseEnter={toggleDropdown}
+              onMouseLeave={toggleDropdown}
+            >
               {session?.user ? (
                 <>
                   <div className="relative inline-block group">
-                    <button
-                      className=" text-[#990011] hover:text-[#990011] group-hover:text-black focus:outline-none"
-                      onClick={toggleDropdown}
-                    >
+                    <button className=" text-[#990011] hover:text-[#990011] group-hover:text-black focus:outline-none">
                       {session.user.name}
                       <span
                         className={`${
@@ -110,7 +89,7 @@ const Navbar = () => {
                     </button>
 
                     {dropdownVisible && (
-                      <div className="absolute mt-2 flex flex-col gap-2">
+                      <div className="absolute  flex flex-col gap-2">
                         <Link href="/user">
                           <li
                             className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
@@ -155,6 +134,30 @@ const Navbar = () => {
                 </Link>
               )}
             </div>
+            <li>
+              <Link
+                href="/about"
+                className="ml-10 hover:text-[#990011] text-xl"
+              >
+                About
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/contact"
+                className="ml-10 hover:text-[#990011] text-xl"
+              >
+                Contact Me
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/#Pricing"
+                className="ml-10 hover-text-[#990011] text-xl"
+              >
+                Pricing
+              </Link>
+            </li>
           </ul>
         </div>
         <div onClick={handleNav} className="sm:hidden cursor-pointer pl-20">
@@ -162,9 +165,9 @@ const Navbar = () => {
         </div>
       </div>
       <div
-        className={`fixed top-0 h-screen ${
-          menuOpen ? "w-3/4" : "left-full"
-        } sm:hidden bg-[#ecf0f3] p-10 ease-in duration-500`}
+        className={`fixed top-0 left-0 h-screen w-2/3 sm:hidden bg-[#FCF6F5] p-10 ease-in-out duration-500 ${
+          menuOpen ? "" : "transform -translate-x-full"
+        }`}
       >
         <div className="flex justify-end items-center">
           <div onClick={handleNav} className="cursor-pointer">
@@ -173,12 +176,19 @@ const Navbar = () => {
         </div>
         <div className="flex-col pt-5">
           <ul className="text-xl">
+            <li className="py-4 cursor-pointer hover:text-[#990011]">
+              <Link href="/#Pricing" onClick={() => setMenuopen(false)}>
+                Home
+              </Link>
+            </li>
             {session?.user ? (
               <>
                 <div className="relative inline-block group">
                   <button
-                    className="text-[#990011] hover:text-[#990011] group-hover:text-black focus:outline-none"
-                    onClick={toggleDropdown}
+                    className="text-[#990011] hover:text-[#990011] group-hover:text-black focus:outline-none py-4"
+                    onClick={() => {
+                      toggleDropdown();
+                    }}
                   >
                     {session.user.name}
                     <span
@@ -191,12 +201,15 @@ const Navbar = () => {
                   </button>
 
                   {dropdownVisible && (
-                    <ul className="absolute mt-2 flex flex-col gap-2">
+                    <ul className=" mt-2 flex flex-col gap-2">
                       <li>
                         <Link href="/user">
                           <span
-                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
-                            onClick={toggleDropdown}
+                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] "
+                            onClick={() => {
+                              setMenuopen(false);
+                              toggleDropdown();
+                            }}
                           >
                             Library
                           </span>
@@ -205,8 +218,11 @@ const Navbar = () => {
                       <li>
                         <Link href="/styles">
                           <span
-                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover-text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
-                            onClick={toggleDropdown}
+                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] "
+                            onClick={() => {
+                              setMenuopen(false);
+                              toggleDropdown();
+                            }}
                           >
                             Styles
                           </span>
@@ -215,8 +231,11 @@ const Navbar = () => {
                       <li>
                         <Link href="/explore">
                           <span
-                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover-text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
-                            onClick={toggleDropdown}
+                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] "
+                            onClick={() => {
+                              setMenuopen(false);
+                              toggleDropdown();
+                            }}
                           >
                             Explore
                           </span>
@@ -225,9 +244,10 @@ const Navbar = () => {
                       <li>
                         <Link href="/">
                           <span
-                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover-text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
+                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] "
                             onClick={() => {
                               signOut();
+                              setMenuopen(false);
                               toggleDropdown();
                             }}
                           >
@@ -240,9 +260,16 @@ const Navbar = () => {
                 </div>
               </>
             ) : (
-              <Link href="/login" className="">
-                Log In
-              </Link>
+              <li className="py-4 cursor-pointer hover:text-[#990011]">
+                <Link
+                  href="/login"
+                  onClick={() => {
+                    setMenuopen(false);
+                  }}
+                >
+                  Log In
+                </Link>
+              </li>
             )}
             <li className="py-4 cursor-pointer hover:text-[#990011]">
               <Link href="/about" onClick={() => setMenuopen(false)}>
@@ -261,20 +288,7 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
-        <div className="flex justify-around items-center pt-10">
-          <AiOutlineFacebook
-            size={30}
-            className="cursor-pointer hover:text-[#990011]"
-          />
-          <AiOutlineInstagram
-            size={30}
-            className="cursor-pointer hover:text-[#990011]"
-          />
-          <AiOutlineYoutube
-            size={30}
-            className="cursor-pointer hover:text-[#990011]"
-          />
-        </div>
+
         <div className="flex justify-center items-center pt-20">
           <Image src={Logo} width={45} height={1} alt="Logo" priority />
         </div>
