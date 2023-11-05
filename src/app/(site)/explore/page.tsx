@@ -81,13 +81,6 @@ const Page = () => {
     }
   };
 
-  useEffect(() => {
-    // Reset the videos and currentPage when a new search is performed
-    setVideos([]);
-    setCurrentPage(1);
-    fetchVideos(currentPage);
-  }, [descriptionQuery, currentPage]);
-
   const hashtagOptions = [
     "#הריון",
     "#לידה",
@@ -231,6 +224,12 @@ const Page = () => {
       closeModal();
     }
   };
+
+  useEffect(() => {
+    setVideos([]);
+    setCurrentPage(1);
+    fetchVideos(currentPage);
+  }, []);
 
   return (
     <div className="bg-white min-h-screen text-white pt-20">
