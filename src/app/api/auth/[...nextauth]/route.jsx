@@ -2,7 +2,9 @@ import NextAuth from "next-auth/next";
 import prisma from "../../../libs/prismadb";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
+import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
+
 import bcrypt from "bcrypt";
 
 const authOption = {
@@ -12,15 +14,20 @@ const authOption = {
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
     }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    }),
+
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        email: { label: "Email", type: "text", placeholder: "jsmith" },
+        email: { label: "Email", type: "text", placeholder: "Email" },
         password: { label: "Password", type: "password" },
         username: {
           label: "Username",
           type: "text",
-          placeholder: "John Smith",
+          placeholder: "Name",
         },
       },
       async authorize(credentials) {

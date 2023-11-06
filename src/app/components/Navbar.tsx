@@ -116,19 +116,22 @@ const Navbar = () => {
         <div className="hidden sm:flex">
           <ul className="hidden sm:flex">
             <li>
-              <Link href="/" className="ml-10 hover:text-[#EF8354] text-xl">
+              <Link
+                href="/"
+                className="ml-10 hover:text-[#EF8354] text-xl text-[#2D3142]"
+              >
                 Home
               </Link>
             </li>
             <div
-              className="ml-10 hover:text-[#EF8354] text-xl"
+              className="ml-10 hover:text-[#EF8354] text-xl text-[#2D3142]"
               onMouseEnter={toggleDropdown}
               onMouseLeave={toggleDropdown}
             >
               {session?.user ? (
                 <>
                   <div className="relative inline-block group">
-                    <button className=" text-[#EF8354] hover:text-[#990011] group-hover:text-black focus:outline-none">
+                    <button className=" text-[#EF8354] focus:outline-none ">
                       {session.user.name}
                       <span
                         className={`${
@@ -143,7 +146,7 @@ const Navbar = () => {
                       <div className="absolute  flex flex-col gap-2">
                         <Link href="/user">
                           <li
-                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
+                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
                             onClick={toggleDropdown}
                           >
                             Library
@@ -151,7 +154,7 @@ const Navbar = () => {
                         </Link>
                         <Link href="/styles">
                           <li
-                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
+                            className="bblock px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
                             onClick={toggleDropdown}
                           >
                             Styles
@@ -159,7 +162,7 @@ const Navbar = () => {
                         </Link>
                         <Link href="/explore">
                           <li
-                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5]"
+                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
                             onClick={toggleDropdown}
                           >
                             Explore
@@ -167,7 +170,7 @@ const Navbar = () => {
                         </Link>
                         <Link
                           href={"/"}
-                          className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white  text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] "
+                          className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
                           onClick={() => {
                             signOut();
                             toggleDropdown();
@@ -180,7 +183,10 @@ const Navbar = () => {
                   </div>
                 </>
               ) : (
-                <Link href="/login" className="">
+                <Link
+                  href="/login"
+                  className="hover:text-[#2D3142] text-xl text-[#EF8354]"
+                >
                   Log In
                 </Link>
               )}
@@ -188,7 +194,7 @@ const Navbar = () => {
             <li>
               <Link
                 href="/about"
-                className="ml-10 hover:text-[#EF8354] text-xl"
+                className="ml-10 hover:text-[#EF8354] text-xl  text-[#2D3142]"
               >
                 About
               </Link>
@@ -196,7 +202,7 @@ const Navbar = () => {
             <li>
               <Link
                 href="/contact"
-                className="ml-10 hover:text-[#EF8354] text-xl"
+                className="ml-10 hover:text-[#EF8354] text-xl  text-[#2D3142]"
               >
                 Contact Me
               </Link>
@@ -204,7 +210,7 @@ const Navbar = () => {
             <li>
               <Link
                 href="/#Pricing"
-                className="ml-10 hover:text-[#EF8354] text-xl"
+                className="ml-10 hover:text-[#EF8354] text-xl  text-[#2D3142]"
               >
                 Pricing
               </Link>
@@ -227,7 +233,7 @@ const Navbar = () => {
         </div>
         <div className="flex-col pt-5">
           <ul className="text-xl">
-            <li className="py-4 cursor-pointer hover:text-[#EF8354]">
+            <li className="py-4 cursor-pointer hover:text-[#EF8354] text-[#2D3142]">
               <Link href="/" onClick={() => setMenuopen(false)}>
                 Home
               </Link>
@@ -256,7 +262,7 @@ const Navbar = () => {
                       <li>
                         <Link href="/user">
                           <span
-                            className="block px-10 py-2 text-[#EF8354] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] "
+                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
                             onClick={() => {
                               setMenuopen(false);
                               toggleDropdown();
@@ -269,7 +275,7 @@ const Navbar = () => {
                       <li>
                         <Link href="/styles">
                           <span
-                            className="block px-10 py-2 text-[#EF8354] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] "
+                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
                             onClick={() => {
                               setMenuopen(false);
                               toggleDropdown();
@@ -282,7 +288,7 @@ const Navbar = () => {
                       <li>
                         <Link href="/explore">
                           <span
-                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] "
+                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
                             onClick={() => {
                               setMenuopen(false);
                               toggleDropdown();
@@ -295,7 +301,7 @@ const Navbar = () => {
                       <li>
                         <Link href="/">
                           <span
-                            className="block px-10 py-2 text-[#990011] hover:bg-[#990011] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] "
+                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
                             onClick={() => {
                               signOut();
                               setMenuopen(false);
@@ -311,7 +317,7 @@ const Navbar = () => {
                 </div>
               </>
             ) : (
-              <li className="py-4 cursor-pointer hover:text-[#EF8354]">
+              <li className=" py-4 cursor-pointer marker:hover:text-[#2D3142] text-xl text-[#EF8354]">
                 <Link
                   href="/login"
                   onClick={() => {
@@ -322,17 +328,17 @@ const Navbar = () => {
                 </Link>
               </li>
             )}
-            <li className="py-4 cursor-pointer hover:text-[#EF8354]">
+            <li className="py-4 cursor-pointer hover:text-[#EF8354] text-[#2D3142]">
               <Link href="/about" onClick={() => setMenuopen(false)}>
                 About
               </Link>
             </li>
-            <li className="py-4 cursor-pointer hover:text-[#EF8354]">
+            <li className="py-4 cursor-pointer hover:text-[#EF8354] text-[#2D3142]">
               <Link href="/contact" onClick={() => setMenuopen(false)}>
                 Contact Me
               </Link>
             </li>
-            <li className="py-4 cursor-pointer hover:text-[#EF8354]">
+            <li className="py-4 cursor-pointer hover:text-[#EF8354] text-[#2D3142]">
               <Link href="/#Pricing" onClick={() => setMenuopen(false)}>
                 Pricing
               </Link>
