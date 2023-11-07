@@ -41,18 +41,17 @@ const Page = () => {
 
   return (
     <div className="bg-white ">
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+      <div className="min-h-screen text-white ">
         {session?.user ? (
-          <div className="bg-white ">
-            <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-              <h2 className="sr-only">Folders</h2>
-              <div className="mx-auto max-w-7xl px-6 lg:px-8 pb-10">
-                <div className="mx-auto max-w-2xl lg:text-center">
+          <div className="  pt-20">
+            <div className="container mx-auto p-6">
+              <div className="mx-auto max-w-7xl  px-8 pb-10">
+                <div className="mx-auto max-w-2xl text-center">
                   <h2 className="text-base font-semibold leading-7 text-[#990011]">
-                    Elevate Movement
+                    Training Your Way
                   </h2>
                   <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                    Choose your style
+                    Choose Your Style
                   </p>
                 </div>
               </div>

@@ -16,7 +16,7 @@ const Page = () => {
 
   useEffect(() => {
     if (session?.status === "authenticated") {
-      router.push("/user");
+      router.push("/dashboard");
     }
   });
 

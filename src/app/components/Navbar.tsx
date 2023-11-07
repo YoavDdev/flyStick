@@ -144,6 +144,14 @@ const Navbar = () => {
 
                     {dropdownVisible && (
                       <div className="absolute  flex flex-col gap-2">
+                        <Link href="/dashboard">
+                          <li
+                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
+                            onClick={toggleDropdown}
+                          >
+                            Dashboard
+                          </li>
+                        </Link>
                         <Link href="/user">
                           <li
                             className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
@@ -259,6 +267,19 @@ const Navbar = () => {
 
                   {dropdownVisible && (
                     <ul className=" mt-2 flex flex-col gap-2">
+                      <li>
+                        <Link href="/dashboard">
+                          <span
+                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
+                            onClick={() => {
+                              setMenuopen(false);
+                              toggleDropdown();
+                            }}
+                          >
+                            Dashboard
+                          </span>
+                        </Link>
+                      </li>
                       <li>
                         <Link href="/user">
                           <span

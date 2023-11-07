@@ -233,9 +233,18 @@ const Page = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen text-white pt-20">
+    <div className="bg-white min-h-screen pt-20">
       <div className="container mx-auto p-6">
-        <h1 className="text-4xl font-bold mb-8  text-black">Explore Videos</h1>
+        <div className="mx-auto max-w-7xl px-8 pb-10">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-base font-semibold leading-7 text-[#990011]">
+              Your Journey, Your Rules
+            </h2>
+            <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              Explore Video Your Way
+            </p>
+          </div>
+        </div>
         <form onSubmit={handleSearch} className="mb-8">
           <div className="flex items-center relative">
             <input
@@ -419,7 +428,7 @@ const Page = () => {
         </div>
         <div className="mt-8">
           <button
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-md focus:outline-none"
+            className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-6 py-4 rounded-md focus:outline-none"
             onClick={loadMore}
           >
             Load More
