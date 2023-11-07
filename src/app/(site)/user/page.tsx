@@ -30,6 +30,27 @@ const Page = () => {
     }
   }, [session]); // Run this effect whenever the 'session' variable changes
 
+  const fetchFolderNames = () => {
+    if (session && session.user) {
+      axios
+        .post("/api/all-user-folder-names", {
+          userEmail: session.user.email,
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setFolderNames(response.data.folderNames);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching folder names:", error);
+        });
+    }
+  };
+
+  useEffect(() => {
+    fetchFolderNames(); // Fetch folder names when the component mounts
+  }, [session]);
+
   const handleDeleteFolder = (folderName: any) => {
     const confirmDelete = window.confirm(
       `Are you sure you want to delete ${folderName}?`,
@@ -46,13 +67,12 @@ const Page = () => {
         .then((response) => {
           if (response.status === 200) {
             toast.success("Folder deleted");
-
-            // Folder deleted successfully, you can update the UI accordingly
+            fetchFolderNames(); // Fetch folder names again to refresh the list
           }
         })
         .catch((error) => {
           console.error("Error deleting folder:", error);
-          toast.success("Error to delete the folder");
+          toast.success("Error deleting the folder");
         });
     }
   };
@@ -73,7 +93,7 @@ const Page = () => {
         <div className="mx-auto max-w-7xl px-6 lg:px-8 p-10">
           <div className="mx-auto max-w-2xl lg:text-center">
             <h2 className="text-2xl font-semibold leading-7 text-[#2D3142]">
-              My library...
+              {folderNames.length === 0 ? "Library is empty" : "My library..."}
             </h2>
           </div>
         </div>
@@ -88,8 +108,8 @@ const Page = () => {
                     </h3>
                     <p className="text-sm text-gray-700">Click to explore</p>
                     <Link
-                      href={"/"}
                       onClick={() => handleDeleteFolder(folderName)}
+                      href={"/user"}
                       className="bg-red-800 hover:bg-red-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
                     >
                       Delete

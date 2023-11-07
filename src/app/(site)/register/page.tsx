@@ -18,7 +18,7 @@ const Register = () => {
   useEffect(() => {
     if (session?.status === "authenticated") {
       // router.push("https://www.paypal.com/il/business");
-      router.push("/#Pricing ");
+      router.push("/user ");
     }
   });
 

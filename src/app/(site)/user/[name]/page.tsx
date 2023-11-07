@@ -17,13 +17,12 @@ const Page: FC<pageProps> = ({ params }) => {
   const [videos, setVideos] = useState<any[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [selectedVideoData, setSelectedVideoData] = useState<any | null>(null);
-  const [selectedVideoUri, setSelectedVideoUri] = useState<string>("");
   const [folderUrls, setFolderUrls] = useState<string[]>([]); // Assuming folderUrls is an array of strings
   const { data: session } = useSession();
 
   useEffect(() => {
     if (session && session.user) {
-      const folderName = decodedString;
+      const folderName = decodeURIComponent(params.name);
 
       axios
         .post("/api/urls-video", {
@@ -42,7 +41,7 @@ const Page: FC<pageProps> = ({ params }) => {
           console.error("Error fetching folder URLs:", error);
         });
     }
-  }, []);
+  }, [session, params.name]);
 
   const accessToken = "a7acf4dcfec3abd4ebab0f8162956c65";
   const headers = {
@@ -126,8 +125,15 @@ const Page: FC<pageProps> = ({ params }) => {
   return (
     <div className="bg-white min-h-screen text-white pt-20">
       <div className="container mx-auto p-6">
-        <h1 className="text-4xl font-bold mb-8  text-black">{decodedString}</h1>
-
+        {videos.length === 0 ? (
+          <h1 className="text-4xl font-bold mb-8 text-black">
+            This folder is empty ({decodedString})
+          </h1>
+        ) : (
+          <h1 className="text-4xl font-bold mb-8 text-black">
+            {decodedString}
+          </h1>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {videos.map((video) => (
             <div
