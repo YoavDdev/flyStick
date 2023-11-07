@@ -23,8 +23,8 @@ const DashboardPage = () => {
                 <p className="mt-6 text-lg leading-7 text-gray-600">
                   Welcome to your personalized learning dashboard. Here, you
                   have access to a wide range of resources, videos, and tools to
-                  enhance your learning experience. Let's explore what's at your
-                  fingertips.
+                  enhance your learning experience. Let&apos;s explore
+                  what&apos;s at your fingertips.
                 </p>
               </div>
               <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
@@ -33,8 +33,8 @@ const DashboardPage = () => {
                   The Explore section is your gateway to a vast pool of
                   knowledge. It offers a diverse range of lessons, exercises,
                   and lectures tailored to your needs. Dive into a world of
-                  learning, connect with your body in ways you've never known
-                  before, and discover new horizons.
+                  learning, connect with your body in ways you&apos;ve never
+                  known before, and discover new horizons.
                 </p>
                 <Link href="/explore">
                   <span className="text-[#EF8354] mt-4">
@@ -48,8 +48,8 @@ const DashboardPage = () => {
                 <p className="mt-2 text-lg leading-7 text-gray-600">
                   The Styles section organizes content for your convenience.
                   Browse lessons, exercises, and lectures categorized by style
-                  and technique. Whether you're a beginner or an advanced
-                  learner, you'll find content suited to your skill level.
+                  and technique. Whether you&apos;re a beginner or an advanced
+                  learner, you&apos;ll find content suited to your skill level.
                   Explore various styles and categories to customize your
                   learning journey.
                 </p>
