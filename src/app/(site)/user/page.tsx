@@ -9,10 +9,11 @@ import { toast } from "react-hot-toast";
 const Page = () => {
   const { data: session } = useSession();
   const [folderNames, setFolderNames] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     if (session && session.user) {
-      // Perform data fetching when the component mounts
+      setLoading(true);
       axios
         .post("/api/all-user-folder-names", {
           userEmail: session.user.email,
@@ -20,15 +21,16 @@ const Page = () => {
         .then((response) => {
           if (response.status === 200) {
             setFolderNames(response.data.folderNames);
-
-            // console.log(response.data);
           }
         })
         .catch((error) => {
           console.error("Error fetching folder names:", error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
-  }, [session]); // Run this effect whenever the 'session' variable changes
+  }, [session]);
 
   const fetchFolderNames = () => {
     if (session && session.user) {
@@ -93,7 +95,11 @@ const Page = () => {
         <div className="mx-auto max-w-7xl px-6 lg:px-8 p-10">
           <div className="mx-auto max-w-2xl lg:text-center">
             <h2 className="text-2xl font-semibold leading-7 text-[#2D3142]">
-              {folderNames.length === 0 ? "Library is empty" : "My library..."}
+              {loading
+                ? "Loading..."
+                : folderNames.length === 0
+                ? "Library is empty"
+                : "My library..."}
             </h2>
           </div>
         </div>
@@ -110,7 +116,7 @@ const Page = () => {
                     <Link
                       onClick={() => handleDeleteFolder(folderName)}
                       href={"/user"}
-                      className="bg-red-800 hover:bg-red-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
+                      className="bg-red-800 hover-bg-red-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
                     >
                       Delete
                     </Link>
@@ -124,5 +130,4 @@ const Page = () => {
     </div>
   );
 };
-
 export default Page;

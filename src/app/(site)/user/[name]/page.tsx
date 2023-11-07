@@ -16,11 +16,13 @@ const Page: FC<pageProps> = ({ params }) => {
 
   const [videos, setVideos] = useState<any[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [selectedVideoData, setSelectedVideoData] = useState<any | null>(null);
-  const [folderUrls, setFolderUrls] = useState<string[]>([]); // Assuming folderUrls is an array of strings
+  const [folderUrls, setFolderUrls] = useState<string[]>([]);
   const { data: session } = useSession();
 
   useEffect(() => {
+    setLoading(true);
     if (session && session.user) {
       const folderName = decodeURIComponent(params.name);
 
@@ -32,17 +34,17 @@ const Page: FC<pageProps> = ({ params }) => {
         .then((response) => {
           if (response.status === 200) {
             setFolderUrls(response.data.newFolderUrls);
-
-            // Fetch videos using folderUrls
             fetchVideos(response.data.newFolderUrls);
           }
         })
         .catch((error) => {
           console.error("Error fetching folder URLs:", error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, [session, params.name]);
-
   const accessToken = "a7acf4dcfec3abd4ebab0f8162956c65";
   const headers = {
     Authorization: `Bearer ${accessToken}`,
@@ -125,7 +127,9 @@ const Page: FC<pageProps> = ({ params }) => {
   return (
     <div className="bg-white min-h-screen text-white pt-20">
       <div className="container mx-auto p-6">
-        {videos.length === 0 ? (
+        {loading ? ( // Display a loading indicator when loading is true
+          <h1 className="text-4xl font-bold mb-8 text-black">Loading...</h1>
+        ) : videos.length === 0 ? (
           <h1 className="text-4xl font-bold mb-8 text-black">
             This folder is empty ({decodedString})
           </h1>
