@@ -62,7 +62,34 @@ const authOption = {
   session: {
     strategy: "jwt",
   },
-  debug: process.env.NODE_ENV === "development",
+  debug: false,
+  // process.env.NODE_ENV === "development"
+  events: {
+    signIn: async ({ user }) => {
+      console.log(user.id);
+
+      const isFolderExist = await prisma.folder.findFirst({
+        where: {
+          userId: user.id,
+          name: "favorites",
+        },
+      });
+
+      if (!isFolderExist) {
+        await prisma.folder.create({
+          data: {
+            userId: user.id,
+            name: "favorites",
+            urls: [],
+          },
+        });
+      }
+    },
+
+    async signOut(message) {
+      /* on signout */
+    },
+  },
 };
 
 const handler = NextAuth(authOption);

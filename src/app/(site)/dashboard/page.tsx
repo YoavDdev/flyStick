@@ -12,7 +12,7 @@ const DashboardPage = () => {
     <div className="bg-gray-100 min-h-screen flex justify-center items-start sm:pt-40 pt-20">
       {session?.user ? (
         <div className="bg-white w-full max-w-screen-xl p-8 rounded-lg shadow-lg">
-          <h2 className="text-3xl font-semibold text-[#EF8354] mb-4">
+          <h2 className="text-3xl font-semibold text-[#EF8354] mb-4 capitalize">
             Welcome, {session.user.name}!
           </h2>
           <p className="text-xl text-gray-600 mb-8">

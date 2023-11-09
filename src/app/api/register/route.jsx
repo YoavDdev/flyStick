@@ -29,6 +29,13 @@ export async function POST(request) {
       hashedPassword,
     },
   });
+  await prisma.folder.create({
+    data: {
+      userId: user.id,
+      name: "favorites", // You can set any default folder name you prefer
+      urls: [],
+    },
+  });
 
   return NextResponse.json(user);
 }

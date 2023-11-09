@@ -131,7 +131,7 @@ const Navbar = () => {
               {session?.user ? (
                 <>
                   <div className="relative inline-block group">
-                    <button className=" text-[#EF8354] focus:outline-none ">
+                    <button className=" text-[#EF8354] focus:outline-none capitalize ">
                       {session.user.name}
                       <span
                         className={`${
@@ -250,7 +250,7 @@ const Navbar = () => {
               <>
                 <div className="relative inline-block group">
                   <button
-                    className="text-[#EF8354] hover:text-[#990011] group-hover:text-black focus:outline-none py-4"
+                    className="text-[#EF8354] hover:text-[#990011] group-hover:text-black focus:outline-none py-4 capitalize"
                     onClick={() => {
                       toggleDropdown();
                     }}
