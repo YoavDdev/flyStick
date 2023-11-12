@@ -9,49 +9,56 @@ import { toast } from "react-hot-toast";
 const Page = () => {
   const { data: session } = useSession();
   const [folderNames, setFolderNames] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [newFolderName, setNewFolderName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false); // Added showForm state
 
   useEffect(() => {
-    if (session && session.user) {
-      setLoading(true);
-      axios
-        .post("/api/all-user-folder-names", {
-          userEmail: session.user.email,
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setFolderNames(response.data.folderNames);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching folder names:", error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
+    fetchFolderNames();
   }, [session]);
 
-  const fetchFolderNames = () => {
-    if (session && session.user) {
-      axios
-        .post("/api/all-user-folder-names", {
+  const fetchFolderNames = async () => {
+    try {
+      if (session && session.user) {
+        setLoading(true);
+        const response = await axios.post("/api/all-user-folder-names", {
           userEmail: session.user.email,
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setFolderNames(response.data.folderNames);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching folder names:", error);
         });
+
+        if (response.status === 200) {
+          setFolderNames(response.data.folderNames);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching folder names:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchFolderNames(); // Fetch folder names when the component mounts
-  }, [session]);
+  const handleAddFolder = async () => {
+    try {
+      if (!newFolderName.trim()) {
+        toast.error("Please enter a valid folder name");
+        return;
+      }
+
+      const response = await axios.post("/api/add-new-folder", {
+        userEmail: session?.user?.email,
+        folderName: newFolderName,
+      });
+
+      if (response.status === 200) {
+        toast.success("New folder added");
+        fetchFolderNames();
+        setNewFolderName("");
+        setShowForm(false); // Hide the form after adding a folder
+      }
+    } catch (error) {
+      console.error("Error adding new folder:", error);
+      toast.error("Error adding new folder");
+    }
+  };
 
   const handleDeleteFolder = (folderName: any) => {
     const confirmDelete = window.confirm(
@@ -69,7 +76,7 @@ const Page = () => {
         .then((response) => {
           if (response.status === 200) {
             toast.success("Folder deleted");
-            fetchFolderNames(); // Fetch folder names again to refresh the list
+            fetchFolderNames();
           }
         })
         .catch((error) => {
@@ -98,6 +105,7 @@ const Page = () => {
                 </h2>
               </div>
             </div>
+
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
               {folderNames.map((folderName: string) => (
                 <div key={folderName}>
@@ -126,6 +134,49 @@ const Page = () => {
                   </Link>
                 </div>
               ))}
+
+              {/* Placeholder for "Add New Folder" */}
+              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-[#FCF6F5] xl:aspect-h-8 xl:aspect-w-7">
+                <div className="h-full w-full flex flex-col justify-center  items-center text-center ">
+                  {showForm ? (
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleAddFolder();
+                      }}
+                    >
+                      <input
+                        type="text"
+                        placeholder="Enter new folder name"
+                        value={newFolderName}
+                        onChange={(e) => setNewFolderName(e.target.value)}
+                        className="p-2 border border-gray-300 rounded-md focus:outline-none"
+                      />
+                      <div className="flex mt-2">
+                        <button
+                          type="submit"
+                          className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-4 py-2 rounded-full focus:outline-none"
+                        >
+                          Add New Folder
+                        </button>
+                        <button
+                          onClick={() => setShowForm(false)}
+                          className="bg-gray-500 hover:bg-gray-400 text-white px-4 py-2 ml-2 rounded-full focus:outline-none"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <button
+                      onClick={() => setShowForm(true)}
+                      className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-10 py-8 rounded-full focus:outline-none mt-2 text-5xl"
+                    >
+                      +
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         ) : (
@@ -137,4 +188,5 @@ const Page = () => {
     </div>
   );
 };
+
 export default Page;

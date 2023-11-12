@@ -128,13 +128,15 @@ const Page: FC<pageProps> = ({ params }) => {
     <div className="bg-white min-h-screen text-white pt-20">
       <div className="container mx-auto p-6">
         {loading ? ( // Display a loading indicator when loading is true
-          <h1 className="text-4xl font-bold mb-8 text-black">Loading...</h1>
+          <h1 className="text-4xl font-bold mb-8 text-black text-center">
+            Loading...
+          </h1>
         ) : videos.length === 0 ? (
-          <h1 className="text-4xl font-bold mb-8 text-black">
+          <h1 className="text-4xl font-bold mb-8 text-black text-center">
             This folder is empty ({decodedString})
           </h1>
         ) : (
-          <h1 className="text-4xl font-bold mb-8 text-black">
+          <h1 className="text-4xl font-bold mb-8 text-black capitalize text-center ">
             {decodedString}
           </h1>
         )}
@@ -152,7 +154,7 @@ const Page: FC<pageProps> = ({ params }) => {
                 />
               </div>
               <div className="p-4">
-                <h2 className="text-lg font-semibold mb-2 text-black">
+                <h2 className="text-lg font-semibold mb-2 text-black ">
                   {video.name}
                 </h2>
                 <p className="text-sm mb-2 text-gray-600 ">

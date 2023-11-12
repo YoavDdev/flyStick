@@ -361,7 +361,7 @@ const Page: FC<pageProps> = ({ params }) => {
                 )}
                 <div className="py-8">
                   <button
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 right-4" // Position the button at the bottom-right corner
+                    className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 right-4" // Position the button at the bottom-right corner
                     onClick={() => {
                       setSelectedVideo(video.embedHtml);
                       setSelectedVideoData(video);
@@ -371,7 +371,7 @@ const Page: FC<pageProps> = ({ params }) => {
                   </button>
                 </div>
                 <button
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
+                  className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
                   onClick={() => {
                     setSelectedVideoUri(video.uri); // Set the selected video URI
                     openModal(); // Open the modal

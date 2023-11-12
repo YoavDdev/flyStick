@@ -344,7 +344,7 @@ const Page = () => {
                   </button>
                 </div>
                 <button
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
+                  className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
                   onClick={() => {
                     setSelectedVideoUri(video.uri); // Set the selected video URI
                     openModal(); // Open the modal
