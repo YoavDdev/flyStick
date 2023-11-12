@@ -214,13 +214,13 @@ const Page: FC<pageProps> = ({ params }) => {
 
         if (response.status === 200) {
           if (response.data.message === "Add to favorites") {
-            toast.success("Added to favorites");
+            toast.success(`The video add to ${folderName}`);
           } else if (response.data.message === "Video already in favorites") {
             toast.error("Video is already in favorites");
           } else if (
             response.data.message === "videoUri already exists in the folder"
           ) {
-            toast.error("video already exists in the folder");
+            toast.error(`Video already in ${folderName}`);
           } else {
             toast.error("An error occurred");
           }
