@@ -220,7 +220,7 @@ const Page: FC<pageProps> = ({ params }) => {
           } else if (
             response.data.message === "videoUri already exists in the folder"
           ) {
-            toast.error("videoUri already exists in the folder");
+            toast.error("video already exists in the folder");
           } else {
             toast.error("An error occurred");
           }
@@ -393,55 +393,74 @@ const Page: FC<pageProps> = ({ params }) => {
             </div>
           ))}
           {showModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-70">
-              <div className="absolute w-96 p-4 rounded-lg shadow-lg bg-white text-black">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="w-96 p-4 rounded-lg shadow-lg bg-white text-black relative">
                 <button
-                  className="absolute top-2 right-2 text-2xl text-red-600 hover:text-red-800 px-2"
-                  onClick={closeModal}
+                  className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-500 p-2 rounded-full hover:bg-red-600 transition-all duration-300"
+                  onClick={closeModal} // Close the video player
                 >
-                  X
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
                 </button>
-                <h2 className="text-2xl mb-4">Save video to ...</h2>
-                <ul>
-                  <ul>
-                    {folderNames.map((folderName) => (
-                      <li key={folderName}>
-                        <input
-                          type="checkbox"
-                          onChange={() =>
-                            addToFavorites(selectedVideoUri, folderName)
-                          }
-                        />
-                        <label className="px-4">{folderName}</label>
-                      </li>
-                    ))}
-                  </ul>
+                <h2 className="text-2xl mb-4 font-semibold">
+                  Save video to...
+                </h2>
+                <ul className="space-y-3 capitalize font-semibold pt-6">
+                  {folderNames.map((folderName) => (
+                    <li
+                      key={folderName}
+                      className="flex items-center justify-between"
+                    >
+                      <span className="text-lg">{folderName}</span>
+                      <button
+                        className="ml-2 px-4 py-2 rounded-md bg-[#2D3142] hover:bg-[#4F5D75] text-white  focus:outline-none font-normal"
+                        onClick={() => {
+                          addToFavorites(selectedVideoUri, folderName);
+                          closeModal(); // Close the modal after addToFavorites
+                        }}
+                      >
+                        Add to Folder
+                      </button>
+                    </li>
+                  ))}
                 </ul>
-                <div>
+                <div className="mt-4">
                   {showForm ? null : (
                     <button
-                      className="text-red-600 hover:text-red-800 pt-4"
+                      className="text-white py-2 px-4 rounded-md bg-[#EF8354] hover:bg-[#D9713C] focus:outline-none"
                       onClick={openForm}
                     >
-                      Create new playlist
+                      Create New Playlist
                     </button>
                   )}
                 </div>
                 {showForm && (
-                  <form onSubmit={handleSubmit} className="p-2">
-                    <label>
-                      Name:
+                  <form onSubmit={handleSubmit} className="mt-4">
+                    <label className="block mb-2">
+                      <span className="text-lg font-semibold">Name:</span>
                       <input
                         type="text"
                         value={playlistName}
                         onChange={handlePlaylistNameChange}
-                        className="w-full  rounded-md bg-white text-black focus:outline-none"
+                        className="w-full rounded-md bg-gray-100 text-black py-1 px-2 focus:outline-none"
                         placeholder="Enter Playlist name..."
                       />
                     </label>
-                    <div>
+                    <div className="mt-2">
                       <button
-                        className="text-red-600 hover:text-red-800 pt-4"
+                        className="text-white py-2 px-4 rounded-md bg-[#EF8354] hover:bg-[#D9713C] focus:outline-none"
                         type="submit"
                       >
                         Create
