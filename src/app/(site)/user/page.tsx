@@ -180,8 +180,13 @@ const Page = () => {
             </div>
           </div>
         ) : (
-          <div className="ml-10 ">
-            <h1 className="text-4xl">Please Login to continue.</h1>
+          <div className="text-center">
+            <h1 className="text-4xl font-semibold text-gray-700 mb-4">
+              Please Log in to Continue
+            </h1>
+            <Link href="/login">
+              <span className="text-[#EF8354] text-lg">Login</span>
+            </Link>
           </div>
         )}
       </div>
