@@ -5,43 +5,60 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import DashboardCard from "../../components/DashboardCard";
 import axios from "axios";
-
 const DashboardPage = () => {
   const { data: session } = useSession();
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSubscriptionStatus = async () => {
+    const fetchUserData = async () => {
       try {
-        const clientId =
-          "AUCQ4EpGcrWEqFKt5IBAAaixzjpYUn4CH-l35TSvPFbJhcF7lUbe6vaVDfAOMW2HSshM7PJ6GNKjT0Yw";
-        const clientSecret =
-          "ELs2eL9V_MaNK535C7pAWBEwnlMtBLZbkBcBUQw_wcXkw6kDRhuq8m0GZpME6WBjVL_qtMkdptvgvNby";
-        const subscriptionId = "I-RW678BJXRFX9";
+        if (session?.user) {
+          // Fetch user data including subscriptionId from the new API route
+          const response = await axios.post("/api/get-user-subsciptionId", {
+            userEmail: session.user.email,
+          });
 
-        const auth = {
-          username: clientId,
-          password: clientSecret,
-        };
+          const userData = response.data;
 
-        const response = await axios.get(
-          `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}`,
-          { auth },
-        );
+          // Extract subscriptionId from userData
+          const subscriptionId = userData.subscriptionId;
 
-        const status = response.data.status;
-        setSubscriptionStatus(status);
+          // Fetch subscription details using the retrieved subscriptionId
+          const clientId =
+            "AUCQ4EpGcrWEqFKt5IBAAaixzjpYUn4CH-l35TSvPFbJhcF7lUbe6vaVDfAOMW2HSshM7PJ6GNKjT0Yw";
+          const clientSecret =
+            "ELs2eL9V_MaNK535C7pAWBEwnlMtBLZbkBcBUQw_wcXkw6kDRhuq8m0GZpME6WBjVL_qtMkdptvgvNby";
 
-        // Update your database with the subscription status
-        // Implement your logic based on the status (e.g., set subscriptionActive to true/false)
+          const auth = {
+            username: clientId,
+            password: clientSecret,
+          };
+
+          const subscriptionResponse = await axios.get(
+            `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}`,
+            { auth },
+          );
+
+          const status = subscriptionResponse.data.status;
+          setSubscriptionStatus(status);
+
+          // Update your database with the updated subscription status if needed
+        }
       } catch (error) {
-        console.error("Error fetching subscription details:");
+        console.error(
+          "Error fetching user data or subscription details:",
+          error,
+        );
+      } finally {
+        // Set loading to false when the request is completed
+        setLoading(false);
       }
     };
 
-    // Fetch subscription status when the component mounts
-    fetchSubscriptionStatus();
-  }, []); // Empty dependency array ensures that this effect runs only once when the component mounts
+    // Fetch user data when the component mounts or when the session changes
+    fetchUserData();
+  }, [session]);
 
   return (
     <div className="bg-gray-100 min-h-screen flex justify-center items-start sm:pt-40 pt-20">
@@ -84,7 +101,7 @@ const DashboardPage = () => {
                   Subscription Status: {subscriptionStatus}
                 </p>
               ) : (
-                <p>Loading subscription status...</p>
+                <p>Subscription Status: Not Active</p>
               )}
             </div>
           </div>

@@ -124,117 +124,198 @@ const Page: FC<pageProps> = ({ params }) => {
     }
   };
 
-  return (
-    <div className="bg-white min-h-screen text-white pt-20">
-      <div className="container mx-auto p-6">
-        {loading ? ( // Display a loading indicator when loading is true
-          <h1 className="text-4xl font-bold mb-8 text-black text-center">
-            Loading...
-          </h1>
-        ) : videos.length === 0 ? (
-          <h1 className="text-4xl font-bold mb-8 text-black text-center">
-            This folder is empty ({decodedString})
-          </h1>
-        ) : (
-          <h1 className="text-4xl font-bold mb-8 text-black capitalize text-center ">
-            {decodedString}
-          </h1>
-        )}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {videos.map((video) => (
-            <div
-              key={video.uri}
-              className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
-            >
-              <div className="aspect-w-16 aspect-h-9">
-                <img
-                  src={video.thumbnailUri}
-                  alt="Video Thumbnail"
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <div className="p-4">
-                <h2 className="text-lg font-semibold mb-2 text-black ">
-                  {video.name}
-                </h2>
-                <p className="text-sm mb-2 text-gray-600 ">
-                  {showFullDescription && video.description}
-                  {!showFullDescription &&
-                    (video.description
-                      ? video.description.split(" ").slice(0, 10).join(" ") +
-                        " ..."
-                      : "")}
-                </p>
-                {!showFullDescription && video.description && (
-                  <button
-                    className="text-blue-500 hover:underline focus:outline-none"
-                    onClick={toggleDescription}
-                  >
-                    Read More
-                  </button>
-                )}
-                {showFullDescription && (
-                  <button
-                    className="text-blue-500 hover:underline focus:outline-none"
-                    onClick={toggleDescription}
-                  >
-                    Show Less
-                  </button>
-                )}
-                <div className="py-8">
-                  <button
-                    className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 right-4" // Position the button at the bottom-right corner
-                    onClick={() => {
-                      setSelectedVideo(video.embedHtml);
-                      setSelectedVideoData(video);
-                    }}
-                  >
-                    Play
-                  </button>
-                </div>
-                <Link
-                  href={`/user/${value}`}
-                  onClick={() => removeVideo(video.uri)}
-                  className="bg-red-800 hover:bg-red-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
-                >
-                  Remove
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
+  const [subscriptionStatus, setSubscriptionStatus] = useState(null);
+  const [loading2, setLoading2] = useState(true);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        if (session?.user) {
+          // Fetch user data including subscriptionId from the new API route
+          const response = await axios.post("/api/get-user-subsciptionId", {
+            userEmail: session.user.email,
+          });
+
+          const userData = response.data;
+
+          // Extract subscriptionId from userData
+          const subscriptionId = userData.subscriptionId;
+
+          // Fetch subscription details using the retrieved subscriptionId
+          const clientId =
+            "AUCQ4EpGcrWEqFKt5IBAAaixzjpYUn4CH-l35TSvPFbJhcF7lUbe6vaVDfAOMW2HSshM7PJ6GNKjT0Yw";
+          const clientSecret =
+            "ELs2eL9V_MaNK535C7pAWBEwnlMtBLZbkBcBUQw_wcXkw6kDRhuq8m0GZpME6WBjVL_qtMkdptvgvNby";
+
+          const auth = {
+            username: clientId,
+            password: clientSecret,
+          };
+
+          const subscriptionResponse = await axios.get(
+            `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}`,
+            { auth },
+          );
+
+          const status = subscriptionResponse.data.status;
+          setSubscriptionStatus(status);
+
+          // Update your database with the updated subscription status if needed
+        }
+      } catch (error) {
+        console.error(
+          "Error fetching user data or subscription details:",
+          error,
+        );
+      } finally {
+        // Set loading to false when the request is completed
+        setLoading2(false);
+      }
+    };
+
+    // Fetch user data when the component mounts or when the session changes
+    fetchUserData();
+  }, [session]);
+
+  if (loading2) {
+    // Display loading message while checking the subscription status
+    return (
+      <div className="text-center pt-28">
+        <h1 className="text-4xl font-semibold text-gray-700 mb-4">
+          Loading...
+        </h1>
       </div>
-      {selectedVideo && (
-        // Display the selected video player
+    );
+  }
 
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
-          <div className="video-container">
-            <div dangerouslySetInnerHTML={{ __html: selectedVideo }} />
+  if (subscriptionStatus === "ACTIVE") {
+    // Render content for users with an active subscription
+
+    return (
+      <div className="bg-white min-h-screen text-white pt-20">
+        <div className="container mx-auto p-6">
+          {loading ? ( // Display a loading indicator when loading is true
+            <h1 className="text-4xl font-bold mb-8 text-black text-center">
+              Loading...
+            </h1>
+          ) : videos.length === 0 ? (
+            <h1 className="text-4xl font-bold mb-8 text-black text-center">
+              This folder is empty ({decodedString})
+            </h1>
+          ) : (
+            <h1 className="text-4xl font-bold mb-8 text-black capitalize text-center ">
+              {decodedString}
+            </h1>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {videos.map((video) => (
+              <div
+                key={video.uri}
+                className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
+              >
+                <div className="aspect-w-16 aspect-h-9">
+                  <img
+                    src={video.thumbnailUri}
+                    alt="Video Thumbnail"
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <div className="p-4">
+                  <h2 className="text-lg font-semibold mb-2 text-black ">
+                    {video.name}
+                  </h2>
+                  <p className="text-sm mb-2 text-gray-600 ">
+                    {showFullDescription && video.description}
+                    {!showFullDescription &&
+                      (video.description
+                        ? video.description.split(" ").slice(0, 10).join(" ") +
+                          " ..."
+                        : "")}
+                  </p>
+                  {!showFullDescription && video.description && (
+                    <button
+                      className="text-blue-500 hover:underline focus:outline-none"
+                      onClick={toggleDescription}
+                    >
+                      Read More
+                    </button>
+                  )}
+                  {showFullDescription && (
+                    <button
+                      className="text-blue-500 hover:underline focus:outline-none"
+                      onClick={toggleDescription}
+                    >
+                      Show Less
+                    </button>
+                  )}
+                  <div className="py-8">
+                    <button
+                      className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 right-4" // Position the button at the bottom-right corner
+                      onClick={() => {
+                        setSelectedVideo(video.embedHtml);
+                        setSelectedVideoData(video);
+                      }}
+                    >
+                      Play
+                    </button>
+                  </div>
+                  <Link
+                    href={`/user/${value}`}
+                    onClick={() => removeVideo(video.uri)}
+                    className="bg-red-800 hover:bg-red-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
+                  >
+                    Remove
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
-
-          <button
-            className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
-            onClick={() => setSelectedVideo(null)} // Close the video player
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
         </div>
-      )}
-    </div>
-  );
+        {selectedVideo && (
+          // Display the selected video player
+
+          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
+            <div className="video-container">
+              <div dangerouslySetInnerHTML={{ __html: selectedVideo }} />
+            </div>
+
+            <button
+              className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
+              onClick={() => setSelectedVideo(null)} // Close the video player
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  } else {
+    // Render content for users without an active subscription
+    return (
+      <div className="text-center mt-28">
+        <h1 className="text-4xl font-semibold text-gray-700 mb-4">
+          Your subscription is not active. Please login & subscribe to access
+          this page.
+        </h1>
+        <Link href="/login">
+          <span className="text-[#EF8354] text-lg">Login</span>
+        </Link>
+      </div>
+    );
+  }
 };
 
 export default Page;

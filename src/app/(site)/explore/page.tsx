@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useSession, signOut } from "next-auth/react";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 const Page = () => {
   const [videos, setVideos] = useState<any[]>([]);
@@ -232,259 +233,339 @@ const Page = () => {
     }
   };
 
-  return (
-    <div className="bg-white min-h-screen pt-20">
-      <div className="container mx-auto p-6">
-        <div className="mx-auto max-w-7xl px-8 pb-10">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-base font-semibold leading-7 text-[#990011]">
-              Your Journey, Your Rules
-            </h2>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Explore Video Your Way
-            </p>
+  const [subscriptionStatus, setSubscriptionStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        if (session?.user) {
+          // Fetch user data including subscriptionId from the new API route
+          const response = await axios.post("/api/get-user-subsciptionId", {
+            userEmail: session.user.email,
+          });
+
+          const userData = response.data;
+
+          // Extract subscriptionId from userData
+          const subscriptionId = userData.subscriptionId;
+
+          // Fetch subscription details using the retrieved subscriptionId
+          const clientId =
+            "AUCQ4EpGcrWEqFKt5IBAAaixzjpYUn4CH-l35TSvPFbJhcF7lUbe6vaVDfAOMW2HSshM7PJ6GNKjT0Yw";
+          const clientSecret =
+            "ELs2eL9V_MaNK535C7pAWBEwnlMtBLZbkBcBUQw_wcXkw6kDRhuq8m0GZpME6WBjVL_qtMkdptvgvNby";
+
+          const auth = {
+            username: clientId,
+            password: clientSecret,
+          };
+
+          const subscriptionResponse = await axios.get(
+            `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}`,
+            { auth },
+          );
+
+          const status = subscriptionResponse.data.status;
+          setSubscriptionStatus(status);
+
+          // Update your database with the updated subscription status if needed
+        }
+      } catch (error) {
+        console.error(
+          "Error fetching user data or subscription details:",
+          error,
+        );
+      } finally {
+        // Set loading to false when the request is completed
+        setLoading(false);
+      }
+    };
+
+    // Fetch user data when the component mounts or when the session changes
+    fetchUserData();
+  }, [session]);
+
+  if (loading) {
+    // Display loading message while checking the subscription status
+    return (
+      <div className="text-center pt-28">
+        <h1 className="text-4xl font-semibold text-gray-700 mb-4">
+          Loading...
+        </h1>
+      </div>
+    );
+  }
+
+  if (subscriptionStatus === "ACTIVE") {
+    // Render content for users with an active subscription
+    return (
+      <div className="bg-white min-h-screen pt-20">
+        <div className="container mx-auto p-6">
+          <div className="mx-auto max-w-7xl px-8 pb-10">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="text-base font-semibold leading-7 text-[#990011]">
+                Your Journey, Your Rules
+              </h2>
+              <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                Explore Video Your Way
+              </p>
+            </div>
           </div>
-        </div>
-        <form onSubmit={handleSearch} className="mb-8">
-          <div className="flex items-center relative">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search for videos..."
-              className="w-full p-3 rounded-l-xl bg-white text-black focus:outline-none border-slate-500 border-2 focus:ring-0 "
-            />
-            <button
-              type="submit"
-              className="bg-slate-500 hover:bg-slate-700 p-3
+          <form onSubmit={handleSearch} className="mb-8">
+            <div className="flex items-center relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search for videos..."
+                className="w-full p-3 rounded-l-xl bg-white text-black focus:outline-none border-slate-500 border-2 focus:ring-0 "
+              />
+              <button
+                type="submit"
+                className="bg-slate-500 hover:bg-slate-700 p-3
                rounded-r-xl focus:outline-none border-slate-500 border-2 "
-              onClick={handleSearch}
-            >
-              <span role="img" aria-label="Search icon" className="">
-                🔍
-              </span>
-            </button>
-            <button
-              className="bg-slate-500 hover:bg-slate-700 w-12 h-12 rounded-full ml-2 focus:outline-none text-2xl"
-              onClick={toggleHashtagDropdown}
-            >
-              #
-            </button>
-          </div>
-          {showHashtagDropdown && (
-            <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
-              <div className="grid sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-10 ">
-                {hashtagOptions.map((hashtag, index) => (
-                  <div
-                    key={index}
-                    className={`px-4 py-2 cursor-pointer rounded-md ${
-                      searchQuery.includes(hashtag)
-                        ? "bg-slate-700 text-white"
-                        : "bg-[#FCF6F5]"
-                    } hover:bg-slate-500`}
-                    onClick={() => handleHashtagClick(hashtag)}
-                  >
-                    {hashtag}
-                  </div>
-                ))}
-              </div>
+                onClick={handleSearch}
+              >
+                <span role="img" aria-label="Search icon" className="">
+                  🔍
+                </span>
+              </button>
+              <button
+                className="bg-slate-500 hover:bg-slate-700 w-12 h-12 rounded-full ml-2 focus:outline-none text-2xl"
+                onClick={toggleHashtagDropdown}
+              >
+                #
+              </button>
             </div>
-          )}
-        </form>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {videos.map((video) => (
-            <div
-              key={video.uri}
-              className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
-            >
-              <div className="aspect-w-16 aspect-h-9">
-                <img
-                  src={video.thumbnailUri}
-                  alt="Video Thumbnail"
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <div className="p-4">
-                <h2 className="text-lg font-semibold mb-2 text-black">
-                  {video.name}
-                </h2>
-                <p className="text-sm mb-2 text-gray-600 ">
-                  {showFullDescription && video.description}
-                  {!showFullDescription &&
-                    (video.description
-                      ? video.description.split(" ").slice(0, 10).join(" ") +
-                        " ..."
-                      : "")}
-                </p>
-                {!showFullDescription && video.description && (
-                  <button
-                    className="text-blue-500 hover:underline focus:outline-none"
-                    onClick={toggleDescription}
-                  >
-                    Read More
-                  </button>
-                )}
-                {showFullDescription && (
-                  <button
-                    className="text-blue-500 hover:underline focus:outline-none"
-                    onClick={toggleDescription}
-                  >
-                    Show Less
-                  </button>
-                )}
-                <div className="py-8">
-                  <button
-                    className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 right-4" // Position the button at the bottom-right corner
-                    onClick={() => {
-                      setSelectedVideo(video.embedHtml);
-                      setSelectedVideoData(video);
-                    }}
-                  >
-                    Play
-                  </button>
-                </div>
-                <button
-                  className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
-                  onClick={() => {
-                    setSelectedVideoUri(video.uri); // Set the selected video URI
-                    openModal(); // Open the modal
-                    theUserId();
-                  }}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "50%",
-                    fontSize: "24px",
-                  }}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          ))}
-          {showModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className="w-96 p-4 rounded-lg shadow-lg bg-white text-black relative">
-                <button
-                  className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-500 p-2 rounded-full hover:bg-red-600 transition-all duration-300"
-                  onClick={closeModal} // Close the video player
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-                <h2 className="text-2xl mb-4 font-semibold">
-                  Save video to...
-                </h2>
-                <ul className="space-y-3 capitalize font-semibold pt-6">
-                  {folderNames.map((folderName) => (
-                    <li
-                      key={folderName}
-                      className="flex items-center justify-between"
+            {showHashtagDropdown && (
+              <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
+                <div className="grid sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-10 ">
+                  {hashtagOptions.map((hashtag, index) => (
+                    <div
+                      key={index}
+                      className={`px-4 py-2 cursor-pointer rounded-md ${
+                        searchQuery.includes(hashtag)
+                          ? "bg-slate-700 text-white"
+                          : "bg-[#FCF6F5]"
+                      } hover:bg-slate-500`}
+                      onClick={() => handleHashtagClick(hashtag)}
                     >
-                      <span className="text-lg">{folderName}</span>
-                      <button
-                        className="ml-2 px-4 py-2 rounded-md bg-[#2D3142] hover:bg-[#4F5D75] text-white  focus:outline-none font-normal"
-                        onClick={() => {
-                          addToFavorites(selectedVideoUri, folderName);
-                          closeModal(); // Close the modal after addToFavorites
-                        }}
-                      >
-                        Add to Folder
-                      </button>
-                    </li>
+                      {hashtag}
+                    </div>
                   ))}
-                </ul>
-                <div className="mt-4">
-                  {showForm ? null : (
+                </div>
+              </div>
+            )}
+          </form>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {videos.map((video) => (
+              <div
+                key={video.uri}
+                className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
+              >
+                <div className="aspect-w-16 aspect-h-9">
+                  <img
+                    src={video.thumbnailUri}
+                    alt="Video Thumbnail"
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <div className="p-4">
+                  <h2 className="text-lg font-semibold mb-2 text-black">
+                    {video.name}
+                  </h2>
+                  <p className="text-sm mb-2 text-gray-600 ">
+                    {showFullDescription && video.description}
+                    {!showFullDescription &&
+                      (video.description
+                        ? video.description.split(" ").slice(0, 10).join(" ") +
+                          " ..."
+                        : "")}
+                  </p>
+                  {!showFullDescription && video.description && (
                     <button
-                      className="text-white py-2 px-4 rounded-md bg-[#EF8354] hover:bg-[#D9713C] focus:outline-none"
-                      onClick={openForm}
+                      className="text-blue-500 hover:underline focus:outline-none"
+                      onClick={toggleDescription}
                     >
-                      Create New Playlist
+                      Read More
                     </button>
                   )}
+                  {showFullDescription && (
+                    <button
+                      className="text-blue-500 hover:underline focus:outline-none"
+                      onClick={toggleDescription}
+                    >
+                      Show Less
+                    </button>
+                  )}
+                  <div className="py-8">
+                    <button
+                      className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 right-4" // Position the button at the bottom-right corner
+                      onClick={() => {
+                        setSelectedVideo(video.embedHtml);
+                        setSelectedVideoData(video);
+                      }}
+                    >
+                      Play
+                    </button>
+                  </div>
+                  <button
+                    className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
+                    onClick={() => {
+                      setSelectedVideoUri(video.uri); // Set the selected video URI
+                      openModal(); // Open the modal
+                      theUserId();
+                    }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      fontSize: "24px",
+                    }}
+                  >
+                    +
+                  </button>
                 </div>
-                {showForm && (
-                  <form onSubmit={handleSubmit} className="mt-4">
-                    <label className="block mb-2">
-                      <span className="text-lg font-semibold">Name:</span>
-                      <input
-                        type="text"
-                        value={playlistName}
-                        onChange={handlePlaylistNameChange}
-                        className="w-full rounded-md bg-gray-100 text-black py-1 px-2 focus:outline-none"
-                        placeholder="Enter Playlist name..."
+              </div>
+            ))}
+            {showModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="w-96 p-4 rounded-lg shadow-lg bg-white text-black relative">
+                  <button
+                    className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-500 p-2 rounded-full hover:bg-red-600 transition-all duration-300"
+                    onClick={closeModal} // Close the video player
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
                       />
-                    </label>
-                    <div className="mt-2">
+                    </svg>
+                  </button>
+                  <h2 className="text-2xl mb-4 font-semibold">
+                    Save video to...
+                  </h2>
+                  <ul className="space-y-3 capitalize font-semibold pt-6">
+                    {folderNames.map((folderName) => (
+                      <li
+                        key={folderName}
+                        className="flex items-center justify-between"
+                      >
+                        <span className="text-lg">{folderName}</span>
+                        <button
+                          className="ml-2 px-4 py-2 rounded-md bg-[#2D3142] hover:bg-[#4F5D75] text-white  focus:outline-none font-normal"
+                          onClick={() => {
+                            addToFavorites(selectedVideoUri, folderName);
+                            closeModal(); // Close the modal after addToFavorites
+                          }}
+                        >
+                          Add to Folder
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-4">
+                    {showForm ? null : (
                       <button
                         className="text-white py-2 px-4 rounded-md bg-[#EF8354] hover:bg-[#D9713C] focus:outline-none"
-                        type="submit"
+                        onClick={openForm}
                       >
-                        Create
+                        Create New Playlist
                       </button>
-                    </div>
-                  </form>
-                )}
+                    )}
+                  </div>
+                  {showForm && (
+                    <form onSubmit={handleSubmit} className="mt-4">
+                      <label className="block mb-2">
+                        <span className="text-lg font-semibold">Name:</span>
+                        <input
+                          type="text"
+                          value={playlistName}
+                          onChange={handlePlaylistNameChange}
+                          className="w-full rounded-md bg-gray-100 text-black py-1 px-2 focus:outline-none"
+                          placeholder="Enter Playlist name..."
+                        />
+                      </label>
+                      <div className="mt-2">
+                        <button
+                          className="text-white py-2 px-4 rounded-md bg-[#EF8354] hover:bg-[#D9713C] focus:outline-none"
+                          type="submit"
+                        >
+                          Create
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-        <div className="mt-8">
-          <button
-            className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-6 py-4 rounded-md focus:outline-none"
-            onClick={loadMore}
-          >
-            Load More
-          </button>
-        </div>
-      </div>
-      {selectedVideo && (
-        // Display the selected video player
-
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
-          <div className="video-container">
-            <div dangerouslySetInnerHTML={{ __html: selectedVideo }} />
+            )}
           </div>
-
-          <button
-            className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
-            onClick={() => setSelectedVideo(null)} // Close the video player
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          <div className="mt-8">
+            <button
+              className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-6 py-4 rounded-md focus:outline-none"
+              onClick={loadMore}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
+              Load More
+            </button>
+          </div>
         </div>
-      )}
-    </div>
-  );
+        {selectedVideo && (
+          // Display the selected video player
+
+          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
+            <div className="video-container">
+              <div dangerouslySetInnerHTML={{ __html: selectedVideo }} />
+            </div>
+
+            <button
+              className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
+              onClick={() => setSelectedVideo(null)} // Close the video player
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  } else {
+    // Render content for users without an active subscription
+    return (
+      <div className="text-center mt-28">
+        <h1 className="text-4xl font-semibold text-gray-700 mb-4">
+          Your subscription is not active. Please login & subscribe to access
+          this page.
+        </h1>
+        <Link href="/login">
+          <span className="text-[#EF8354] text-lg">Login</span>
+        </Link>
+      </div>
+    );
+  }
 };
 
 export default Page;
