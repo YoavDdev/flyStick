@@ -30,14 +30,14 @@ export default function Pricing() {
 
       const data = await response.json();
 
-      if (data.success) {
-        toast.success(data.message);
-      } else {
-        toast.error(data.message);
-      }
+      // if (data.success) {
+      //   toast.success(data.message);
+      // } else {
+      //   toast.error(data.message);
+      // }
     } catch (error) {
       console.error("Error saving order ID:", error);
-      toast.error("Failed to save order ID. Please try again.");
+      // toast.error("Failed to save order ID. Please try again.");
     }
   };
 
