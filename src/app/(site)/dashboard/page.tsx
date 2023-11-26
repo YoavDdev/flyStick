@@ -90,19 +90,31 @@ const DashboardPage = () => {
               link="/user"
             />
 
-            <DashboardCard
-              title="Payment Section"
-              description="Manage your subscription and unlock exclusive features."
-              link="/#Pricing"
-            />
-            <div>
-              {subscriptionStatus !== null ? (
-                <p className="text-green-500">
-                  Subscription Status: {subscriptionStatus}
-                </p>
-              ) : (
-                <p>Subscription Status: Not Active</p>
-              )}
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <h3 className="text-lg font-extrabold text-[#2D3142] mb-2">
+                Payment Section
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Manage your subscription and unlock exclusive features.
+              </p>
+              <div className="text-gray-600 ">
+                {subscriptionStatus !== null ? (
+                  <p>
+                    Subscription Status:{" "}
+                    <span className="text-green-500">{subscriptionStatus}</span>
+                  </p>
+                ) : (
+                  <p>
+                    Subscription Status:{" "}
+                    <span className="text-red-600">Not Active</span>
+                  </p>
+                )}
+              </div>
+              <Link href="/#Pricing">
+                <span className="text-[#EF8354] hover:underline">
+                  Explore More &rarr;
+                </span>
+              </Link>
             </div>
           </div>
         </div>

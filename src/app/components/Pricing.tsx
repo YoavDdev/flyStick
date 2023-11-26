@@ -4,6 +4,7 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { PrismaClient } from "@prisma/client";
+import Link from "next/link";
 
 const prisma = new PrismaClient();
 
@@ -136,8 +137,13 @@ export default function Pricing() {
                     </PayPalScriptProvider>
                   </div>
                 ) : (
-                  <div className="mt-6">
-                    <h1 className="text-2xl">Please LogIn to subscribe.</h1>
+                  <div className="mt-5 flex items-center justify-center gap-x-6">
+                    <Link
+                      href="/register"
+                      className="rounded-md bg-[#2D3142] px-6 py-3 text-lg text-white shadow-md hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                      Get started
+                    </Link>
                   </div>
                 )}
                 <p className="mt-6 text-xs leading-5 text-gray-600">
