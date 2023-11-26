@@ -1,5 +1,11 @@
+"use client";
 import { CheckIcon } from "@heroicons/react/20/solid";
-import Link from "next/link";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const includedFeatures = [
   "Hundreds of hours of lessons, exercises, and lectures",
@@ -9,6 +15,31 @@ const includedFeatures = [
 ];
 
 export default function Pricing() {
+  const { data: session } = useSession();
+
+  const saveOrderInDatabase = async (orderId: any, email: any) => {
+    try {
+      const response = await fetch("/api/add-subscriptionId", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ orderId, email }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error("Error saving order ID:", error);
+      toast.error("Failed to save order ID. Please try again.");
+    }
+  };
+
   return (
     <div id="Pricing" className="bg-white p-10">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -56,14 +87,59 @@ export default function Pricing() {
                     NIS
                   </span>
                 </p>
-
-                <Link
-                  href={"/login"}
-                  className="mt-10 block w-full rounded-md bg-[#2D3142] px-3 py-2 text-center text-sm text-white shadow-sm hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  Get Started
-                </Link>
-
+                {session?.user ? (
+                  <div className="mt-6">
+                    <PayPalScriptProvider
+                      options={{
+                        clientId:
+                          "AUCQ4EpGcrWEqFKt5IBAAaixzjpYUn4CH-l35TSvPFbJhcF7lUbe6vaVDfAOMW2HSshM7PJ6GNKjT0Yw",
+                        components: "buttons",
+                        intent: "subscription",
+                        vault: true,
+                      }}
+                    >
+                      <PayPalButtons
+                        style={{
+                          color: "gold",
+                          shape: "rect",
+                          height: 50,
+                          label: "subscribe",
+                        }}
+                        createSubscription={(data, actions) => {
+                          return actions.subscription
+                            .create({
+                              plan_id: "P-54F60742AC8006918MVRA47Y",
+                            })
+                            .then((orderId) => {
+                              return orderId;
+                            })
+                            .catch((err) => {
+                              console.error(err);
+                              toast.error(
+                                "Subscription creation failed. Please try again.",
+                              );
+                              return err;
+                            });
+                        }}
+                        onApprove={(data, actions) => {
+                          return new Promise((resolve) => {
+                            if (session.user) {
+                              saveOrderInDatabase(
+                                data.subscriptionID,
+                                session.user.email,
+                              );
+                            }
+                            resolve(); // Resolve the Promise to satisfy the type requirement
+                          });
+                        }}
+                      />
+                    </PayPalScriptProvider>
+                  </div>
+                ) : (
+                  <div className="mt-6">
+                    <h1 className="text-2xl">Please LogIn to subscribe.</h1>
+                  </div>
+                )}
                 <p className="mt-6 text-xs leading-5 text-gray-600">
                   Subscription renews automatically every month. Cancel anytime.
                 </p>
@@ -75,63 +151,3 @@ export default function Pricing() {
     </div>
   );
 }
-
-/* import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import Logo from "../../../public/Flystick_logo.svg";
-import BoazJoin from "../../../public/BoazJoin.jpg";
-
-const Pricing = () => {
-  return (
-    <div className="relative">
-      <div id="Pricing" className=" bg-white p-10 flex">
-        <div className="  container mx-auto ">
-          <div className="shadow-lg flex flex-wrap w-full h-full lg:w-auto mx-auto  ">
-            <div className="border w-full md:w-1/3 ">
-              <Image
-                src={BoazJoin}
-                alt="image"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="bg-white w-full md:w-2/3">
-              <div className="h-full mx-auto px-6 md:px-0 md:pt-6 md:-ml-6">
-                <div className="bg-white lg:h-full p-6 -mt-6 md:mt-0  mb-4 md:mb-0 flex flex-wrap md:flex-wrap items-center">
-                  <div className="w-full lg:border-right lg:border-solid text-center md:text-left">
-                    <h3 className="text-lg font-semibold mb-2">
-                      Monthly Subscription - 220 NIS Only
-                    </h3>
-                    <p className="text-gray-600">
-                      Unlock the world of movement and wellness with our
-                      comprehensive monthly subscription.
-                    </p>
-                    <ul className="list-disc pl-4 mt-4">
-                      <li>Unlimited access to expert content</li>
-                      <li>Supportive community</li>
-                      <li>Improved health and well-being</li>
-                    </ul>
-                    <div className="w-full lg:w-1/5 mt-6 lg:mt-0 lg:px-4 text-center md:text-left">
-                      <Link
-                        href="/"
-                        className="px-6 py-3 inline-block bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-full hover:bg-gradient-to-r hover:from-blue-700 hover:to-blue-900 transition-colors mt-5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                      >
-                        Subscribe Now
-                      </Link>
-                      <p className="text-gray-500 text-sm mt-2">
-                        Limited time offer!
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default Pricing;
- */
