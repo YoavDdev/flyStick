@@ -29,8 +29,7 @@
     ".next/types/**/*.ts",
     "src/app/(site)/user/page.tsx",
     "src/app/api/add-to-favorites/route.js",
-    "src/app/(site)/VideoItem/page.jsx",
-    "src/app/components/ProtectedPageWrapper.js"
+    "src/app/(site)/VideoItem/page.jsx"
   ],
   "exclude": ["node_modules"]
 }

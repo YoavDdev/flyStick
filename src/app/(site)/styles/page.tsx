@@ -9,7 +9,7 @@ import exp from "constants";
 const Page = () => {
   const [folders, setFolders] = useState([]);
   const { data: session } = useSession();
-  const accessToken = "a7acf4dcfec3abd4ebab0f8162956c65";
+  const accessToken = process.env.VIMEO_TOKEN;
   const apiUrl = "https://api.vimeo.com/me/projects";
   const headers = {
     Authorization: `Bearer ${accessToken}`,

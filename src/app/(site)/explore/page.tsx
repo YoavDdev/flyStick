@@ -46,7 +46,7 @@ const Page = () => {
     }
   };
 
-  const accessToken = "a7acf4dcfec3abd4ebab0f8162956c65";
+  const accessToken = process.env.VIMEO_TOKEN;
   const apiUrl = "https://api.vimeo.com/me/videos";
   const headers = {
     Authorization: `Bearer ${accessToken}`,
@@ -239,6 +239,7 @@ const Page = () => {
 
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [subscriptionId, setSubscriptionId] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -253,16 +254,14 @@ const Page = () => {
 
           // Extract subscriptionId from userData
           const subscriptionId = userData.subscriptionId;
+          setSubscriptionId(subscriptionId);
 
-          // Fetch subscription details using the retrieved subscriptionId
-          const clientId =
-            "AUCQ4EpGcrWEqFKt5IBAAaixzjpYUn4CH-l35TSvPFbJhcF7lUbe6vaVDfAOMW2HSshM7PJ6GNKjT0Yw";
-          const clientSecret =
-            "ELs2eL9V_MaNK535C7pAWBEwnlMtBLZbkBcBUQw_wcXkw6kDRhuq8m0GZpME6WBjVL_qtMkdptvgvNby";
+          const clientId = process.env.PAYPAL_CLIENT_ID;
+          const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
           const auth = {
-            username: clientId,
-            password: clientSecret,
+            username: clientId!,
+            password: clientSecret!,
           };
 
           const subscriptionResponse = await axios.get(
@@ -301,7 +300,7 @@ const Page = () => {
     );
   }
 
-  if (subscriptionStatus === "ACTIVE") {
+  if (subscriptionId === "Admin" || subscriptionStatus === "ACTIVE") {
     // Render content for users with an active subscription
     return (
       <div className="bg-white min-h-screen pt-20">

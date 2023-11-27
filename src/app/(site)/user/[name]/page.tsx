@@ -45,7 +45,7 @@ const Page: FC<pageProps> = ({ params }) => {
         });
     }
   }, [session, params.name]);
-  const accessToken = "a7acf4dcfec3abd4ebab0f8162956c65";
+  const accessToken = process.env.VIMEO_TOKEN;
   const headers = {
     Authorization: `Bearer ${accessToken}`,
   };
@@ -126,6 +126,7 @@ const Page: FC<pageProps> = ({ params }) => {
 
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [loading2, setLoading2] = useState(true);
+  const [subscriptionId, setSubscriptionId] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -140,16 +141,15 @@ const Page: FC<pageProps> = ({ params }) => {
 
           // Extract subscriptionId from userData
           const subscriptionId = userData.subscriptionId;
+          setSubscriptionId(subscriptionId);
 
           // Fetch subscription details using the retrieved subscriptionId
-          const clientId =
-            "AUCQ4EpGcrWEqFKt5IBAAaixzjpYUn4CH-l35TSvPFbJhcF7lUbe6vaVDfAOMW2HSshM7PJ6GNKjT0Yw";
-          const clientSecret =
-            "ELs2eL9V_MaNK535C7pAWBEwnlMtBLZbkBcBUQw_wcXkw6kDRhuq8m0GZpME6WBjVL_qtMkdptvgvNby";
+          const clientId = process.env.PAYPAL_CLIENT_ID;
+          const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
           const auth = {
-            username: clientId,
-            password: clientSecret,
+            username: clientId!,
+            password: clientSecret!,
           };
 
           const subscriptionResponse = await axios.get(
@@ -169,7 +169,7 @@ const Page: FC<pageProps> = ({ params }) => {
         );
       } finally {
         // Set loading to false when the request is completed
-        setLoading2(false);
+        setLoading(false);
       }
     };
 
@@ -177,7 +177,7 @@ const Page: FC<pageProps> = ({ params }) => {
     fetchUserData();
   }, [session]);
 
-  if (loading2) {
+  if (loading) {
     // Display loading message while checking the subscription status
     return (
       <div className="text-center pt-28">
@@ -188,7 +188,7 @@ const Page: FC<pageProps> = ({ params }) => {
     );
   }
 
-  if (subscriptionStatus === "ACTIVE") {
+  if (subscriptionId === "Admin" || subscriptionStatus === "ACTIVE") {
     // Render content for users with an active subscription
 
     return (
