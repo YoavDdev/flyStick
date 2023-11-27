@@ -155,6 +155,10 @@ const Page = () => {
     setDescriptionQuery(searchQuery);
   };
 
+  const closeHashtagDropdown = () => {
+    setShowHashtagDropdown(false);
+  };
+
   const loadMore = () => {
     // Increment the current page to fetch the next page of videos
     setCurrentPage(currentPage + 1); // Increment currentPage here
@@ -325,7 +329,10 @@ const Page = () => {
                 type="submit"
                 className="bg-slate-500 hover:bg-slate-700 p-3
                rounded-r-xl focus:outline-none border-slate-500 border-2 "
-                onClick={handleSearch}
+                onClick={(e) => {
+                  handleSearch(e);
+                  closeHashtagDropdown();
+                }}
               >
                 <span role="img" aria-label="Search icon" className="">
                   🔍
