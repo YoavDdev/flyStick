@@ -25,14 +25,12 @@ const DashboardPage = () => {
           const subscriptionId = userData.subscriptionId;
 
           // Fetch subscription details using the retrieved subscriptionId
-          const clientId =
-            "AUCQ4EpGcrWEqFKt5IBAAaixzjpYUn4CH-l35TSvPFbJhcF7lUbe6vaVDfAOMW2HSshM7PJ6GNKjT0Yw";
-          const clientSecret =
-            "ELs2eL9V_MaNK535C7pAWBEwnlMtBLZbkBcBUQw_wcXkw6kDRhuq8m0GZpME6WBjVL_qtMkdptvgvNby";
+          const clientId = process.env.PAYPAL_CLIENT_ID;
+          const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
           const auth = {
-            username: clientId,
-            password: clientSecret,
+            username: clientId!,
+            password: clientSecret!,
           };
 
           const subscriptionResponse = await axios.get(
