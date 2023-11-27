@@ -124,7 +124,7 @@ const Register = () => {
         <div className="p-6">
           <button
             onClick={() => signIn("google")}
-            className="flex w-full justify-center vpx-4 py-1.5 px-3 border gap-2 border-slate-200 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150"
+            className="flex w-full justify-center vpx-4 py-1.5 px-3 border gap-2 border-slate-300 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150"
           >
             <img
               className="w-6 h-6"
@@ -134,7 +134,7 @@ const Register = () => {
             />
             Continue with Google
           </button>
-          <button
+          {/* <button
             onClick={() => signIn("facebook")}
             className="flex w-full justify-center vpx-4 py-1.5 px-3 border mt-2 gap-2 border-slate-200 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150"
           >
@@ -145,7 +145,7 @@ const Register = () => {
               alt="google logo"
             />
             Continue with Facebook
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
