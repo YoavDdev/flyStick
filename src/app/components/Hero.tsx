@@ -22,16 +22,16 @@ const Hero = () => {
               <h1 className="text-4xl font-bold tracking-tight text-[#EF8354] sm:text-6xl  mb-4 text-center">
                 Boaz Nahaisi&apos;s Online Studio
               </h1>
-              <p className="mt-6 text-gray-600 sm:text-xl">
+              <p className="mt-6 text-gray-600 sm:text-xl text-center">
                 Dive into a Vast Collection of Lessons and Exercises, Expertly
                 Curated to Enhance Your Body-Mind Connection and Elevate Your
                 Well-Being with Varied Training Techniques and Difficulty
                 Levels.
               </p>
-              <div className="mt-10 flex items-center gap-x-6">
+              <div className="mt-10 flex items-center justify-center">
                 <a
                   href="/register"
-                  className="rounded-md bg-[#2D3142] px-3.5 py-2.5 text-sm  text-white shadow-sm hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   Get started
                 </a>
@@ -54,11 +54,11 @@ const Hero = () => {
         /> */}
         <Image
           src={BoazMain_Clean}
-          height={10000}
-          width={10000}
+          height={800}
+          width={1200}
           alt="BoazMain"
           quality={100}
-          className="aspect-[3/2] object-cover lg:aspect-auto sm:h-full sm:w-full mr-96"
+          className="object-cover w-full h-full "
           priority
         />
       </div>

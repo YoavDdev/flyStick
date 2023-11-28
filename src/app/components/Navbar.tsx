@@ -101,7 +101,7 @@ const Navbar = () => {
         !isTransparent ? " bg-[#FCF6F5] bg-opacity-75 " : "bg-[#FCF6F5] "
       }`}
     >
-      <div className="flex justify-between items-center h-full w-full px-4 lg:px-16">
+      <div className="flex justify-between items-center h-full w-full px-4 lg:px-4">
         <Link href="/">
           <Image
             src={Logo}
