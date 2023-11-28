@@ -563,11 +563,10 @@ const Page = () => {
     return (
       <div className="text-center mt-28">
         <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-          Your subscription is not active. Please login & subscribe to access
-          this page.
+          Your subscription is not active.
         </h1>
-        <Link href="/login">
-          <span className="text-[#EF8354] text-lg">Login</span>
+        <Link href="/#Pricing">
+          <span className="text-[#EF8354] text-lg">Pricing</span>
         </Link>
       </div>
     );
