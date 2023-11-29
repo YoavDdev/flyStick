@@ -1,13 +1,6 @@
-// /pages/api/cancel-subscription.js
+// cancel-subscription.js
+import prisma from "../../libs/prismadb";
 import { NextResponse } from "next/server";
-import { SubscriptionCancelRequest } from "@paypal/checkout-server-sdk";
-import { PayPalClient } from "your-paypal-sdk-package"; // Replace with the actual PayPal SDK package you are using
-
-// Initialize the PayPal SDK with your credentials
-const paypalClient = new PayPalClient({
-  clientId: process.env.PAYPAL_CLIENT_ID,
-  clientSecret: process.env.PAYPAL_CLIENT_SECRET,
-});
 
 export async function POST(request) {
   try {
@@ -34,24 +27,25 @@ export async function POST(request) {
       return new NextResponse("User not found", { status: 404 });
     }
 
-    // Construct the request to cancel the subscription
-    const cancelRequest = new SubscriptionCancelRequest(user.subscriptionId);
+    // In a real implementation, replace the following lines with the actual cancellation logic
+    // For example, make a request to your payment provider's API to cancel the subscription
 
-    // Call the PayPal API to cancel the subscription
-    const cancelResponse = await paypalClient
-      .subscriptions()
-      .cancel(cancelRequest);
+    // Simulating a successful cancellation
+    console.log("Subscription canceled successfully");
 
-    if (cancelResponse.result.status === "CANCELLED") {
-      // Subscription successfully canceled
-      // You may want to update your database or perform other cleanup tasks
+    // Update the user's subscription status in the database
+    await prisma.user.update({
+      where: {
+        email: userEmail,
+      },
+      data: {
+        subscriptionId: null,
+      },
+    });
 
-      return new NextResponse(JSON.stringify({ success: true }));
-    } else {
-      // Failed to cancel subscription
-      console.log("Failed to cancel subscription:", cancelResponse.result);
-      return new NextResponse("Failed to cancel subscription", { status: 500 });
-    }
+    return new NextResponse("Subscription canceled successfully", {
+      status: 200,
+    });
   } catch (error) {
     console.error("Error canceling subscription:", error);
     return new NextResponse("Internal Server Error", { status: 500 });

@@ -28,13 +28,8 @@ export async function POST(request) {
       },
     });
   } catch (error) {
-    console.error("Error saving order ID:", error);
-    return new NextResponse({
-      status: 500,
-      body: {
-        success: false,
-        message: "Failed to save order ID. Please try again.",
-      },
-    });
+    console.error("Error canceling subscription:", error);
+    console.error(error.stack); // Log the stack trace for detailed information
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
