@@ -97,7 +97,7 @@ const DashboardPage = () => {
 
           if (cancellationResponse.status === 204) {
             // Subscription canceled successfully
-            setSubscriptionStatus("CANCELED");
+            setSubscriptionStatus("CANCELLED");
             console.log("Subscription canceled successfully");
           } else {
             console.log(
@@ -160,7 +160,7 @@ const DashboardPage = () => {
                   {subscriptionStatus !== null ? (
                     <p className="text-gray-600 mb-10">
                       Subscription Status:{" "}
-                      <span className="text-green-500 ">
+                      <span className="text-yellow-600 ">
                         {subscriptionStatus}
                       </span>
                     </p>
@@ -183,7 +183,7 @@ const DashboardPage = () => {
                         Click the button to cancel your subscription.
                       </p>
                     </>
-                  ) : subscriptionStatus === "CANCELED" ? (
+                  ) : subscriptionStatus === "CANCELLED" ? (
                     <Link href="/#Pricing">
                       <span className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out">
                         Renew your subscription
