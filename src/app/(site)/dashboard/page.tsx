@@ -64,31 +64,21 @@ const DashboardPage = () => {
   const cancelSubscription = async () => {
     try {
       if (session?.user) {
-        // Ask for confirmation before canceling subscription
-        const confirmed = window.confirm(
-          "Are you sure you want to cancel your subscription? You will lose access to the content immediately.",
+        // Make a request to cancel subscription
+        const cancellationResponse = await axios.post(
+          "/api/cancel-subscription",
+          {
+            userEmail: session.user.email,
+          },
         );
 
-        if (confirmed) {
-          // Make a request to cancel subscription
-          const cancellationResponse = await axios.post(
-            "/api/cancel-subscription",
-            {
-              userEmail: session.user.email,
-            },
-          );
-
-          if (cancellationResponse.status === 200) {
-            // Subscription canceled successfully
-            setSubscriptionStatus("CANCELED");
-            console.log("Subscription canceled successfully");
-          } else {
-            console.log("Failed to cancel subscription");
-            // Handle the case where the cancellation request was not successful
-          }
+        if (cancellationResponse.status === 200) {
+          // Subscription canceled successfully
+          setSubscriptionStatus("CANCELED");
+          console.log("Subscription canceled successfully");
         } else {
-          console.log("User canceled the subscription cancellation");
-          // Handle the case where the user canceled the subscription cancellation
+          console.log("Failed to cancel subscription");
+          // Handle the case where the cancellation request was not successful
         }
       } else {
         console.log("User session or user data not available");
