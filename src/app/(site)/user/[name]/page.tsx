@@ -169,7 +169,7 @@ const Page: FC<pageProps> = ({ params }) => {
         );
       } finally {
         // Set loading to false when the request is completed
-        setLoading(false);
+        setLoading2(false);
       }
     };
 
@@ -177,7 +177,7 @@ const Page: FC<pageProps> = ({ params }) => {
     fetchUserData();
   }, [session]);
 
-  if (loading) {
+  if (loading2) {
     // Display loading message while checking the subscription status
     return (
       <div className="text-center pt-28">
@@ -198,7 +198,7 @@ const Page: FC<pageProps> = ({ params }) => {
             <h1 className="text-4xl font-bold mb-8 text-black text-center">
               Loading...
             </h1>
-          ) : videos.length === 0 ? (
+          ) : videos.length < 0 ? (
             <h1 className="text-4xl font-bold mb-8 text-black text-center">
               This folder is empty ({decodedString})
             </h1>
@@ -309,9 +309,14 @@ const Page: FC<pageProps> = ({ params }) => {
         <h1 className="text-4xl font-semibold text-gray-700 mb-4">
           Your subscription is not active.
         </h1>
-        <Link href="/#Pricing">
-          <span className="text-[#EF8354] text-lg">Pricing</span>
-        </Link>
+        <div className="mt-10 flex items-center justify-center">
+          <a
+            href="/#Pricing"
+            className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Subscribe here
+          </a>
+        </div>
       </div>
     );
   }

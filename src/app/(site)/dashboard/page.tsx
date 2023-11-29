@@ -92,27 +92,31 @@ const DashboardPage = () => {
               <h3 className="text-lg font-extrabold text-[#2D3142] mb-2">
                 Payment Section
               </h3>
-              <p className="text-gray-600 mb-4">
-                Manage your subscription and unlock exclusive features.
-              </p>
-              <div className="text-gray-600 ">
-                {subscriptionStatus !== null ? (
-                  <p>
-                    Subscription Status:{" "}
-                    <span className="text-green-500">{subscriptionStatus}</span>
-                  </p>
-                ) : (
-                  <p>
-                    Subscription Status:{" "}
-                    <span className="text-red-600">Not Active</span>
-                  </p>
-                )}
-              </div>
-              <Link href="/#Pricing">
-                <span className="text-[#EF8354] hover:underline">
-                  Explore More &rarr;
-                </span>
-              </Link>
+              {subscriptionStatus !== null ? (
+                <p className="text-gray-600 mb-10">
+                  Subscription Status:{" "}
+                  <span className="text-green-500 ">{subscriptionStatus}</span>
+                </p>
+              ) : (
+                <p className="text-gray-600 mb-10">
+                  Subscription Status:{" "}
+                  <span className="text-red-600">Not Active</span>
+                </p>
+              )}
+
+              {subscriptionStatus === "ACTIVE" ? (
+                <button className="bg-green-500 text-white py-2 px-4 rounded-md">
+                  You are subscribed
+                </button>
+              ) : subscriptionStatus === "CANCELED" ? (
+                <button className="bg-red-500 text-white py-2 px-4 rounded-md">
+                  Renew your subscription
+                </button>
+              ) : (
+                <button className="bg-red-500 text-white py-2 px-4 rounded-md">
+                  Activate subscription
+                </button>
+              )}
             </div>
           </div>
         </div>
