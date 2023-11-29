@@ -160,7 +160,7 @@ const DashboardPage = () => {
                   {subscriptionStatus !== null ? (
                     <p className="text-gray-600 mb-10">
                       Subscription Status:{" "}
-                      <span className="text-yellow-600 ">
+                      <span className="text-yellow-500 ">
                         {subscriptionStatus}
                       </span>
                     </p>
