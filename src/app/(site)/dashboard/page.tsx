@@ -105,17 +105,23 @@ const DashboardPage = () => {
               )}
 
               {subscriptionStatus === "ACTIVE" ? (
-                <button className="bg-green-500 text-white py-2 px-4 rounded-md">
-                  You are subscribed
-                </button>
+                <Link href="/dashboard">
+                  <span className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300 ease-in-out">
+                    You are subscribed
+                  </span>
+                </Link>
               ) : subscriptionStatus === "CANCELED" ? (
-                <button className="bg-red-500 text-white py-2 px-4 rounded-md">
-                  Renew your subscription
-                </button>
+                <Link href="/#Pricing">
+                  <span className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out">
+                    Renew your subscription
+                  </span>
+                </Link>
               ) : (
-                <button className="bg-red-500 text-white py-2 px-4 rounded-md">
-                  Activate subscription
-                </button>
+                <Link href="/#Pricing">
+                  <span className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out">
+                    Activate subscription
+                  </span>
+                </Link>
               )}
             </div>
           </div>
