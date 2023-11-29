@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import DashboardCard from "../../components/DashboardCard";
 import axios from "axios";
+
 const DashboardPage = () => {
   const { data: session } = useSession();
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
@@ -92,36 +93,44 @@ const DashboardPage = () => {
               <h3 className="text-lg font-extrabold text-[#2D3142] mb-2">
                 Payment Section
               </h3>
-              {subscriptionStatus !== null ? (
-                <p className="text-gray-600 mb-10">
-                  Subscription Status:{" "}
-                  <span className="text-green-500 ">{subscriptionStatus}</span>
-                </p>
+              {loading ? (
+                <p className="text-gray-600 mb-10">Loading...</p>
               ) : (
-                <p className="text-gray-600 mb-10">
-                  Subscription Status:{" "}
-                  <span className="text-red-600">Not Active</span>
-                </p>
-              )}
+                <>
+                  {subscriptionStatus !== null ? (
+                    <p className="text-gray-600 mb-10">
+                      Subscription Status:{" "}
+                      <span className="text-green-500 ">
+                        {subscriptionStatus}
+                      </span>
+                    </p>
+                  ) : (
+                    <p className="text-gray-600 mb-10">
+                      Subscription Status:{" "}
+                      <span className="text-red-600">Not Active</span>
+                    </p>
+                  )}
 
-              {subscriptionStatus === "ACTIVE" ? (
-                <Link href="/dashboard">
-                  <span className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300 ease-in-out">
-                    You are subscribed
-                  </span>
-                </Link>
-              ) : subscriptionStatus === "CANCELED" ? (
-                <Link href="/#Pricing">
-                  <span className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out">
-                    Renew your subscription
-                  </span>
-                </Link>
-              ) : (
-                <Link href="/#Pricing">
-                  <span className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out">
-                    Activate subscription
-                  </span>
-                </Link>
+                  {subscriptionStatus === "ACTIVE" ? (
+                    <Link href="/dashboard">
+                      <span className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300 ease-in-out">
+                        You are subscribed
+                      </span>
+                    </Link>
+                  ) : subscriptionStatus === "CANCELED" ? (
+                    <Link href="/#Pricing">
+                      <span className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out">
+                        Renew your subscription
+                      </span>
+                    </Link>
+                  ) : (
+                    <Link href="/#Pricing">
+                      <span className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out">
+                        Activate subscription
+                      </span>
+                    </Link>
+                  )}
+                </>
               )}
             </div>
           </div>
