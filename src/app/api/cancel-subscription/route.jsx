@@ -1,8 +1,13 @@
 // /pages/api/cancel-subscription.js
 import { NextResponse } from "next/server";
 import { SubscriptionCancelRequest } from "@paypal/checkout-server-sdk";
+import { PayPalClient } from "your-paypal-sdk-package"; // Replace with the actual PayPal SDK package you are using
 
-// Import the necessary PayPal SDK and initialize it with your credentials
+// Initialize the PayPal SDK with your credentials
+const paypalClient = new PayPalClient({
+  clientId: "YOUR_CLIENT_ID",
+  clientSecret: "YOUR_CLIENT_SECRET",
+});
 
 export async function POST(request) {
   try {
@@ -28,8 +33,6 @@ export async function POST(request) {
       console.log("User not found");
       return new NextResponse("User not found", { status: 404 });
     }
-
-    // Initialize the PayPal SDK with your credentials
 
     // Construct the request to cancel the subscription
     const cancelRequest = new SubscriptionCancelRequest(user.subscriptionId);
