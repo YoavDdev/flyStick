@@ -6,45 +6,12 @@ import Link from "next/link";
 import DashboardCard from "../../components/DashboardCard";
 import axios from "axios";
 
-interface ConfirmationModalProps {
-  onConfirm: () => void;
-  onCancel: () => void;
-}
-
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
-  onConfirm,
-  onCancel,
-}) => {
-  return (
-    <div className="fixed inset-0 flex items-center justify-center">
-      <div className="bg-white p-4 rounded-lg shadow-md">
-        <p className="mb-4">
-          Are you sure you want to cancel your subscription?
-        </p>
-        <div className="flex justify-end">
-          <button className="mr-2" onClick={onCancel}>
-            Cancel
-          </button>
-          <button className="bg-red-500 text-white" onClick={onConfirm}>
-            Yes, I'm sure
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-interface DashboardPageProps {
-  // Add any props if needed
-}
-
-const DashboardPage: React.FC<DashboardPageProps> = () => {
+const DashboardPage = () => {
   const { data: session } = useSession();
   const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(
     null,
   );
   const [loading, setLoading] = useState(true);
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -97,42 +64,31 @@ const DashboardPage: React.FC<DashboardPageProps> = () => {
   const cancelSubscription = async () => {
     try {
       if (session?.user) {
-        // Make a request to cancel subscription in PayPal
-        const clientId = process.env.PAYPAL_CLIENT_ID;
-        const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
-
-        const auth = {
-          username: clientId!,
-          password: clientSecret!,
-        };
-
-        // Retrieve the subscription ID from your user data
-        const response = await axios.post("/api/get-user-subsciptionId", {
-          userEmail: session.user.email,
-        });
-
-        const userData = response.data;
-
-        // Extract subscriptionId from userData
-        const subscriptionId = userData.subscriptionId;
-
-        const cancellationResponse = await axios.post(
-          `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}/cancel`,
-          {},
-          { auth },
+        // Ask for confirmation before canceling subscription
+        const confirmed = window.confirm(
+          "Are you sure you want to cancel your subscription? You will lose access to the content immediately.",
         );
 
-        if (cancellationResponse.status === 204) {
-          // Subscription canceled successfully
-          setSubscriptionStatus("CANCELED");
-          console.log("Subscription canceled successfully");
-          setShowConfirmationModal(false);
-        } else {
-          console.log(
-            "Failed to cancel subscription",
-            cancellationResponse.data,
+        if (confirmed) {
+          // Make a request to cancel subscription
+          const cancellationResponse = await axios.post(
+            "/api/cancel-subscription",
+            {
+              userEmail: session.user.email,
+            },
           );
-          // Handle the case where the cancellation request was not successful
+
+          if (cancellationResponse.status === 200) {
+            // Subscription canceled successfully
+            setSubscriptionStatus("CANCELED");
+            console.log("Subscription canceled successfully");
+          } else {
+            console.log("Failed to cancel subscription");
+            // Handle the case where the cancellation request was not successful
+          }
+        } else {
+          console.log("User canceled the subscription cancellation");
+          // Handle the case where the user canceled the subscription cancellation
         }
       } else {
         console.log("User session or user data not available");
@@ -198,7 +154,7 @@ const DashboardPage: React.FC<DashboardPageProps> = () => {
                   {subscriptionStatus === "ACTIVE" ? (
                     <>
                       <button
-                        onClick={() => setShowConfirmationModal(true)}
+                        onClick={cancelSubscription}
                         className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
                       >
                         Cancel Subscription
@@ -206,12 +162,6 @@ const DashboardPage: React.FC<DashboardPageProps> = () => {
                       <p className="text-gray-600 mt-2">
                         Click the button to cancel your subscription.
                       </p>
-                      {showConfirmationModal && (
-                        <ConfirmationModal
-                          onConfirm={cancelSubscription}
-                          onCancel={() => setShowConfirmationModal(false)}
-                        />
-                      )}
                     </>
                   ) : subscriptionStatus === "CANCELED" ? (
                     <Link href="/#Pricing">
