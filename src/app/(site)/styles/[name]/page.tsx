@@ -27,6 +27,9 @@ const Page: FC<pageProps> = ({ params }) => {
   const [showForm, setShowForm] = useState(false);
   const [playlistName, setPlaylistName] = useState("");
   const [folderNames, setFolderNames] = useState([]);
+  const [expandedDescriptions, setExpandedDescriptions] = useState<boolean[]>(
+    videos.map(() => false),
+  );
 
   useEffect(() => {
     // Fetch folder name based on folder ID (value)
@@ -204,8 +207,12 @@ const Page: FC<pageProps> = ({ params }) => {
   const [showFullDescription, setShowFullDescription] =
     useState<boolean>(false);
 
-  const toggleDescription = () => {
-    setShowFullDescription(!showFullDescription);
+  const toggleDescription = (index: number) => () => {
+    setExpandedDescriptions((prevExpanded) => {
+      const newExpanded = [...prevExpanded];
+      newExpanded[index] = !newExpanded[index];
+      return newExpanded;
+    });
   };
 
   const addToFavorites = async (videoUri: string, folderName: string) => {
@@ -393,7 +400,7 @@ const Page: FC<pageProps> = ({ params }) => {
             )}
           </form>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {videos.map((video) => (
+            {videos.map((video, index) => (
               <div
                 key={video.uri}
                 className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
@@ -409,26 +416,26 @@ const Page: FC<pageProps> = ({ params }) => {
                   <h2 className="text-lg font-semibold mb-2 text-black">
                     {video.name}
                   </h2>
-                  <p className="text-sm mb-2 text-gray-600 ">
-                    {showFullDescription && video.description}
-                    {!showFullDescription &&
-                      (video.description
-                        ? video.description.split(" ").slice(0, 10).join(" ") +
-                          " ..."
-                        : "")}
+                  <p className="text-sm mb-2 text-gray-600">
+                    {expandedDescriptions[index]
+                      ? video.description
+                      : video.description
+                      ? video.description.split(" ").slice(0, 10).join(" ") +
+                        " ..."
+                      : ""}
                   </p>
-                  {!showFullDescription && video.description && (
+                  {!expandedDescriptions[index] && video.description && (
                     <button
                       className="text-blue-500 hover:underline focus:outline-none"
-                      onClick={toggleDescription}
+                      onClick={toggleDescription(index)}
                     >
                       Read More
                     </button>
                   )}
-                  {showFullDescription && (
+                  {expandedDescriptions[index] && (
                     <button
                       className="text-blue-500 hover:underline focus:outline-none"
-                      onClick={toggleDescription}
+                      onClick={toggleDescription(index)}
                     >
                       Show Less
                     </button>
