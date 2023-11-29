@@ -6,12 +6,45 @@ import Link from "next/link";
 import DashboardCard from "../../components/DashboardCard";
 import axios from "axios";
 
-const DashboardPage = () => {
+interface ConfirmationModalProps {
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+  onConfirm,
+  onCancel,
+}) => {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center">
+      <div className="bg-white p-4 rounded-lg shadow-md">
+        <p className="mb-4">
+          Are you sure you want to cancel your subscription?
+        </p>
+        <div className="flex justify-end">
+          <button className="mr-2" onClick={onCancel}>
+            Cancel
+          </button>
+          <button className="bg-red-500 text-white" onClick={onConfirm}>
+            Yes, I'm sure
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+interface DashboardPageProps {
+  // Add any props if needed
+}
+
+const DashboardPage: React.FC<DashboardPageProps> = () => {
   const { data: session } = useSession();
   const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(
     null,
   );
   const [loading, setLoading] = useState(true);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -93,10 +126,7 @@ const DashboardPage = () => {
           // Subscription canceled successfully
           setSubscriptionStatus("CANCELED");
           console.log("Subscription canceled successfully");
-          // Inform the user about the immediate loss of access
-          alert(
-            "Your subscription has been canceled. You will lose access to the website immediately.",
-          );
+          setShowConfirmationModal(false);
         } else {
           console.log(
             "Failed to cancel subscription",
@@ -168,7 +198,7 @@ const DashboardPage = () => {
                   {subscriptionStatus === "ACTIVE" ? (
                     <>
                       <button
-                        onClick={cancelSubscription}
+                        onClick={() => setShowConfirmationModal(true)}
                         className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
                       >
                         Cancel Subscription
@@ -176,6 +206,12 @@ const DashboardPage = () => {
                       <p className="text-gray-600 mt-2">
                         Click the button to cancel your subscription.
                       </p>
+                      {showConfirmationModal && (
+                        <ConfirmationModal
+                          onConfirm={cancelSubscription}
+                          onCancel={() => setShowConfirmationModal(false)}
+                        />
+                      )}
                     </>
                   ) : subscriptionStatus === "CANCELED" ? (
                     <Link href="/#Pricing">
