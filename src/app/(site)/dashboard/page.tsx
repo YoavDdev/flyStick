@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import DashboardCard from "../../components/DashboardCard";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const DashboardPage = () => {
   const { data: session } = useSession();
@@ -15,34 +16,38 @@ const DashboardPage = () => {
     const fetchUserData = async () => {
       try {
         if (session?.user) {
-          // Fetch user data including subscriptionId from the new API route
-          const response = await axios.post("/api/get-user-subsciptionId", {
-            userEmail: session.user.email,
-          });
+          const userEmail = session.user.email;
 
-          const userData = response.data;
+          if (userEmail) {
+            // Fetch user data including subscriptionId from the new API route
+            const response = await axios.post("/api/get-user-subsciptionId", {
+              userEmail: userEmail,
+            });
 
-          // Extract subscriptionId from userData
-          const subscriptionId = userData.subscriptionId;
+            const userData = response.data;
 
-          // Fetch subscription details using the retrieved subscriptionId
-          const clientId = process.env.PAYPAL_CLIENT_ID;
-          const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+            // Extract subscriptionId from userData
+            const subscriptionId = userData.subscriptionId;
 
-          const auth = {
-            username: clientId!,
-            password: clientSecret!,
-          };
+            // Fetch subscription details using the retrieved subscriptionId
+            const clientId = process.env.PAYPAL_CLIENT_ID;
+            const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
-          const subscriptionResponse = await axios.get(
-            `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}`,
-            { auth },
-          );
+            const auth = {
+              username: clientId!,
+              password: clientSecret!,
+            };
 
-          const status = subscriptionResponse.data.status;
-          setSubscriptionStatus(status);
+            const subscriptionResponse = await axios.get(
+              `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}`,
+              { auth },
+            );
 
-          // Update your database with the updated subscription status if needed
+            const status = subscriptionResponse.data.status;
+            setSubscriptionStatus(status);
+
+            // Update your database with the updated subscription status if needed
+          }
         }
       } catch (error) {
         console.error(
@@ -58,6 +63,28 @@ const DashboardPage = () => {
     // Fetch user data when the component mounts or when the session changes
     fetchUserData();
   }, [session]);
+
+  const handleCancelSubscription = async () => {
+    try {
+      if (session && session.user) {
+        const response = await axios.post("/api/cancel-subscription", {
+          userEmail: session.user.email,
+        });
+
+        const data = response.data;
+
+        if (data.success) {
+          toast.success("Subscription canceled successfully.");
+          // Optionally update your UI or perform other actions after cancellation
+        } else {
+          toast.error("Failed to cancel subscription. Please try again.");
+        }
+      }
+    } catch (error) {
+      console.error("Error canceling subscription:", error);
+      toast.error("Failed to cancel subscription. Please try again.");
+    }
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen flex justify-center items-start sm:pt-40 pt-20">
@@ -98,12 +125,22 @@ const DashboardPage = () => {
               ) : (
                 <>
                   {subscriptionStatus !== null ? (
-                    <p className="text-gray-600 mb-10">
-                      Subscription Status:{" "}
-                      <span className="text-green-500 ">
-                        {subscriptionStatus}
-                      </span>
-                    </p>
+                    <>
+                      <p className="text-gray-600 mb-4">
+                        Subscription Status:{" "}
+                        <span className="text-green-500 ">
+                          {subscriptionStatus}
+                        </span>
+                      </p>
+                      {subscriptionStatus === "ACTIVE" && (
+                        <button
+                          onClick={handleCancelSubscription}
+                          className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
+                        >
+                          Cancel Subscription
+                        </button>
+                      )}
+                    </>
                   ) : (
                     <p className="text-gray-600 mb-10">
                       Subscription Status:{" "}
