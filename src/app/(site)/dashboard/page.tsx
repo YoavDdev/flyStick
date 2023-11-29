@@ -70,20 +70,40 @@ const DashboardPage = () => {
         );
 
         if (confirmed) {
-          // Make a request to cancel subscription
+          // Make a request to cancel subscription in PayPal
+          const clientId = process.env.PAYPAL_CLIENT_ID;
+          const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+
+          const auth = {
+            username: clientId!,
+            password: clientSecret!,
+          };
+
+          // Retrieve the subscription ID from your user data
+          const response = await axios.post("/api/get-user-subsciptionId", {
+            userEmail: session.user.email,
+          });
+
+          const userData = response.data;
+
+          // Extract subscriptionId from userData
+          const subscriptionId = userData.subscriptionId;
+
           const cancellationResponse = await axios.post(
-            "/api/cancel-subscription",
-            {
-              userEmail: session.user.email,
-            },
+            `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}/cancel`,
+            {},
+            { auth },
           );
 
-          if (cancellationResponse.status === 200) {
+          if (cancellationResponse.status === 204) {
             // Subscription canceled successfully
             setSubscriptionStatus("CANCELED");
             console.log("Subscription canceled successfully");
           } else {
-            console.log("Failed to cancel subscription");
+            console.log(
+              "Failed to cancel subscription",
+              cancellationResponse.data,
+            );
             // Handle the case where the cancellation request was not successful
           }
         } else {
