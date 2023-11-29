@@ -12,6 +12,7 @@ const DashboardPage = () => {
     null,
   );
   const [loading, setLoading] = useState(true);
+  const [billingCycle, setBillingCycle] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,7 +43,12 @@ const DashboardPage = () => {
           );
 
           const status = subscriptionResponse.data.status;
+          const billingCycle =
+            subscriptionResponse.data.billing_info.cycle_executions[0]
+              .billing_cycle;
+
           setSubscriptionStatus(status);
+          setBillingCycle(billingCycle);
 
           // Update your database with the updated subscription status if needed
         }
@@ -148,12 +154,17 @@ const DashboardPage = () => {
               ) : (
                 <>
                   {subscriptionStatus !== null ? (
-                    <p className="text-gray-600 mb-10">
-                      Subscription Status:{" "}
-                      <span className="text-green-500 ">
-                        {subscriptionStatus}
-                      </span>
-                    </p>
+                    <>
+                      <p className="text-gray-600 mb-4">
+                        Subscription Status:{" "}
+                        <span className="text-green-500 ">
+                          {subscriptionStatus}
+                        </span>
+                      </p>
+                      <p className="text-gray-600 mb-4">
+                        Billing Cycle: {billingCycle}
+                      </p>
+                    </>
                   ) : (
                     <p className="text-gray-600 mb-10">
                       Subscription Status:{" "}
