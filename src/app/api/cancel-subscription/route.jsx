@@ -5,8 +5,8 @@ import { PayPalClient } from "your-paypal-sdk-package"; // Replace with the actu
 
 // Initialize the PayPal SDK with your credentials
 const paypalClient = new PayPalClient({
-  clientId: "YOUR_CLIENT_ID",
-  clientSecret: "YOUR_CLIENT_SECRET",
+  clientId: process.env.PAYPAL_CLIENT_ID,
+  clientSecret: process.env.PAYPAL_CLIENT_SECRET,
 });
 
 export async function POST(request) {
