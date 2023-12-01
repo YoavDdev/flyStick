@@ -120,7 +120,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex justify-center items-start sm:pt-40 pt-20">
+    <div className=" bg-gray-100 min-h-screen flex justify-center items-start sm:pt-60 pt-20 ">
       {session?.user ? (
         <div className="bg-white w-full max-w-screen-xl p-8 rounded-lg shadow-lg">
           <h2 className="text-3xl font-semibold text-[#EF8354] mb-4 capitalize">
@@ -183,9 +183,9 @@ const DashboardPage = () => {
                         Click the button to cancel your subscription.
                       </p>
                     </>
-                  ) : subscriptionStatus === "CANCELLED" ? (
+                  ) : subscriptionStatus === "CANCELED" ? (
                     <Link href="/#Pricing">
-                      <span className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out">
+                      <span className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition duration-300 ease-in-out">
                         Renew your subscription
                       </span>
                     </Link>

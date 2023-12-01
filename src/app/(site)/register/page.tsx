@@ -54,7 +54,7 @@ const Register = () => {
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8 pb-96">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-20 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Register to your account
@@ -137,7 +137,10 @@ const Register = () => {
                 }
                 className="mr-2"
               />
-              <label htmlFor="subscribeToNewsletter" className="text-sm">
+              <label
+                htmlFor="subscribeToNewsletter"
+                className="text-sm font-medium leading-6 text-gray-900"
+              >
                 Subscribe to newsletter
               </label>
             </div>
@@ -151,32 +154,19 @@ const Register = () => {
             </button>
           </div>
         </form>
-        <div className="p-6">
-          <button
-            onClick={() => signIn("google")}
-            className="flex w-full justify-center vpx-4 py-1.5 px-3 border gap-2 border-slate-300 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150"
-          >
-            <img
-              className="w-6 h-6"
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              loading="lazy"
-              alt="google logo"
-            />
-            Continue with Google
-          </button>
-          {/* <button
-            onClick={() => signIn("facebook")}
-            className="flex w-full justify-center vpx-4 py-1.5 px-3 border mt-2 gap-2 border-slate-200 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150"
-          >
-            <img
-              className="w-6 h-6"
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Facebook_icon.svg/1200px-Facebook_icon.svg.png"
-              loading="lazy"
-              alt="google logo"
-            />
-            Continue with Facebook
-          </button> */}
-        </div>
+        <div className="p-6"></div>
+        <button
+          onClick={() => signIn("google")}
+          className="flex w-full justify-center vpx-4 py-1.5 px-3 border gap-2 border-slate-300 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150"
+        >
+          <img
+            className="w-6 h-6"
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            loading="lazy"
+            alt="google logo"
+          />
+          Continue with Google
+        </button>
       </div>
     </div>
   );
