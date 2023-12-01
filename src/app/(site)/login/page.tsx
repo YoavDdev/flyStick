@@ -13,24 +13,28 @@ const Page = () => {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (session?.status === "authenticated") {
       router.push("/dashboard");
     }
-  });
+  }, [session]);
 
   const loginUser = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    signIn("credentials", { ...data, redirect: false }).then((callback) => {
-      if (callback?.error) {
-        toast.error(callback.error);
-      }
+    setLoading(true);
+    const callback = await signIn("credentials", { ...data, redirect: false });
 
-      if (callback?.ok && !callback?.error) {
-        toast.success("Logged in successfully!");
-      }
-    });
+    if (callback?.error) {
+      toast.error(callback.error);
+    }
+
+    if (callback?.ok && !callback?.error) {
+      toast.success("Logged in successfully!");
+    }
+
+    setLoading(false);
   };
 
   const onRegisterUser = async () => {
