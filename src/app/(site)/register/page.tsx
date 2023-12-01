@@ -13,6 +13,7 @@ const Register = () => {
     name: "",
     email: "",
     password: "",
+    subscribeToNewsletter: false,
   });
 
   useEffect(() => {
@@ -30,13 +31,26 @@ const Register = () => {
       return;
     }
 
-    axios
-      .post("/api/register", data)
-      .then(() => {
+    try {
+      const res = await axios.post("/api/register", data);
+      if (res.status === 200) {
         toast.success("User is registered");
+
+        // Check if the user has opted to subscribe to the newsletter
+        if (data.subscribeToNewsletter) {
+          // You can call the API to subscribe the user to the newsletter here
+          // For now, let's just log a message
+          console.log("User opted to subscribe to the newsletter");
+        }
+
         router.push("/login");
-      })
-      .catch(() => toast.error("Something went wrong"));
+      } else {
+        toast.error("Something went wrong");
+      }
+    } catch (error) {
+      console.error("Error registering user:", error);
+      toast.error("Something went wrong");
+    }
   };
 
   return (
@@ -111,7 +125,23 @@ const Register = () => {
               />
             </div>
           </div>
-
+          <div>
+            <div>
+              <input
+                type="checkbox"
+                id="subscribeToNewsletter"
+                name="subscribeToNewsletter"
+                checked={data.subscribeToNewsletter}
+                onChange={(e) =>
+                  setData({ ...data, subscribeToNewsletter: e.target.checked })
+                }
+                className="mr-2"
+              />
+              <label htmlFor="subscribeToNewsletter" className="text-sm">
+                Subscribe to newsletter
+              </label>
+            </div>
+          </div>
           <div>
             <button
               type="submit"

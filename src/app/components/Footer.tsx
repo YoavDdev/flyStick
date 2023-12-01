@@ -1,4 +1,5 @@
 import React from "react";
+import NewsletterSignUpForm from "./NewsletterSignUpForm";
 
 const Footer = () => {
   const navigation = {
@@ -57,7 +58,7 @@ const Footer = () => {
         Footer
       </h2>
       <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
-        {/* <div className="mt-16 border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24 lg:flex lg:items-center lg:justify-between">
+        <div className="mt-16 border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24 lg:flex lg:items-center lg:justify-between">
           <div>
             <h3 className="text-sm font-semibold leading-6 text-gray-900">
               Subscribe to our newsletter
@@ -67,7 +68,7 @@ const Footer = () => {
               weekly.
             </p>
           </div>
-          <form className="mt-6 sm:flex sm:max-w-md lg:mt-0">
+          {/* <form className="mt-6 sm:flex sm:max-w-md lg:mt-0">
             <label htmlFor="email-address" className="sr-only">
               Email address
             </label>
@@ -88,8 +89,9 @@ const Footer = () => {
                 Subscribe
               </button>
             </div>
-          </form>
-        </div> */}
+          </form> */}
+          <NewsletterSignUpForm />
+        </div>
         <div className="mt-8 border-t border-gray-900/10 pt-8 md:flex md:items-center md:justify-between">
           <div className="flex space-x-6 md:order-2">
             {navigation.social.map((item) => (
