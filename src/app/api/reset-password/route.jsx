@@ -48,7 +48,7 @@ export async function POST(request) {
         <p>Hello,</p>
         <p>We received a request to reset your password. Click the link below to reset your password:</p>
         <p>
-          <a href="http://localhost:3000/reset-password?token=${token}" target="_blank" rel="noopener noreferrer">
+          <a href="https://fly-stick.vercel.app/reset-password?token=${token}" target="_blank" rel="noopener noreferrer">
             Reset Password
           </a>
         </p>
