@@ -94,7 +94,10 @@ const Page = () => {
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
-            <Link href="/forgotPassword">
+            <Link
+              href="/forgotPassword"
+              className="text-sm text-indigo-600 hover:underline focus:outline-none focus:underline"
+            >
               <p>Forgot Your Password?</p>
             </Link>
           </div>
@@ -113,7 +116,7 @@ const Page = () => {
             Not a member?
             <Link
               href="/register"
-              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+              className="text-sm text-indigo-600 hover:underline focus:outline-none focus:underline"
             >
               &nbsp;Register here
             </Link>

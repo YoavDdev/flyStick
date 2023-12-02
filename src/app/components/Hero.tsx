@@ -1,9 +1,12 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import BoazMain_Clean from "../../../public/BoazMain_Clean.png";
 
 const Hero = () => {
+  const [visible, setVisible] = useState(true); // Set initial state to false
+
   return (
     <div className="relative pt-20">
       <div className="mx-auto max-w-7xl">
@@ -17,7 +20,11 @@ const Hero = () => {
             <polygon points="0,0 90,0 50,100 0,100" />
           </svg>
 
-          <div className="relative px-6 py-32 sm:py-40 lg:px-8 lg:py-56 lg:pr-0">
+          <div
+            className={`relative px-6 py-32 sm:py-40 lg:px-8 lg:py-56 lg:pr-16 animate-fade-in ${
+              visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            }`}
+          >
             <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl">
               <h1 className="text-4xl font-bold tracking-tight text-[#EF8354] sm:text-6xl  mb-4 text-center">
                 Boaz Nahaisi&apos;s Online Studio
@@ -28,37 +35,26 @@ const Hero = () => {
                 Well-Being with Varied Training Techniques and Difficulty
                 Levels.
               </p>
-              <div className="mt-10 flex items-center justify-center">
-                <a
+              <div className="mt-10 flex items-center justify-center transition-all duration-500 ease-in-out">
+                <Link
                   href="/register"
-                  className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-transform transform hover:scale-105"
                 >
                   Get started
-                </a>
-                {/* <a
-                  href="#"
-                  className="text-sm font-semibold leading-6 text-[#EF8354]"
-                >
-                  Learn more <span aria-hidden="true">→</span>
-                </a> */}
+                </Link>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div className="bg-gray-50 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 ">
-        {/*       <img
-          className="aspect-[3/2] object-cover lg:aspect-auto lg:h-full lg:w-full"
-          src=""
-          alt=""
-        /> */}
         <Image
           src={BoazMain_Clean}
           height={800}
           width={1200}
           alt="BoazMain"
           quality={100}
-          className="object-cover w-full h-full "
+          className="object-cover w-full h-full rounded-lg"
           priority
         />
       </div>

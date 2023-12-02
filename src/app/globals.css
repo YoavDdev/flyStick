@@ -33,3 +33,51 @@
   width: 100%;
   height: 100%;
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out;
+}
+
+.animate-fade-in-delay {
+  animation: fadeIn 1s ease-out forwards;
+  animation-delay: 0.5s; /* Adjust the delay as needed */
+}
+
+/* Your existing CSS */
+.animate-fade-in {
+  animation: fadeIn 1s ease-out;
+}
+
+.animate-fade-in-delay {
+  animation: fadeIn 0.5s ease-out forwards;
+  animation-delay: 0s; /* Set the delay to 0 seconds to start immediately */
+}
+
+.transition-transform {
+  transition: transform 0.3s ease-in-out;
+}
+
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+/* New CSS for the fadeIn animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

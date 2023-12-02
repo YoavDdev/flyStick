@@ -44,8 +44,18 @@ export async function POST(request) {
       from: "your-email@gmail.com",
       to: user.email,
       subject: "Password Reset",
-      text: `Click the following link to reset your password:
-      http://localhost:3000/reset-password?token=${token}`,
+      html: `
+        <p>Hello,</p>
+        <p>We received a request to reset your password. Click the link below to reset your password:</p>
+        <p>
+          <a href="http://localhost:3000/reset-password?token=${token}" target="_blank" rel="noopener noreferrer">
+            Reset Password
+          </a>
+        </p>
+        <p>This link is valid for the next 1 hour. If you didn't request a password reset, please ignore this email.</p>
+        <p>Thank you,</p>
+        <p>Boaz Nahaisi's Online Studio</p>
+      `,
     };
     await transporter.sendMail(mailOptions);
 

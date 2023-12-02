@@ -113,16 +113,8 @@ const Navbar = () => {
           />
         </Link>
 
-        <div className="hidden sm:flex">
+        <div className="hidden sm:flex pr-8">
           <ul className="hidden sm:flex">
-            <li>
-              <Link
-                href="/"
-                className="ml-10 hover:text-[#EF8354] text-xl text-[#2D3142]"
-              >
-                Home
-              </Link>
-            </li>
             <div
               className="ml-10 hover:text-[#EF8354] text-xl text-[#2D3142]"
               onMouseEnter={toggleDropdown}
@@ -193,12 +185,21 @@ const Navbar = () => {
               ) : (
                 <Link
                   href="/login"
-                  className="hover:text-[#2D3142] text-xl text-[#EF8354]"
+                  className="ml-10 hover:text-[#2D3142] text-xl text-[#EF8354] bg-transparent border border-[#EF8354] rounded-md px-4 py-2 transition duration-300 ease-in-out"
                 >
                   Log In
+                  <span className="ml-2">🔒</span>
                 </Link>
               )}
             </div>
+            <li>
+              <Link
+                href="/"
+                className="ml-10 hover:text-[#EF8354] text-xl text-[#2D3142]"
+              >
+                Home
+              </Link>
+            </li>
             <li>
               <Link
                 href="/about"
@@ -241,11 +242,6 @@ const Navbar = () => {
         </div>
         <div className="flex-col pt-5">
           <ul className="text-xl">
-            <li className="py-4 cursor-pointer hover:text-[#EF8354] text-[#2D3142]">
-              <Link href="/" onClick={() => setMenuopen(false)}>
-                Home
-              </Link>
-            </li>
             {session?.user ? (
               <>
                 <div className="relative inline-block group">
@@ -341,14 +337,19 @@ const Navbar = () => {
               <li className=" py-4 cursor-pointer marker:hover:text-[#2D3142] text-xl text-[#EF8354]">
                 <Link
                   href="/login"
-                  onClick={() => {
-                    setMenuopen(false);
-                  }}
+                  onClick={() => setMenuopen(false)}
+                  className=" sm:ml-10 hover:text-[#2D3142] text-xl text-[#EF8354] bg-transparent border border-[#EF8354] rounded-md px-4 py-2 transition duration-300 ease-in-out"
                 >
                   Log In
+                  <span className="ml-2">🔒</span>
                 </Link>
               </li>
             )}
+            <li className="py-4 cursor-pointer hover:text-[#EF8354] text-[#2D3142]">
+              <Link href="/" onClick={() => setMenuopen(false)}>
+                Home
+              </Link>
+            </li>
             <li className="py-4 cursor-pointer hover:text-[#EF8354] text-[#2D3142]">
               <Link href="/about" onClick={() => setMenuopen(false)}>
                 About
