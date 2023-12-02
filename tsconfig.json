@@ -30,7 +30,8 @@
     "src/app/(site)/user/page.tsx",
     "src/app/api/add-to-favorites/route.js",
     "src/app/(site)/VideoItem/page.jsx",
-    "src/app/api/subscribe-user/route.jsx"
+    "src/app/api/subscribe-user/route.jsx",
+    "src/app/api/resset-password/route.js"
   ],
   "exclude": ["node_modules"]
 }

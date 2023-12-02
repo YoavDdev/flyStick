@@ -10,5 +10,7 @@ module.exports = {
     VIMEO_TOKEN: process.env.VIMEO_TOKEN,
     CONVERTKIT_API_KEY: process.env.CONVERTKIT_API_KEY,
     CONVERTKIT_FORM_ID: process.env.CONVERTKIT_FORM_ID,
+    EMAIL_USER: process.env.EMAIL_USER,
+    EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
   },
 };
