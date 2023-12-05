@@ -63,7 +63,7 @@ const Navbar = () => {
       },
       {
         name: "Instagram",
-        href: "https://www.instagram.com/",
+        href: "https://www.instagram.com/theflystick/",
         icon: (
           props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>,
         ) => (

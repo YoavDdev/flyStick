@@ -20,6 +20,7 @@ const Page: FC<pageProps> = ({ params }) => {
   const [selectedVideoData, setSelectedVideoData] = useState<any | null>(null);
   const [folderUrls, setFolderUrls] = useState<string[]>([]);
   const { data: session } = useSession();
+  const [displayEmptyMessage, setDisplayEmptyMessage] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -42,9 +43,12 @@ const Page: FC<pageProps> = ({ params }) => {
         })
         .finally(() => {
           setLoading(false);
+          // Set a timeout to display the empty message after 2 seconds
+          setTimeout(() => setDisplayEmptyMessage(true), 4000);
         });
     }
   }, [session, params.name]);
+
   const accessToken = process.env.VIMEO_TOKEN;
   const headers = {
     Authorization: `Bearer ${accessToken}`,
@@ -178,11 +182,23 @@ const Page: FC<pageProps> = ({ params }) => {
   }, [session]);
 
   if (loading2) {
-    // Display loading message while checking the subscription status
+    // Display loading message while fetching videos
     return (
-      <div className="text-center pt-28">
+      <div className="text-center pt-28 h-screen">
         <h1 className="text-4xl font-semibold text-gray-700 mb-4">
           Loading...
+        </h1>
+      </div>
+    );
+  }
+
+  // Check if the videos array is empty
+  if (videos.length === 0 && displayEmptyMessage) {
+    // Render message for empty folder
+    return (
+      <div className="text-center mt-28 h-screen">
+        <h1 className="text-4xl font-semibold text-gray-700 mb-4 capitalize">
+          {decodedString} folder is empty
         </h1>
       </div>
     );
@@ -194,19 +210,9 @@ const Page: FC<pageProps> = ({ params }) => {
     return (
       <div className="bg-white min-h-screen text-white pt-20">
         <div className="container mx-auto p-6">
-          {loading ? ( // Display a loading indicator when loading is true
-            <h1 className="text-4xl font-bold mb-8 text-black text-center">
-              Loading...
-            </h1>
-          ) : videos.length < 0 ? (
-            <h1 className="text-4xl font-bold mb-8 text-black text-center">
-              This folder is empty ({decodedString})
-            </h1>
-          ) : (
-            <h1 className="text-4xl font-bold mb-8 text-black capitalize text-center ">
-              {decodedString}
-            </h1>
-          )}
+          <h1 className="text-4xl font-semibold text-gray-700 mb-4 text-center capitalize">
+            {decodedString}
+          </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {videos.map((video) => (
               <div
