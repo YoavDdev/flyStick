@@ -44,7 +44,7 @@ const Page: FC<pageProps> = ({ params }) => {
         .finally(() => {
           setLoading(false);
           // Set a timeout to display the empty message after 2 seconds
-          setTimeout(() => setDisplayEmptyMessage(true), 4000);
+          setTimeout(() => setDisplayEmptyMessage(true), 1000);
         });
     }
   }, [session, params.name]);
@@ -193,8 +193,7 @@ const Page: FC<pageProps> = ({ params }) => {
   }
 
   // Check if the videos array is empty
-  if (videos.length === 0 && displayEmptyMessage) {
-    // Render message for empty folder
+  if (videos.length === 0 && !loading && displayEmptyMessage) {
     return (
       <div className="text-center mt-28 h-screen">
         <h1 className="text-4xl font-semibold text-gray-700 mb-4 capitalize">
