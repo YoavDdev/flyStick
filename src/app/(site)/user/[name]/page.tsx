@@ -44,7 +44,7 @@ const Page: FC<pageProps> = ({ params }) => {
         .finally(() => {
           setLoading(false);
           // Set a timeout to display the empty message after 2 seconds
-          setTimeout(() => setDisplayEmptyMessage(true), 1000);
+          setTimeout(() => setDisplayEmptyMessage(true), 4000);
         });
     }
   }, [session, params.name]);
