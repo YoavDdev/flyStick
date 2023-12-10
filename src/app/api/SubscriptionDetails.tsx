@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 
-const subscriptionDetails = () => {
+const SubscriptionDetails = () => {
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const { data: session } = useSession();
@@ -59,4 +59,4 @@ const subscriptionDetails = () => {
   return { subscriptionStatus, loading };
 };
 
-export default subscriptionDetails;
+export default SubscriptionDetails;
