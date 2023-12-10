@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { PrismaClient } from "@prisma/client";
 import Link from "next/link";
-import subscriptionDetails from "./../api/SubscriptionDetails";
+import SubscriptionDetails from "./../api/SubscriptionDetails";
 
 const prisma = new PrismaClient();
 
@@ -18,7 +18,7 @@ const includedFeatures = [
 
 export default function Pricing() {
   const { data: session } = useSession();
-  const { subscriptionStatus, loading } = subscriptionDetails();
+  const { subscriptionStatus, loading } = SubscriptionDetails();
 
   const clientId = process.env.PAYPAL_CLIENT_ID;
 

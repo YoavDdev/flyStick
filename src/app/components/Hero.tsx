@@ -3,11 +3,11 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import BoazMain_Clean from "../../../public/BoazMain_Clean.png";
-import subscriptionDetails from "./../api/SubscriptionDetails";
+import SubscriptionDetails from "./../api/SubscriptionDetails";
 
 const Hero = () => {
   const [visible, setVisible] = useState(true); // Set initial state to false
-  const { subscriptionStatus, loading } = subscriptionDetails();
+  const { subscriptionStatus, loading } = SubscriptionDetails();
 
   return (
     <div className="relative pt-20">
