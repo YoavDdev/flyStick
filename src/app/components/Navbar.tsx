@@ -12,12 +12,17 @@ import {
 import Logo from "../../../public/Flystick_logo.svg";
 import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const [isTransparent, setIsTransparent] = useState(true);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [menuOpen, setMenuopen] = useState(false);
   const { data: session } = useSession();
+
+  const currentPath = usePathname();
+
+  const isActiveLink = (path: any) => path === currentPath;
 
   useEffect(() => {
     // Add a scroll event listener to toggle transparency
@@ -130,7 +135,18 @@ const Navbar = () => {
                           dropdownVisible ? "rotate-180" : "rotate-0"
                         } transition-transform inline-block ml-2`}
                       >
-                        &#9660;
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="inline-block w-6 h-6" // Adjust the width and height here
+                        >
+                          <path d="M6 9l6 6 6-6" />
+                        </svg>
                       </span>
                     </button>
 
@@ -149,7 +165,7 @@ const Navbar = () => {
                             className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
                             onClick={toggleDropdown}
                           >
-                            Library
+                            My Library
                           </li>
                         </Link>
                         <Link href="/styles">
@@ -192,29 +208,30 @@ const Navbar = () => {
                 </Link>
               )}
             </div>
-            <li>
-              <Link
-                href="/"
-                className="ml-10 hover:text-[#EF8354] text-xl text-[#2D3142]"
-              >
-                Home
-              </Link>
+            <li
+              className={`ml-8 ${
+                isActiveLink("/") ? "text-[#EF8354]" : "hover:text-[#EF8354]"
+              } text-xl text-[#2D3142]`}
+            >
+              <Link href="/">Home</Link>
             </li>
-            <li>
-              <Link
-                href="/about"
-                className="ml-10 hover:text-[#EF8354] text-xl  text-[#2D3142]"
-              >
-                About
-              </Link>
+            <li
+              className={`ml-10 ${
+                isActiveLink("/about")
+                  ? "text-[#EF8354]"
+                  : "hover:text-[#EF8354]"
+              } text-xl text-[#2D3142]`}
+            >
+              <Link href="/about">About</Link>
             </li>
-            <li>
-              <Link
-                href="/contact"
-                className="ml-10 hover:text-[#EF8354] text-xl  text-[#2D3142]"
-              >
-                Contact Me
-              </Link>
+            <li
+              className={`ml-10 ${
+                isActiveLink("/contact")
+                  ? "text-[#EF8354]"
+                  : "hover:text-[#EF8354]"
+              } text-xl text-[#2D3142]`}
+            >
+              <Link href="/contact">Contact Me</Link>
             </li>
             <li>
               <Link
@@ -285,7 +302,7 @@ const Navbar = () => {
                               toggleDropdown();
                             }}
                           >
-                            Library
+                            My Library
                           </span>
                         </Link>
                       </li>

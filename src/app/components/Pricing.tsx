@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { PrismaClient } from "@prisma/client";
 import Link from "next/link";
+import subscriptionDetails from "./../api/SubscriptionDetails";
 
 const prisma = new PrismaClient();
 
@@ -17,6 +18,9 @@ const includedFeatures = [
 
 export default function Pricing() {
   const { data: session } = useSession();
+  const { subscriptionStatus, loading } = subscriptionDetails();
+
+  const clientId = process.env.PAYPAL_CLIENT_ID;
 
   const saveOrderInDatabase = async (orderId: any, email: any) => {
     try {
@@ -88,63 +92,80 @@ export default function Pricing() {
                     NIS
                   </span>
                 </p>
-                {session?.user ? (
-                  <div className="mt-6">
-                    <PayPalScriptProvider
-                      options={{
-                        clientId:
-                          "AUCQ4EpGcrWEqFKt5IBAAaixzjpYUn4CH-l35TSvPFbJhcF7lUbe6vaVDfAOMW2HSshM7PJ6GNKjT0Yw",
-                        components: "buttons",
-                        intent: "subscription",
-                        vault: true,
-                      }}
-                    >
-                      <PayPalButtons
-                        style={{
-                          color: "gold",
-                          shape: "rect",
-                          height: 50,
-                          label: "subscribe",
-                        }}
-                        createSubscription={(data, actions) => {
-                          return actions.subscription
-                            .create({
-                              plan_id: "P-54F60742AC8006918MVRA47Y",
-                            })
-                            .then((orderId) => {
-                              return orderId;
-                            })
-                            .catch((err) => {
-                              console.error(err);
-                              toast.error(
-                                "Subscription creation failed. Please try again.",
-                              );
-                              return err;
-                            });
-                        }}
-                        onApprove={(data, actions) => {
-                          return new Promise((resolve) => {
-                            if (session.user) {
-                              saveOrderInDatabase(
-                                data.subscriptionID,
-                                session.user.email,
-                              );
-                            }
-                            resolve(); // Resolve the Promise to satisfy the type requirement
-                          });
-                        }}
-                      />
-                    </PayPalScriptProvider>
-                  </div>
+                {subscriptionStatus === "ACTIVE" ? (
+                  <>
+                    <p className="mt-3 text-lg text-green-600 font-semibold">
+                      You are subscribed!
+                    </p>
+                    <div className="mt-5 flex items-center justify-center gap-x-6">
+                      <Link
+                        href="/explore"
+                        className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                        Explore Now
+                      </Link>
+                    </div>
+                  </>
                 ) : (
-                  <div className="mt-5 flex items-center justify-center gap-x-6">
-                    <Link
-                      href="/register"
-                      className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                      Get started
-                    </Link>
-                  </div>
+                  <>
+                    {session?.user ? (
+                      <div className="mt-6">
+                        <PayPalScriptProvider
+                          options={{
+                            clientId: process.env.PAYPAL_CLIENT_ID || "",
+                            components: "buttons",
+                            intent: "subscription",
+                            vault: true,
+                          }}
+                        >
+                          <PayPalButtons
+                            style={{
+                              color: "gold",
+                              shape: "rect",
+                              height: 50,
+                              label: "subscribe",
+                            }}
+                            createSubscription={(data, actions) => {
+                              return actions.subscription
+                                .create({
+                                  plan_id: "P-54F60742AC8006918MVRA47Y",
+                                })
+                                .then((orderId) => {
+                                  return orderId;
+                                })
+                                .catch((err) => {
+                                  console.error(err);
+                                  toast.error(
+                                    "Subscription creation failed. Please try again.",
+                                  );
+                                  return err;
+                                });
+                            }}
+                            onApprove={(data, actions) => {
+                              return new Promise((resolve) => {
+                                if (session.user) {
+                                  saveOrderInDatabase(
+                                    data.subscriptionID,
+                                    session.user.email,
+                                  );
+                                }
+                                resolve(); // Resolve the Promise to satisfy the type requirement
+                              });
+                            }}
+                          />
+                        </PayPalScriptProvider>
+                      </div>
+                    ) : (
+                      <div className="mt-5 flex items-center justify-center gap-x-6">
+                        <Link
+                          href="/register"
+                          className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                          Get started
+                        </Link>
+                      </div>
+                    )}
+                  </>
                 )}
                 <p className="mt-6 text-xs leading-5 text-gray-600">
                   Subscription renews automatically every month. Cancel anytime.

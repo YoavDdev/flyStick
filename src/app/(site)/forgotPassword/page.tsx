@@ -29,6 +29,9 @@ const ForgotPasswordPage = () => {
       if (response.ok) {
         toast.success(
           "Password reset initiated. Check your email for instructions.",
+          {
+            duration: 5000, // Set the duration in milliseconds
+          },
         );
         router.push("/login"); // Redirect to login page or any desired page
       } else {
