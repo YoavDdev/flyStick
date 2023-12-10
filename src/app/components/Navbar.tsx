@@ -204,13 +204,15 @@ const Navbar = () => {
                   className="ml-10 hover:text-[#2D3142] text-xl text-[#EF8354] bg-transparent border border-[#EF8354] rounded-md px-4 py-2 transition duration-300 ease-in-out"
                 >
                   Log In
-                  <span className="ml-2">🔒</span>
+                  {/* <span className="ml-2">🔒</span> */}
                 </Link>
               )}
             </div>
             <li
               className={`ml-8 ${
-                isActiveLink("/") ? "text-[#EF8354]" : "hover:text-[#EF8354]"
+                isActiveLink("/")
+                  ? " border-b-2 border-[#EF8354]"
+                  : "hover:text-[#EF8354]"
               } text-xl text-[#2D3142]`}
             >
               <Link href="/">Home</Link>
@@ -218,7 +220,7 @@ const Navbar = () => {
             <li
               className={`ml-10 ${
                 isActiveLink("/about")
-                  ? "text-[#EF8354]"
+                  ? " border-b-2 border-[#EF8354]"
                   : "hover:text-[#EF8354]"
               } text-xl text-[#2D3142]`}
             >
@@ -227,7 +229,7 @@ const Navbar = () => {
             <li
               className={`ml-10 ${
                 isActiveLink("/contact")
-                  ? "text-[#EF8354]"
+                  ? " border-b-2 border-[#EF8354]"
                   : "hover:text-[#EF8354]"
               } text-xl text-[#2D3142]`}
             >
