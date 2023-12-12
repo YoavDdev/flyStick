@@ -349,7 +349,12 @@ const Page: FC<pageProps> = ({ params }) => {
     return (
       <div className="bg-white min-h-screen text-white pt-20">
         <div className="container mx-auto p-6">
-          <h1 className="text-4xl font-bold mb-8 text-black">{folderName}</h1>
+          <h1 className="text-4xl font-bold mb-8 text-black text-center">
+            {folderName}
+          </h1>
+          <div className="text-[#EF8354] hover:underline pb-3">
+            <Link href={"/styles"}>&larr; Back to Styles</Link>
+          </div>
           <form onSubmit={handleSearch} className="mb-8">
             <div className="flex items-center justify-center relative">
               <input
