@@ -21,7 +21,9 @@ const Page: FC<pageProps> = ({ params }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showHashtagDropdown, setShowHashtagDropdown] = useState(false);
   const { data: session } = useSession();
-
+  const [subscriptionStatus, setSubscriptionStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [subscriptionId, setSubscriptionId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedVideoUri, setSelectedVideoUri] = useState<string>("");
   const [showForm, setShowForm] = useState(false);
@@ -35,7 +37,7 @@ const Page: FC<pageProps> = ({ params }) => {
     // Fetch folder name based on folder ID (value)
     const fetchFolderName = async () => {
       try {
-        const accessToken = "a7acf4dcfec3abd4ebab0f8162956c65";
+        const accessToken = process.env.VIMEO_TOKEN;
         const headers = {
           Authorization: `Bearer ${accessToken}`,
         };
@@ -61,6 +63,7 @@ const Page: FC<pageProps> = ({ params }) => {
 
   useEffect(() => {
     // Reset the videos and currentPage when a new search is performed
+
     setVideos([]);
     setCurrentPage(1);
     fetchVideos(currentPage);
@@ -279,10 +282,6 @@ const Page: FC<pageProps> = ({ params }) => {
       closeModal();
     }
   };
-
-  const [subscriptionStatus, setSubscriptionStatus] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [subscriptionId, setSubscriptionId] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
