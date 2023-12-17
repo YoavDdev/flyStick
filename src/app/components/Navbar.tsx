@@ -13,6 +13,7 @@ import Logo from "../../../public/Flystick_logo.svg";
 import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import DropdownMenu from "./DropdownMenu";
 
 const Navbar = () => {
   const [isTransparent, setIsTransparent] = useState(true);
@@ -106,17 +107,65 @@ const Navbar = () => {
         !isTransparent ? " bg-[#FCF6F5] bg-opacity-75 " : "bg-[#FCF6F5] "
       }`}
     >
-      <div className="flex justify-between items-center h-full w-full px-4 lg:px-4">
+      <div className="flex justify-between items-center h-full w-full px-4 lg:px-4 ">
         <Link href="/">
           <Image
             src={Logo}
             width={25}
             // Set the height to "auto" to maintain aspect ratio
             alt="Logo"
-            className="cursor-pointer ml-11"
+            className="cursor-pointer sm:ml-11"
             priority
           />
         </Link>
+
+        <div className="sm:hidden items-center ">
+          <div
+            className="ml-10 hover:text-[#EF8354] text-xl text-[#2D3142]"
+            onMouseEnter={toggleDropdown}
+            onMouseLeave={toggleDropdown}
+          >
+            {session?.user ? (
+              <>
+                <div className="relative inline-block group ml-10">
+                  <button className="text-[#EF8354] focus:outline-none capitalize ">
+                    {session.user.name}
+                    <span
+                      className={`${
+                        dropdownVisible ? "rotate-180" : "rotate-0"
+                      } transition-transform inline-block ml-2`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="inline-block w-6 h-6" // Adjust the width and height here
+                      >
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </span>
+                  </button>
+
+                  {dropdownVisible && (
+                    <DropdownMenu toggleDropdown={toggleDropdown} />
+                  )}
+                </div>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="ml-10 hover:text-[#2D3142] text-xl text-[#EF8354] bg-transparent border border-[#EF8354] rounded-md px-4 py-2 transition duration-300 ease-in-out"
+              >
+                Log In
+                {/* <span className="ml-2">🔒</span> */}
+              </Link>
+            )}
+          </div>
+        </div>
 
         <div className="hidden sm:flex pr-8">
           <ul className="hidden sm:flex">
@@ -128,7 +177,7 @@ const Navbar = () => {
               {session?.user ? (
                 <>
                   <div className="relative inline-block group">
-                    <button className=" text-[#EF8354] focus:outline-none capitalize ">
+                    <button className="text-[#EF8354] focus:outline-none capitalize ">
                       {session.user.name}
                       <span
                         className={`${
@@ -151,50 +200,7 @@ const Navbar = () => {
                     </button>
 
                     {dropdownVisible && (
-                      <div className="absolute  flex flex-col gap-2">
-                        <Link href="/dashboard">
-                          <li
-                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
-                            onClick={toggleDropdown}
-                          >
-                            Dashboard
-                          </li>
-                        </Link>
-                        <Link href="/user">
-                          <li
-                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
-                            onClick={toggleDropdown}
-                          >
-                            My Library
-                          </li>
-                        </Link>
-                        <Link href="/styles">
-                          <li
-                            className="bblock px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
-                            onClick={toggleDropdown}
-                          >
-                            Styles
-                          </li>
-                        </Link>
-                        <Link href="/explore">
-                          <li
-                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
-                            onClick={toggleDropdown}
-                          >
-                            Explore
-                          </li>
-                        </Link>
-                        <Link
-                          href={"/"}
-                          className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
-                          onClick={() => {
-                            signOut();
-                            toggleDropdown();
-                          }}
-                        >
-                          Logout
-                        </Link>
-                      </div>
+                      <DropdownMenu toggleDropdown={toggleDropdown} />
                     )}
                   </div>
                 </>
@@ -261,109 +267,6 @@ const Navbar = () => {
         </div>
         <div className="flex-col pt-5">
           <ul className="text-xl">
-            {session?.user ? (
-              <>
-                <div className="relative inline-block group">
-                  <button
-                    className="text-[#EF8354] hover:text-[#990011] group-hover:text-black focus:outline-none py-4 capitalize"
-                    onClick={() => {
-                      toggleDropdown();
-                    }}
-                  >
-                    {session.user.name}
-                    <span
-                      className={`${
-                        dropdownVisible ? "rotate-180" : "rotate-0"
-                      } transition-transform inline-block ml-2`}
-                    >
-                      &#9660;
-                    </span>
-                  </button>
-
-                  {dropdownVisible && (
-                    <ul className=" mt-2 flex flex-col gap-2">
-                      <li>
-                        <Link href="/dashboard">
-                          <span
-                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
-                            onClick={() => {
-                              setMenuopen(false);
-                              toggleDropdown();
-                            }}
-                          >
-                            Dashboard
-                          </span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="/user">
-                          <span
-                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
-                            onClick={() => {
-                              setMenuopen(false);
-                              toggleDropdown();
-                            }}
-                          >
-                            My Library
-                          </span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="/styles">
-                          <span
-                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
-                            onClick={() => {
-                              setMenuopen(false);
-                              toggleDropdown();
-                            }}
-                          >
-                            Styles
-                          </span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="/explore">
-                          <span
-                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
-                            onClick={() => {
-                              setMenuopen(false);
-                              toggleDropdown();
-                            }}
-                          >
-                            Explore
-                          </span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="/">
-                          <span
-                            className="block px-10 py-2  hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
-                            onClick={() => {
-                              signOut();
-                              setMenuopen(false);
-                              toggleDropdown();
-                            }}
-                          >
-                            Logout
-                          </span>
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-                </div>
-              </>
-            ) : (
-              <li className=" py-4 cursor-pointer marker:hover:text-[#2D3142] text-xl text-[#EF8354]">
-                <Link
-                  href="/login"
-                  onClick={() => setMenuopen(false)}
-                  className=" sm:ml-10 hover:text-[#2D3142] text-xl text-[#EF8354] bg-transparent border border-[#EF8354] rounded-md px-4 py-2 transition duration-300 ease-in-out"
-                >
-                  Log In
-                  <span className="ml-2">🔒</span>
-                </Link>
-              </li>
-            )}
             <li className="py-4 cursor-pointer hover:text-[#EF8354] text-[#2D3142]">
               <Link href="/" onClick={() => setMenuopen(false)}>
                 Home
