@@ -33,15 +33,25 @@ export async function POST(request) {
     });
 
     // Send a confirmation email with the reset link
+    // const transporter = nodemailer.createTransport({
+    //   service: "gmail",
+    //   auth: {
+    //     user: process.env.EMAIL_USER,
+    //     pass: process.env.EMAIL_PASSWORD,
+    //   },
+    // });
+
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "mail.privateemail.com",
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD,
       },
     });
     const mailOptions = {
-      from: "your-email@gmail.com",
+      from: '"Support" <' + process.env.EMAIL_USER + ">",
       to: user.email,
       subject: "Password Reset",
       html: `

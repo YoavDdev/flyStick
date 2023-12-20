@@ -24,7 +24,7 @@ const Contact = () => {
                 </p>
 
                 <Link
-                  href="https://wa.me/972548132603"
+                  href="https://wa.me/972527061212"
                   className=" bg-green-500 text-white py-3 px-6 rounded-lg transition duration-300 hover:bg-green-600 flex justify-center"
                 >
                   WhatsApp
