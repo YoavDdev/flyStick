@@ -36,7 +36,7 @@ const Contact = () => {
               <Image
                 src={contacMe}
                 alt="image"
-                className="w-full rounded-lg shadow-lg dark:shadow-black/20"
+                className="w-full rounded-lg shadow-lg dark:shadow-black/20 ml-8"
               />
             </div>
           </div>

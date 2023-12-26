@@ -6,7 +6,7 @@ const Footer = () => {
     social: [
       {
         name: "Facebook",
-        href: "https://www.facebook.com/groups/boazit",
+        href: "https://www.facebook.com/boazpilates?mibextid=ZbWKwL",
         icon: (
           props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>,
         ) => (
@@ -21,7 +21,7 @@ const Footer = () => {
       },
       {
         name: "Instagram",
-        href: "https://www.instagram.com/theflystick/",
+        href: "https://www.instagram.com/boaznahaissi/?utm_source=qr&igsh=azQ0MXQxaHgxM2hy",
         icon: (
           props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>,
         ) => (

@@ -32,6 +32,7 @@ const Page: FC<pageProps> = ({ params }) => {
   const [expandedDescriptions, setExpandedDescriptions] = useState<boolean[]>(
     videos.map(() => false),
   );
+  const [noResults, setNoResults] = useState(false);
 
   useEffect(() => {
     // Fetch folder name based on folder ID (value)
@@ -99,30 +100,31 @@ const Page: FC<pageProps> = ({ params }) => {
         headers,
         params: {
           page,
-          query: descriptionQuery, // Include the description query in the API request
-          fields: "uri,embed.html,name,description,pictures", // Request embed HTML and video title
+          query: descriptionQuery,
+          fields: "uri,embed.html,name,description,pictures",
         },
       });
 
       const data = response.data;
       const videosData = data.data;
-      const newVideos = videosData.map((video: any) => ({
-        uri: video.uri,
-        embedHtml: video.embed.html,
-        name: video.name,
-        description: video.description,
-        thumbnailUri: video.pictures.sizes[5].link,
-        // Extract the video title from the API response
-      }));
 
-      console.log("Response Data:", response.data);
-      // Append the new videos to the existing list of videos
-      setVideos((prevVideos) => [...prevVideos, ...newVideos]);
+      if (videosData.length === 0 && page === 1) {
+        // Set noResults to true if no videos are found on the first page
+        setNoResults(true);
+      } else {
+        const newVideos = videosData.map((video: any) => ({
+          uri: video.uri,
+          embedHtml: video.embed.html,
+          name: video.name,
+          description: video.description,
+          thumbnailUri: video.pictures.sizes[5].link,
+        }));
 
-      // Check if there are more pages to fetch
-      if (page < data.paging.total_pages) {
-        // If there are more pages, increment the current page
-        setCurrentPage(page + 1);
+        setVideos((prevVideos) => [...prevVideos, ...newVideos]);
+
+        if (page < data.paging.total_pages) {
+          setCurrentPage(page + 1);
+        }
       }
     } catch (error) {
       console.error("Error:", error);
@@ -192,7 +194,9 @@ const Page: FC<pageProps> = ({ params }) => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    setNoResults(false);
 
+    // You might also want to return early or handle this case differently
     // Set the search query
     setDescriptionQuery(searchQuery);
   };
@@ -418,79 +422,88 @@ const Page: FC<pageProps> = ({ params }) => {
             )}
           </form>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {videos.map((video, index) => (
-              <div
-                key={video.uri}
-                className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
-              >
-                <div className="aspect-w-16 aspect-h-9">
-                  <img
-                    src={video.thumbnailUri}
-                    alt="Video Thumbnail"
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                <div className="p-4">
-                  <h2 className="text-lg font-semibold mb-2 text-black">
-                    {video.name}
-                  </h2>
-                  <p className="text-sm mb-2 text-gray-600">
-                    {expandedDescriptions[index]
-                      ? video.description
-                      : video.description
-                      ? video.description.split(" ").slice(0, 10).join(" ") +
-                        " ..."
-                      : ""}
-                  </p>
-                  {!expandedDescriptions[index] && video.description && (
+            {noResults ? (
+              <p className="text-center text-gray-500 mt-8">
+                <span className="font-bold text-red-600">Oops!</span> 🤷‍♂️ No
+                videos found for the hashtag{" "}
+                <span className="font-bold">"{searchQuery}"</span> . Try using
+                fewer hashtags for a better results!
+              </p>
+            ) : (
+              videos.map((video, index) => (
+                <div
+                  key={video.uri}
+                  className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
+                >
+                  <div className="aspect-w-16 aspect-h-9">
+                    <img
+                      src={video.thumbnailUri}
+                      alt="Video Thumbnail"
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h2 className="text-lg font-semibold mb-2 text-black">
+                      {video.name}
+                    </h2>
+                    <p className="text-sm mb-2 text-gray-600">
+                      {expandedDescriptions[index]
+                        ? video.description
+                        : video.description
+                        ? video.description.split(" ").slice(0, 10).join(" ") +
+                          " ..."
+                        : ""}
+                    </p>
+                    {!expandedDescriptions[index] && video.description && (
+                      <button
+                        className="text-blue-500 hover:underline focus:outline-none"
+                        onClick={toggleDescription(index)}
+                      >
+                        Read More
+                      </button>
+                    )}
+                    {expandedDescriptions[index] && (
+                      <button
+                        className="text-blue-500 hover:underline focus:outline-none"
+                        onClick={toggleDescription(index)}
+                      >
+                        Show Less
+                      </button>
+                    )}
+                    <div className="py-8">
+                      <button
+                        className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 right-4" // Position the button at the bottom-right corner
+                        onClick={() => {
+                          setSelectedVideo(video.embedHtml);
+                          setSelectedVideoData(video);
+                        }}
+                      >
+                        Play
+                      </button>
+                    </div>
                     <button
-                      className="text-blue-500 hover:underline focus:outline-none"
-                      onClick={toggleDescription(index)}
-                    >
-                      Read More
-                    </button>
-                  )}
-                  {expandedDescriptions[index] && (
-                    <button
-                      className="text-blue-500 hover:underline focus:outline-none"
-                      onClick={toggleDescription(index)}
-                    >
-                      Show Less
-                    </button>
-                  )}
-                  <div className="py-8">
-                    <button
-                      className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 right-4" // Position the button at the bottom-right corner
+                      className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
                       onClick={() => {
-                        setSelectedVideo(video.embedHtml);
-                        setSelectedVideoData(video);
+                        setSelectedVideoUri(video.uri); // Set the selected video URI
+                        openModal(); // Open the modal
+                        theUserId();
+                      }}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                        fontSize: "24px",
                       }}
                     >
-                      Play
+                      +
                     </button>
                   </div>
-                  <button
-                    className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
-                    onClick={() => {
-                      setSelectedVideoUri(video.uri); // Set the selected video URI
-                      openModal(); // Open the modal
-                      theUserId();
-                    }}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50%",
-                      fontSize: "24px",
-                    }}
-                  >
-                    +
-                  </button>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
             {showModal && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                 <div className="w-96 p-4 rounded-lg shadow-lg bg-white text-black relative">
