@@ -426,8 +426,8 @@ const Page: FC<pageProps> = ({ params }) => {
               <p className="text-center text-gray-500 mt-8">
                 <span className="font-bold text-red-600">Oops!</span> 🤷‍♂️ No
                 videos found for the hashtag{" "}
-                <span className="font-bold">"{searchQuery}"</span> . Try using
-                fewer hashtags for a better results!
+                <span className="font-bold">&quot;{searchQuery}&quot;</span> .
+                Try using fewer hashtags for a better results!
               </p>
             ) : (
               videos.map((video, index) => (
