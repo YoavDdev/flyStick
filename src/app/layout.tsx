@@ -8,11 +8,11 @@ import ToasterContext from "./context/ToasterContext";
 const poppins = Lato({ weight: "400", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://fly-stick.vercel.app/"),
+  metadataBase: new URL("https://www.studioboazonline.com/"),
   title: "Boaz Nahaisi's Studio",
   description:
     "Dive into a Vast Collection of Lessons and Exercises, Expertly Curated to Enhance Your Body-Mind Connection and Elevate Your Well-Being with Varied Training Techniques and Difficulty Levels.",
-  keywords: ["Flystick"],
+  keywords: ["studioboazonline"],
   icons: {
     icon: ["/favicon.ico?v=4"],
     apple: ["/apple-touch-icon.png?v=4"],
