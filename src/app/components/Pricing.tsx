@@ -128,7 +128,7 @@ export default function Pricing() {
                             createSubscription={(data, actions) => {
                               return actions.subscription
                                 .create({
-                                  plan_id: "P-54F60742AC8006918MVRA47Y",
+                                  plan_id: "P-3JL116175C333194WMWGDHEI",
                                 })
                                 .then((orderId) => {
                                   return orderId;

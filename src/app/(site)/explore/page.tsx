@@ -318,7 +318,7 @@ const Page = () => {
         <div className="container mx-auto p-6">
           <div className="mx-auto max-w-7xl px-8 pb-10">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-base font-semibold leading-7 text-[#990011]">
+              <h2 className="text-base font-semibold leading-7 text-slate-700">
                 Your Journey, Your Rules
               </h2>
               <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -349,7 +349,7 @@ const Page = () => {
                 </span>
               </button>
               <button
-                className="bg-slate-500 hover:bg-slate-700 w-12 h-12 rounded-full ml-2 focus:outline-none text-2xl"
+                className="bg-slate-500 hover:bg-slate-700 w-12 h-12 rounded-full ml-2 focus:outline-none text-2xl "
                 onClick={toggleHashtagDropdown}
               >
                 #
