@@ -53,6 +53,7 @@ export default function Pricing() {
             <h3 className="text-2xl font-bold tracking-tight text-[#EF8354]">
               Boaz Nahaisi&apos;s Online Studio Membership
             </h3>
+
             <p className="mt-6 text-base leading-7 text-gray-600">
               A vast pool of knowledge that will allow you to connect with your
               body in ways you&apos;ve never known before.
@@ -93,9 +94,14 @@ export default function Pricing() {
                   </span>
                 </p>
                 <p className="mt-3 text-xs leading-5 text-gray-600">
-                  *First 3 days are free. Cancel anytime within the trial period
-                  without being charged.
+                  Experience our subscription service for{" "}
+                  <span className="text-[#EF8354]">
+                    free for the first 3 days
+                  </span>
+                  . Decide if it's right for you before committing to a
+                  subscription.
                 </p>
+
                 {subscriptionStatus === "ACTIVE" ? (
                   <>
                     <p className="mt-3 text-lg text-green-600 font-semibold">

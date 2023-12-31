@@ -66,7 +66,7 @@ const Hero = () => {
                     href="/register"
                     className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-transform transform hover:scale-105"
                   >
-                    Get started
+                    Start Your 3-Day Free Trial
                   </Link>
                 )}
               </div>
