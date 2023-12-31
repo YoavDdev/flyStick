@@ -92,6 +92,10 @@ export default function Pricing() {
                     NIS
                   </span>
                 </p>
+                <p className="mt-3 text-xs leading-5 text-gray-600">
+                  *First 3 days are free. Cancel anytime within the trial period
+                  without being charged.
+                </p>
                 {subscriptionStatus === "ACTIVE" ? (
                   <>
                     <p className="mt-3 text-lg text-green-600 font-semibold">
