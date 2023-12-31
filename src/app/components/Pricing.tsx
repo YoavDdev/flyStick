@@ -98,7 +98,7 @@ export default function Pricing() {
                   <span className="text-[#EF8354]">
                     free for the first 3 days
                   </span>
-                  . Decide if it's right for you before committing to a
+                  . Decide if it&apos;s right for you before committing to a
                   subscription.
                 </p>
 
