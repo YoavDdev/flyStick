@@ -54,7 +54,7 @@ export async function POST(request) {
     //   },
     // });
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: '"SupportStudioBoaz" <' + process.env.EMAIL_USER + ">",
       to: user.email,
       subject: "Password Reset",
       html: `
