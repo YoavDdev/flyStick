@@ -1,5 +1,6 @@
 import {
   Hero,
+  Hero2,
   Feature,
   Pricing,
   VideoCarusel,
@@ -11,7 +12,8 @@ import {
 export default function HomePage() {
   return (
     <main className="bg-[#FCF6F5]">
-      <Hero />
+      {/* <Hero /> */}
+      <Hero2 />
       <Feature />
       <VideoCarusel />
       {/* <Quiz /> */}

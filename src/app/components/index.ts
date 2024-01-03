@@ -1,4 +1,5 @@
 import Hero from "./Hero";
+import Hero2 from "./Hero2";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Feature from "./Feature";
@@ -10,6 +11,7 @@ import User from "./User";
 
 export {
   Hero,
+  Hero2,
   Navbar,
   Footer,
   Feature,
