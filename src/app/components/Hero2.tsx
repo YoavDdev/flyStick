@@ -11,8 +11,16 @@ const Hero = () => {
   const { subscriptionStatus, loading } = SubscriptionDetails();
 
   return (
-    <div className="relative mt-40 sm:mt-20">
-      <Image src={new_main} objectFit="cover" alt="BoazMain" />
+    <div className="relative mt-20">
+      <div className="overflow-hidden rounded-md">
+        <Image
+          src={new_main}
+          alt="BoazMain"
+          layout="responsive"
+          width={1920}
+          height={1080}
+        />
+      </div>
 
       <div className="absolute inset-0 flex items-center justify-center text-center text-white lg:mb-32">
         <div className="mx-auto max-w-2xl">
