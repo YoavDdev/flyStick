@@ -44,7 +44,7 @@ const Hero = () => {
         }`}
       >
         <div className="mx-auto max-w-2xl">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-6xl mb-4 text-gray-700 sm:text-white">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-6xl mb-4  sm:text-white">
             Boaz Nahaisi&apos;s Online Studio
           </h1>
           <p className="mt-6 text-gray-700 sm:text-xl mx-5">
