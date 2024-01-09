@@ -20,9 +20,9 @@ const Hero = () => {
     return () => clearTimeout(delay);
   }, []);
   return (
-    <div className="relative mt-32 sm:mt-10">
+    <div className="relative object-contain bg-auto mt-20">
       <div
-        className={`overflow-hidden transform scale-150 md:scale-100 ${
+        className={`overflow-hidden transform ${
           visible
             ? "opacity-100 scale-100 transition-opacity duration-1000 ease-in-out delay-500"
             : "opacity-0 scale-80"
@@ -32,7 +32,7 @@ const Hero = () => {
           src={new_main}
           alt="BoazMain"
           layout="responsive"
-          className="object-cover w-full h-full "
+          className="object-cover"
           priority
         />
       </div>
@@ -43,7 +43,7 @@ const Hero = () => {
             : "opacity-0"
         }`}
       >
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto max-w-2xl mt-20 sm:mt-0">
           <h1 className="text-4xl font-bold tracking-tight sm:text-6xl mb-4  sm:text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
             Boaz Nahaisi&apos;s Online Studio
           </h1>
