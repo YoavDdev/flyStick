@@ -22,7 +22,7 @@ const Hero = () => {
   return (
     <div className="relative mt-32 sm:mt-10">
       <div
-        className={`overflow-hidden rounded-md transform ${
+        className={`overflow-hidden transform scale-150 md:scale-100 ${
           visible
             ? "opacity-100 scale-100 transition-opacity duration-1000 ease-in-out delay-500"
             : "opacity-0 scale-80"
@@ -32,7 +32,7 @@ const Hero = () => {
           src={new_main}
           alt="BoazMain"
           layout="responsive"
-          className="object-cover w-full h-full rounded-lg"
+          className="object-cover w-full h-full "
           priority
         />
       </div>
