@@ -319,10 +319,10 @@ const Page = () => {
           <div className="mx-auto max-w-7xl px-8 pb-10">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-base font-semibold leading-7 text-slate-700">
-                Your Journey, Your Rules
+                Your Journey, Your Rules , Your Needs
               </h2>
               <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                Explore Video Your Way
+                Explore Your Next Class
               </p>
             </div>
           </div>
@@ -335,6 +335,7 @@ const Page = () => {
                 placeholder="Search for videos..."
                 className="w-full p-3 rounded-l-xl bg-white text-black focus:outline-none border-slate-500 border-2 focus:ring-0 "
               />
+
               <button
                 type="submit"
                 className="bg-slate-500 hover:bg-slate-700 p-3
@@ -346,6 +347,14 @@ const Page = () => {
               >
                 <span role="img" aria-label="Search icon" className="">
                   🔍
+                </span>
+              </button>
+              <button
+                className="bg-slate-500 hover:bg-slate-700 p-3 rounded-full ml-2 focus:outline-none text-1xl"
+                onClick={() => setSearchQuery("")}
+              >
+                <span role="img" aria-label="Clear icon">
+                  ❌
                 </span>
               </button>
               <button

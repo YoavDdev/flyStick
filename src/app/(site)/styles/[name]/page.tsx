@@ -395,6 +395,14 @@ const Page: FC<pageProps> = ({ params }) => {
                 </span>
               </button>
               <button
+                className="bg-slate-500 hover:bg-slate-700 p-3 rounded-full ml-2 focus:outline-none text-1xl"
+                onClick={() => setSearchQuery("")}
+              >
+                <span role="img" aria-label="Clear icon">
+                  ❌
+                </span>
+              </button>
+              <button
                 className="bg-slate-500 hover:bg-slate-700 w-12 h-12 rounded-full ml-2 focus:outline-none text-2xl"
                 onClick={toggleHashtagDropdown}
               >
