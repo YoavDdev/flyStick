@@ -10,17 +10,17 @@ const Feature = () => {
     {
       name: "Whether a beginner or an experienced practitioner:",
       description:
-        "Streamlined Learning: Follow a guided path in our training program, with tailored challenges at every step.",
+        "Streamlined Learning: Follow a guided path in our training program, with tailored challenges and enriching breathing techniques at every step.",
       href: "#",
     },
     {
       name: "If you have curiosity and drive for more:",
       description:
-        "Deep Dives: Explore movement intricacies with in-depth insights. Inner Harmony: Unearth the profound connection between outer movement and inner self.",
+        "Deep Dives: Explore movement infrastructures with anatomical in-depth insights. Inner Harmony: Understanding the profound connection between outer movement and inner self.",
       href: "#",
     },
     {
-      name: "For those who have already walked a path:",
+      name: "As an instructor and practitioner:",
       description:
         "Enhance and Inspire: Boost your knowledge, creativity, and value as an instructor with our studio's resources.",
       href: "#",
@@ -31,16 +31,16 @@ const Feature = () => {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:text-center">
           <h2 className="text-base font-semibold leading-7 text-[#2D3142]">
-            Elevate Movement
+            Welcome all movers
           </h2>
           <p className="mt-2 text-3xl font-bold tracking-tight text-[#EF8354] sm:text-4xl">
             Your Journey to Movement Mastery Begins Here
           </p>
           <p className="mt-6 text-lg leading-8 text-gray-600">
             Streamlined Learning for All Levels: Dive deep into movement
-            intricacies, unearth the connection between outer and inner self,
-            and empower your teaching as an instructor with our studio&apos;s
-            resources.
+            secrets, reveal the connection between outer and inner self as a
+            practitioner, empower your teaching and skills as an instructor with
+            our studio&apos;s resources.
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">

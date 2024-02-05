@@ -43,12 +43,15 @@ const Hero = () => {
       <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 ">
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-            Boaz Nahaisi&apos;s Online Studio
+            Boaz Nahaissi&apos;s Online Studio
           </h1>
           <p className="mt-6 text-gray-700 sm:text-xl mx-5">
             {subscriptionStatus === "ACTIVE" ? (
               <>
-                <span className="text-white font-semibold">Welcome back!</span>{" "}
+                <span className="text-white font-semibold">
+                  {" "}
+                  Welcome movers!
+                </span>{" "}
                 Start exploring a vast collection of lessons and exercises,
                 expertly curated to enhance your body-mind connection and
                 elevate your well-being with varied training techniques and

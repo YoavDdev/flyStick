@@ -14,21 +14,28 @@ const About = () => {
                   Greetings!
                 </h2>
                 <p className="text-lg text-gray-700 mb-8">
-                  I&apos;m Boaz Nahaisi, and I invite you to explore my profound
-                  journey through the world of movement. Let me take you behind
-                  the scenes of my story:
+                  Allow me to introduce myself, I am Boaz Nahaissi and my
+                  journey into the realm of movement has been an extraordinary
+                  one. Unlike others who may have been immersed in established
+                  movements since a young age, I embarked on this path later in
+                  life, lacking the inherent flexibility and physical connection
+                  that some may possess from early exposure. Through a deeply
+                  personal process, I have developed unique insights and
+                  expertise in this field.
                 </p>
                 <p className="text-lg text-gray-700">
-                  I am the heart behind the &apos;Boaz Nahaisi School,&apos; a
-                  place of innovation and transformation. My passion led to the
-                  birth of the Flystick method—a revolutionary technique that
-                  has made waves not only across Israel but worldwide.
+                  I am the heart behind the &apos;Boaz Nahaissi School For
+                  Movement,&apos; a place of innovation and transformation. My
+                  passion led to the birth of the Flystick method—a
+                  revolutionary technique that has made waves not only across
+                  Israel but worldwide.
                 </p>
                 <p className="text-lg text-gray-700">
-                  Diving deep into Pilates/Controlology and Playistic training,
+                  Diving deep into Pilates/Controlology and Flystick training,
                   I&apos;ve honed expertise that extends beyond conventional
-                  boundaries. Beyond the studio, I share my knowledge in gyms,
-                  workshops, and training sessions across the globe.
+                  boundaries. Besides the studio, I share my knowledge in gyms,
+                  workshops, training sessions, teacher&apos;s courses, and
+                  across the globe.
                 </p>
                 <p className="text-lg text-gray-700">
                   I believe movement wields immense power, fostering bodily
@@ -40,7 +47,7 @@ const About = () => {
                   Join me, and together, let&apos;s nurture your body and soul
                   along this transformative path.
                 </p>
-                <p className="mb-0 text-lg md:text-xl pt-10 ">Boaz Nahaisi.</p>
+                <p className="mb-0 text-lg md:text-xl pt-10 ">Boaz Nahaissi.</p>
               </div>
             </div>
 

@@ -29,22 +29,22 @@ const Hero = () => {
           >
             <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl">
               <h1 className="text-4xl font-bold tracking-tight text-[#EF8354] sm:text-6xl  mb-4 text-center">
-                Boaz Nahaisi&apos;s Online Studio
+                Boaz Nahaissi&apos;s Online Studio
               </h1>
               <p className="mt-6 text-gray-600 sm:text-xl text-center">
                 {subscriptionStatus === "ACTIVE" ? (
                   <>
                     <span className="text-[#EF8354] font-semibold">
-                      Welcome back!
+                      Welcome movers!
                     </span>{" "}
-                    Start exploring a vast collection of lessons and exercises,
+                    Start exploring a vast collection of classes and exercises,
                     expertly curated to enhance your body-mind connection and
                     elevate your well-being with varied training techniques and
                     difficulty levels.
                   </>
                 ) : (
                   <>
-                    Dive into a vast collection of lessons and exercises,
+                    Dive into a vast collection of classes and exercises,
                     expertly curated to enhance your body-mind connection and
                     elevate your well-being with varied training techniques and
                     difficulty levels.

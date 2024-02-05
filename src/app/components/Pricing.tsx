@@ -10,9 +10,9 @@ import SubscriptionDetails from "./../api/SubscriptionDetails";
 const prisma = new PrismaClient();
 
 const includedFeatures = [
-  "Hundreds of hours of lessons, exercises, and lectures",
-  "A vast pool of tools and ideas for lessons and exercises",
-  "Exercises in a variety of methods (pleistic, controlology, pilates)",
+  "Hundreds of hours of classes, exercises, and lectures",
+  "A vast pool of tools and ideas for classes and exercises",
+  "Exercises in a variety of methods (Flystick, Controlology, Pilates)",
   "Different difficulty levels",
 ];
 
@@ -56,7 +56,8 @@ export default function Pricing() {
 
             <p className="mt-6 text-base leading-7 text-gray-600">
               A vast pool of knowledge that will allow you to connect with your
-              body in ways you&apos;ve never known before.
+              body, enhance your understanding, surprise you, and enrich your
+              knowledge. Prepare to be amazed.
             </p>
             <div className="mt-10 flex items-center gap-x-4">
               <h4 className="flex-none text-sm font-semibold leading-6 text-[#EF8354]">
