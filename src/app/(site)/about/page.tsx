@@ -14,14 +14,13 @@ const About = () => {
                   Greetings!
                 </h2>
                 <p className="text-lg text-gray-700 mb-8">
-                  Allow me to introduce myself, I am Boaz Nahaissi and my
-                  journey into the realm of movement has been an extraordinary
-                  one. Unlike others who may have been immersed in established
-                  movements since a young age, I embarked on this path later in
-                  life, lacking the inherent flexibility and physical connection
-                  that some may possess from early exposure. Through a deeply
-                  personal process, I have developed unique insights and
-                  expertise in this field.
+                  I&apos;m Boaz Nahaissi, and my journey into the world of
+                  movement is a unique one. Unlike many who came from well
+                  structured methods and phisical established movements, I
+                  embarked on this path at a later age, lacking inherent
+                  flexibility and connection to the body that some may possess
+                  from early exposure. My insights and expertise have evolved
+                  through a deep personal and transformative process.
                 </p>
                 <p className="text-lg text-gray-700">
                   I am the heart behind the &apos;Boaz Nahaissi School For
@@ -31,11 +30,11 @@ const About = () => {
                   Israel but worldwide.
                 </p>
                 <p className="text-lg text-gray-700">
-                  Diving deep into Pilates/Controlology and Flystick training,
-                  I&apos;ve honed expertise that extends beyond conventional
-                  boundaries. Besides the studio, I share my knowledge in gyms,
-                  workshops, training sessions, teacher&apos;s courses, and
-                  across the globe.
+                  Diving deep into Pilates, Controlology and Flystick training
+                  and more, I&apos;ve honed expertise that extends beyond
+                  conventional boundaries. Besides the studio, I share my
+                  knowledge in gyms, workshops, training sessions,
+                  teacher&apos;s courses in Israel and across the globe.
                 </p>
                 <p className="text-lg text-gray-700">
                   I believe movement wields immense power, fostering bodily

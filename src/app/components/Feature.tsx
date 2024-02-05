@@ -10,19 +10,19 @@ const Feature = () => {
     {
       name: "Whether a beginner or an experienced practitioner:",
       description:
-        "Streamlined Learning: Follow a guided path in our training program, with tailored challenges and enriching breathing techniques at every step.",
+        "Streamlined Learning: Follow a guided path in our unique training program, with tailored challenges and special breathing techniques in every class.",
       href: "#",
     },
     {
       name: "If you have curiosity and drive for more:",
       description:
-        "Deep Dives: Explore movement infrastructures with anatomical in-depth insights. Inner Harmony: Understanding the profound connection between outer movement and inner self.",
+        "Deep Dives: Explore movement infrastructures with anatomical in-depth insights, step into inner Harmony and the understanding of the profound connection between outer movement and inner self.",
       href: "#",
     },
     {
       name: "As an instructor and practitioner:",
       description:
-        "Enhance and Inspire: Boost your knowledge, creativity, and value as an instructor with our studio's resources.",
+        "Enhance and Inspire: Boost your knowledge, creativity, and value as an instructor and practitioner with our studio's resources.",
       href: "#",
     },
   ];
@@ -39,8 +39,8 @@ const Feature = () => {
           <p className="mt-6 text-lg leading-8 text-gray-600">
             Streamlined Learning for All Levels: Dive deep into movement
             secrets, reveal the connection between outer and inner self as a
-            practitioner, empower your teaching and skills as an instructor with
-            our studio&apos;s resources.
+            practitioner, empower your teaching skills as an instructor with our
+            studio&apos;s resources.
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
