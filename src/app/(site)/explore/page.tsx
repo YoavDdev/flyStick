@@ -24,12 +24,14 @@ const Page = () => {
     videos.map(() => false),
   );
   const [noResults, setNoResults] = useState(false);
+  const [noMoreVideos, setNoMoreVideos] = useState<boolean>(false); // State to track if there are no more videos to load
 
   useEffect(() => {
     // Reset the videos and currentPage when a new search is performed
     setVideos([]);
     setCurrentPage(1);
     fetchVideos(currentPage);
+    setNoMoreVideos(false);
   }, [descriptionQuery]); // Include descriptionQuery as a dependency
 
   const theUserId = async () => {
@@ -73,7 +75,7 @@ const Page = () => {
 
       if (videosData.length === 0 && page === 1) {
         // Set noResults to true if no videos are found on the first page
-        setNoResults(true);
+        setNoMoreVideos(true);
       } else {
         const newVideos = videosData.map((video: any) => ({
           uri: video.uri,
@@ -88,18 +90,21 @@ const Page = () => {
         if (page < data.paging.total_pages) {
           setCurrentPage(page + 1);
         }
+
+        return true; // Indicate that more videos are available
       }
     } catch (error) {
       console.error("Error:", error);
+      return false; // Indicate that no more videos are available due to error
     }
   };
 
   const hashtagOptions = [
-    "הריוןלידה",
-    "רצפתאגן",
-    "עריסתאגן",
-    "בריאותהאשה",
-    "עמודשדרה",
+    "הריון לידה",
+    "רצפת אגן",
+    "עריסת אגן",
+    "בריאות האשה",
+    "עמוד שדרה",
     "סנכרון",
     "זרימה",
     "ליבה",
@@ -111,15 +116,15 @@ const Page = () => {
     "קול",
     "יציבה",
     "סקרבינג",
-    "שיעורפתיחה",
+    "שיעור  פתיחה",
     "שכמות",
-    "חגורתכתפיים",
+    "חגורת כתפיים",
     "כתפיים",
-    "פלגגוףעליון",
+    "פלג גוף עליון",
     "שורשים",
-    "שורשכףיד",
+    "שורש כף יד",
     "ניעורים",
-    "ניעוריגוף",
+    "ניעורי גוף",
     "צוואר",
     "Flystick",
     "אקסטנשיין",
@@ -127,11 +132,10 @@ const Page = () => {
     "גב",
     "רגליים",
     "ברכיים",
-    "פלגגוףתחתון",
+    "פלג גוף תחתון",
     "אגן",
-    "גבתחתון",
+    "גב תחתון",
     "בטן",
-    "שלושתהפופיקים",
     "אלכסונים",
     "הליכה",
     "ריצה",
@@ -141,12 +145,12 @@ const Page = () => {
     "מתיחות",
     "לורדוזה",
     "לחצים",
-    "תאיאיכסון",
+    "תאי איכסון",
     "דיוקים",
-    "נסיגתפנים",
+    "נסיגת פנים",
     "Sml",
     "מדיטציה",
-    "כפותרגליים",
+    "כפות רגליים",
     "תודעה",
   ];
   const handleHashtagClick = (hashtag: string) => {
@@ -183,8 +187,15 @@ const Page = () => {
 
   const loadMore = () => {
     // Increment the current page to fetch the next page of videos
-    setCurrentPage(currentPage + 1); // Increment currentPage here
-    fetchVideos(currentPage + 1); // Pass the updated currentPage
+    const nextPage = currentPage + 1;
+
+    fetchVideos(nextPage).then((hasMoreVideos) => {
+      if (!hasMoreVideos) {
+        // If there are no more videos, set a state variable
+        setNoMoreVideos(true);
+      }
+      setCurrentPage(nextPage); // Increment currentPage here
+    });
   };
 
   const [showFullDescription, setShowFullDescription] =
@@ -568,12 +579,19 @@ const Page = () => {
             )}
           </div>
           <div className="mt-8">
-            <button
-              className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-6 py-4 rounded-md focus:outline-none"
-              onClick={loadMore}
-            >
-              Load More
-            </button>
+            {noMoreVideos && (
+              <p className="text-center text-gray-500 mt-8">
+                No more videos to load.
+              </p>
+            )}
+            {!noMoreVideos && (
+              <button
+                className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-6 py-4 rounded-md focus:outline-none"
+                onClick={loadMore}
+              >
+                Load More
+              </button>
+            )}
           </div>
         </div>
         {selectedVideo && (

@@ -33,9 +33,11 @@ const Page: FC<pageProps> = ({ params }) => {
     videos.map(() => false),
   );
   const [noResults, setNoResults] = useState(false);
+  const [noMoreVideos, setNoMoreVideos] = useState<boolean>(false); // State to track if there are no more videos to load
 
   useEffect(() => {
     // Fetch folder name based on folder ID (value)
+
     const fetchFolderName = async () => {
       try {
         const accessToken = process.env.VIMEO_TOKEN;
@@ -67,6 +69,8 @@ const Page: FC<pageProps> = ({ params }) => {
 
     setVideos([]);
     setCurrentPage(1);
+    setNoMoreVideos(false);
+
     fetchVideos(currentPage);
   }, [descriptionQuery]); // Include descriptionQuery as a dependency
 
@@ -94,7 +98,7 @@ const Page: FC<pageProps> = ({ params }) => {
     Authorization: `Bearer ${accessToken}`,
   };
 
-  const fetchVideos = async (page: number) => {
+  const fetchVideos = async (page: number): Promise<boolean> => {
     try {
       const response: AxiosResponse = await axios.get(apiUrl, {
         headers,
@@ -111,6 +115,7 @@ const Page: FC<pageProps> = ({ params }) => {
       if (videosData.length === 0 && page === 1) {
         // Set noResults to true if no videos are found on the first page
         setNoResults(true);
+        setNoMoreVideos(true);
       } else {
         const newVideos = videosData.map((video: any) => ({
           uri: video.uri,
@@ -124,11 +129,13 @@ const Page: FC<pageProps> = ({ params }) => {
 
         if (page < data.paging.total_pages) {
           setCurrentPage(page + 1);
+          return true; // Indicate there are more videos
         }
       }
     } catch (error) {
       console.error("Error:", error);
     }
+    return false; // Indicate no more videos
   };
 
   const hashtagOptions = [
@@ -222,8 +229,15 @@ const Page: FC<pageProps> = ({ params }) => {
 
   const loadMore = () => {
     // Increment the current page to fetch the next page of videos
-    setCurrentPage(currentPage + 1); // Increment currentPage here
-    fetchVideos(currentPage + 1); // Pass the updated currentPage
+    const nextPage = currentPage + 1;
+
+    fetchVideos(nextPage).then((hasMoreVideos) => {
+      if (!hasMoreVideos) {
+        // If there are no more videos, set a state variable
+        setNoMoreVideos(true);
+      }
+      setCurrentPage(nextPage); // Increment currentPage here
+    });
   };
 
   const [showFullDescription, setShowFullDescription] =
@@ -608,12 +622,19 @@ const Page: FC<pageProps> = ({ params }) => {
             )}
           </div>
           <div className="mt-8">
-            <button
-              className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-6 py-4 rounded-md focus:outline-none"
-              onClick={loadMore}
-            >
-              Load More
-            </button>
+            {noMoreVideos && (
+              <p className="text-center text-gray-500 mt-8">
+                No more videos to load.
+              </p>
+            )}
+            {!noMoreVideos && (
+              <button
+                className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-6 py-4 rounded-md focus:outline-none"
+                onClick={loadMore}
+              >
+                Load More
+              </button>
+            )}
           </div>
         </div>
         {selectedVideo && (
