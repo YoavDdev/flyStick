@@ -152,6 +152,8 @@ const Page = () => {
     "מדיטציה",
     "כפות רגליים",
     "תודעה",
+    "אימון קיר",
+    "כפות רגליים",
   ];
   const handleHashtagClick = (hashtag: string) => {
     setSearchQuery((prevQuery) => {

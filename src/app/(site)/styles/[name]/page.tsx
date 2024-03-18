@@ -192,6 +192,8 @@ const Page: FC<pageProps> = ({ params }) => {
     "מדיטציה",
     "כפותרגליים",
     "תודעה",
+    "אימון קיר",
+    "כפות רגליים",
   ];
 
   const handleHashtagClick = (hashtag: string) => {
