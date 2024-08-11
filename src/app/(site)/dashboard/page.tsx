@@ -165,6 +165,10 @@ const DashboardPage = () => {
                 <h3 className="text-lg font-extrabold text-[#2D3142] mb-2">
                   Payment Section
                 </h3>
+                <p className="text-gray-600 mb-4">
+                  Manage your subscription, renew or cancel anytime, using the
+                  button below:
+                </p>
                 {loading ? (
                   <p className="text-gray-600 mb-10">Loading...</p>
                 ) : (
