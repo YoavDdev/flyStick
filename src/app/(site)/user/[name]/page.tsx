@@ -203,7 +203,7 @@ const Page: FC<pageProps> = ({ params }) => {
     );
   }
 
-  if (subscriptionId === "Admin" || subscriptionStatus === "ACTIVE") {
+  if (subscriptionId === "Admin" || subscriptionStatus === "ACTIVE" || subscriptionStatus === "PENDING_CANCELLATION") {
     // Render content for users with an active subscription
 
     return (
