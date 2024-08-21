@@ -20,7 +20,7 @@ const TermsAndConditions = () => {
                   <strong>1. כללי</strong>
                   <br />
                   1.1. ברוכים הבאים לאתר &quot;סטודיו אונליין של בועז נחייסי&quot; (להלן:
-                  "<a href='https://www.studioboazonline.com/'>https://www.studioboazonline.com/</a>").
+                    &quot;<a href='https://www.studioboazonline.com/'>https://www.studioboazonline.com/</a>&quot;).
                   <br />
                   1.2. תקנון זה מהווה הסכם מחייב בינך (להלן: &quot;המשתמש&quot;) לבין
                   החברה. אנא קרא בעיון את התקנון, שכן שימוש באתר מעיד על הסכמתך
