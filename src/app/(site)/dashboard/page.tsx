@@ -136,53 +136,53 @@ const DashboardPage = () => {
         {session?.user ? (
           <div className="bg-white bg-opacity-50 w-full max-w-screen-xl p-8 rounded-lg shadow-lg">
             <h2 className="text-3xl font-semibold text-[#EF8354] mb-4 capitalize">
-              Welcome, {session.user.name}!
+            ברוך הבא, {session.user.name}!
             </h2>
             <p className="text-xl text-gray-600 mb-8">
-              Dashboard Overview, Explore your personalized learning dashboard.
+            פה תמצא את כל מה שאתה צריך לדעת.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <DashboardCard
-                title="Explore Section"
-                description="Dive into a world of learning with a vast pool of knowledge."
+                title="חקור את העולם"
+                description="צולל לתוך עולם של למידה עם מאגר ידע עצום."
                 link="/explore"
               />
 
               <DashboardCard
-                title="Styles Section"
-                description="Browse lessons, exercises, and lectures by style and technique."
+                title="סגנונות ותכנים"
+                description="עיין בשיעורים, תרגילים והרצאות לפי סגנון וטכניקה."
                 link="/styles"
               />
 
               <DashboardCard
-                title="Library Section"
-                description="Organize your video collection and create custom folders."
+                title="הספרייה האישית שלך"
+                description="ארגן את אוסף הווידאו שלך וצור תיקיות מותאמות אישית."
                 link="/user"
               />
 
               <div className="bg-white p-4 rounded-lg shadow-md">
                 <h3 className="text-lg font-extrabold text-[#2D3142] mb-2">
-                  Payment Section
+                אזור תשלום
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  Manage your subscription, renew or cancel anytime, using the
-                  button below:
+                נהל את המנוי שלך, חידוש או ביטול בכל זמן שמתאים לך, בעזרת הכפתור למטה:
+
                 </p>
                 {loading ? (
-                  <p className="text-gray-600 mb-10">Loading...</p>
+                  <p className="text-gray-600 mb-10">טעינה...</p>
                 ) : (
                   <>
                     {subscriptionStatus !== null ? (
                       <p className="text-gray-600 mb-10">
-                        Subscription Status:{" "}
+                        סטטוס מנוי:{" "}
                         <span className="text-green-500 ">
                           {subscriptionStatus}
                         </span>
                       </p>
                     ) : (
                       <p className="text-gray-600 mb-10">
-                        Subscription Status:{" "}
+                        סטטוס מנוי:{" "}
                         <span className="text-red-600">Not Active</span>
                       </p>
                     )}
@@ -193,22 +193,22 @@ const DashboardPage = () => {
                           onClick={cancelSubscription}
                           className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
                         >
-                          Cancel Subscription
+                          בטל מנוי
                         </button>
                         <p className="text-gray-600 mt-2 text-sm">
-                          Click the button to cancel your subscription.
+                        לחץ על הכפתור כדי לבטל את המנוי שלך.
                         </p>
                       </>
                     ) : subscriptionStatus === "CANCELED" ? (
                       <Link href="/#Pricing">
                         <span className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition duration-300 ease-in-out">
-                          Renew your subscription
+                        חדש את המנוי שלך
                         </span>
                       </Link>
                     ) : (
                       <Link href="/#Pricing">
                         <span className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out">
-                          Activate subscription
+                        הפעל מנוי
                         </span>
                       </Link>
                     )}
@@ -220,7 +220,7 @@ const DashboardPage = () => {
         ) : (
           <div className="text-center">
             <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-              Please Log in to Continue
+            אנא התחבר כדי להמשיך
             </h1>
             <Link href="/login">
               <span className="text-[#EF8354] text-lg">Login</span>

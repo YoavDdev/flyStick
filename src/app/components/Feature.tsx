@@ -8,39 +8,39 @@ import {
 const Feature = () => {
   const features = [
     {
-      name: "Whether a beginner or an experienced practitioner:",
+      name: "מתחילים או מתרגלים מנוסים:",
       description:
-        "Streamlined Learning: Follow a guided path in our unique training program, with tailored challenges and special breathing techniques in every class.",
+        "למידה מותאמת אישית: עקוב אחר מסלול מובנה בתוכנית האימון הייחודית שלנו, עם אתגרים מותאמים וטכניקות נשימה מיוחדות בכל שיעור.",
       href: "#",
     },
     {
-      name: "If you have curiosity and drive for more:",
+      name: "אם יש לך סקרנות ורצון להתפתח:",
       description:
-        "Deep Dives: Explore movement infrastructures with anatomical in-depth insights, step into inner Harmony and the understanding of the profound connection between outer movement and inner self.",
+        "חקירות מעמיקות: גלה את מבני התנועה עם תובנות אנטומיות מעמיקות, היכנס להרמוניה פנימית והבין את הקשר העמוק בין התנועה החיצונית והעצמי הפנימי.",
       href: "#",
     },
     {
-      name: "As an instructor and practitioner:",
+      name: "כמדריך וכמתרגל:",
       description:
-        "Enhance and Inspire: Boost your knowledge, creativity, and value as an instructor and practitioner with our studio's resources.",
+        "שדרג והנחה: הגבר את הידע, היצירתיות והערך שלך כמדריך וכמתרגל עם המשאבים של הסטודיו שלנו.",
       href: "#",
     },
   ];
+  
   return (
     <div className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:text-center">
           <h2 className="text-base font-semibold leading-7 text-[#2D3142]">
-            Welcome all movers
+            ברוכים הבאים
           </h2>
           <p className="mt-2 text-3xl font-bold tracking-tight text-[#EF8354] sm:text-4xl">
-            Your Journey to Movement Mastery Begins Here
+            המסע שלך למיומנות בתנועה מתחיל כאן
           </p>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Streamlined Learning for All Levels: Dive deep into movement
-            secrets, reveal the connection between outer and inner self as a
-            practitioner, empower your teaching skills as an instructor with our
-            studio&apos;s resources.
+            למידה מסודרת לכל הרמות: צלול לעומק סודות התנועה, גלה את הקשר בין
+            החיצוני לפנימי כמתרגל, ועצם את כישורי ההוראה שלך כמדריך עם משאבי
+            הסטודיו שלנו.
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">

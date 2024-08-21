@@ -1,5 +1,6 @@
 import React from "react";
 import NewsletterSignUpForm from "./NewsletterSignUpForm";
+import Link from "next/link";
 
 const Footer = () => {
   const navigation = {
@@ -61,16 +62,16 @@ const Footer = () => {
         <div className="mt-16 border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24 lg:flex lg:items-center lg:justify-between">
           <div>
             <h3 className="text-sm font-semibold leading-6 text-gray-900">
-              Subscribe to our newsletter
+              הירשמו לניוזלטר שלנו
             </h3>
             <p className="mt-2 text-sm leading-6 text-gray-600">
-              The latest news, articles, and resources, sent to your inbox
-              weekly.
+              החדשות האחרונות, מאמרים, ומשאבים, נשלחים לתיבת הדואר שלכם מדי
+              שבוע.
             </p>
           </div>
-
           <NewsletterSignUpForm />
         </div>
+
         <div className="mt-8 border-t border-gray-900/10 pt-8 md:flex md:items-center md:justify-between">
           <div className="flex space-x-6 md:order-2">
             {navigation.social.map((item) => (
@@ -84,10 +85,23 @@ const Footer = () => {
               </a>
             ))}
           </div>
-          <p className="mt-8 text-xs leading-5 text-gray-500 md:order-1 md:mt-0">
-            &copy; 2023 Boaz Nahaisi&apos;s Online Studio, Inc. All rights
-            reserved.
-          </p>
+
+          <div className="mt-8 text-xs leading-5 text-gray-500 md:order-1 md:mt-0">
+            <p>
+              &copy; 2024 סטודיו אונליין של בועז נחייסי, בע"מ. כל הזכויות שמורות.
+            </p>
+            <p>
+              <Link className="text-gray-400 hover:text-gray-500" href="/terms">תקנון אתר</Link>
+
+              {" | "}
+            
+              <Link className="text-gray-400 hover:text-gray-500" href="/privacyPolicy">מדיניות פרטיות</Link>
+              {" | "}
+            
+            <Link className="text-gray-400 hover:text-gray-500" href="/accessibility">הצהרת נגישות</Link>
+
+            </p>
+          </div>
         </div>
       </div>
     </footer>

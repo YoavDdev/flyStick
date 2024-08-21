@@ -94,14 +94,14 @@ const Page = () => {
             <div className="mx-auto max-w-7xl px-8 pb-10">
               <div className="mx-auto max-w-2xl text-center">
                 <h2 className="text-base font-semibold leading-7 text-[#990011]">
-                  All Your Favorites in One Place
+               הספרייה האישית שלך
                 </h2>
                 <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                   {loading
-                    ? "Loading..."
+                    ? "טעינה..."
                     : folderNames.length === 0
-                    ? "Your Library is empty"
-                    : "Your Library"}
+                    ? "הספרייה שלך ריקה"
+                    : "הספרייה שלך"}
                 </h2>
               </div>
             </div>
@@ -116,7 +116,7 @@ const Page = () => {
                           {folderName}
                         </h3>
                         <p className="text-sm text-gray-700">
-                          Click to explore
+                        לכניסה
                         </p>
                         {folderName.toLowerCase() !== "favorites" && (
                           <button
@@ -126,7 +126,7 @@ const Page = () => {
                             }}
                             className="bg-red-800 hover:bg-red-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
                           >
-                            Delete
+                            מחק
                           </button>
                         )}
                       </div>
@@ -157,13 +157,13 @@ const Page = () => {
                           type="submit"
                           className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-4 py-2 rounded-full focus:outline-none"
                         >
-                          Add New Folder
+                          הוסף תיקיה חדשה
                         </button>
                         <button
                           onClick={() => setShowForm(false)}
                           className="bg-gray-500 hover:bg-gray-400 text-white px-4 py-2 ml-2 rounded-full focus:outline-none"
                         >
-                          Cancel
+                          ביטול
                         </button>
                       </div>
                     </form>
@@ -182,10 +182,9 @@ const Page = () => {
         ) : (
           <div className="text-center">
             <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-              Please Log in to Continue
-            </h1>
+            אנא היכנס כדי להמשיך            </h1>
             <Link href="/login">
-              <span className="text-[#EF8354] text-lg">Login</span>
+              <span className="text-[#EF8354] text-lg">כניסה</span>
             </Link>
           </div>
         )}

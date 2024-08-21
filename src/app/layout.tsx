@@ -1,11 +1,11 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Lato } from "next/font/google";
+import { Rubik } from "next/font/google";
 import { Footer, Navbar } from "./components";
 import Provider from "./context/AuthContext";
 import ToasterContext from "./context/ToasterContext";
 
-const poppins = Lato({ weight: "400", subsets: ["latin"] });
+const rubik = Rubik({ subsets: ["latin", "hebrew"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.studioboazonline.com/"),
@@ -37,8 +37,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={poppins.className}>
+    <html lang="he" dir="rtl">
+      <body className={rubik.className}>
         <Provider>
           <ToasterContext />
           <Navbar />

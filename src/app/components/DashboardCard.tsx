@@ -8,7 +8,7 @@ const DashboardCard = ({ title, description, link }: any) => {
       <p className="text-gray-600 mb-4">{description}</p>
       <Link href={link}>
         <span className="text-[#EF8354] hover:underline">
-          Explore More &rarr;
+        גלה עוד
         </span>
       </Link>
     </div>

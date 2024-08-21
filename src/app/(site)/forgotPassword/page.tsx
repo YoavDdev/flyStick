@@ -47,7 +47,7 @@ const ForgotPasswordPage = () => {
     <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8 pb-96">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-20 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Forgot Your Password?
+        שכחת את הסיסמה שלך?
         </h2>
       </div>
 
@@ -58,7 +58,7 @@ const ForgotPasswordPage = () => {
               htmlFor="email"
               className="block text-sm font-medium leading-6 text-gray-900"
             >
-              Email address
+              כתובת אימייל
             </label>
             <div className="mt-2">
               <input
@@ -76,7 +76,7 @@ const ForgotPasswordPage = () => {
               onClick={initiatePasswordReset}
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Initiate Password Reset
+              התחל איפוס סיסמה
             </button>
           </div>
 
@@ -84,7 +84,7 @@ const ForgotPasswordPage = () => {
             href="/login"
             className="text-sm text-indigo-600 hover:underline focus:outline-none focus:underline"
           >
-            Back to Login
+            חזור לדף הכניסה
           </Link>
         </div>
       </div>

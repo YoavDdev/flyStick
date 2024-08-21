@@ -10,11 +10,12 @@ import SubscriptionDetails from "./../api/SubscriptionDetails";
 const prisma = new PrismaClient();
 
 const includedFeatures = [
-  "Hundreds of hours of method classes, exercises, lectures and workshop.",
-  "A vast pool of tools and ideas for teaching classes and extractors.",
-  "Exercises in a variety of methods (Flystick, Controlology, Pilates mat, Pilates Apparatus, common props).",
-  "A range of difficulty practice level",
+  "מאות שעות של שיעורים שיטתיים, תרגילים, הרצאות וסדנאות.",
+  "מאגר עצום של כלים ורעיונות להוראת שיעורים ומדריכים.",
+  "תרגילים במגוון שיטות (Flystick, Controlology, מזרן פילאטיס, מכשירי פילאטיס, אביזרים נפוצים).",
+  "מגוון רמות קושי באימונים.",
 ];
+
 
 export default function Pricing() {
   const { data: session } = useSession();
@@ -51,17 +52,16 @@ export default function Pricing() {
         <div className="mx-auto max-w-2xl rounded-3xl ring-1 ring-gray-200 lg:mx-0 lg:flex lg:max-w-none">
           <div className="p-8 sm:p-10 lg:flex-auto">
             <h3 className="text-2xl font-bold tracking-tight text-[#EF8354]">
-              Boaz Nahaisi&apos;s Online Studio Membership
+              מנוי לסטודיו אונליין של בועז נחייסי
             </h3>
 
             <p className="mt-6 text-base leading-7 text-gray-600">
-              A vast pool of knowledge that will allow you to connect with your
-              body, enhance your somatic understanding, and enrich your
-              knowledge. Prepare to be surprise.
+              מאגר עצום של ידע שיאפשר לך להתחבר לגופך, להעמיק את ההבנה הסומטית
+              שלך ולהעשיר את הידע שלך. התכונן להיות מופתע.
             </p>
             <div className="mt-10 flex items-center gap-x-4">
               <h4 className="flex-none text-sm font-semibold leading-6 text-[#EF8354]">
-                What’s included
+                מה זה כולל
               </h4>
               <div className="h-px flex-auto bg-gray-100" />
             </div>
@@ -84,36 +84,35 @@ export default function Pricing() {
             <div className="rounded-2xl bg-gray-50 py-10 text-center ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16">
               <div className="mx-auto max-w-xs px-8">
                 <p className="text-base font-semibold text-gray-600">
-                  Monthly Subscription
+                  מנוי חודשי
                 </p>
                 <p className="mt-6 flex items-baseline justify-center gap-x-2">
                   <span className="text-5xl font-bold tracking-tight text-gray-900">
                     220
                   </span>
                   <span className="text-sm font-semibold leading-6 tracking-wide text-gray-600">
-                    NIS
+                    ש"ח
                   </span>
                 </p>
                 <p className="mt-3 text-xs leading-5 text-gray-600">
-                  Experience our subscription service for{" "}
+                    חוו את שירות המנויים שלנו {" "}
                   <span className="text-[#EF8354]">
-                    free for the first 3 days
+                    בחינם למשך 3 הימים הראשונים
                   </span>
-                  . Decide if it&apos;s right for you before committing to a
-                  subscription.
+                  . החליטו אם זה מתאים לכם לפני שמתחייבים למנוי.
                 </p>
 
                 {subscriptionStatus === "ACTIVE" ? (
                   <>
                     <p className="mt-3 text-lg text-green-600 font-semibold">
-                      You are subscribed!
+                      אתה כבר מנוי!
                     </p>
                     <div className="mt-5 flex items-center justify-center gap-x-6">
                       <Link
                         href="/explore"
                         className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       >
-                        Explore Now
+                        חקור עכשיו
                       </Link>
                     </div>
                   </>
@@ -172,14 +171,15 @@ export default function Pricing() {
                           href="/register"
                           className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                          Get started
+                          התחל
                         </Link>
                       </div>
                     )}
                   </>
                 )}
                 <p className="mt-6 text-xs leading-5 text-gray-600">
-                  Subscription renews automatically every month. Cancel anytime.
+                המנוי מתחדש אוטומטית מדי חודש. בטל בכל עת.
+
                 </p>
               </div>
             </div>

@@ -15,7 +15,7 @@ const DropdownMenu = ({ toggleDropdown }: any) => {
           className="block px-10 py-2 hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
           onClick={toggleDropdown}
         >
-          Dashboard
+          איזור אישי
         </li>
       </Link>
       <Link href="/user">
@@ -23,7 +23,7 @@ const DropdownMenu = ({ toggleDropdown }: any) => {
           className="block px-10 py-2 hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
           onClick={toggleDropdown}
         >
-          My Library
+          הספרייה שלי
         </li>
       </Link>
       <Link href="/styles">
@@ -31,7 +31,7 @@ const DropdownMenu = ({ toggleDropdown }: any) => {
           className="block px-10 py-2 hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
           onClick={toggleDropdown}
         >
-          Styles
+          סגנונות
         </li>
       </Link>
       <Link href="/explore">
@@ -39,7 +39,7 @@ const DropdownMenu = ({ toggleDropdown }: any) => {
           className="block px-10 py-2 hover:bg-[#EF8354] hover:text-white text-left focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
           onClick={toggleDropdown}
         >
-          Explore
+          חקור
         </li>
       </Link>
       <Link
@@ -51,7 +51,7 @@ const DropdownMenu = ({ toggleDropdown }: any) => {
         }}
       >
         <div className="flex items-center">
-          <span>Logout</span>
+          <span>התנתק</span>
           <AiOutlineLogout className="ml-2" />
         </div>
       </Link>

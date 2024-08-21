@@ -39,7 +39,7 @@ class ConvertkitEmailForm extends Component {
           name="email"
           id="newsletter-input"
           autoComplete="email"
-          placeholder="Enter your email"
+          placeholder="הכנס את אימייל שלך"
           value={this.state.email}
           onChange={this.emailHandler}
           autoCorrect="off"
@@ -55,7 +55,7 @@ class ConvertkitEmailForm extends Component {
             name="subscribe"
             className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Subscribe
+            הרשמה
           </button>
         </div>
       </form>

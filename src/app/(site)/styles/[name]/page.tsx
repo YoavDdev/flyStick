@@ -378,7 +378,11 @@ const Page: FC<pageProps> = ({ params }) => {
     );
   }
 
-  if (subscriptionId === "Admin" || subscriptionStatus === "ACTIVE" || subscriptionStatus === "PENDING_CANCELLATION") {
+  if (
+    subscriptionId === "Admin" ||
+    subscriptionStatus === "ACTIVE" ||
+    subscriptionStatus === "PENDING_CANCELLATION"
+  ) {
     // Render content for users with an active subscription
     return (
       <div className="bg-white min-h-screen text-white pt-20">
@@ -386,24 +390,17 @@ const Page: FC<pageProps> = ({ params }) => {
           <h1 className="text-4xl font-bold mb-8 text-black text-center">
             {folderName}
           </h1>
-          <div className="flex items-center text-[#EF8354] hover:underline pb-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-1"
-              fill="none"
-              viewBox="0 0 20 20"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
-            <Link href="/styles">Back to Styles</Link>
+          <div
+            style={{ direction: "ltr" }}
+            className="flex items-center text-[#EF8354] hover:underline pb-3"
+          >
+            <Link href="/styles">חזרה לסגנונות</Link>
           </div>
-          <form onSubmit={handleSearch} className="mb-8">
+          <form
+            onSubmit={handleSearch}
+            className="mb-8"
+            style={{ direction: "ltr" }}
+          >
             <div className="flex items-center justify-center relative">
               <input
                 type="text"
@@ -464,9 +461,9 @@ const Page: FC<pageProps> = ({ params }) => {
             {noResults ? (
               <p className="text-center text-gray-500 mt-8">
                 <span className="font-bold text-red-600">Oops!</span> 🤷‍♂️ No
-                videos found for the hashtag{" "}
+                סרטונים שנמצאו עבור ההאשטאג{" "}
                 <span className="font-bold">&quot;{searchQuery}&quot;</span> .
-                Try using fewer hashtags for a better results!
+                נסה להשתמש בכמות פחותה יותר של האשטאגים לתוצאות טובות יותר!
               </p>
             ) : (
               videos.map((video, index) => (
@@ -498,7 +495,7 @@ const Page: FC<pageProps> = ({ params }) => {
                         className="text-blue-500 hover:underline focus:outline-none"
                         onClick={toggleDescription(index)}
                       >
-                        Read More
+                        קראה עוד
                       </button>
                     )}
                     {expandedDescriptions[index] && (
@@ -506,7 +503,7 @@ const Page: FC<pageProps> = ({ params }) => {
                         className="text-blue-500 hover:underline focus:outline-none"
                         onClick={toggleDescription(index)}
                       >
-                        Show Less
+                        הצג פחות
                       </button>
                     )}
                     <div className="py-8">
@@ -517,7 +514,7 @@ const Page: FC<pageProps> = ({ params }) => {
                           setSelectedVideoData(video);
                         }}
                       >
-                        Play
+                        נגן
                       </button>
                     </div>
                     <button
@@ -547,7 +544,7 @@ const Page: FC<pageProps> = ({ params }) => {
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                 <div className="w-96 p-4 rounded-lg shadow-lg bg-white text-black relative">
                   <button
-                    className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-500 p-2 rounded-full hover:bg-red-600 transition-all duration-300"
+                    className="absolute top-4 left-4 text-white text-xl cursor-pointer bg-red-500 p-2 rounded-full hover:bg-red-600 transition-all duration-300"
                     onClick={closeModal} // Close the video player
                   >
                     <svg
@@ -566,7 +563,7 @@ const Page: FC<pageProps> = ({ params }) => {
                     </svg>
                   </button>
                   <h2 className="text-2xl mb-4 font-semibold">
-                    Save video to...
+                    שמור את הסרטון ל...
                   </h2>
                   <ul className="space-y-3 capitalize font-semibold pt-6">
                     {folderNames.map((folderName) => (
@@ -582,7 +579,7 @@ const Page: FC<pageProps> = ({ params }) => {
                             closeModal(); // Close the modal after addToFavorites
                           }}
                         >
-                          Add to Folder
+                          הוסף לתיקייה
                         </button>
                       </li>
                     ))}
@@ -593,20 +590,20 @@ const Page: FC<pageProps> = ({ params }) => {
                         className="text-white py-2 px-4 rounded-md bg-[#EF8354] hover:bg-[#D9713C] focus:outline-none"
                         onClick={openForm}
                       >
-                        Create New Playlist
+                        צור רשימת חדשה
                       </button>
                     )}
                   </div>
                   {showForm && (
                     <form onSubmit={handleSubmit} className="mt-4">
                       <label className="block mb-2">
-                        <span className="text-lg font-semibold">Name:</span>
+                        <span className="text-lg font-semibold">שם:</span>
                         <input
                           type="text"
                           value={playlistName}
                           onChange={handlePlaylistNameChange}
                           className="w-full rounded-md bg-gray-100 text-black py-1 px-2 focus:outline-none"
-                          placeholder="Enter Playlist name..."
+                          placeholder="הכנס שם"
                         />
                       </label>
                       <div className="mt-2">
@@ -614,7 +611,7 @@ const Page: FC<pageProps> = ({ params }) => {
                           className="text-white py-2 px-4 rounded-md bg-[#EF8354] hover:bg-[#D9713C] focus:outline-none"
                           type="submit"
                         >
-                          Create
+                          צור
                         </button>
                       </div>
                     </form>
@@ -626,7 +623,7 @@ const Page: FC<pageProps> = ({ params }) => {
           <div className="mt-8">
             {noMoreVideos && (
               <p className="text-center text-gray-500 mt-8">
-                No more videos to load.
+                אין עוד סרטונים לטעון.
               </p>
             )}
             {!noMoreVideos && (
@@ -634,7 +631,7 @@ const Page: FC<pageProps> = ({ params }) => {
                 className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-6 py-4 rounded-md focus:outline-none"
                 onClick={loadMore}
               >
-                Load More
+                טען עוד
               </button>
             )}
           </div>
@@ -675,14 +672,14 @@ const Page: FC<pageProps> = ({ params }) => {
     return (
       <div className="text-center mt-28">
         <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-          Your subscription is not active.
+          המנוי שלך אינו פעיל.
         </h1>
         <div className="mt-10 flex items-center justify-center">
           <a
             href="/#Pricing"
             className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Subscribe here
+            הירשם כאן
           </a>
         </div>
       </div>

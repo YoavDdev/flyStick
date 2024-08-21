@@ -333,7 +333,7 @@ const Page = () => {
     return (
       <div className="text-center pt-28">
         <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-          Loading...
+          טעינה...
         </h1>
       </div>
     );
@@ -347,15 +347,16 @@ const Page = () => {
           <div className="mx-auto max-w-7xl px-8 pb-10">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-base font-semibold leading-7 text-slate-700">
-                Your Journey, Your Rules , Your Needs
+              המסע שלך, הכללים שלך, הצרכים שלך
               </h2>
               <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                Explore Your Next Class
+              גלה את השיעור הבא שלך
               </p>
             </div>
           </div>
-          <form onSubmit={handleSearch} className="mb-8">
-            <div className="flex items-center relative">
+          <form onSubmit={handleSearch} className="mb-8"  style={{ direction: "ltr" }}
+          >
+            <div className="flex items-center relative ">
               <input
                 type="text"
                 value={searchQuery}
@@ -395,8 +396,7 @@ const Page = () => {
             {showHashtagDropdown && (
               <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
                 <p className="text-center text-gray-500 mt-1">
-                  Select multiple hashtags for a more personalized video
-                  experience.
+                בחר מספר האשטאגים לחוויה מותאמת אישית יותר של הסרטון.
                 </p>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4 p-2">
                   {hashtagOptions.map((hashtag, index) => (
@@ -420,9 +420,9 @@ const Page = () => {
             {noResults ? (
               <p className="text-center text-gray-500 mt-8">
                 <span className="font-bold text-red-600">Oops!</span> 🤷‍♂️ No
-                videos found for the hashtag{" "}
+                סרטונים שנמצאו עבור ההאשטאג{" "}
                 <span className="font-bold">&quot;{searchQuery}&quot;</span> .
-                Try using fewer hashtags for a better results!
+                נסה להשתמש בכמות פחותה יותר של האשטאגים לתוצאות טובות יותר!
               </p>
             ) : (
               videos.map((video, index) => (
@@ -454,7 +454,7 @@ const Page = () => {
                         className="text-blue-500 hover:underline focus:outline-none"
                         onClick={toggleDescription(index)}
                       >
-                        Read More
+                        קרא עוד
                       </button>
                     )}
                     {expandedDescriptions[index] && (
@@ -462,7 +462,7 @@ const Page = () => {
                         className="text-blue-500 hover:underline focus:outline-none"
                         onClick={toggleDescription(index)}
                       >
-                        Show Less
+                        הצג פחות
                       </button>
                     )}
                     <div className="py-8">
@@ -473,7 +473,7 @@ const Page = () => {
                           setSelectedVideoData(video);
                         }}
                       >
-                        Play
+                        נגן
                       </button>
                     </div>
                     <button
@@ -504,7 +504,7 @@ const Page = () => {
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                 <div className="w-96 p-4 rounded-lg shadow-lg bg-white text-black relative">
                   <button
-                    className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-500 p-2 rounded-full hover:bg-red-600 transition-all duration-300"
+                    className="absolute top-4 left-4 text-white text-xl cursor-pointer bg-red-500 p-2 rounded-full hover:bg-red-600 transition-all duration-300"
                     onClick={closeModal} // Close the video player
                   >
                     <svg
@@ -523,8 +523,7 @@ const Page = () => {
                     </svg>
                   </button>
                   <h2 className="text-2xl mb-4 font-semibold">
-                    Save video to...
-                  </h2>
+                  שמור את הסרטון ל...</h2>
                   <ul className="space-y-3 capitalize font-semibold pt-6">
                     {folderNames.map((folderName) => (
                       <li
@@ -539,7 +538,7 @@ const Page = () => {
                             closeModal(); // Close the modal after addToFavorites
                           }}
                         >
-                          Add to Folder
+                          הוסף לתיקייה
                         </button>
                       </li>
                     ))}
@@ -550,20 +549,20 @@ const Page = () => {
                         className="text-white py-2 px-4 rounded-md bg-[#EF8354] hover:bg-[#D9713C] focus:outline-none"
                         onClick={openForm}
                       >
-                        Create New Playlist
+                        צור רשימת חדשה
                       </button>
                     )}
                   </div>
                   {showForm && (
                     <form onSubmit={handleSubmit} className="mt-4">
                       <label className="block mb-2">
-                        <span className="text-lg font-semibold">Name:</span>
+                        <span className="text-lg font-semibold">שם:</span>
                         <input
                           type="text"
                           value={playlistName}
                           onChange={handlePlaylistNameChange}
                           className="w-full rounded-md bg-gray-100 text-black py-1 px-2 focus:outline-none"
-                          placeholder="Enter Playlist name..."
+                          placeholder="הכנס שם"
                         />
                       </label>
                       <div className="mt-2">
@@ -571,7 +570,7 @@ const Page = () => {
                           className="text-white py-2 px-4 rounded-md bg-[#EF8354] hover:bg-[#D9713C] focus:outline-none"
                           type="submit"
                         >
-                          Create
+                          צור
                         </button>
                       </div>
                     </form>
@@ -583,7 +582,7 @@ const Page = () => {
           <div className="mt-8">
             {noMoreVideos && (
               <p className="text-center text-gray-500 mt-8">
-                No more videos to load.
+                אין עוד סרטונים לטעון.
               </p>
             )}
             {!noMoreVideos && (
@@ -591,7 +590,7 @@ const Page = () => {
                 className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-6 py-4 rounded-md focus:outline-none"
                 onClick={loadMore}
               >
-                Load More
+                טען עוד
               </button>
             )}
           </div>
@@ -633,14 +632,14 @@ const Page = () => {
     return (
       <div className="text-center mt-28">
         <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-          Your subscription is not active.
+        המנוי שלך אינו פעיל.
         </h1>
         <div className="mt-10 flex items-center justify-center">
           <a
             href="/#Pricing"
             className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Subscribe here
+            הירשם כאן
           </a>
         </div>
       </div>

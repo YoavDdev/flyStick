@@ -105,7 +105,8 @@ const Navbar = () => {
     <nav
       className={`w-full fixed top-0 left-0 h-20 shadow-xl z-50 ${
         !isTransparent ? " bg-[#FCF6F5] bg-opacity-75 " : "bg-[#FCF6F5] "
-      }`}
+      }`} style={{ direction: "ltr" }}
+
     >
       <div className="flex justify-between items-center h-full w-full px-4 lg:px-4 ">
         <Link href="/">
@@ -160,7 +161,7 @@ const Navbar = () => {
                 href="/login"
                 className="ml-10 hover:text-[#2D3142] text-xl text-[#EF8354] bg-transparent border border-[#EF8354] rounded-md px-4 py-2 transition duration-300 ease-in-out"
               >
-                Log In
+                התחבר
                 {/* <span className="ml-2">🔒</span> */}
               </Link>
             )}
@@ -209,7 +210,7 @@ const Navbar = () => {
                   href="/login"
                   className="ml-10 hover:text-[#2D3142] text-xl text-[#EF8354] bg-transparent border border-[#EF8354] rounded-md px-4 py-2 transition duration-300 ease-in-out"
                 >
-                  Log In
+                  התחבר
                   {/* <span className="ml-2">🔒</span> */}
                 </Link>
               )}
@@ -221,7 +222,7 @@ const Navbar = () => {
                   : "hover:text-[#EF8354]"
               } text-xl text-[#2D3142]`}
             >
-              <Link href="/">Home</Link>
+              <Link href="/">בית</Link>
             </li>
             <li
               className={`ml-10 ${
@@ -230,7 +231,7 @@ const Navbar = () => {
                   : "hover:text-[#EF8354]"
               } text-xl text-[#2D3142]`}
             >
-              <Link href="/about">About</Link>
+              <Link href="/about">אודות</Link>
             </li>
             <li
               className={`ml-10 ${
@@ -239,14 +240,14 @@ const Navbar = () => {
                   : "hover:text-[#EF8354]"
               } text-xl text-[#2D3142]`}
             >
-              <Link href="/contact">Contact Me</Link>
+              <Link href="/contact">צור קשר</Link>
             </li>
             <li>
               <Link
                 href="/#Pricing"
                 className="ml-10 hover:text-[#EF8354] text-xl  text-[#2D3142]"
               >
-                Pricing
+                מחיר
               </Link>
             </li>
           </ul>
@@ -269,22 +270,22 @@ const Navbar = () => {
           <ul className="text-xl">
             <li className="py-4 cursor-pointer hover:text-[#EF8354] text-[#2D3142]">
               <Link href="/" onClick={() => setMenuopen(false)}>
-                Home
+                בית
               </Link>
             </li>
             <li className="py-4 cursor-pointer hover:text-[#EF8354] text-[#2D3142]">
               <Link href="/about" onClick={() => setMenuopen(false)}>
-                About
+                אודות
               </Link>
             </li>
             <li className="py-4 cursor-pointer hover:text-[#EF8354] text-[#2D3142]">
               <Link href="/contact" onClick={() => setMenuopen(false)}>
-                Contact Me
+                צור קשר
               </Link>
             </li>
             <li className="py-4 cursor-pointer hover:text-[#EF8354] text-[#2D3142]">
               <Link href="/#Pricing" onClick={() => setMenuopen(false)}>
-                Pricing
+                מחיר
               </Link>
             </li>
           </ul>

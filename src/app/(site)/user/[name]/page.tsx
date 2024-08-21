@@ -242,7 +242,7 @@ const Page: FC<pageProps> = ({ params }) => {
                       className="text-blue-500 hover:underline focus:outline-none"
                       onClick={toggleDescription}
                     >
-                      Read More
+                      קראה עוד
                     </button>
                   )}
                   {showFullDescription && (
@@ -250,7 +250,7 @@ const Page: FC<pageProps> = ({ params }) => {
                       className="text-blue-500 hover:underline focus:outline-none"
                       onClick={toggleDescription}
                     >
-                      Show Less
+                      הצג פחות
                     </button>
                   )}
                   <div className="py-8">
@@ -261,7 +261,7 @@ const Page: FC<pageProps> = ({ params }) => {
                         setSelectedVideoData(video);
                       }}
                     >
-                      Play
+                      נגן
                     </button>
                   </div>
                   <Link
@@ -269,7 +269,7 @@ const Page: FC<pageProps> = ({ params }) => {
                     onClick={() => removeVideo(video.uri)}
                     className="bg-red-800 hover:bg-red-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
                   >
-                    Remove
+                    הסר
                   </Link>
                 </div>
               </div>
@@ -312,14 +312,14 @@ const Page: FC<pageProps> = ({ params }) => {
     return (
       <div className="text-center mt-28">
         <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-          Your subscription is not active.
+        המנוי שלך אינו פעיל.
         </h1>
         <div className="mt-10 flex items-center justify-center">
           <a
             href="/#Pricing"
             className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Subscribe here
+            הירשם כאן
           </a>
         </div>
       </div>

@@ -57,7 +57,7 @@ const Register = () => {
     <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8 pb-96">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-20 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Register to your account
+        הרשמו לחשבון שלכם
         </h2>
       </div>
 
@@ -68,7 +68,7 @@ const Register = () => {
               htmlFor="name"
               className="block text-sm font-medium leading-6 text-gray-900"
             >
-              Name
+              שם
             </label>
             <div className="mt-2">
               <input
@@ -87,7 +87,7 @@ const Register = () => {
               htmlFor="email"
               className="block text-sm font-medium leading-6 text-gray-900"
             >
-              Email address
+              כתובת אימייל
             </label>
             <div className="mt-2">
               <input
@@ -109,7 +109,7 @@ const Register = () => {
                 htmlFor="password"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Password
+                סיסמה
               </label>
             </div>
             <div className="mt-2">
@@ -141,7 +141,7 @@ const Register = () => {
                 htmlFor="subscribeToNewsletter"
                 className="text-sm font-medium leading-6 text-gray-900"
               >
-                Subscribe to newsletter
+                להירשם לניוזלטר
               </label>
             </div>
           </div>
@@ -150,7 +150,7 @@ const Register = () => {
               type="submit"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Register
+              הירשם
             </button>
           </div>
         </form>
@@ -165,7 +165,7 @@ const Register = () => {
             loading="lazy"
             alt="google logo"
           />
-          Continue with Google
+          המשך עם Google
         </button>
       </div>
     </div>

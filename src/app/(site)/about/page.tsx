@@ -5,48 +5,39 @@ import boazAbout from "../../../../public/BoazAbout.jpeg";
 const About = () => {
   return (
     <div className="container pt-36 mx-auto md:px-6">
+      
       <section className="mb-32">
         <div className="container mx-auto text-center lg:text-left xl:px-32">
           <div className=" grid items-center lg:grid-cols-2">
             <div className="mb-12 lg:mb-0">
-              <div className="relative z-[1] block rounded-lg px-6 py-12 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] backdrop-blur-[30px] dark:shadow-black/20 md:px-12 lg:-mr-14 bg-[#FCF6F5]">
+              <div className="relative z-[1] block rounded-lg px-6 py-12 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] backdrop-blur-[30px] dark:shadow-black/20 md:px-12 lg:-mr-14 bg-[#FCF6F5] text-right">
                 <h2 className="mb-8 text-4xl md:text-5xl lg:text-6xl font-bold text-[#990011]">
-                  Greetings!
+                  שלום!
                 </h2>
                 <p className="text-lg text-gray-700 mb-8">
-                  I&apos;m Boaz Nahaissi, and my journey into the world of
-                  movement is a unique one. Unlike many who came from well
-                  structured methods and phisical established movements, I
-                  embarked on this path at a later age, lacking inherent
-                  flexibility and connection to the body that some may possess
-                  from early exposure. My insights and expertise have evolved
-                  through a deep personal and transformative process.
+                  אני בועז נחייסי. הדרך שלי בעולם התנועה היא ייחודית. בניגוד
+                  לרבים שמתחילים עם שיטות מסודרות ותנועות פיזיות, התחלתי מאוחר
+                  יותר ללא גמישות טבעית או קשר לגוף. הידע והניסיון שלי התפתחו
+                  דרך תהליך אישי ומעמיק.
                 </p>
                 <p className="text-lg text-gray-700">
-                  I am the heart behind the &apos;Boaz Nahaissi School For
-                  Movement,&apos; a place of innovation and transformation. My
-                  passion led to the birth of the Flystick method—a
-                  revolutionary technique that has made waves not only across
-                  Israel but worldwide.
+                  אני עומד מאחורי 'בית הספר לתנועה של בועז נהייסי', מקום של
+                  חדשנות ושינוי. התשוקה שלי הביאה להמצאת שיטת Flystick – טכניקה
+                  חדשנית שזכתה להצלחה בישראל ובעולם.
                 </p>
                 <p className="text-lg text-gray-700">
-                  Diving deep into Pilates, Controlology and Flystick training
-                  and more, I&apos;ve honed expertise that extends beyond
-                  conventional boundaries. Besides the studio, I share my
-                  knowledge in gyms, workshops, training sessions,
-                  teacher&apos;s courses in Israel and across the globe.
+                  למדתי לעומק בפילאטיס, קונטרולוגיה, שיטת Flystick ועוד. אני
+                  מלמד באולמות, חדרי כושר, סדנאות, קורסים למורים בישראל ובעולם.
                 </p>
                 <p className="text-lg text-gray-700">
-                  I believe movement wields immense power, fostering bodily
-                  balance, function, self-discovery, and resilience in
-                  life&apos;s challenges. Just as water flows, movement courses
-                  through us. We are water - we are movement.
+                  אני מאמין שתנועה יש לה כוח עצום, מקדמת איזון גופני, תפקוד,
+                  גילוי עצמי והתמודדות עם אתגרי החיים. כמו שמים זורמים, כך גם
+                  תנועה זורמת בנו. אנחנו מים - אנחנו תנועה.
                 </p>
                 <p className="text-lg text-gray-700">
-                  Join me, and together, let&apos;s nurture your body and soul
-                  along this transformative path.
+                  הצטרפו אליי, ונשפר יחד את הגוף והנפש שלכם במסע המשתנה הזה.
                 </p>
-                <p className="mb-0 text-lg md:text-xl pt-10 ">Boaz Nahaissi.</p>
+                <p className="mb-0 text-lg md:text-xl pt-10">בועז נחייסי.</p>
               </div>
             </div>
 

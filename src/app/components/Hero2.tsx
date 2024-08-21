@@ -43,38 +43,33 @@ const Hero = () => {
       <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 ">
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-            Boaz Nahaissi&apos;s Online Studio
+          הסטודיו המקוון של בועז נחייסי
           </h1>
           <p className="mt-6 text-gray-700 sm:text-xl mx-5">
             {subscriptionStatus === "ACTIVE" ? (
               <>
                 <span className="text-white font-semibold">
                   {" "}
-                  Welcome movers!
+                  ברוך הבא!
                 </span>{" "}
-                Start exploring a vast collection of lessons and exercises,
-                expertly curated to enhance your body-mind connection and
-                elevate your well-being with varied training techniques and
-                difficulty levels.
+                חקור אוסף עצום של שיעורים ותרגילים, שנבחרו בקפידה כדי לשפר את הקשר בין הגוף לנפש שלך. השג רווחה גבוהה יותר בעזרת טכניקות אימון מגוונות המותאמות לרמות קושי שונות, וכל זאת במקום אחד
               </>
             ) : (
               <>
-                <span className="text-white ">Dive into a vast </span>{" "}
-                collection of lessons and exercises, expertly curated to enhance
-                your body-mind connection and elevate your well-being with
-                varied training techniques and difficulty levels.
+                <span className="text-white ">צלול אל אוסף עצום </span>{" "}
+                של שיעורים ותרגילים, שנבחרו בקפידה כדי לחזק את הקשר בין הגוף לנפש ולהעצים את הרווחה האישית שלך בעזרת טכניקות אימון מגוונות ורמות קושי מותאמות.
               </>
             )}
           </p>
           <div className="mt-5 flex flex-col sm:flex-row items-center justify-center transition-all duration-500 ease-in-out">
             {loading ? (
-              <p>Loading...</p>
+              <p>טעינה...</p>
             ) : subscriptionStatus === "ACTIVE" ? (
               <Link
                 href="/explore"
                 className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-transform transform hover:scale-105"
               >
-                Start Exploring
+                התחל לחקור
               </Link>
             ) : (
               <Link
@@ -83,7 +78,7 @@ const Hero = () => {
                   visible ? "opacity-100" : "opacity-0"
                 }`}
               >
-                Start Your 3-Day Free Trial
+                התחל את תקופת הניסיון בחינם ל-3 ימים
               </Link>
             )}
           </div>

@@ -47,10 +47,10 @@ const Page = () => {
             <div className="mx-auto max-w-7xl px-8 pb-10">
               <div className="mx-auto max-w-2xl text-center">
                 <h2 className="text-base font-semibold leading-7 text-[#990011]">
-                  Training Your Way
+                אימון בדרך שלך
                 </h2>
                 <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                  Choose Your Style
+                בחר את הסגנון שלך
                 </p>
               </div>
               <div className="text-center mt-4 sm:hidden">
@@ -71,7 +71,7 @@ const Page = () => {
                           {folder.name}
                         </h3>
                         <p className="text-sm text-gray-700">
-                          Click to explore
+                        לחץ כאן כדי להתחיל 
                         </p>
                       </div>
                     </div>
