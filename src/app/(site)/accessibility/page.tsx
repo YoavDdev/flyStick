@@ -63,7 +63,7 @@ const AccessibilityStatement = () => {
                   אם נתקלת בבעיה כלשהי בנגישות האתר, או אם יש לך שאלות או בקשות
                   בנוגע לנגישות, אנא פנה אלינו:
                   <br />
-                  דוא"ל: info@studioboazonline.com
+                  דוא&quot;ל: info@studioboazonline.com
                 </p>
 
                 <p className="text-lg text-gray-700">
