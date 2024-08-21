@@ -9,7 +9,7 @@ const PrivacyPolicy = () => {
             <h2 className="mb-12 text-3xl font-bold">מדיניות פרטיות</h2>
 
             <p className="text-lg text-gray-700 mb-8">
-              ב"סטודיו אונליין של בועז נחייסי" אנו מכבדים את פרטיות המשתמשים באתר שלנו. 
+              ב&quot;סטודיו אונליין של בועז נחייסי&quot; אנו מכבדים את פרטיות המשתמשים באתר שלנו. 
               מסמך זה מפרט כיצד אנו אוספים, משתמשים ושומרים על המידע האישי שלך.
             </p>
 
@@ -45,7 +45,7 @@ const PrivacyPolicy = () => {
             <p className="text-lg text-gray-700 mb-8">
               5.1. אתה רשאי לבקש לעיין במידע שאנו מחזיקים עליך ולבקש לתקן או למחוק מידע זה בכל עת.
               <br />
-              5.2. לשם מימוש זכויות אלו, ניתן לפנות אלינו בדוא"ל: info@studioboazonline.com.
+              5.2. לשם מימוש זכויות אלו, ניתן לפנות אלינו בדוא&quot;ל: info@studioboazonline.com.
             </p>
 
             <h3 className="mb-4 text-2xl font-semibold">6. עדכון מדיניות פרטיות</h3>
@@ -57,7 +57,7 @@ const PrivacyPolicy = () => {
 
             <h3 className="mb-4 text-2xl font-semibold">7. יצירת קשר</h3>
             <p className="text-lg text-gray-700 mb-8">
-              7.1. אם יש לך שאלות או בקשות בנוגע למדיניות פרטיות זו, אנא פנה אלינו בדוא"ל: info@studioboazonline.com.
+              7.1. אם יש לך שאלות או בקשות בנוגע למדיניות פרטיות זו, אנא פנה אלינו בדוא&quot;ל: info@studioboazonline.com.
             </p>
           </div>
         </div>

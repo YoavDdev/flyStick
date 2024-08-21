@@ -8,7 +8,7 @@ const About = () => {
       
       <section className="mb-32">
         <div className="container mx-auto text-center lg:text-left xl:px-32">
-          <div className=" grid items-center lg:grid-cols-2">
+          <div className="grid items-center lg:grid-cols-2">
             <div className="mb-12 lg:mb-0">
               <div className="relative z-[1] block rounded-lg px-6 py-12 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] backdrop-blur-[30px] dark:shadow-black/20 md:px-12 lg:-mr-14 bg-[#FCF6F5] text-right">
                 <h2 className="mb-8 text-4xl md:text-5xl lg:text-6xl font-bold text-[#990011]">
@@ -21,7 +21,7 @@ const About = () => {
                   דרך תהליך אישי ומעמיק.
                 </p>
                 <p className="text-lg text-gray-700">
-                  אני עומד מאחורי 'בית הספר לתנועה של בועז נהייסי', מקום של
+                  אני עומד מאחורי &apos;בית הספר לתנועה של בועז נחייסי&apos;, מקום של
                   חדשנות ושינוי. התשוקה שלי הביאה להמצאת שיטת Flystick – טכניקה
                   חדשנית שזכתה להצלחה בישראל ובעולם.
                 </p>
