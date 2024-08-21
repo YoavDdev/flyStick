@@ -88,7 +88,7 @@ const Footer = () => {
 
           <div className="mt-8 text-xs leading-5 text-gray-500 md:order-1 md:mt-0">
             <p>
-              &copy; 2024 סטודיו אונליין של בועז נחייסי, בע"מ. כל הזכויות שמורות.
+              &copy; 2024 סטודיו אונליין של בועז נחייסי, בע&quot;מ. כל הזכויות שמורות.
             </p>
             <p>
               <Link className="text-gray-400 hover:text-gray-500" href="/terms">תקנון אתר</Link>

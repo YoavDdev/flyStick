@@ -91,7 +91,7 @@ export default function Pricing() {
                     220
                   </span>
                   <span className="text-sm font-semibold leading-6 tracking-wide text-gray-600">
-                    ש"ח
+                    ש&quot;ח
                   </span>
                 </p>
                 <p className="mt-3 text-xs leading-5 text-gray-600">
