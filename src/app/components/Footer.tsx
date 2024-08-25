@@ -65,8 +65,8 @@ const Footer = () => {
               הירשמו לניוזלטר שלנו
             </h3>
             <p className="mt-2 text-sm leading-6 text-gray-600">
-              החדשות האחרונות, מאמרים, ומשאבים, נשלחים לתיבת הדואר שלכם מדי
-              שבוע.
+              עדכון ארועים, חדשות, שיעורים חדשים העולים לאתר ישלחו לתיבת הדואר
+              שלכם.
             </p>
           </div>
           <NewsletterSignUpForm />
@@ -88,18 +88,30 @@ const Footer = () => {
 
           <div className="mt-8 text-xs leading-5 text-gray-500 md:order-1 md:mt-0">
             <p>
-              &copy; 2024 סטודיו אונליין של בועז נחייסי, בע&quot;מ. כל הזכויות שמורות.
+              &copy; 2024 סטודיו אונליין של בועז נחייסי, בע&quot;מ. כל הזכויות
+              שמורות.
             </p>
             <p>
-              <Link className="text-gray-400 hover:text-gray-500" href="/terms">תקנון אתר</Link>
+              <Link className="text-gray-400 hover:text-gray-500" href="/terms">
+                תקנון אתר
+              </Link>
 
               {" | "}
-            
-              <Link className="text-gray-400 hover:text-gray-500" href="/privacyPolicy">מדיניות פרטיות</Link>
-              {" | "}
-            
-            <Link className="text-gray-400 hover:text-gray-500" href="/accessibility">הצהרת נגישות</Link>
 
+              <Link
+                className="text-gray-400 hover:text-gray-500"
+                href="/privacyPolicy"
+              >
+                מדיניות פרטיות
+              </Link>
+              {" | "}
+
+              <Link
+                className="text-gray-400 hover:text-gray-500"
+                href="/accessibility"
+              >
+                הצהרת נגישות
+              </Link>
             </p>
           </div>
         </div>

@@ -332,29 +332,37 @@ const Page = () => {
     // Display loading message while checking the subscription status
     return (
       <div className="text-center pt-28">
-        <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-          טעינה...
-        </h1>
+        <h1 className="text-4xl font-semibold text-gray-700 mb-4">טעינה...</h1>
       </div>
     );
   }
 
-  if (subscriptionId === "Admin" || subscriptionStatus === "ACTIVE" || subscriptionStatus === "PENDING_CANCELLATION") {
+  if (
+    subscriptionId === "Admin" ||
+    subscriptionStatus === "ACTIVE" ||
+    subscriptionStatus === "PENDING_CANCELLATION"
+  ) {
     // Render content for users with an active subscription
     return (
       <div className="bg-white min-h-screen pt-20">
         <div className="container mx-auto p-6">
           <div className="mx-auto max-w-7xl px-8 pb-10">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-base font-semibold leading-7 text-slate-700">
-              המסע שלך, הכללים שלך, הצרכים שלך
+              <h2 className="text-base font-semibold leading-7 text-slate-700 no-wrap">
+                המסע שלך והצרכים שלך בהתאמה אישית
               </h2>
               <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              גלה את השיעור הבא שלך
+                גלה את השיעור הבא שלך
               </p>
+              <div className="text-center mt-2 sm:hidden">
+                <p className="text-gray-500">הקלידו נושא אחד או יותר או בחרו מתפריט ה-#</p>
+              </div>
             </div>
           </div>
-          <form onSubmit={handleSearch} className="mb-8"  style={{ direction: "ltr" }}
+          <form
+            onSubmit={handleSearch}
+            className="mb-8"
+            style={{ direction: "ltr" }}
           >
             <div className="flex items-center relative ">
               <input
@@ -396,7 +404,7 @@ const Page = () => {
             {showHashtagDropdown && (
               <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
                 <p className="text-center text-gray-500 mt-1">
-                בחר מספר האשטאגים לחוויה מותאמת אישית יותר של הסרטון.
+                  בחר מספר האשטאגים לחוויה מותאמת אישית יותר של הסרטון.
                 </p>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4 p-2">
                   {hashtagOptions.map((hashtag, index) => (
@@ -523,7 +531,8 @@ const Page = () => {
                     </svg>
                   </button>
                   <h2 className="text-2xl mb-4 font-semibold">
-                  שמור את הסרטון ל...</h2>
+                    שמור את הסרטון ל...
+                  </h2>
                   <ul className="space-y-3 capitalize font-semibold pt-6">
                     {folderNames.map((folderName) => (
                       <li
@@ -632,7 +641,7 @@ const Page = () => {
     return (
       <div className="text-center mt-28">
         <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-        המנוי שלך אינו פעיל.
+          המנוי שלך אינו פעיל.
         </h1>
         <div className="mt-10 flex items-center justify-center">
           <a

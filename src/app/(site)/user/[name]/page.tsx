@@ -186,7 +186,7 @@ const Page: FC<pageProps> = ({ params }) => {
     return (
       <div className="text-center pt-28 h-screen">
         <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-          Loading...
+          טעינה...
         </h1>
       </div>
     );

@@ -57,7 +57,7 @@ const Hero = () => {
             ) : (
               <>
                 <span className="text-white ">צלול אל אוסף עצום </span>{" "}
-                של שיעורים ותרגילים, שנבחרו בקפידה כדי לחזק את הקשר בין הגוף לנפש ולהעצים את הרווחה האישית שלך בעזרת טכניקות אימון מגוונות ורמות קושי מותאמות.
+                נדיר של שיעורים ותרגולי גוף, שנבחרו בקפידה ומוגשים לכם בכדי לחזק בכם את הקשר בין הנפש לגוף ולהעצים את הרווחה האישית בעזרת טכניקות אימון מגוונות ורמות קושי מותאמות. אני מזמין אתכם להצטרף אל דרכי הייחודית להבין את החיים.
               </>
             )}
           </p>
@@ -69,7 +69,7 @@ const Hero = () => {
                 href="/explore"
                 className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-transform transform hover:scale-105"
               >
-                התחל לחקור
+                חיפוש
               </Link>
             ) : (
               <Link
@@ -78,7 +78,7 @@ const Hero = () => {
                   visible ? "opacity-100" : "opacity-0"
                 }`}
               >
-                התחל את תקופת הניסיון בחינם ל-3 ימים
+                לרישום לחץ כאן וקבל 3 ימי נסיון חינם
               </Link>
             )}
           </div>

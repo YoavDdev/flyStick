@@ -10,12 +10,11 @@ import SubscriptionDetails from "./../api/SubscriptionDetails";
 const prisma = new PrismaClient();
 
 const includedFeatures = [
-  "מאות שעות של שיעורים שיטתיים, תרגילים, הרצאות וסדנאות.",
-  "מאגר עצום של כלים ורעיונות להוראת שיעורים ומדריכים.",
-  "תרגילים במגוון שיטות (Flystick, Controlology, מזרן פילאטיס, מכשירי פילאטיס, אביזרים נפוצים).",
-  "מגוון רמות קושי באימונים.",
+  "מאות שעות של שיעורים מובנים ומסודרים לפי נושאים, תרגילים, הרצאות וסדנאות הכשרה בנושאים רבים (צוואר, גב תחתון, נשימה, רצפת אגן, הריון ועוד). ",
+  "מאגר עצום ומקיף של כלים ורעיונות להדרכת שיעורים ותפיסות חדשות של הגוף.",
+  "שיעורים במגוון שיטות כמו קונטרולוג׳י, פילאטיס מזרן, מכשירים, כסא, קיר, אביזרים, תודעה ופלייסטיק.",
+  "מגוון רמות קושי באימונים, ארוכים וקצרים.",
 ];
-
 
 export default function Pricing() {
   const { data: session } = useSession();
@@ -47,17 +46,18 @@ export default function Pricing() {
   };
 
   return (
-    <div id="Pricing" className="bg-white p-10">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl rounded-3xl ring-1 ring-gray-200 lg:mx-0 lg:flex lg:max-w-none">
-          <div className="p-8 sm:p-10 lg:flex-auto">
+<div id="Pricing" className="bg-white p-6 sm:p-8 lg:p-10">
+  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-2xl rounded-3xl ring-1 ring-gray-200 lg:mx-0 lg:flex lg:max-w-none">
+      <div className="p-6 sm:p-8 lg:p-10 lg:flex-auto">
             <h3 className="text-2xl font-bold tracking-tight text-[#EF8354]">
               מנוי לסטודיו אונליין של בועז נחייסי
             </h3>
 
             <p className="mt-6 text-base leading-7 text-gray-600">
-              מאגר עצום של ידע שיאפשר לך להתחבר לגופך, להעמיק את ההבנה הסומטית
-              שלך ולהעשיר את הידע שלך. התכונן להיות מופתע.
+              מאגר עצום של ידע שיאפשר לך להתחבר לגופך, להעמיק את הבנתך הסומטית
+              ולהעשיר את הידע שלך באנטומיה יישומית וכיצד להביא את התובנות הללו
+              לשיעור עם מתאמנים בכל הרמות.
             </p>
             <div className="mt-10 flex items-center gap-x-4">
               <h4 className="flex-none text-sm font-semibold leading-6 text-[#EF8354]">
@@ -80,11 +80,11 @@ export default function Pricing() {
               ))}
             </ul>
           </div>
-          <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
-            <div className="rounded-2xl bg-gray-50 py-10 text-center ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16">
+          <div className="-mt-2 p-4 sm:p-6 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
+          <div className="rounded-2xl bg-gray-50 py-10 text-center ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16">
               <div className="mx-auto max-w-xs px-8">
                 <p className="text-base font-semibold text-gray-600">
-                  מנוי חודשי
+                  מנוי חודשי מתחדש
                 </p>
                 <p className="mt-6 flex items-baseline justify-center gap-x-2">
                   <span className="text-5xl font-bold tracking-tight text-gray-900">
@@ -95,11 +95,11 @@ export default function Pricing() {
                   </span>
                 </p>
                 <p className="mt-3 text-xs leading-5 text-gray-600">
-                    חוו את שירות המנויים שלנו {" "}
-                  <span className="text-[#EF8354]">
-                    בחינם למשך 3 הימים הראשונים
-                  </span>
-                  . החליטו אם זה מתאים לכם לפני שמתחייבים למנוי.
+                  נסו במשך{" "}
+                  <span className="text-[#EF8354]">{" "} 3 ימי נסיון חינם </span>
+                  את שיעורי הסטודיו, ההרצאות וההשתלמויות ותוכלו להמשיך או לבטל
+                  לפי בחירתכם בדף הבית (בתום תקופת הנסיון המנוי החודשי בתשלום
+                  יחל באופן אוטומטי אלא אם ביטלתם לפני תום תקופת הנסיון).
                 </p>
 
                 {subscriptionStatus === "ACTIVE" ? (
@@ -178,8 +178,7 @@ export default function Pricing() {
                   </>
                 )}
                 <p className="mt-6 text-xs leading-5 text-gray-600">
-                המנוי מתחדש אוטומטית מדי חודש. בטל בכל עת.
-
+                המנוי מתחדש אוטומטית מדי חודש. ניתן לבטל בכל עת.
                 </p>
               </div>
             </div>

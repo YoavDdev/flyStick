@@ -136,38 +136,37 @@ const DashboardPage = () => {
         {session?.user ? (
           <div className="bg-white bg-opacity-50 w-full max-w-screen-xl p-8 rounded-lg shadow-lg">
             <h2 className="text-3xl font-semibold text-[#EF8354] mb-4 capitalize">
-            ברוך הבא, {session.user.name}!
+              ברוך הבא, {session.user.name}!
             </h2>
             <p className="text-xl text-gray-600 mb-8">
-            פה תמצא את כל מה שאתה צריך לדעת.
+              פה תמצאו את כל מה שאתם צריכים לדעת על המנוי.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <DashboardCard
-                title="חקור את העולם"
-                description="צולל לתוך עולם של למידה עם מאגר ידע עצום."
+                title="לחקור את עולם התנועה"
+                description="צללו לתוך עולם של למידה עם מאגר ידע עצום ומעורר. מקלידים בחיפוש נושא ומקבלים פלייליסט אישי ומקיף."
                 link="/explore"
               />
 
               <DashboardCard
                 title="סגנונות ותכנים"
-                description="עיין בשיעורים, תרגילים והרצאות לפי סגנון וטכניקה."
+                description="צפו בשיעורים, תרגילים, הרצאות המסודרים לפי סגנונות שונים וטכניקות מגוונות. בחרו את הטכניקה המועדפת עליכם היום וקבלו מבחר אינסופי של שיעורים שמתחדש כל שבוע."
                 link="/styles"
               />
 
               <DashboardCard
                 title="הספרייה האישית שלך"
-                description="ארגן את אוסף הווידאו שלך וצור תיקיות מותאמות אישית."
+                description="כאן תוכלו לארגן את אוסף סרטי הוידאו שאהבתם במיוחד וליצור תיקיות מותאמות אישית."
                 link="/user"
               />
 
               <div className="bg-white p-4 rounded-lg shadow-md">
                 <h3 className="text-lg font-extrabold text-[#2D3142] mb-2">
-                אזור תשלום
+                  אזור תשלום
                 </h3>
                 <p className="text-gray-600 mb-4">
-                נהל את המנוי שלך, חידוש או ביטול בכל זמן שמתאים לך, בעזרת הכפתור למטה:
-
+                נהלו את המנוי שלכם, חידוש או ביטול בכל שלב, מתי שמתאים לכם בלחיצה על הכפתור למטה:
                 </p>
                 {loading ? (
                   <p className="text-gray-600 mb-10">טעינה...</p>
@@ -196,19 +195,19 @@ const DashboardPage = () => {
                           בטל מנוי
                         </button>
                         <p className="text-gray-600 mt-2 text-sm">
-                        לחץ על הכפתור כדי לבטל את המנוי שלך.
+                          לחץ על הכפתור כדי לבטל את המנוי שלך.
                         </p>
                       </>
                     ) : subscriptionStatus === "CANCELED" ? (
                       <Link href="/#Pricing">
                         <span className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition duration-300 ease-in-out">
-                        חדש את המנוי שלך
+                          חדש את המנוי שלך
                         </span>
                       </Link>
                     ) : (
                       <Link href="/#Pricing">
                         <span className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out">
-                        הפעל מנוי
+                          הפעל מנוי
                         </span>
                       </Link>
                     )}
@@ -220,7 +219,7 @@ const DashboardPage = () => {
         ) : (
           <div className="text-center">
             <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-            אנא התחבר כדי להמשיך
+              אנא התחבר כדי להמשיך
             </h1>
             <Link href="/login">
               <span className="text-[#EF8354] text-lg">Login</span>

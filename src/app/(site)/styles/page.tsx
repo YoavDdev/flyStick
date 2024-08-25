@@ -47,14 +47,14 @@ const Page = () => {
             <div className="mx-auto max-w-7xl px-8 pb-10">
               <div className="mx-auto max-w-2xl text-center">
                 <h2 className="text-base font-semibold leading-7 text-[#990011]">
-                אימון בדרך שלך
+                  אימונים לפי טעם אישי
                 </h2>
                 <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                בחר את הסגנון שלך
+                  בחרו את טכניקות שלכם
                 </p>
               </div>
-              <div className="text-center mt-4 sm:hidden">
-                <p className="text-gray-500">Scroll down for more styles</p>
+              <div className="text-center mt-2 sm:hidden">
+                <p className="text-gray-500">גלול למטה טכניקות נוספים</p>
               </div>
             </div>
 
@@ -71,7 +71,7 @@ const Page = () => {
                           {folder.name}
                         </h3>
                         <p className="text-sm text-gray-700">
-                        לחץ כאן כדי להתחיל 
+                          לחץ כאן כדי להתחיל
                         </p>
                       </div>
                     </div>

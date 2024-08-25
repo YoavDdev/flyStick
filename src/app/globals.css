@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+.no-wrap {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 640px) { /* Adjust the breakpoint as needed */
+  h2.text-base {
+    font-size: 14px; /* Adjust the font size for small screens */
+  }
+}
+
 .li-hover:hover {
   background-color: #d8d8d8;
   columns: #fff;
