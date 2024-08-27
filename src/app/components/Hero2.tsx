@@ -25,7 +25,6 @@ const Hero = () => {
         className={`absolute inset-0 -z-10 h-full w-full object-cover transition-opacity ${
           visible ? "opacity-100" : "opacity-0"
         }`}
-        
       >
         <Image
           src={new_main}
@@ -33,10 +32,6 @@ const Hero = () => {
           layout="fill"
           className="object-cover mt-20"
           priority
-          style={{
-            objectPosition: 'left',
-            left: '13px'
-          }}
         />
       </div>
       <div

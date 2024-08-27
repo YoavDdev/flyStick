@@ -348,11 +348,11 @@ const Page = () => {
         <div className="container mx-auto p-6">
           <div className="mx-auto max-w-7xl px-8 pb-10">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-base font-semibold leading-7 text-slate-700 no-wrap">
+              <h2 className="text-base font-semibold leading-7 text-[#990011] no-wrap">
                 המסע שלך והצרכים שלך בהתאמה אישית
               </h2>
               <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                גלה את השיעור הבא שלך
+                גלו את השיעור הבא שלכם
               </p>
               <div className="text-center mt-2 sm:hidden">
                 <p className="text-gray-500">הקלידו נושא אחד או יותר או בחרו מתפריט ה-#</p>

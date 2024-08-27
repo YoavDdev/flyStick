@@ -7,7 +7,7 @@ const Footer = () => {
     social: [
       {
         name: "Facebook",
-        href: "https://www.facebook.com/boazpilates?mibextid=ZbWKwL",
+        href: "https://www.facebook.com/boazpilates?mibextid=qi2Omg&rdid=ejgWCR8hCZbauwaZ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2FQUc7icEH6EzScMN9%2F%3Fmibextid%3Dqi2Omg",
         icon: (
           props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>,
         ) => (
@@ -22,7 +22,7 @@ const Footer = () => {
       },
       {
         name: "Instagram",
-        href: "https://www.instagram.com/boaznahaissi/?utm_source=qr&igsh=azQ0MXQxaHgxM2hy",
+        href: "https://www.instagram.com/boaznahaissi?igsh=azQ0MXQxaHgxM2hy",
         icon: (
           props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>,
         ) => (
@@ -59,7 +59,7 @@ const Footer = () => {
         Footer
       </h2>
       <div className="mx-auto max-w-7xl px-6 pb-8   lg:px-8 ">
-        <div className="mt-6 border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24 lg:flex lg:items-center lg:justify-between">
+        <div className=" border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24 lg:flex lg:items-center lg:justify-between">
           <div>
             <h3 className="text-sm font-semibold leading-6 text-gray-900">
               הירשמו לניוזלטר שלנו
