@@ -54,7 +54,7 @@ const About = () => {
               <Image
                 src={boazAbout}
                 alt="image"
-                className="w-full rounded-lg shadow-lg dark:shadow-black/20 mb-60 sm:mb-0"
+                className="w-full rounded-lg shadow-lg dark:shadow-black/20 sm:mb-0"
               />
             </div>
           </div>
