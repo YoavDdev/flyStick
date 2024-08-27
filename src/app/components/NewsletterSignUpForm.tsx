@@ -39,7 +39,7 @@ class ConvertkitEmailForm extends Component {
           name="email"
           id="newsletter-input"
           autoComplete="email"
-          placeholder="הכנס את אימייל שלך"
+          placeholder="הכניסו את האימייל שלכם"
           value={this.state.email}
           onChange={this.emailHandler}
           autoCorrect="off"
