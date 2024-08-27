@@ -32,6 +32,10 @@ const Hero = () => {
           layout="fill"
           className="object-cover mt-20"
           priority
+          style={{
+            objectPosition: 'left',
+            left: '20px'
+          }}
         />
       </div>
       <div
