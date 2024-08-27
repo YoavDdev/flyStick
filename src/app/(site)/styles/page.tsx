@@ -50,7 +50,7 @@ const Page = () => {
                   אימונים לפי טעם אישי
                 </h2>
                 <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                  בחרו את טכניקה שלכם
+                  בחרו את הטכניקה שלכם
                 </p>
               </div>
               <div className="text-center mt-2 sm:hidden">
