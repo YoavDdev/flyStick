@@ -40,19 +40,19 @@ const Contact = () => {
           <h2 className="mb-4 text-4xl md:text-5xl lg:text-6xl font-bold text-[#990011]">
             צור קשר
           </h2>
-          <p className="text-lg text-gray-800 mb-4">
+          <p className="text-lg text-gray-800 mb-4 md:text-center text-right ">
             אל תהססו לפנות בשאלות, בקשות מיוחדות או סתם להגיד שלום. אני כאן
             כדי לדייק ולעזור עם כל מידע שאתם צריכים.
           </p>
-          <p className="text-lg text-gray-800 mb-4">
+          <p className="text-lg text-gray-800 mb-4 md:text-center text-right ">
             בין אם זה שאלות שעלו מהשיעורים, או שיתוף פעולה והגעה אליכם. שלחו אלי הודעת וואטצאפ ואעשה את כל המאמצים לשוב אליכם בהקדם.
           </p>
-          <p className="text-lg text-gray-800 mb-6">
+          <p className="text-lg text-gray-800 mb-6 md:text-center text-right">
             המשוב והתקשורת ביננו חשובים לי מאד. בואו נהיה בקשר!
           </p>
           <Link
             href="https://wa.me/972527061212"
-            className="bg-green-500 text-white py-3 px-6 rounded-lg transition duration-300 hover:bg-green-600"
+            className="bg-green-500 text-white py-3 px-6 rounded-lg transition duration-300 hover:bg-green-600 "
           >
             וואטסאפ
           </Link>
