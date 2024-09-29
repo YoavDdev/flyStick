@@ -40,8 +40,11 @@ const Contact = () => {
           <h2 className="mb-4 text-4xl md:text-5xl lg:text-6xl font-bold text-[#990011]">
             צור קשר
           </h2>
+          <p className="text-lg text-gray-800  md:text-center text-right ">
+            אל תהססו לפנות בשאלות, בקשות מיוחדות או סתם להגיד שלום.  
+          </p>
           <p className="text-lg text-gray-800 mb-4 md:text-center text-right ">
-            אל תהססו לפנות בשאלות, בקשות מיוחדות או סתם להגיד שלום. אני כאן
+            אני כאן
             כדי לדייק ולעזור עם כל מידע שאתם צריכים.
           </p>
           <p className="text-lg text-gray-800 mb-4 md:text-center text-right ">
