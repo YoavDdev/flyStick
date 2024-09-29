@@ -218,7 +218,13 @@ const Page: FC<pageProps> = ({ params }) => {
                 key={video.uri}
                 className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
               >
-                <div className="aspect-w-16 aspect-h-9">
+                <div
+  className="aspect-w-16 aspect-h-9 cursor-pointer" // Add cursor-pointer for better UX
+  onClick={() => {
+    setSelectedVideo(video.embedHtml);
+    setSelectedVideoData(video);
+  }}
+>
                   <img
                     src={video.thumbnailUri}
                     alt="Video Thumbnail"

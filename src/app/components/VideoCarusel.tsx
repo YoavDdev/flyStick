@@ -9,7 +9,7 @@ const VideoCarusel = () => {
           width="50%"
           height="360"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          src="https://www.youtube.com/embed/jHhdJUzMpGs?autoplay=1&loop=1&mute=1&si=r7sh91q0pP3U0mKG&playlist=jHhdJUzMpGs"
+          src="https://www.youtube.com/embed/VmxL_n52jPA?autoplay=1&loop=1&mute=1&si=r7sh91q0pP3U0mKG&playlist=VmxL_n52jPA"
           className="w-full h-full top-0 left-0 object-cover rounded-2xl"
         ></iframe>
       </div>
