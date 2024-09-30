@@ -425,8 +425,8 @@ const Page: FC<pageProps> = ({ params }) => {
           ? description
           : `${truncatedDescription}${description.length > 200 ? '...' : ''}`}
         
-        {/* Only show the button if the description is longer than 50 characters */}
-        {description.length > 50 && (
+        {/* Only show the button if the description is longer than 200 characters */}
+        {description.length > 200 && (
           <button
             className="text-blue-500 hover:text-blue-700 focus:outline-none ml-2"
             onClick={toggleReadMore}
