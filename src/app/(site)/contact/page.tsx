@@ -36,7 +36,7 @@ const Contact = () => {
 
       {/* Text Overlay */}
       <div className="relative z-[1] flex flex-col items-center justify-center h-full text-center px-6">
-        <div className=" p-10 mt-20 max-w-xl">
+        <div className=" p-10 mt-10 max-w-xl">
           {/* <h2 className="mb-4 text-4xl md:text-5xl lg:text-6xl font-bold text-white">
             צור קשר
           </h2> */}
