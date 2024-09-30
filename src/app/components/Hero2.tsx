@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import SubscriptionDetails from "./../api/SubscriptionDetails";
 import new_main from "../../../public/new_main.png";
+import new_mainPhone from "../../../public/new_mainPhone.png"; // Import the mobile image
 
 const Hero = () => {
   const [visible, setVisible] = useState(false);
@@ -19,12 +20,14 @@ const Hero = () => {
     // Clear the timeout to avoid memory leaks
     return () => clearTimeout(delay);
   }, []);
+
   return (
     <div className="relative isolate overflow-hidden pt-36 sm:pt-64 md:h-screen">
+      {/* Background Image for Desktop */}
       <div
         className={`absolute inset-0 -z-10 h-full w-full object-cover transition-opacity ${
           visible ? "opacity-100" : "opacity-0"
-        }`}
+        } hidden md:block`}
       >
         <Image
           src={new_main}
@@ -34,13 +37,30 @@ const Hero = () => {
           priority
         />
       </div>
+
+      {/* Background Image for Mobile */}
+      <div
+        className={`absolute inset-0 -z-10 h-full w-full object-cover transition-opacity ${
+          visible ? "opacity-100" : "opacity-0"
+        } block md:hidden`}
+      >
+        <Image
+          src={new_mainPhone}
+          alt="BoazMain Mobile"
+          layout="fill"
+          className="object-cover mt-20"
+          priority
+        />
+      </div>
+
       <div
         className={`absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80`}
         aria-hidden="true"
       >
         <div />
       </div>
-      <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 ">
+
+      <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
         <div className="text-center">
           <h1 className="text-3xl font-bold tracking-tight text-white sm:text-6xl">
             הסטודיו המקוון של בועז נחייסי
