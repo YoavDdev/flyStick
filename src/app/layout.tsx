@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     "Dive into a Vast Collection of Lessons and Exercises, Expertly Curated to Enhance Your Body-Mind Connection and Elevate Your Well-Being with Varied Training Techniques and Difficulty Levels.",
   keywords: ["studioboazonline"],
   icons: {
-    icon: ["/favicon.ico?v=4"],
+    icon: ["/favicon2.ico?v=4"],
     apple: ["/apple-touch-icon.png?v=4"],
     shortcut: ["/apple-touch-icon.png"],
   },
