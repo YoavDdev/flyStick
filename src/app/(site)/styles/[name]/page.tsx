@@ -212,6 +212,19 @@ const Page: FC<pageProps> = ({ params }) => {
     "שיעורי כסא מרפאים": `שיעורים המתמקדים בעמוד השדרה, במערכת הנשימה, באנרגית החיוניות של הגוף וכמובן בכח וגמישות.`
   };
 
+    const [isExpanded, setIsExpanded] = useState(false);
+  
+    // This gets the description for the folder or shows a default message.
+    const description = folderDescriptions[folderName as keyof typeof folderDescriptions] || "אין תיאור זמין";
+  
+    // Function to toggle between showing more or less
+    const toggleReadMore = () => {
+      setIsExpanded(!isExpanded);
+    };
+  
+    // Truncate the description to 50 characters if it's not expanded
+    const truncatedDescription = description.slice(0, 200);
+
   const handleHashtagClick = (hashtag: string) => {
     setSearchQuery((prevQuery) => {
       // Check if the selected hashtag is already in the search query
@@ -407,11 +420,21 @@ const Page: FC<pageProps> = ({ params }) => {
             {folderName}
           </h1>
 
-          <p className="text-xl text-gray-700 text-center mb-6">
-            {folderDescriptions[
-              folderName as keyof typeof folderDescriptions
-            ] || "אין תיאור זמין"}
-          </p>
+          <p className="text-lg text-gray-700 text-center mb-6">
+        {isExpanded
+          ? description
+          : `${truncatedDescription}${description.length > 200 ? '...' : ''}`}
+        
+        {/* Only show the button if the description is longer than 50 characters */}
+        {description.length > 50 && (
+          <button
+            className="text-blue-500 hover:text-blue-700 focus:outline-none ml-2"
+            onClick={toggleReadMore}
+          >
+            {isExpanded ? "קרא פחות" : "קרא עוד"}
+          </button>
+        )}
+      </p>
 
           <div
             style={{ direction: "ltr" }}
