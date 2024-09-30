@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link"; // Import Link from React Router
-import exp from "constants";
 
 const Page = () => {
   const [folders, setFolders] = useState([]);
@@ -15,16 +14,31 @@ const Page = () => {
     Authorization: `Bearer ${accessToken}`,
   };
 
+  // Folder descriptions mapping
+  const folderDescriptions = {
+    "Contrology": " פילאטיס המבוססת על 34 תרגילים שאסף מעולם היוגה, האקרובטיקה ומחיקוי חיות וילדים ואירגן בסדר מסוים, שמטרתם ליצור הרמוניה בין הגוף לנפש.",
+    "אביזרים": "כאן תמצאו שיעורי גליל, כדור, צלחות ועוד.",
+    "אימוני קיר": "שיעורי כח וגמישות בעזרת הקיר בבית.",
+    "הריון ולידה": "שיעורים והרצאות חשובים לכל השלבים בזמן הריון ולידה.",
+    "הרצאות סדנאות והשתלמויות": "עולם של תוכן חכם וחשוב לכל אדם בנושאים שונים ומגוונים הקשורים להבנת הגוף וחשיבות התנועה בחייו של אדם.",
+    "לימודי תודעה": "פרקים נבחרים של תובנות התבוננות וחקירה עצמית מוגשים לכם כדי להבין טוב את יותר את המציאות בה אנו חיים.",
+    "סטרונג-מובילי (פילאטיס מתקדמים)": "(פילאטיס מתקדמים) תרגולי זרימה מתקדמים ועשירים בדרגת כח וגמישות גבוהים.",
+    "פילאטיס-לייט (פילאטיס לימודי)": "(פילאטיס לימודי למתחילים) כאן תמצאו ׳שיעורי פתיחה׳ בהם אני פותח בהסבר מדויק על הנושא הנבחר.",
+    "פילאטיס מכשירים": "שיעורים מטכניקת ה׳רפומר-פלו׳ המוגשת עד היום ברחבי הארץ.",
+    "פלייסטיק-Flystick": "שיטה מרהיבה המחברת בין רקמות הגוף ורכבות האנטומיה הטבעיות בעזרת מקל.",
+    "קוויקיז Quickies": "שיעורים קצרים בזמן המתאימים לרגע של תנועה ושחרור הגוף.",
+    "קורס מורות\\ים קונטרולוג׳י": "מאגר שיעורים במסגרת הכשרה של קורס המורות מורים שלי ה׳קונטרולוג׳י׳.",
+    "שיעורי כסא מרפאים": "שיעורים המתמקדים בעמוד השדרה, במערכת הנשימה, באנרגית החיוניות של הגוף."
+  };
+  
+
   useEffect(() => {
     fetchFolders();
   }, []);
 
   const fetchFolders = async () => {
     try {
-      const response: AxiosResponse = await axios.get(apiUrl, {
-        headers,
-      });
-
+      const response: AxiosResponse = await axios.get(apiUrl, { headers });
       const data = response.data;
       const foldersData = data.data;
 
@@ -37,6 +51,12 @@ const Page = () => {
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  // Function to get the first sentence of the folder description
+  const getFirstSentence = (description: string) => {
+    const sentence = description.split(".")[0];
+    return sentence ? sentence + "." : "אין תיאור זמין."; // Fallback if no description is available
   };
 
   return (
@@ -70,9 +90,18 @@ const Page = () => {
                         <h3 className="text-2xl font-semibold text-[#990011] mb-2">
                           {folder.name}
                         </h3>
-                        <p className="text-sm text-gray-700">
-                          לחץ כאן כדי להתחיל
+                        {/* Display the first sentence of the description */}
+                        <p className="text-sm text-gray-700 mt-2">
+                          {getFirstSentence(
+                            folderDescriptions[
+                              folder.name as keyof typeof folderDescriptions
+                            ] || "אין תיאור זמין.",
+                          )}
                         </p>
+                        {/* <p className="text-sm text-gray-700">
+                          לחץ כאן כדי להתחיל
+                        </p> */}
+                        
                       </div>
                     </div>
                   </div>
