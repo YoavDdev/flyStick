@@ -36,21 +36,21 @@ const Contact = () => {
 
       {/* Text Overlay */}
       <div className="relative z-[1] flex flex-col items-center justify-center h-full text-center px-6">
-        <div className=" p-8 max-w-xl">
-          <h2 className="mb-4 text-4xl md:text-5xl lg:text-6xl font-bold text-[#990011]">
+        <div className=" p-10 max-w-xl">
+          <h2 className="mb-4 text-4xl md:text-5xl lg:text-6xl font-bold text-white">
             צור קשר
           </h2>
-          <p className="text-lg text-gray-800  md:text-center text-right ">
+          <p className="text-lg text-gray-700  md:text-center text-right ">
             אל תהססו לפנות בשאלות, בקשות מיוחדות או סתם להגיד שלום.  
           </p>
-          <p className="text-lg text-gray-800 mb-4 md:text-center text-right ">
+          <p className="text-lg text-gray-700 mb-4 md:text-center text-right ">
             אני כאן
             כדי לדייק ולעזור עם כל מידע שאתם צריכים.
           </p>
-          <p className="text-lg text-gray-800 mb-4 md:text-center text-right ">
+          <p className="text-lg text-gray-700 mb-4 md:text-center text-right ">
             בין אם זה שאלות שעלו מהשיעורים, או שיתוף פעולה והגעה אליכם. שלחו אלי הודעת וואטצאפ ואעשה את כל המאמצים לשוב אליכם בהקדם.
           </p>
-          <p className="text-lg text-gray-800 mb-6 md:text-center text-right">
+          <p className="text-lg text-gray-700 mb-6 md:text-center text-right">
             המשוב והתקשורת ביננו חשובים לי מאד. בואו נהיה בקשר!
           </p>
           <Link
