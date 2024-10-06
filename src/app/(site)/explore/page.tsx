@@ -26,33 +26,7 @@ const Page = () => {
   const [noResults, setNoResults] = useState(false);
   const [noMoreVideos, setNoMoreVideos] = useState<boolean>(false); // State to track if there are no more videos to load
 
-  const [isVideoOpen, setIsVideoOpen] = useState(false); // Track if the video is open
-
-
-  useEffect(() => {
-    const handlePopState = (event: { preventDefault: () => void; }) => {
-      if (isVideoOpen) {
-        event.preventDefault(); // Prevent default back navigation
-        closeVideo(); // Close the video
-      }
-    };
-
-    window.addEventListener('popstate', handlePopState);
-
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [isVideoOpen]);
-
-  const openVideo = (videoHtml: string) => {
-    setSelectedVideo(videoHtml);
-    setIsVideoOpen(true);
-  };
-
-  const closeVideo = () => {
-    setSelectedVideo(null);
-    setIsVideoOpen(false);
-  };
+  
 
   useEffect(() => {
     // Reset the videos and currentPage when a new search is performed
@@ -79,6 +53,33 @@ const Page = () => {
       console.error("Error fetching folder names:", error);
     }
   };
+
+
+   // Function to handle video click and open
+   const handleVideoClick = (video: any) => {
+    window.history.pushState(null, "", window.location.href);
+    setSelectedVideo(video.embedHtml);
+    setSelectedVideoData(video);
+  };
+
+  // Listen for the back button event to close the video
+  useEffect(() => {
+    const handlePopState = () => {
+      if (selectedVideo) {
+        // Close the video when back button is pressed
+        setSelectedVideo(null);
+        setSelectedVideoData(null);
+      }
+    };
+
+    // Add the event listener for the back button
+    window.addEventListener("popstate", handlePopState);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [selectedVideo]);
 
   const accessToken = process.env.VIMEO_TOKEN;
   const apiUrl = "https://api.vimeo.com/me/videos";
@@ -383,9 +384,7 @@ const Page = () => {
                 גלו את השיעור הבא שלכם
               </p>
               <div className="text-center mt-2 sm:hidden">
-                <p className="text-gray-500">
-                  הקלידו נושא אחד או יותר או בחרו מתפריט ה-#
-                </p>
+                <p className="text-gray-500">הקלידו נושא אחד או יותר או בחרו מתפריט ה-#</p>
               </div>
             </div>
           </div>
@@ -469,12 +468,12 @@ const Page = () => {
                   className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
                 >
                   <div
-                    className="aspect-w-16 aspect-h-9 cursor-pointer" // Add cursor-pointer for better UX
-                    onClick={() => {
-                      setSelectedVideo(video.embedHtml);
-                      setSelectedVideoData(video);
-                    }}
-                  >
+  className="aspect-w-16 aspect-h-9 cursor-pointer" // Add cursor-pointer for better UX
+  onClick={() => {
+    setSelectedVideo(video.embedHtml);
+    setSelectedVideoData(video);
+  }}
+>
                     <img
                       src={video.thumbnailUri}
                       alt="Video Thumbnail"
@@ -650,7 +649,10 @@ const Page = () => {
             {/* Close button */}
             <button
               className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
-              onClick={closeVideo} // Close the video player
+              onClick={() => {
+                setSelectedVideo(null); // Close the video player
+                window.history.back(); // Go back to the previous state
+              }}
             >
               {/* Close icon */}
               <svg
