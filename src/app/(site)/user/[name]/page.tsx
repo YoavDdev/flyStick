@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState , useRef } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
@@ -21,6 +21,34 @@ const Page: FC<pageProps> = ({ params }) => {
   const [folderUrls, setFolderUrls] = useState<string[]>([]);
   const { data: session } = useSession();
   const [displayEmptyMessage, setDisplayEmptyMessage] = useState(false);
+  const isVideoOpenRef = useRef<boolean>(false);
+
+  const handleBackButton = (event: PopStateEvent) => {
+    if (isVideoOpenRef.current) {
+      event.preventDefault(); // Prevent default action
+      closeVideo(); // Close the video
+    }
+  };
+
+  const openVideo = (embedHtml: string) => {
+    setSelectedVideo(embedHtml);
+    isVideoOpenRef.current = true; // Set video open state
+    window.history.pushState({}, "Video", ""); // Push new state when opening video
+  };
+
+  const closeVideo = () => {
+    setSelectedVideo(null); // Close the video
+    isVideoOpenRef.current = false; // Reset video open state
+    window.history.pushState({}, ""); // Push an empty state to avoid returning to video
+  };
+
+  useEffect(() => {
+    window.addEventListener("popstate", handleBackButton);
+
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, []); // No dependencies needed here
 
   useEffect(() => {
     setLoading(true);
@@ -220,10 +248,7 @@ const Page: FC<pageProps> = ({ params }) => {
               >
                 <div
   className="aspect-w-16 aspect-h-9 cursor-pointer" // Add cursor-pointer for better UX
-  onClick={() => {
-    setSelectedVideo(video.embedHtml);
-    setSelectedVideoData(video);
-  }}
+  onClick={() => openVideo(video.embedHtml)}
 >
                   <img
                     src={video.thumbnailUri}
@@ -262,10 +287,7 @@ const Page: FC<pageProps> = ({ params }) => {
                   <div className="py-8">
                     <button
                       className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 right-4" // Position the button at the bottom-right corner
-                      onClick={() => {
-                        setSelectedVideo(video.embedHtml);
-                        setSelectedVideoData(video);
-                      }}
+                      onClick={() => openVideo(video.embedHtml)}
                     >
                       נגן
                     </button>
