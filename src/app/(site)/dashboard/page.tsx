@@ -160,7 +160,7 @@ const DashboardPage = () => {
               ) : (
                 <>
                   {/* Subscription Status Display */}
-                  {subscriptionStatus !== null && (
+                  
                     <p className="text-center text-gray-600 mb-6">
                       סטטוס מנוי:{" "}
                       <span
@@ -171,8 +171,7 @@ const DashboardPage = () => {
                         {subscriptionStatus}
                       </span>
                     </p>
-                  )}
-
+                  
                   {/* Subscription Messages */}
                   <div className="mb-6 text-center text-gray-700">
                     {subscriptionStatus === "ACTIVE" && (
