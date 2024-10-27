@@ -7,6 +7,7 @@ import DashboardCard from "../../components/DashboardCard";
 import axios from "axios";
 import Image from "next/image";
 import Dashboardpic from "../../../../public/Dashboardpic.png";
+import ConvertkitEmailForm from "../../components/NewsletterSignUpForm";
 
 const DashboardPage = () => {
   const { data: session } = useSession();
@@ -14,6 +15,7 @@ const DashboardPage = () => {
     null,
   );
   const [loading, setLoading] = useState(true);
+  const [subscriptionId, setSubscriptionId] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -28,6 +30,7 @@ const DashboardPage = () => {
 
           // Extract subscriptionId from userData
           const subscriptionId = userData.subscriptionId;
+          setSubscriptionId(subscriptionId); // Add this line to set the subscriptionId
 
           // Fetch subscription details using the retrieved subscriptionId
           const clientId = process.env.PAYPAL_CLIENT_ID;
@@ -122,7 +125,8 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative min-h-screen">
+      {/* Background Image */}
       <div className="absolute inset-0 z-[-1]">
         <Image
           src={Dashboardpic}
@@ -132,87 +136,123 @@ const DashboardPage = () => {
           alt="BoazMain"
         />
       </div>
-      <div className="relative  min-h-screen flex justify-center items-start sm:pt-60 pt-20">
+
+      {/* Main Content */}
+      <div className="relative flex flex-col items-center justify-start pt-20 sm:pt-60 px-4">
         {session?.user ? (
-          <div className="bg-white bg-opacity-50 w-full max-w-screen-xl p-8 rounded-lg shadow-lg">
-            <h2 className="text-3xl font-semibold text-[#EF8354] mb-4 capitalize">
+          <div className="bg-white bg-opacity-70 w-full max-w-screen-md p-8 rounded-lg shadow-lg">
+            {/* Welcome Message */}
+            <h2 className="text-3xl font-semibold text-[#EF8354] mb-4 capitalize text-center">
               ברוך הבא, {session.user.name}!
             </h2>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-lg text-gray-700 text-center mb-10">
               פה תמצאו את כל מה שאתם צריכים לדעת על המנוי.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <DashboardCard
-                title="לחקור את עולם התנועה"
-                description="צללו לתוך עולם של למידה עם מאגר ידע עצום ומעורר. מקלידים בחיפוש נושא ומקבלים פלייליסט אישי ומקיף."
-                link="/explore"
-              />
+            {/* Payment Section */}
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-xl font-bold text-[#2D3142] mb-4 text-center">
+                אזור תשלום
+              </h3>
 
-              <DashboardCard
-                title="סגנונות ותכנים"
-                description="צפו בשיעורים, תרגילים, הרצאות המסודרים לפי סגנונות שונים וטכניקות מגוונות. בחרו את הטכניקה המועדפת עליכם היום וקבלו מבחר אינסופי של שיעורים שמתחדש כל שבוע."
-                link="/styles"
-              />
+              {loading ? (
+                <p className="text-center text-gray-600 mb-6">טוען נתונים...</p>
+              ) : (
+                <>
+                  {/* Subscription Status Display */}
+                  {subscriptionStatus !== null && (
+                    <p className="text-center text-gray-600 mb-6">
+                      סטטוס מנוי:{" "}
+                      <span
+                        className={
+                          subscriptionStatus ? "text-green-500" : "text-red-500"
+                        }
+                      >
+                        {subscriptionStatus}
+                      </span>
+                    </p>
+                  )}
 
-              <DashboardCard
-                title="הספרייה האישית שלך"
-                description="כאן תוכלו לארגן את אוסף סרטי הוידאו שאהבתם במיוחד וליצור תיקיות מותאמות אישית."
-                link="/user"
-              />
-
-              <div className="bg-white p-4 rounded-lg shadow-md">
-                <h3 className="text-lg font-extrabold text-[#2D3142] mb-2">
-                  אזור תשלום
-                </h3>
-                <p className="text-gray-600 mb-4">
-                נהלו את המנוי שלכם, חידוש או ביטול בכל שלב, מתי שמתאים לכם בלחיצה על הכפתור למטה:
-                </p>
-                {loading ? (
-                  <p className="text-gray-600 mb-10">טעינה...</p>
-                ) : (
-                  <>
-                    {subscriptionStatus !== null ? (
-                      <p className="text-gray-600 mb-10">
-                        סטטוס מנוי:{" "}
-                        <span className="text-green-500 ">
-                          {subscriptionStatus}
-                        </span>
-                      </p>
-                    ) : (
-                      <p className="text-gray-600 mb-10">
-                        סטטוס מנוי:{" "}
-                        <span className="text-red-600">Not Active</span>
-                      </p>
-                    )}
-
-                    {subscriptionStatus === "ACTIVE" ? (
+                  {/* Subscription Messages */}
+                  <div className="mb-6 text-center text-gray-700">
+                    {subscriptionStatus === "ACTIVE" && (
                       <>
+                        <p>
+                          כאן תוכלו לנהל את המנוי שלכם, לחדש או לבטל בכל שלב.
+                          במידה ובחרתם להנות מתקופת הנסיון של 3 ימים, הקפידו
+                          לסיים את המנוי לפני תום תקופת הניסיון. במידה והנכם
+                          מתלבטים, או זקוקים לעזרה והכוונה, תוכלו ליצור עימי קשר
+                          ב'צרו קשר'. שימו לב, סיום מנוי מאפשר להנות מתכני
+                          הסטודיו עד לתום תקופת החיוב.
+                        </p>
                         <button
                           onClick={cancelSubscription}
-                          className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
+                          className="bg-red-500 text-white py-2 px-6 mt-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
                         >
                           בטל מנוי
                         </button>
-                        <p className="text-gray-600 mt-2 text-sm">
-                          לחץ על הכפתור כדי לבטל את המנוי שלך.
+                      </>
+                    )}
+
+                    {subscriptionStatus === "PENDING_CANCELLATION" && (
+                      <>
+                        <p>
+                          המנוי שלך נמצא בתהליך ביטול. תוכל להמשיך להנות מהתכנים
+                          שלנו עד תום תקופת החיוב הנוכחית. במידה ואתה מעוניין
+                          להפסיק את תהליך הביטול ולהמשיך במנוי, צור איתנו קשר
+                          ב'צרו קשר'.
                         </p>
                       </>
-                    ) : subscriptionStatus === "CANCELED" ? (
-                      <Link href="/#Pricing">
-                        <span className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition duration-300 ease-in-out">
-                          חדש את המנוי שלך
-                        </span>
-                      </Link>
-                    ) : (
-                      <Link href="/#Pricing">
-                        <span className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out">
-                          הפעל מנוי
-                        </span>
-                      </Link>
                     )}
-                  </>
-                )}
+
+                    {subscriptionStatus === "CANCELED" && (
+                      <>
+                        <p>
+                          המנוי שלך בוטל בהצלחה. עדיין תוכל להנות מהשירותים שלנו
+                          עד תום תקופת החיוב הנוכחית. לחידוש המנוי לחצו על
+                          הכפתור מטה.
+                        </p>
+                        <Link href="/#Pricing">
+                          <span className="bg-orange-500 text-white py-2 px-6 mt-4 rounded-md hover:bg-[#D76A3B] transition duration-300 ease-in-out inline-block">
+                            חדש את המנוי שלך
+                          </span>
+                        </Link>
+                      </>
+                    )}
+
+                    {subscriptionStatus === null && (
+                      <>
+                        <p>
+                          אין לך מנוי פעיל. להצטרפות למנוי חדש ולהנות מתכני
+                          הסטודיו, לחצו על הכפתור מטה.
+                        </p>
+                        <Link href="/#Pricing">
+                          <span className=" text-white py-2 px-6 mt-4 rounded-md ounded-md bg-[#EF8354] hover:bg-[#D76A3B] transition duration-300 ease-in-out inline-block ">
+                            הפעל מנוי
+                          </span>
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Newsletter Message */}
+            {/* Newsletter Message */}
+            <div className="bg-[#f9f9f9] border border-[#ef8354] rounded-lg p-4 mb-6 mt-6 shadow-md">
+              <p className="text-center text-[#2D3142] font-semibold mb-2">
+                אנא הקפידו להרשם לניוזלטר!
+              </p>
+              <p className="text-center text-gray-600">
+                כדי לקבל הסברים שימושיים שיעזרו לכם להתנהל בסטודיו ולדעת מה
+                מתאים עבורכם ומדי פעם תקבלו עדכון על סרט חשוב, המלצה, הרצאה חדשה
+                וכו'.
+              </p>
+
+              {/* Newsletter Subscription Form */}
+              <div className="flex justify-center">
+                <ConvertkitEmailForm />
               </div>
             </div>
           </div>

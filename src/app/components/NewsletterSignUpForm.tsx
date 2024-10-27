@@ -31,7 +31,7 @@ class ConvertkitEmailForm extends Component {
   render() {
     return (
       <form
-        className="mt-6 sm:flex sm:max-w-md lg:mt-0"
+        className="flex items-center mt-6 sm:flex sm:max-w-md lg:mt-0"
         onSubmit={this.subscribeUser}
       >
         <input
@@ -45,19 +45,16 @@ class ConvertkitEmailForm extends Component {
           autoCorrect="off"
           autoCapitalize="off"
           required
-          className="w-full min-w-0 appearance-none rounded-md border-0 bg-white px-3 py-1.5 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-700 sm:w-56 sm:text-sm sm:leading-6"
+          className="w-full min-w-0 appearance-none rounded-md border-2 border-[#ef8354] bg-white px-4 py-2 text-base text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-[#ef8354]"
         />
-        <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-shrink-0">
-          <button
-            type="submit"
-            id="newsletter-btn"
-            value=""
-            name="subscribe"
-            className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            הרשמה
-          </button>
-        </div>
+        <button
+          type="submit"
+          id="newsletter-btn"
+          name="subscribe"
+          className="ml-2 m-2 text-white py-2 px-4 rounded-md bg-[#EF8354] hover:bg-[#D76A3B] transition duration-300 ease-in-out"
+        >
+          הרשמה
+        </button>
       </form>
     );
   }
