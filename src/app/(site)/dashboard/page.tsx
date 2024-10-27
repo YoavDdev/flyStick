@@ -160,7 +160,7 @@ const DashboardPage = () => {
               ) : (
                 <>
                   {/* Subscription Status Display */}
-                  
+                  {subscriptionStatus !== null && (
                     <p className="text-center text-gray-600 mb-6">
                       סטטוס מנוי:{" "}
                       <span
@@ -171,7 +171,8 @@ const DashboardPage = () => {
                         {subscriptionStatus}
                       </span>
                     </p>
-                  
+                  )}
+
                   {/* Subscription Messages */}
                   <div className="mb-6 text-center text-gray-700">
                     {subscriptionStatus === "ACTIVE" && (
@@ -199,12 +200,12 @@ const DashboardPage = () => {
                           המנוי שלך נמצא בתהליך ביטול. תוכל להמשיך להנות מהתכנים
                           שלנו עד תום תקופת החיוב הנוכחית. במידה ואתה מעוניין
                           להפסיק את תהליך הביטול ולהמשיך במנוי, צור איתנו קשר
-                          ב&apos;צרו קשר&apos;.
+                          ב&aposצרו קשר&apos;.
                         </p>
                       </>
                     )}
 
-                    {subscriptionStatus === "CANCELED" && (
+                    {subscriptionStatus === "CANCELLED" && (
                       <>
                         <p>
                           המנוי שלך בוטל בהצלחה. עדיין תוכל להנות מהשירותים שלנו
@@ -236,8 +237,6 @@ const DashboardPage = () => {
                 </>
               )}
             </div>
-
-            {/* Newsletter Message */}
             {/* Newsletter Message */}
             <div className="bg-[#f9f9f9] border border-[#ef8354] rounded-lg p-4 mb-6 mt-6 shadow-md">
               <p className="text-center text-[#2D3142] font-semibold mb-2">
