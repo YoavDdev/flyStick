@@ -45,13 +45,13 @@ class ConvertkitEmailForm extends Component {
           autoCorrect="off"
           autoCapitalize="off"
           required
-          className="w-full min-w-0 appearance-none rounded-md border-2 border-[#ef8354] bg-white px-4 py-2 text-base text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-[#ef8354]"
+          className="w-full min-w-0 appearance-none rounded-md border-1 border-slate-500 bg-white px-4 py-2 text-base text-gray-900 shadow-sm placeholder:text-gray-400 "
         />
         <button
           type="submit"
           id="newsletter-btn"
           name="subscribe"
-          className="ml-2 m-2 text-white py-2 px-4 rounded-md bg-[#EF8354] hover:bg-[#D76A3B] transition duration-300 ease-in-out"
+          className="ml-2 m-2 text-white py-2 px-4 rounded-md bg-slate-500 hover:bg-slate-700 transition duration-300 ease-in-out"
         >
           הרשמה
         </button>

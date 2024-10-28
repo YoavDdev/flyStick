@@ -213,7 +213,7 @@ const DashboardPage = () => {
                           הכפתור מטה.
                         </p>
                         <Link href="/#Pricing">
-                          <span className="bg-orange-500 text-white py-2 px-6 mt-4 rounded-md hover:bg-[#D76A3B] transition duration-300 ease-in-out inline-block">
+                          <span className="bg-slate-500 hover:bg-slate-700 text-white py-2 px-6 mt-4 rounded-md transition duration-300 ease-in-out inline-block">
                             חדש את המנוי שלך
                           </span>
                         </Link>
@@ -227,7 +227,7 @@ const DashboardPage = () => {
                           הסטודיו, לחצו על הכפתור מטה.
                         </p>
                         <Link href="/#Pricing">
-                          <span className=" text-white py-2 px-6 mt-4 rounded-md ounded-md bg-[#EF8354] hover:bg-[#D76A3B] transition duration-300 ease-in-out inline-block ">
+                          <span className=" text-white py-2 px-6 mt-4 rounded-md ounded-md bg-slate-500 hover:bg-slate-700 transition duration-300 ease-in-out inline-block ">
                             הפעל מנוי
                           </span>
                         </Link>
@@ -238,7 +238,7 @@ const DashboardPage = () => {
               )}
             </div>
             {/* Newsletter Message */}
-            <div className="bg-[#f9f9f9] border border-[#ef8354] rounded-lg p-4 mb-6 mt-6 shadow-md">
+            <div className="bg-[#f9f9f9] border border-slate-500 rounded-lg p-4 mb-6 mt-6 shadow-md">
               <p className="text-center text-[#2D3142] font-semibold mb-2">
                 אנא הקפידו להרשם לניוזלטר!
               </p>
