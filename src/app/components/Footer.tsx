@@ -112,6 +112,13 @@ const Footer = () => {
               >
                 הצהרת נגישות
               </Link>
+              {" | "}
+              <Link
+                className="text-gray-400 hover:text-gray-500"
+                href="/navigation"
+              >
+                המדריך לסטודיו
+              </Link>
             </p>
           </div>
         </div>

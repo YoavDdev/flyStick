@@ -4,7 +4,7 @@ const PrivacyPolicy = () => {
   return (
     <div className="container pt-36 mx-auto md:px-6">
       <section className="mb-32">
-        <div className="container mx-auto text-center lg:text-left xl:px-32">
+        <div className="container mx-auto text-center lg:text-left xl:px-12">
           <div className="block rounded-lg px-6 py-12 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] backdrop-blur-[30px] dark:shadow-black/20 md:px-12 lg:mr-14 bg-[#FCF6F5] text-right">
             <h2 className="mb-12 text-3xl font-bold">מדיניות פרטיות</h2>
 
@@ -13,7 +13,7 @@ const PrivacyPolicy = () => {
               מסמך זה מפרט כיצד אנו אוספים, משתמשים ושומרים על המידע האישי שלך.
             </p>
 
-            <h3 className="mb-4 text-2xl font-semibold">1. איסוף מידע</h3>
+            <h3 className="mb-4 text-2xl font-semibold">1. איסוף מידע</h3> 
             <p className="text-lg text-gray-700 mb-8">
               1.1. אנו אוספים מידע שמספק המשתמש מרצונו בעת ההרשמה לאתר, יצירת קשר או רכישת שירותים ומוצרים.
               <br />

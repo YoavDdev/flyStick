@@ -71,7 +71,7 @@ const DashboardPage = () => {
       if (session?.user) {
         // Ask for confirmation before canceling subscription
         const confirmed = window.confirm(
-          "Are you sure you want to cancel your subscription? You will lose access to the content immediately.",
+          "האם אתה בטוח שברצונך לבטל את המנוי שלך?",
         );
 
         if (confirmed) {
@@ -175,24 +175,31 @@ const DashboardPage = () => {
 
                   {/* Subscription Messages */}
                   <div className="mb-6 text-center text-gray-700">
-                    {subscriptionStatus === "ACTIVE" && (
-                      <>
-                        <p>
-                          כאן תוכלו לנהל את המנוי שלכם, לחדש או לבטל בכל שלב.
-                          במידה ובחרתם להנות מתקופת הנסיון של 3 ימים, הקפידו
-                          לסיים את המנוי לפני תום תקופת הניסיון. במידה והנכם
-                          מתלבטים, או זקוקים לעזרה והכוונה, תוכלו ליצור עימי קשר
-                          ב&apos;צרו קשר&apos;. שימו לב, סיום מנוי מאפשר להנות מתכני
-                          הסטודיו עד לתום תקופת החיוב.
-                        </p>
-                        <button
-                          onClick={cancelSubscription}
-                          className="bg-red-500 text-white py-2 px-6 mt-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
-                        >
-                          בטל מנוי
-                        </button>
-                      </>
-                    )}
+                    {subscriptionStatus === "ACTIVE" ||
+                      (subscriptionId === "Admin" && (
+                        <>
+                          <p>
+                            כאן תוכלו לנהל את המנוי שלכם, לחדש או לבטל בכל שלב.
+                            במידה ובחרתם להנות מתקופת הנסיון של 3 ימים, הקפידו
+                            לסיים את המנוי לפני תום תקופת הניסיון. במידה והנכם
+                            מתלבטים, או זקוקים לעזרה והכוונה{" "}
+                            <Link
+                              href="/navigation"
+                              className="text-blue-600 font-bold underline"
+                            >
+                              לחץ כאן
+                            </Link>
+                            . שימו לב, סיום מנוי מאפשר להנות מתכני הסטודיו עד
+                            לתום תקופת החיוב.
+                          </p>
+                          <button
+                            onClick={cancelSubscription}
+                            className="bg-red-500 text-white py-2 px-6 mt-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
+                          >
+                            בטל מנוי
+                          </button>
+                        </>
+                      ))}
 
                     {subscriptionStatus === "PENDING_CANCELLATION" && (
                       <>
@@ -208,9 +215,8 @@ const DashboardPage = () => {
                     {subscriptionStatus === "CANCELLED" && (
                       <>
                         <p>
-                          המנוי שלך בוטל בהצלחה. עדיין תוכל להנות מהשירותים שלנו
-                          עד תום תקופת החיוב הנוכחית. לחידוש המנוי לחצו על
-                          הכפתור מטה.
+                          המנוי שלך בוטל בהצלחה. לחידוש המנוי לחצו על הכפתור
+                          מטה.
                         </p>
                         <Link href="/#Pricing">
                           <span className="bg-slate-500 hover:bg-slate-700 text-white py-2 px-6 mt-4 rounded-md transition duration-300 ease-in-out inline-block">

@@ -12,7 +12,7 @@ const DropdownMenu = ({ toggleDropdown }: any) => {
     <div className="absolute flex flex-col gap-2 ">
       <Link href="/dashboard">
         <li
-          className="block px-10 py-2 hover:bg-[#EF8354] hover:text-white text-center focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142] whitespace-nowrap"
+          className="block px-8 py-2 hover:bg-[#EF8354] hover:text-white text-center focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142] whitespace-nowrap"
           onClick={toggleDropdown}
         >
           איזור אישי
@@ -20,7 +20,7 @@ const DropdownMenu = ({ toggleDropdown }: any) => {
       </Link>
       <Link href="/user">
         <li
-          className="block px-10 py-2 hover:bg-[#EF8354] hover:text-white text-center focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142] whitespace-nowrap"
+          className="block px-8 py-2 hover:bg-[#EF8354] hover:text-white text-center focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142] whitespace-nowrap"
           onClick={toggleDropdown}
         >
           הספרייה שלי
@@ -28,7 +28,7 @@ const DropdownMenu = ({ toggleDropdown }: any) => {
       </Link>
       <Link href="/styles">
         <li
-          className="block px-10 py-2 hover:bg-[#EF8354] hover:text-white text-center focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
+          className="block px-8 py-2 hover:bg-[#EF8354] hover:text-white text-center focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
           onClick={toggleDropdown}
         >
           טכניקות
@@ -36,25 +36,25 @@ const DropdownMenu = ({ toggleDropdown }: any) => {
       </Link>
       <Link href="/explore">
         <li
-          className="block px-10 py-2 hover:bg-[#EF8354] hover:text-white text-center focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142] whitespace-nowrap"
+          className="block px-8 py-2 hover:bg-[#EF8354] hover:text-white text-center focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142] whitespace-nowrap"
           onClick={toggleDropdown}
         >
           חיפוש אישי
         </li>
       </Link>
-      {/* <Link
+      <Link
         href={"/"}
-        className="block px-10 py-2 hover:bg-[#EF8354] hover:text-white text-center focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142]"
+        className="block px-8 py-2 hover:bg-[#EF8354] hover:text-white text-center focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142] whitespace-nowrap"
         onClick={() => {
           signOut();
           toggleDropdown();
         }}
       >
         <div className="flex items-center ">
-          <span>התנתק</span>
-          <AiOutlineLogout className="ml-2" />
+        <span>החלף משתמש</span>
+        
         </div>
-      </Link> */}
+      </Link>
     </div>
   );
 };
