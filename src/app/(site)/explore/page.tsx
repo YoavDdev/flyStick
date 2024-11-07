@@ -416,69 +416,83 @@ const Page = () => {
                 </span>
               </button>
               <button
-                className="bg-slate-600 hover:bg-slate-700 w-12 h-12 rounded-full ml-2 focus:outline-none focus:ring-4 focus:ring-slate-300 transition duration-200 ease-in-out transform hover:scale-110 flex items-center justify-center text-white"
-                onClick={() => setSearchQuery("")}
-                aria-label="Clear search query"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
+  className="bg-slate-600 hover:bg-slate-700 w-10 h-10 sm:w-12 sm:h-12 rounded-full ml-2 focus:outline-none focus:ring-4 focus:ring-slate-300 transition duration-200 ease-in-out transform hover:scale-110 flex items-center justify-center text-white"
+  onClick={() => setSearchQuery("")}
+  aria-label="Clear search query"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-5 h-5 sm:w-6 sm:h-6"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    strokeWidth="2"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M6 18L18 6M6 6l12 12"
+    />
+  </svg>
+</button>
 
-              <button
-                className="bg-slate-600 hover:bg-slate-700 w-12 h-12 rounded-full ml-2 focus:outline-none focus:ring-4 focus:ring-slate-300 transition duration-200 ease-in-out transform hover:scale-110 flex items-center justify-center text-white"
-                onClick={toggleHashtagDropdown}
-                aria-label="Toggle hashtag dropdown"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 3h14M5 9h14M5 15h14M5 21h14"
-                  />
-                </svg>
-              </button>
+<button
+  className="bg-slate-600 hover:bg-slate-700 w-10 h-10 sm:w-12 sm:h-12 rounded-full ml-2 focus:outline-none focus:ring-4 focus:ring-slate-300 transition duration-200 ease-in-out transform hover:scale-110 flex items-center justify-center text-white"
+  onClick={toggleHashtagDropdown}
+  aria-label="Toggle hashtag dropdown"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-5 h-5 sm:w-6 sm:h-6"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    strokeWidth="2"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M5 3h14M5 9h14M5 15h14M5 21h14"
+    />
+  </svg>
+</button>
+
             </div>
             {showHashtagDropdown && (
-              <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
-                <p className="text-center text-gray-500 mt-1 text-sm sm:text-base">
-                  בחר מספר האשטאגים לחוויה מותאמת אישית יותר של הסרטון.
-                </p>
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2 sm:gap-4 p-2 max-h-60 overflow-y-auto">
-                  {hashtagOptions.map((hashtag, index) => (
-                    <div
-                      key={index}
-                      className={`px-2 py-1 sm:px-4 sm:py-2 cursor-pointer rounded-md ${
-                        searchQuery.includes(hashtag)
-                          ? "bg-slate-700 text-white"
-                          : "bg-[#FCF6F5]"
-                      } hover:bg-slate-500`}
-                      onClick={() => handleHashtagClick(hashtag)}
-                    >
-                      {hashtag}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+  <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
+    <p className="text-center text-gray-500 mt-1 text-sm sm:text-base">
+      בחר מספר האשטאגים לחוויה מותאמת אישית יותר של הסרטון.
+    </p>
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2 sm:gap-4 p-2 max-h-60 overflow-y-auto">
+      {hashtagOptions.map((hashtag, index) => (
+        <div
+          key={index}
+          className={`px-2 py-1 sm:px-4 sm:py-2 cursor-pointer rounded-md ${
+            searchQuery.includes(hashtag)
+              ? "bg-slate-700 text-white"
+              : "bg-[#FCF6F5]"
+          } hover:bg-slate-500`}
+          onClick={() => handleHashtagClick(hashtag)}
+        >
+          <span className="block overflow-hidden text-ellipsis whitespace-nowrap" dir="rtl">
+            {hashtag}
+          </span>
+        </div>
+      ))}
+    </div>
+    {/* Scroll down indicator */}
+    <div className="text-center mt-2 text-gray-400 text-xs">
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+  </svg>
+</div>
+  </div>
+  
+)}
+
+
+
+
           </form>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {noResults ? (
