@@ -33,8 +33,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  showFooter = true,
 }: {
   children: React.ReactNode;
+  showFooter?: boolean;
 }) {
   return (
     <html lang="he" dir="rtl">
@@ -43,7 +45,7 @@ export default function RootLayout({
           <ToasterContext />
           <Navbar />
           {children}
-          <Footer />
+          {showFooter && <Footer />}
         </Provider>
       </body>
     </html>

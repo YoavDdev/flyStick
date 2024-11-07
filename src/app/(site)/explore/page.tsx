@@ -27,8 +27,6 @@ const Page = () => {
   const [noMoreVideos, setNoMoreVideos] = useState<boolean>(false); // State to track if there are no more videos to load
   const isVideoOpenRef = useRef<boolean>(false);
 
-
-
   const handleBackButton = (event: PopStateEvent) => {
     if (isVideoOpenRef.current) {
       event.preventDefault(); // Prevent default action
@@ -385,7 +383,9 @@ const Page = () => {
                 גלו את השיעור הבא שלכם
               </p>
               <div className="text-center mt-2 sm:hidden">
-                <p className="text-gray-500">הקלידו נושא אחד או יותר או בחרו מתפריט ה-#</p>
+                <p className="text-gray-500">
+                  הקלידו נושא אחד או יותר או בחרו מתפריט ה-#
+                </p>
               </div>
             </div>
           </div>
@@ -417,19 +417,48 @@ const Page = () => {
                 </span>
               </button>
               <button
-                className="bg-slate-500 hover:bg-slate-700 p-3 rounded-full ml-2 focus:outline-none text-1xl"
-                onClick={() => setSearchQuery("")}
-              >
-                <span role="img" aria-label="Clear icon">
-                  ❌
-                </span>
-              </button>
-              <button
-                className="bg-slate-500 hover:bg-slate-700 w-12 h-12 rounded-full ml-2 focus:outline-none text-2xl "
-                onClick={toggleHashtagDropdown}
-              >
-                #
-              </button>
+  className="bg-slate-600 hover:bg-slate-700 w-12 h-12 rounded-full ml-2 focus:outline-none focus:ring-4 focus:ring-slate-300 transition duration-200 ease-in-out transform hover:scale-110 flex items-center justify-center text-white"
+  onClick={() => setSearchQuery("")}
+  aria-label="Clear search query"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-6 h-6"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    strokeWidth="2"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M6 18L18 6M6 6l12 12"
+    />
+  </svg>
+</button>
+
+<button
+  className="bg-slate-600 hover:bg-slate-700 w-12 h-12 rounded-full ml-2 focus:outline-none focus:ring-4 focus:ring-slate-300 transition duration-200 ease-in-out transform hover:scale-110 flex items-center justify-center text-white"
+  onClick={toggleHashtagDropdown}
+  aria-label="Toggle hashtag dropdown"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-6 h-6"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    strokeWidth="2"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M5 3h14M5 9h14M5 15h14M5 21h14"
+    />
+  </svg>
+</button>
+
+
             </div>
             {showHashtagDropdown && (
               <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
@@ -469,9 +498,9 @@ const Page = () => {
                   className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
                 >
                   <div
-  className="aspect-w-16 aspect-h-9 cursor-pointer" // Add cursor-pointer for better UX
-  onClick={() => openVideo(video.embedHtml)}
->
+                    className="aspect-w-16 aspect-h-9 cursor-pointer" // Add cursor-pointer for better UX
+                    onClick={() => openVideo(video.embedHtml)}
+                  >
                     <img
                       src={video.thumbnailUri}
                       alt="Video Thumbnail"
