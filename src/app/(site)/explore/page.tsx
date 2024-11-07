@@ -459,14 +459,14 @@ const Page = () => {
             </div>
             {showHashtagDropdown && (
               <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
-                <p className="text-center text-gray-500 mt-1">
+                <p className="text-center text-gray-500 mt-1 text-sm sm:text-base">
                   בחר מספר האשטאגים לחוויה מותאמת אישית יותר של הסרטון.
                 </p>
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4 p-2">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2 sm:gap-4 p-2 max-h-60 overflow-y-auto">
                   {hashtagOptions.map((hashtag, index) => (
                     <div
                       key={index}
-                      className={`px-4 py-2 cursor-pointer rounded-md ${
+                      className={`px-2 py-1 sm:px-4 sm:py-2 cursor-pointer rounded-md ${
                         searchQuery.includes(hashtag)
                           ? "bg-slate-700 text-white"
                           : "bg-[#FCF6F5]"

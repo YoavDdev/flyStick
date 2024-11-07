@@ -1,5 +1,5 @@
 "use client";
-import { FC, useEffect, useState ,useRef } from "react";
+import { FC, useEffect, useState, useRef } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
@@ -36,8 +36,6 @@ const Page: FC<pageProps> = ({ params }) => {
   const [noMoreVideos, setNoMoreVideos] = useState<boolean>(false); // State to track if there are no more videos to load
   const isVideoOpenRef = useRef<boolean>(false);
 
-
-
   const handleBackButton = (event: PopStateEvent) => {
     if (isVideoOpenRef.current) {
       event.preventDefault(); // Prevent default action
@@ -64,7 +62,6 @@ const Page: FC<pageProps> = ({ params }) => {
       window.removeEventListener("popstate", handleBackButton);
     };
   }, []); // No dependencies needed here
-
 
   useEffect(() => {
     // Fetch folder name based on folder ID (value)
@@ -228,8 +225,8 @@ const Page: FC<pageProps> = ({ params }) => {
   ];
 
   const folderDescriptions: { [key: string]: string } = {
-    "Contrology": `שיטת התרגול של ג׳וזף. ה. פילאטיס המבוססת על 34 תרגילים שאסף מעולם היוגה, האקרובטיקה ומחיקוי חיות וילדים ואירגן בסדר מסוים, שמטרתם ליצור הרמוניה בין הגוף לנפש. דרך מקצבי תנועה ידועים מראש וניהול 34 דפוסי נשימה, הגוף מגיע למצב אופטימאלי תפקודי, מתחזק, מתגמש, מקבל אנרגיה ומשתחרר ממכאובים. תוכלו למצוא כאן פרשנויות שונות שלי לשיטה, דקויות ייחודיות וכיווני הסבר לאלו ממכם שרוצים להעמיק הן בתנועה, בהבנת השיטה, באנטומיה וחקר הגוף.`,
-    "אביזרים": `כאן תמצאו שיעורי גליל, כדור, צלחות ועוד. מטרתם לחדד ולהעמיק עקרונות שיתמכו בטכניקות השונות ובגוף במיוחד.`,
+    Contrology: `שיטת התרגול של ג׳וזף. ה. פילאטיס המבוססת על 34 תרגילים שאסף מעולם היוגה, האקרובטיקה ומחיקוי חיות וילדים ואירגן בסדר מסוים, שמטרתם ליצור הרמוניה בין הגוף לנפש. דרך מקצבי תנועה ידועים מראש וניהול 34 דפוסי נשימה, הגוף מגיע למצב אופטימאלי תפקודי, מתחזק, מתגמש, מקבל אנרגיה ומשתחרר ממכאובים. תוכלו למצוא כאן פרשנויות שונות שלי לשיטה, דקויות ייחודיות וכיווני הסבר לאלו ממכם שרוצים להעמיק הן בתנועה, בהבנת השיטה, באנטומיה וחקר הגוף.`,
+    אביזרים: `כאן תמצאו שיעורי גליל, כדור, צלחות ועוד. מטרתם לחדד ולהעמיק עקרונות שיתמכו בטכניקות השונות ובגוף במיוחד.`,
     "אימוני קיר": `שיעורי כח וגמישות בעזרת הקיר בבית. הקיר תומך ופותח לגוף אפשרויות נוספות לשדרוג האימונים והבנת התשתיות שלו בתנועה. סוגר שרשראות תנועה ומאפשר להגיע לעומקים ביחס לכבידה. הקיר הופך להיות הרצפה.`,
     "הריון ולידה": `שיעורים והרצאות חשובים לכל השלבים בזמן הריון ולידה. הכנות חשובות לקראת הלידה, גופניות ומנטאליות, הבנה עמוקה של תהליך טבעי זה ותרגולים חיוניים גם לאחר הלידה כדי להשיב את הגוף למצבו המקורי.`,
     "הרצאות סדנאות והשתלמויות": `עולם של תוכן חכם וחשוב לכל אדם בנושאים שונים ומגוונים הקשורים להבנת הגוף וחשיבות התנועה בחייו של אדם.`,
@@ -240,21 +237,23 @@ const Page: FC<pageProps> = ({ params }) => {
     "פלייסטיק-Flystick": `שיטה מרהיבה המחברת בין רקמות הגוף ורכבות האנטומיה הטבעיות בעזרת מקל. תורמת לחיוניות, לכח, לגמישות ויציבה ללא מאמץ.`,
     "קוויקיז Quickies": `שיעורים קצרים בזמן המתאימים לרגע של תנועה ושחרור הגוף, בנושאים שונים וממוקדים.`,
     "קורס מורות\\ים קונטרולוג׳י": `מאגר שיעורים במסגרת הכשרה של קורס המורות מורים שלי ה׳קונטרולוג׳י׳.`,
-    "שיעורי כסא מרפאים": `שיעורים המתמקדים בעמוד השדרה, במערכת הנשימה, באנרגית החיוניות של הגוף וכמובן בכח וגמישות.`
+    "שיעורי כסא מרפאים": `שיעורים המתמקדים בעמוד השדרה, במערכת הנשימה, באנרגית החיוניות של הגוף וכמובן בכח וגמישות.`,
   };
 
-    const [isExpanded, setIsExpanded] = useState(false);
-  
-    // This gets the description for the folder or shows a default message.
-    const description = folderDescriptions[folderName as keyof typeof folderDescriptions] || "אין תיאור זמין";
-  
-    // Function to toggle between showing more or less
-    const toggleReadMore = () => {
-      setIsExpanded(!isExpanded);
-    };
-  
-    // Truncate the description to 50 characters if it's not expanded
-    const truncatedDescription = description.slice(0, 200);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // This gets the description for the folder or shows a default message.
+  const description =
+    folderDescriptions[folderName as keyof typeof folderDescriptions] ||
+    "אין תיאור זמין";
+
+  // Function to toggle between showing more or less
+  const toggleReadMore = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  // Truncate the description to 50 characters if it's not expanded
+  const truncatedDescription = description.slice(0, 200);
 
   const handleHashtagClick = (hashtag: string) => {
     setSearchQuery((prevQuery) => {
@@ -452,20 +451,22 @@ const Page: FC<pageProps> = ({ params }) => {
           </h1>
 
           <p className="text-lg text-gray-700 text-center mb-6">
-        {isExpanded
-          ? description
-          : `${truncatedDescription}${description.length > 200 ? '...' : ''}`}
-        
-        {/* Only show the button if the description is longer than 200 characters */}
-        {description.length > 200 && (
-          <button
-            className="text-blue-500 hover:text-blue-700 focus:outline-none ml-2"
-            onClick={toggleReadMore}
-          >
-            {isExpanded ? "קרא פחות" : "קרא עוד"}
-          </button>
-        )}
-      </p>
+            {isExpanded
+              ? description
+              : `${truncatedDescription}${
+                  description.length > 200 ? "..." : ""
+                }`}
+
+            {/* Only show the button if the description is longer than 200 characters */}
+            {description.length > 200 && (
+              <button
+                className="text-blue-500 hover:text-blue-700 focus:outline-none ml-2"
+                onClick={toggleReadMore}
+              >
+                {isExpanded ? "קרא פחות" : "קרא עוד"}
+              </button>
+            )}
+          </p>
 
           <div
             style={{ direction: "ltr" }}
@@ -543,11 +544,14 @@ const Page: FC<pageProps> = ({ params }) => {
             </div>
             {showHashtagDropdown && (
               <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
-                <div className="grid sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-10">
+                <p className="text-center text-gray-500 mt-1 text-sm sm:text-base">
+                  בחר מספר האשטאגים לחוויה מותאמת אישית יותר של הסרטון.
+                </p>
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2 sm:gap-4 p-2 max-h-60 overflow-y-auto">
                   {hashtagOptions.map((hashtag, index) => (
                     <div
                       key={index}
-                      className={`px-4 py-2 cursor-pointer rounded-md ${
+                      className={`px-2 py-1 sm:px-4 sm:py-2 cursor-pointer rounded-md ${
                         searchQuery.includes(hashtag)
                           ? "bg-slate-700 text-white"
                           : "bg-[#FCF6F5]"
@@ -578,7 +582,6 @@ const Page: FC<pageProps> = ({ params }) => {
                   <div
                     className="aspect-w-16 aspect-h-9 cursor-pointer" // Add cursor-pointer for better UX
                     onClick={() => openVideo(video.embedHtml)}
-
                   >
                     <img
                       src={video.thumbnailUri}
@@ -618,7 +621,6 @@ const Page: FC<pageProps> = ({ params }) => {
                       <button
                         className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 right-4" // Position the button at the bottom-right corner
                         onClick={() => openVideo(video.embedHtml)}
-
                       >
                         נגן
                       </button>
