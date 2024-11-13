@@ -521,7 +521,7 @@ const Page: FC<pageProps> = ({ params }) => {
                 </svg>
               </button>
 
-              <button
+              {/* <button
                 className="bg-slate-600 hover:bg-slate-700 w-10 h-10 sm:w-12 sm:h-12 rounded-full ml-2 focus:outline-none focus:ring-4 focus:ring-slate-300 transition duration-200 ease-in-out transform hover:scale-110 flex items-center justify-center text-white"
                 onClick={toggleHashtagDropdown}
                 aria-label="Toggle hashtag dropdown"
@@ -540,13 +540,13 @@ const Page: FC<pageProps> = ({ params }) => {
                     d="M5 3h14M5 9h14M5 15h14M5 21h14"
                   />
                 </svg>
-              </button>
+              </button> */}
             </div>
 
             {showHashtagDropdown && (
               <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
                 <p className="text-center text-gray-500 mt-1 text-sm sm:text-base">
-                  בחר מספר נושאים לחוויה מותאמת אישית יותר של הסרטון.
+                .בחר נושא אחד או יותר לחוויה מותאמת אישית
                 </p>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2 sm:gap-4 p-2 max-h-60 overflow-y-auto">
                   {hashtagOptions.map((hashtag, index) => (
