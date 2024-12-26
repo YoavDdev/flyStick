@@ -175,8 +175,8 @@ const DashboardPage = () => {
 
                   {/* Subscription Messages */}
                   <div className="mb-6 text-center text-gray-700">
-                    {subscriptionStatus === "ACTIVE" ||
-                      (subscriptionId === "Admin" && (
+                    {(subscriptionStatus === "ACTIVE" ||
+                      (subscriptionId === "Admin") && (
                         <>
                           <p>
                             כאן תוכלו לנהל את המנוי שלכם, לחדש או לבטל בכל שלב.
