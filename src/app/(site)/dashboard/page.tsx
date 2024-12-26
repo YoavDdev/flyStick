@@ -175,31 +175,31 @@ const DashboardPage = () => {
 
                   {/* Subscription Messages */}
                   <div className="mb-6 text-center text-gray-700">
-                  {(subscriptionStatus === "ACTIVE" || subscriptionId === "Admin") && (
-  <>
-    <p>
-      כאן תוכלו לנהל את המנוי שלכם, לחדש או לבטל בכל שלב.
-      במידה ובחרתם להנות מתקופת הנסיון של 3 ימים, הקפידו
-      לסיים את המנוי לפני תום תקופת הניסיון. במידה והנכם
-      מתלבטים, או זקוקים לעזרה והכוונה{" "}
-      <Link
-        href="/navigation"
-        className="text-blue-600 font-bold underline"
-      >
-        לחץ כאן
-      </Link>
-      . שימו לב, סיום מנוי מאפשר להנות מתכני הסטודיו עד
-      לתום תקופת החיוב.
-    </p>
-    <button
-      onClick={cancelSubscription}
-      className="bg-red-500 text-white py-2 px-6 mt-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
-    >
-      בטל מנוי
-    </button>
-  </>
-)}
-
+                    {(subscriptionStatus === "ACTIVE" ||
+                      subscriptionId === "Admin") && (
+                      <>
+                        <p>
+                          כאן תוכלו לנהל את המנוי שלכם, לחדש או לבטל בכל שלב.
+                          במידה ובחרתם להנות מתקופת הנסיון של 3 ימים, הקפידו
+                          לסיים את המנוי לפני תום תקופת הניסיון. במידה והנכם
+                          מתלבטים, או זקוקים לעזרה והכוונה{" "}
+                          <Link
+                            href="/navigation"
+                            className="text-blue-600 font-bold underline"
+                          >
+                            לחץ כאן
+                          </Link>
+                          . שימו לב, סיום מנוי מאפשר להנות מתכני הסטודיו עד לתום
+                          תקופת החיוב.
+                        </p>
+                        <button
+                          onClick={cancelSubscription}
+                          className="bg-red-500 text-white py-2 px-6 mt-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
+                        >
+                          בטל מנוי
+                        </button>
+                      </>
+                    )}
 
                     {subscriptionStatus === "PENDING_CANCELLATION" && (
                       <>
