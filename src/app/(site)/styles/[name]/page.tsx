@@ -126,7 +126,7 @@ const Page: FC<pageProps> = ({ params }) => {
     Authorization: `Bearer ${accessToken}`,
   };
 
-  const fetchVideos = async (page: number): Promise<boolean> => {
+/*   const fetchVideos = async (page: number): Promise<boolean> => {
     try {
       const response: AxiosResponse = await axios.get(apiUrl, {
         headers,
@@ -164,7 +164,45 @@ const Page: FC<pageProps> = ({ params }) => {
       console.error("Error:", error);
     }
     return false; // Indicate no more videos
+  }; */
+
+  const fetchVideos = async (page: number): Promise<boolean> => {
+    try {
+      const response: AxiosResponse = await axios.get(apiUrl, {
+        headers,
+        params: {
+          page,
+          query: descriptionQuery,
+          per_page: 50, // Max per request
+          fields: "uri,embed.html,name,description,pictures",
+        },
+      });
+  
+      const data = response.data;
+      const videosData = data.data;
+  
+      if (!videosData.length) {
+        return false; // No more videos to fetch
+      }
+  
+      const newVideos = videosData.map((video: any) => ({
+        uri: video.uri,
+        embedHtml: video.embed.html,
+        name: video.name,
+        description: video.description,
+        thumbnailUri: video.pictures.sizes[5].link,
+      }));
+  
+      setVideos((prevVideos) => [...prevVideos, ...newVideos]);
+  
+      // Return true if there's another page
+      return !!data.paging?.next;
+    } catch (error) {
+      console.error("Error fetching videos:", error);
+      return false;
+    }
   };
+  
 
   const hashtagOptions = [
     "הריוןלידה",
@@ -288,9 +326,12 @@ const Page: FC<pageProps> = ({ params }) => {
     setShowHashtagDropdown(false);
   };
 
-  const loadMore = () => {
+ /*  const loadMore = () => {
     // Increment the current page to fetch the next page of videos
     const nextPage = currentPage + 1;
+    
+
+    
 
     fetchVideos(nextPage).then((hasMoreVideos) => {
       if (!hasMoreVideos) {
@@ -298,6 +339,18 @@ const Page: FC<pageProps> = ({ params }) => {
         setNoMoreVideos(true);
       }
       setCurrentPage(nextPage); // Increment currentPage here
+    });
+  }; */
+
+  const loadMore = () => {
+    const nextPage = currentPage + 1;
+  
+    fetchVideos(nextPage).then((hasMoreVideos) => {
+      if (hasMoreVideos) {
+        setCurrentPage(nextPage); // Increment only if more videos exist
+      } else {
+        setNoMoreVideos(true); // Stop loading if no more videos
+      }
     });
   };
 
