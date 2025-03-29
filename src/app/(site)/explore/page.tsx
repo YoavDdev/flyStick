@@ -512,7 +512,9 @@ const Page = () => {
                 נסה להשתמש בכמות קטנה יותר של נושאים לתוצאות טובות יותר!{" "}
               </p>
             ) : (
-              videos.map((video, index) => (
+              videos
+              .filter((video) => !video.name.startsWith("[PRV]"))
+              .map((video, index) => (            
                 <div
                   key={video.uri}
                   className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
