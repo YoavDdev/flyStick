@@ -7,13 +7,10 @@ import { toast } from "react-hot-toast";
 import Link from "next/link";
 import Player from "@vimeo/player";
 
-
 const Page = () => {
-
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const [player, setPlayer] = useState<Player | null>(null);
   const [resumeTime, setResumeTime] = useState<number>(0);
-
 
   const [videos, setVideos] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -315,27 +312,27 @@ const Page = () => {
     if (selectedVideo && videoContainerRef.current) {
       const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
       if (!uri) return;
-  
+
       const vimeoPlayer = new Player(videoContainerRef.current, {
         id: Number(uri),
         width: 640,
       });
-  
+
       setPlayer(vimeoPlayer);
-  
+
       // Resume from saved time
       vimeoPlayer.on("loaded", () => {
         vimeoPlayer.setCurrentTime(resumeTime);
       });
-  
+
       // Update the resume time on pause or timeupdate
       vimeoPlayer.on("timeupdate", (data) => {
         setResumeTime(data.seconds);
       });
-  
+
       // Optional: auto play
       vimeoPlayer.play();
-  
+
       return () => {
         vimeoPlayer.unload(); // Clean up
       };
@@ -498,9 +495,9 @@ const Page = () => {
 
             {showHashtagDropdown && (
               <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
-          <p className="text-center text-gray-500 mt-1 text-sm sm:text-base">
-  .בחרו נושא אחד או יותר לחוויה מותאמת אישית
-</p>
+                <p className="text-center text-gray-500 mt-1 text-sm sm:text-base">
+                  .בחרו נושא אחד או יותר לחוויה מותאמת אישית
+                </p>
 
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2 sm:gap-4 p-2 max-h-60 overflow-y-auto">
                   {hashtagOptions.map((hashtag, index) => (
@@ -552,80 +549,82 @@ const Page = () => {
               </p>
             ) : (
               videos
-              .filter((video) => !video.name.startsWith("[PRV]"))
-              .map((video, index) => (            
-                <div
-                  key={video.uri}
-                  className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
-                >
+                .filter((video) => !video.name.startsWith("[PRV]"))
+                .map((video, index) => (
                   <div
-                    className="aspect-w-16 aspect-h-9 cursor-pointer" // Add cursor-pointer for better UX
-                    onClick={() => openVideo(video.embedHtml)}
+                    key={video.uri}
+                    className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
                   >
-                    <img
-                      src={video.thumbnailUri}
-                      alt="Video Thumbnail"
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h2 className="text-lg font-semibold mb-2 text-black">
-                      {video.name}
-                    </h2>
-                    <p className="text-sm mb-2 text-gray-600">
-                      {expandedDescriptions[index]
-                        ? video.description
-                        : video.description
-                        ? video.description.split(" ").slice(0, 10).join(" ") +
-                          " ..."
-                        : ""}
-                    </p>
-                    {!expandedDescriptions[index] && video.description && (
+                    <div
+                      className="aspect-w-16 aspect-h-9 cursor-pointer" // Add cursor-pointer for better UX
+                      onClick={() => openVideo(video.embedHtml)}
+                    >
+                      <img
+                        src={video.thumbnailUri}
+                        alt="Video Thumbnail"
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h2 className="text-lg font-semibold mb-2 text-black">
+                        {video.name}
+                      </h2>
+                      <p className="text-sm mb-2 text-gray-600">
+                        {expandedDescriptions[index]
+                          ? video.description
+                          : video.description
+                          ? video.description
+                              .split(" ")
+                              .slice(0, 10)
+                              .join(" ") + " ..."
+                          : ""}
+                      </p>
+                      {!expandedDescriptions[index] && video.description && (
+                        <button
+                          className="text-blue-500 hover:underline focus:outline-none"
+                          onClick={toggleDescription(index)}
+                        >
+                          קרא/י עוד
+                        </button>
+                      )}
+                      {expandedDescriptions[index] && (
+                        <button
+                          className="text-blue-500 hover:underline focus:outline-none"
+                          onClick={toggleDescription(index)}
+                        >
+                          צמצם/י
+                        </button>
+                      )}
+                      <div className="py-8">
+                        <button
+                          className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 right-4" // Position the button at the bottom-right corner
+                          onClick={() => openVideo(video.embedHtml)}
+                        >
+                          נגן
+                        </button>
+                      </div>
                       <button
-                        className="text-blue-500 hover:underline focus:outline-none"
-                        onClick={toggleDescription(index)}
+                        className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
+                        onClick={() => {
+                          setSelectedVideoUri(video.uri); // Set the selected video URI
+                          openModal(); // Open the modal
+                          theUserId();
+                        }}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: "40px",
+                          height: "40px",
+                          borderRadius: "50%",
+                          fontSize: "24px",
+                        }}
                       >
-                        קרא/י עוד
-                      </button>
-                    )}
-                    {expandedDescriptions[index] && (
-                      <button
-                        className="text-blue-500 hover:underline focus:outline-none"
-                        onClick={toggleDescription(index)}
-                      >
-                        צמצם/י
-                      </button>
-                    )}
-                    <div className="py-8">
-                      <button
-                        className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 right-4" // Position the button at the bottom-right corner
-                        onClick={() => openVideo(video.embedHtml)}
-                      >
-                        נגן
+                        +
                       </button>
                     </div>
-                    <button
-                      className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
-                      onClick={() => {
-                        setSelectedVideoUri(video.uri); // Set the selected video URI
-                        openModal(); // Open the modal
-                        theUserId();
-                      }}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "40px",
-                        height: "40px",
-                        borderRadius: "50%",
-                        fontSize: "24px",
-                      }}
-                    >
-                      +
-                    </button>
                   </div>
-                </div>
-              ))
+                ))
             )}
 
             {showModal && (
@@ -725,25 +724,33 @@ const Page = () => {
           </div>
         </div>
         {selectedVideo && (
-  <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
-    <div className="video-container w-full max-w-4xl aspect-video" ref={videoContainerRef} />
+          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
+            <div
+              className="video-container w-full max-w-4xl aspect-video"
+              ref={videoContainerRef}
+            />
 
-    <button
-      className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
-      onClick={closeVideo}
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
-  </div>
-)}
+            <button
+              className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
+              onClick={closeVideo}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     );
   } else {

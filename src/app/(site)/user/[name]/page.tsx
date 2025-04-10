@@ -1,10 +1,11 @@
 "use client";
 
-import { FC, useEffect, useState , useRef } from "react";
+import { FC, useEffect, useState, useRef } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
+import Player from "@vimeo/player";
 
 interface pageProps {
   params: { name: string };
@@ -22,6 +23,10 @@ const Page: FC<pageProps> = ({ params }) => {
   const { data: session } = useSession();
   const [displayEmptyMessage, setDisplayEmptyMessage] = useState(false);
   const isVideoOpenRef = useRef<boolean>(false);
+
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const [player, setPlayer] = useState<Player | null>(null);
+  const [resumeTime, setResumeTime] = useState<number>(0);
 
   const handleBackButton = (event: PopStateEvent) => {
     if (isVideoOpenRef.current) {
@@ -156,6 +161,37 @@ const Page: FC<pageProps> = ({ params }) => {
     }
   };
 
+  useEffect(() => {
+    if (selectedVideo && videoContainerRef.current) {
+      const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
+      if (!uri) return;
+
+      const vimeoPlayer = new Player(videoContainerRef.current, {
+        id: Number(uri),
+        width: 640,
+      });
+
+      setPlayer(vimeoPlayer);
+
+      // Resume from saved time
+      vimeoPlayer.on("loaded", () => {
+        vimeoPlayer.setCurrentTime(resumeTime);
+      });
+
+      // Update the resume time on pause or timeupdate
+      vimeoPlayer.on("timeupdate", (data) => {
+        setResumeTime(data.seconds);
+      });
+
+      // Optional: auto play
+      vimeoPlayer.play();
+
+      return () => {
+        vimeoPlayer.unload(); // Clean up
+      };
+    }
+  }, [selectedVideo]);
+
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [loading2, setLoading2] = useState(true);
   const [subscriptionId, setSubscriptionId] = useState(null);
@@ -213,9 +249,7 @@ const Page: FC<pageProps> = ({ params }) => {
     // Display loading message while fetching videos
     return (
       <div className="text-center pt-28 h-screen">
-        <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-          טעינה...
-        </h1>
+        <h1 className="text-4xl font-semibold text-gray-700 mb-4">טעינה...</h1>
       </div>
     );
   }
@@ -231,7 +265,11 @@ const Page: FC<pageProps> = ({ params }) => {
     );
   }
 
-  if (subscriptionId === "Admin" || subscriptionStatus === "ACTIVE" || subscriptionStatus === "PENDING_CANCELLATION") {
+  if (
+    subscriptionId === "Admin" ||
+    subscriptionStatus === "ACTIVE" ||
+    subscriptionStatus === "PENDING_CANCELLATION"
+  ) {
     // Render content for users with an active subscription
 
     return (
@@ -247,9 +285,9 @@ const Page: FC<pageProps> = ({ params }) => {
                 className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
               >
                 <div
-  className="aspect-w-16 aspect-h-9 cursor-pointer" // Add cursor-pointer for better UX
-  onClick={() => openVideo(video.embedHtml)}
->
+                  className="aspect-w-16 aspect-h-9 cursor-pointer" // Add cursor-pointer for better UX
+                  onClick={() => openVideo(video.embedHtml)}
+                >
                   <img
                     src={video.thumbnailUri}
                     alt="Video Thumbnail"
@@ -305,16 +343,15 @@ const Page: FC<pageProps> = ({ params }) => {
           </div>
         </div>
         {selectedVideo && (
-          // Display the selected video player
-
           <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
-            <div className="video-container">
-              <div dangerouslySetInnerHTML={{ __html: selectedVideo }} />
-            </div>
+            <div
+              className="video-container w-full max-w-4xl aspect-video"
+              ref={videoContainerRef}
+            />
 
             <button
               className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
-              onClick={() => setSelectedVideo(null)} // Close the video player
+              onClick={closeVideo}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -340,7 +377,7 @@ const Page: FC<pageProps> = ({ params }) => {
     return (
       <div className="text-center mt-28">
         <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-        המנוי שלך אינו פעיל.
+          המנוי שלך אינו פעיל.
         </h1>
         <div className="mt-10 flex items-center justify-center">
           <a
