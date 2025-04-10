@@ -683,7 +683,7 @@ const Page: FC<pageProps> = ({ params }) => {
                         className="text-blue-500 hover:underline focus:outline-none"
                         onClick={toggleDescription(index)}
                       >
-                        קראה עוד
+                        קרא/י עוד
                       </button>
                     )}
                     {expandedDescriptions[index] && (
@@ -691,7 +691,7 @@ const Page: FC<pageProps> = ({ params }) => {
                         className="text-blue-500 hover:underline focus:outline-none"
                         onClick={toggleDescription(index)}
                       >
-                        הצג פחות
+                        צמצם/י
                       </button>
                     )}
                     <div className="py-8">
