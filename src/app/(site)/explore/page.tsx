@@ -5,8 +5,16 @@ import axios, { AxiosResponse } from "axios";
 import { useSession, signOut } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import Player from "@vimeo/player";
+
 
 const Page = () => {
+
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const [player, setPlayer] = useState<Player | null>(null);
+  const [resumeTime, setResumeTime] = useState<number>(0);
+
+
   const [videos, setVideos] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [descriptionQuery, setDescriptionQuery] = useState<string>("");
@@ -302,6 +310,37 @@ const Page = () => {
       closeModal();
     }
   };
+
+  useEffect(() => {
+    if (selectedVideo && videoContainerRef.current) {
+      const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
+      if (!uri) return;
+  
+      const vimeoPlayer = new Player(videoContainerRef.current, {
+        id: Number(uri),
+        width: 640,
+      });
+  
+      setPlayer(vimeoPlayer);
+  
+      // Resume from saved time
+      vimeoPlayer.on("loaded", () => {
+        vimeoPlayer.setCurrentTime(resumeTime);
+      });
+  
+      // Update the resume time on pause or timeupdate
+      vimeoPlayer.on("timeupdate", (data) => {
+        setResumeTime(data.seconds);
+      });
+  
+      // Optional: auto play
+      vimeoPlayer.play();
+  
+      return () => {
+        vimeoPlayer.unload(); // Clean up
+      };
+    }
+  }, [selectedVideo]);
 
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -686,35 +725,25 @@ const Page = () => {
           </div>
         </div>
         {selectedVideo && (
-          // Display the selected video player
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
-            <div className="video-container">
-              <div dangerouslySetInnerHTML={{ __html: selectedVideo }} />
-            </div>
+  <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
+    <div className="video-container w-full max-w-4xl aspect-video" ref={videoContainerRef} />
 
-            {/* Close button */}
-            <button
-              className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
-              onClick={() => setSelectedVideo(null)} // Close the video player
-            >
-              {/* Close icon */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-        )}
+    <button
+      className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
+      onClick={closeVideo}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+)}
       </div>
     );
   } else {
