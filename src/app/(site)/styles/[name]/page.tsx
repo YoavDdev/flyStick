@@ -6,7 +6,6 @@ import { toast } from "react-hot-toast";
 import Link from "next/link";
 import Player from "@vimeo/player";
 
-
 interface pageProps {
   params: { name: string };
 }
@@ -15,9 +14,8 @@ const Page: FC<pageProps> = ({ params }) => {
   const value = params.name; // Extract the value
 
   const videoContainerRef = useRef<HTMLDivElement>(null);
-const [player, setPlayer] = useState<Player | null>(null);
-const [resumeTime, setResumeTime] = useState<number>(0);
-
+  const [player, setPlayer] = useState<Player | null>(null);
+  const [resumeTime, setResumeTime] = useState<number>(0);
 
   const [folderName, setFolderName] = useState<string>(""); // Initialize folderName state
   const [videos, setVideos] = useState<any[]>([]);
@@ -133,7 +131,7 @@ const [resumeTime, setResumeTime] = useState<number>(0);
     Authorization: `Bearer ${accessToken}`,
   };
 
-/*   const fetchVideos = async (page: number): Promise<boolean> => {
+  /*   const fetchVideos = async (page: number): Promise<boolean> => {
     try {
       const response: AxiosResponse = await axios.get(apiUrl, {
         headers,
@@ -184,14 +182,14 @@ const [resumeTime, setResumeTime] = useState<number>(0);
           fields: "uri,embed.html,name,description,pictures",
         },
       });
-  
+
       const data = response.data;
       const videosData = data.data;
-  
+
       if (!videosData.length) {
         return false; // No more videos to fetch
       }
-  
+
       const newVideos = videosData.map((video: any) => ({
         uri: video.uri,
         embedHtml: video.embed.html,
@@ -199,9 +197,9 @@ const [resumeTime, setResumeTime] = useState<number>(0);
         description: video.description,
         thumbnailUri: video.pictures.sizes[5].link,
       }));
-  
+
       setVideos((prevVideos) => [...prevVideos, ...newVideos]);
-  
+
       // Return true if there's another page
       return !!data.paging?.next;
     } catch (error) {
@@ -209,7 +207,6 @@ const [resumeTime, setResumeTime] = useState<number>(0);
       return false;
     }
   };
-  
 
   const hashtagOptions = [
     "הריוןלידה",
@@ -333,7 +330,7 @@ const [resumeTime, setResumeTime] = useState<number>(0);
     setShowHashtagDropdown(false);
   };
 
- /*  const loadMore = () => {
+  /*  const loadMore = () => {
     // Increment the current page to fetch the next page of videos
     const nextPage = currentPage + 1;
     
@@ -351,7 +348,7 @@ const [resumeTime, setResumeTime] = useState<number>(0);
 
   const loadMore = () => {
     const nextPage = currentPage + 1;
-  
+
     fetchVideos(nextPage).then((hasMoreVideos) => {
       if (hasMoreVideos) {
         setCurrentPage(nextPage); // Increment only if more videos exist
@@ -441,27 +438,27 @@ const [resumeTime, setResumeTime] = useState<number>(0);
     if (selectedVideo && videoContainerRef.current) {
       const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
       if (!uri) return;
-  
+
       const vimeoPlayer = new Player(videoContainerRef.current, {
         id: Number(uri),
         width: 640,
       });
-  
+
       setPlayer(vimeoPlayer);
-  
+
       // Resume from saved time
       vimeoPlayer.on("loaded", () => {
         vimeoPlayer.setCurrentTime(resumeTime);
       });
-  
+
       // Update the resume time on pause or timeupdate
       vimeoPlayer.on("timeupdate", (data) => {
         setResumeTime(data.seconds);
       });
-  
+
       // Optional: auto play
       vimeoPlayer.play();
-  
+
       return () => {
         vimeoPlayer.unload(); // Clean up
       };
@@ -636,9 +633,9 @@ const [resumeTime, setResumeTime] = useState<number>(0);
 
             {showHashtagDropdown && (
               <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
-<p className="text-center text-gray-500 mt-1 text-sm sm:text-base">
-  .בחרו נושא אחד או יותר לחוויה מותאמת אישית
-</p>
+                <p className="text-center text-gray-500 mt-1 text-sm sm:text-base">
+                  .בחרו נושא אחד או יותר לחוויה מותאמת אישית
+                </p>
 
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2 sm:gap-4 p-2 max-h-60 overflow-y-auto">
                   {hashtagOptions.map((hashtag, index) => (
@@ -860,28 +857,36 @@ const [resumeTime, setResumeTime] = useState<number>(0);
           </div>
         </div>
         {selectedVideo && (
-  <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
-    <div className="video-container w-full max-w-4xl aspect-video" ref={videoContainerRef} />
-    
-    <button
-      className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
-      onClick={() => {
-        setSelectedVideo(null);
-        setResumeTime(0);
-      }}
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
-  </div>
-)}
+          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
+            <div
+              className="video-container w-full max-w-4xl aspect-video"
+              ref={videoContainerRef}
+            />
+
+            <button
+              className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
+              onClick={() => {
+                setSelectedVideo(null);
+                setResumeTime(0);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     );
   } else {
