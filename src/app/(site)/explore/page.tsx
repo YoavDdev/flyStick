@@ -628,10 +628,10 @@ const Page = () => {
                         </button>
 
                         <button
-                          className={`whitespace-nowrap ${
-                            watchedVideos.includes(video.uri)
-                              ? "bg-gray-400 hover:bg-gray-500"
-                              : "bg-green-600 hover:bg-green-700"
+                         className={`whitespace-nowrap ${
+                          watchedVideos.includes(video.uri)
+                            ? "bg-gray-400 hover:bg-gray-500"
+                            : "bg-[#833414] hover:bg-[#A3442D]"
                           } text-white px-3 py-1 rounded-full focus:outline-none text-xs`}
                           onClick={async () => {
                             if (!session || !session.user) {
