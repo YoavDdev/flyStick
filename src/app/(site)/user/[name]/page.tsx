@@ -15,6 +15,8 @@ const Page: FC<pageProps> = ({ params }) => {
   const value = params.name; // Extract the value
   const decodedString = decodeURIComponent(value);
 
+  const [watchedVideos, setWatchedVideos] = useState<string[]>([]);
+
   const [videos, setVideos] = useState<any[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -162,6 +164,24 @@ const Page: FC<pageProps> = ({ params }) => {
   };
 
   useEffect(() => {
+    const fetchWatchedVideos = async () => {
+      if (!session?.user) return;
+      try {
+        const res = await axios.post("/api/get-watched-videos", {
+          userEmail: session.user.email,
+        });
+        if (res.status === 200) {
+          setWatchedVideos(res.data.watchedVideos); // Array of videoUri strings
+        }
+      } catch (err) {
+        console.error("Failed to fetch watched videos", err);
+      }
+    };
+
+    fetchWatchedVideos();
+  }, [session]);
+
+  useEffect(() => {
     if (selectedVideo && videoContainerRef.current) {
       const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
       if (!uri) return;
@@ -291,7 +311,11 @@ const Page: FC<pageProps> = ({ params }) => {
                   <img
                     src={video.thumbnailUri}
                     alt="Video Thumbnail"
-                    className="object-cover w-full h-full"
+                    className={`object-cover w-full h-full ${
+                      watchedVideos.includes(video.uri)
+                        ? "grayscale opacity-70"
+                        : ""
+                    }`}
                   />
                 </div>
                 <div className="p-4">
@@ -322,21 +346,66 @@ const Page: FC<pageProps> = ({ params }) => {
                       צמצם/י
                     </button>
                   )}
-                  <div className="py-8">
+                  <div className="pt-4 flex flex-wrap gap-2 justify-between">
                     <button
-                      className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 right-4" // Position the button at the bottom-right corner
+                      className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none"
                       onClick={() => openVideo(video.embedHtml)}
                     >
                       נגן
                     </button>
+
+                    <button
+                      className={`whitespace-nowrap ${
+                        watchedVideos.includes(video.uri)
+                          ? "bg-gray-400 hover:bg-gray-500"
+                          : "bg-green-600 hover:bg-green-700"
+                      } text-white px-3 py-1 rounded-full focus:outline-none text-xs`}
+                      onClick={async () => {
+                        if (!session || !session.user) {
+                          toast.error("Please log in");
+                          return;
+                        }
+
+                        const alreadyWatched = watchedVideos.includes(
+                          video.uri,
+                        );
+
+                        try {
+                          if (alreadyWatched) {
+                            await axios.delete("/api/mark-watched", {
+                              data: {
+                                userEmail: session.user.email,
+                                videoUri: video.uri,
+                              },
+                            });
+                            setWatchedVideos((prev) =>
+                              prev.filter((uri) => uri !== video.uri),
+                            );
+                          } else {
+                            await axios.post("/api/mark-watched", {
+                              userEmail: session.user.email,
+                              videoUri: video.uri,
+                            });
+                            setWatchedVideos((prev) => [...prev, video.uri]);
+                          }
+                        } catch (err) {
+                          console.error(err);
+                          toast.error("Something went wrong");
+                        }
+                      }}
+                    >
+                      {watchedVideos.includes(video.uri)
+                        ? "✔ נצפה (לחץ לביטול)"
+                        : "סימון כנצפה"}
+                    </button>
+
+                    <button
+                      className="bg-red-800 hover:bg-red-700 text-white px-4 py-2 rounded-full focus:outline-none"
+                      onClick={() => removeVideo(video.uri)}
+                    >
+                      הסר
+                    </button>
                   </div>
-                  <Link
-                    href={`/user/${value}`}
-                    onClick={() => removeVideo(video.uri)}
-                    className="bg-red-800 hover:bg-red-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
-                  >
-                    הסר
-                  </Link>
                 </div>
               </div>
             ))}
