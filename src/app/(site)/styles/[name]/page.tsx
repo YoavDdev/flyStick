@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
 import Player from "@vimeo/player";
+import { FaPlay, FaEye, FaEyeSlash, FaPlus } from "react-icons/fa";
 
 interface pageProps {
   params: { name: string };
@@ -711,114 +712,115 @@ const Page: FC<pageProps> = ({ params }) => {
                   key={video.uri}
                   className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
                 >
-                  <div
-                    className="aspect-w-16 aspect-h-9 cursor-pointer" // Add cursor-pointer for better UX
-                    onClick={() => openVideo(video.embedHtml)}
-                  >
-                    <img
-                      src={video.thumbnailUri}
-                      alt="Video Thumbnail"
-                      className={`object-cover w-full h-full ${
-                        watchedVideos.includes(video.uri)
-                          ? "grayscale opacity-70"
-                          : ""
-                      }`}
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h2 className="text-lg font-semibold mb-2 text-black">
-                      {video.name}
-                    </h2>
-                    <p className="text-sm mb-2 text-gray-600">
-                      {expandedDescriptions[index]
-                        ? video.description
-                        : video.description
-                        ? video.description.split(" ").slice(0, 10).join(" ") +
-                          " ..."
-                        : ""}
-                    </p>
-                    {!expandedDescriptions[index] && video.description && (
-                      <button
-                        className="text-blue-500 hover:underline focus:outline-none"
-                        onClick={toggleDescription(index)}
-                      >
-                        קרא/י עוד
-                      </button>
-                    )}
-                    {expandedDescriptions[index] && (
-                      <button
-                        className="text-blue-500 hover:underline focus:outline-none"
-                        onClick={toggleDescription(index)}
-                      >
-                        צמצם/י
-                      </button>
-                    )}
-                    <div className="pt-4 flex flex-wrap gap-2 justify-between">
-                      <button
-                        className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-4 py-2 rounded-full focus:outline-none"
-                        onClick={() => openVideo(video.embedHtml)}
-                      >
-                        נגן
-                      </button>
+                  
+                  <div className="flex flex-col h-full">
+  {/* תמונה */}
+  <div
+    className="aspect-w-16 aspect-h-9 cursor-pointer"
+    onClick={() => openVideo(video.embedHtml)}
+  >
+    <img
+      src={video.thumbnailUri}
+      alt="Video Thumbnail"
+      className={`object-cover w-full h-full ${
+        watchedVideos.includes(video.uri) ? "grayscale opacity-70" : ""
+      }`}
+    />
+  </div>
 
-                      <button
-                        className={`whitespace-nowrap ${
-                          watchedVideos.includes(video.uri)
-                            ? "bg-gray-400 hover:bg-gray-500"
-                            : "bg-[#833414] hover:bg-[#A3442D]"
-                        } text-white px-3 py-1 rounded-full focus:outline-none text-xs`}
-                        onClick={async () => {
-                          if (!session || !session.user) {
-                            toast.error("Please log in");
-                            return;
-                          }
+  {/* טקסט ותיאור */}
+  <div className="flex-1 flex flex-col justify-between p-4">
+    <div>
+      <h2 className="text-lg font-semibold mb-2 text-black">{video.name}</h2>
+      {video.description && (
+  <>
+    <p className="text-sm mb-2 text-gray-600">
+      {expandedDescriptions[index] || video.description.length <= 100
+        ? video.description
+        : video.description.split(" ").slice(0, 10).join(" ") + " ..."}
+    </p>
 
-                          const alreadyWatched = watchedVideos.includes(
-                            video.uri,
-                          );
+    {video.description.length > 100 && (
+      <button
+        className="text-blue-500 hover:underline focus:outline-none"
+        onClick={toggleDescription(index)}
+      >
+        {expandedDescriptions[index] ? "צמצם/י" : "קרא/י עוד"}
+      </button>
+    )}
+  </>
+)}
+    </div>
 
-                          try {
-                            if (alreadyWatched) {
-                              await axios.delete("/api/mark-watched", {
-                                data: {
-                                  userEmail: session.user.email,
-                                  videoUri: video.uri,
-                                },
-                              });
-                              setWatchedVideos((prev) =>
-                                prev.filter((uri) => uri !== video.uri),
-                              );
-                            } else {
-                              await axios.post("/api/mark-watched", {
-                                userEmail: session.user.email,
-                                videoUri: video.uri,
-                              });
-                              setWatchedVideos((prev) => [...prev, video.uri]);
-                            }
-                          } catch (err) {
-                            console.error(err);
-                            toast.error("Something went wrong");
-                          }
-                        }}
-                      >
-                        {watchedVideos.includes(video.uri)
-                          ? "✔ נצפה (לחץ לביטול)"
-                          : "סימון כנצפה"}
-                      </button>
+    {/* אייקונים בצמוד לתחתית */}
+    <div className="flex justify-between items-center pt-4 mt-4">
+      <button
+        title="נגן"
+        className="transition-transform hover:scale-110 bg-[#2D3142] hover:bg-[#4F5D75] text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
+        onClick={() => openVideo(video.embedHtml)}
+      >
+        <FaPlay size={16} />
+      </button>
 
-                      <button
-                        className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-4 py-2 rounded-full focus:outline-none"
-                        onClick={() => {
-                          setSelectedVideoUri(video.uri);
-                          openModal();
-                          theUserId();
-                        }}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </div>
+      <button
+        title={watchedVideos.includes(video.uri) ? "הסר צפייה" : "סמן כנצפה"}
+        className={`transition-transform hover:scale-110 ${
+          watchedVideos.includes(video.uri)
+            ? "bg-gray-400 hover:bg-gray-500"
+            : "bg-[#833414] hover:bg-[#A3442D]"
+        } text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center`}
+        onClick={async () => {
+          if (!session || !session.user) {
+            toast.error("Please log in");
+            return;
+          }
+
+          const alreadyWatched = watchedVideos.includes(video.uri);
+
+          try {
+            if (alreadyWatched) {
+              await axios.delete("/api/mark-watched", {
+                data: {
+                  userEmail: session.user.email,
+                  videoUri: video.uri,
+                },
+              });
+              setWatchedVideos((prev) =>
+                prev.filter((uri) => uri !== video.uri),
+              );
+            } else {
+              await axios.post("/api/mark-watched", {
+                userEmail: session.user.email,
+                videoUri: video.uri,
+              });
+              setWatchedVideos((prev) => [...prev, video.uri]);
+            }
+          } catch (err) {
+            console.error(err);
+            toast.error("משהו השתבש");
+          }
+        }}
+      >
+        {watchedVideos.includes(video.uri) ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+      </button>
+
+      <button
+        title="הוסף למועדפים"
+        className="transition-transform hover:scale-110 bg-[#EF8354] hover:bg-[#D9713C] text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
+        onClick={() => {
+          setSelectedVideoUri(video.uri);
+          openModal();
+          theUserId();
+        }}
+      >
+        <FaPlus size={16} />
+      </button>
+    </div>
+  </div>
+</div>
+
+</div>
+
               ))
             )}
             {showModal && (
