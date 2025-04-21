@@ -1,83 +1,75 @@
-import prisma from "../../libs/prismadb"; // Adjust the path as needed
 import { NextResponse } from "next/server";
+import prisma from "../../libs/prismadb";
 
-export async function POST(request) {
+export async function POST(req) {
+  const body = await req.json();
+  const { userEmail, videoUri, progress, resumeTime } = body;
 
-  try {
-    const body = await request.json();
-    const { userEmail, videoUri } = body;
-
-    // Validate the required fields are provided
-    if (!userEmail || !videoUri) {
-      console.log("Missing userEmail or videoUri");
-      return new NextResponse("Missing userEmail or videoUri", { status: 400 });
-    }
-
-    // Find the user in the database
-    const user = await prisma.user.findUnique({
-      where: { email: userEmail },
-    });
-
-    if (!user) {
-      console.log("User not found");
-      return new NextResponse("User not found", { status: 404 });
-    }
-
-    // Check if the video is already marked as watched for this user
-    const existing = await prisma.watchedVideo.findFirst({
-      where: {
-        userId: user.id,
-        videoUri: videoUri,
-      },
-    });
-
-    if (existing) {
-      return NextResponse.json({ message: "Already marked as watched" });
-    }
-
-    // Create a new watched video record
-    const watched = await prisma.watchedVideo.create({
-      data: {
-        userId: user.id,
-        videoUri: videoUri,
-      },
-    });
-
-    return NextResponse.json({ message: "Marked as watched", watched });
-  } catch (error) {
-    console.error("Error marking video as watched:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+  if (!userEmail || !videoUri) {
+    return new NextResponse("Missing userEmail or videoUri", { status: 400 });
   }
+
+  const user = await prisma.user.findUnique({
+    where: { email: userEmail },
+  });
+
+  if (!user) {
+    return new NextResponse("User not found", { status: 404 });
+  }
+
+  const existing = await prisma.watchedVideo.findFirst({
+    where: {
+      userId: user.id,
+      videoUri,
+    },
+  });
+
+  if (existing) {
+    await prisma.watchedVideo.update({
+      where: { id: existing.id },
+      data: {
+        progress, // ✅ always update to current percent
+        resumeTime, // ✅ always update
+      },
+    });
   
+    return NextResponse.json({ message: "Progress updated" });
+  }
+
+  const watched = await prisma.watchedVideo.create({
+    data: {
+      userId: user.id,
+      videoUri,
+      progress: progress || 0,
+      resumeTime,
+    },
+  });
+
+  return NextResponse.json({ message: "Marked as watched", watched });
 }
 
-export async function DELETE(request) {
-  try {
-    const body = await request.json();
-    const { userEmail, videoUri } = body;
+export async function DELETE(req) {
+  const body = await req.json();
+  const { userEmail, videoUri } = body;
 
-    if (!userEmail || !videoUri) {
-      return new NextResponse("Missing userEmail or videoUri", { status: 400 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: userEmail },
-    });
-
-    if (!user) {
-      return new NextResponse("User not found", { status: 404 });
-    }
-
-    await prisma.watchedVideo.deleteMany({
-      where: {
-        userId: user.id,
-        videoUri: videoUri,
-      },
-    });
-
-    return NextResponse.json({ message: "Marked as unwatched" });
-  } catch (error) {
-    console.error("Error unmarking video:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+  if (!userEmail || !videoUri) {
+    return new NextResponse("Missing userEmail or videoUri", { status: 400 });
   }
+
+  const user = await prisma.user.findUnique({
+    where: { email: userEmail },
+  });
+
+  if (!user) {
+    return new NextResponse("User not found", { status: 404 });
+  }
+
+  await prisma.watchedVideo.deleteMany({
+    where: {
+      userId: user.id,
+      videoUri,
+    },
+  });
+
+  return NextResponse.json({ message: "Marked as unwatched" });
 }

@@ -10,7 +10,12 @@ import { FaPlay, FaEye, FaEyeSlash, FaPlus } from "react-icons/fa";
 
 
 const Page = () => {
-  const [watchedVideos, setWatchedVideos] = useState<string[]>([]);
+  type WatchedVideo = {
+    uri: string;
+    progress: number;
+    resumeTime?: number; // ✅ זה השדה החסר
+  };
+  const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);  
 
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const [player, setPlayer] = useState<Player | null>(null);
@@ -114,13 +119,19 @@ const Page = () => {
         // Set noResults to true if no videos are found on the first page
         setNoMoreVideos(true);
       } else {
-        const newVideos = videosData.map((video: any) => ({
-          uri: video.uri,
-          embedHtml: video.embed.html,
-          name: video.name,
-          description: video.description,
-          thumbnailUri: video.pictures.sizes[5].link,
-        }));
+        const newVideos = videosData.map((video: any) => {
+          const matched = watchedVideos.find((v) => v.uri === video.uri);
+        
+          return {
+            uri: video.uri,
+            embedHtml: video.embed.html,
+            name: video.name,
+            description: video.description,
+            thumbnailUri: video.pictures.sizes[5].link,
+            progress: matched?.progress || 0,
+            resumeTime: matched?.resumeTime || 0, // ✅ זה הקריטי
+          };
+        });
 
         setVideos((prevVideos) => [...prevVideos, ...newVideos]);
 
@@ -135,6 +146,7 @@ const Page = () => {
       return false; // Indicate that no more videos are available due to error
     }
   };
+
 
   const hashtagOptions = [
     "הריון לידה",
@@ -312,54 +324,99 @@ const Page = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchWatchedVideos = async () => {
-      if (!session?.user) return;
-      try {
-        const res = await axios.post("/api/get-watched-videos", {
-          userEmail: session.user.email,
-        });
-        if (res.status === 200) {
-          setWatchedVideos(res.data.watchedVideos); // Array of videoUri strings
+useEffect(() => {
+  const fetchWatchedVideos = async () => {
+    if (!session?.user) return;
+    try {
+      const res = await axios.post("/api/get-watched-videos", {
+        userEmail: session.user.email,
+      });
+      if (res.status === 200) {
+        setWatchedVideos(res.data.watchedVideos); // [{ uri, progress }]
+      }
+    } catch (err) {
+      console.error("Failed to fetch watched videos", err);
+    }
+  };
+
+  fetchWatchedVideos();
+}, [session]);
+
+useEffect(() => {
+  if (selectedVideo && videoContainerRef.current) {
+    const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
+    if (!uri) return;
+
+    const vimeoPlayer = new Player(videoContainerRef.current, {
+      id: Number(uri),
+      width: 640,
+    });
+
+    setPlayer(vimeoPlayer);
+
+    const saveProgress = async () => {
+      const currentTime = await vimeoPlayer.getCurrentTime();
+      const duration = await vimeoPlayer.getDuration();
+      const percent = Math.floor((currentTime / duration) * 100);
+      const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
+      const videoUri = uri ? `/videos/${uri}` : null;
+
+      if (session?.user && videoUri) {
+        try {
+          await axios.post("/api/mark-watched", {
+            userEmail: session.user.email,
+            videoUri,
+            progress: percent,
+            resumeTime: currentTime,
+          });
+
+          setWatchedVideos((prev) => {
+            const existing = prev.find((v) => v.uri === videoUri);
+            if (existing) {
+              return prev.map((v) =>
+                v.uri === videoUri
+                  ? { ...v, progress: percent, resumeTime: currentTime }
+                  : v
+              );
+            } else {
+              return [...prev, { uri: videoUri, progress: percent, resumeTime: currentTime }];
+            }
+          });
+        } catch (err) {
+          console.error("❌ Failed to save progress on pause/unload:", err);
         }
-      } catch (err) {
-        console.error("Failed to fetch watched videos", err);
       }
     };
 
-    fetchWatchedVideos();
-  }, [session]);
-
-  useEffect(() => {
-    if (selectedVideo && videoContainerRef.current) {
+    // Resume from saved time
+    vimeoPlayer.on("loaded", async () => {
       const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
-      if (!uri) return;
+      const videoUri = uri ? `/videos/${uri}` : null;
+      const resumeFrom = watchedVideos.find((v) => v.uri === videoUri)?.resumeTime ?? 0;
 
-      const vimeoPlayer = new Player(videoContainerRef.current, {
-        id: Number(uri),
-        width: 640,
-      });
+      try {
+        if (resumeFrom > 0) {
+          await vimeoPlayer.setCurrentTime(resumeFrom);
+        }
+        await vimeoPlayer.play();
+      } catch (err) {
+        console.error("❌ Failed to resume video:", err);
+      }
+    });
 
-      setPlayer(vimeoPlayer);
+    // Track progress
+    vimeoPlayer.on("timeupdate", saveProgress);
 
-      // Resume from saved time
-      vimeoPlayer.on("loaded", () => {
-        vimeoPlayer.setCurrentTime(resumeTime);
-      });
+    // Save on pause and before tab closes
+    vimeoPlayer.on("pause", saveProgress);
+    window.addEventListener("beforeunload", saveProgress);
 
-      // Update the resume time on pause or timeupdate
-      vimeoPlayer.on("timeupdate", (data) => {
-        setResumeTime(data.seconds);
-      });
-
-      // Optional: auto play
-      vimeoPlayer.play();
-
-      return () => {
-        vimeoPlayer.unload(); // Clean up
-      };
-    }
-  }, [selectedVideo]);
+    return () => {
+      vimeoPlayer.unload();
+      window.removeEventListener("beforeunload", saveProgress);
+    };
+  }
+}, [selectedVideo]);
 
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -617,69 +674,48 @@ const Page = () => {
     </div>
 
     {/* אייקונים בצמוד לתחתית */}
-    <div className="flex justify-between items-center pt-4 mt-4">
-      <button
-        title="נגן"
-        className="transition-transform hover:scale-110 bg-[#2D3142] hover:bg-[#4F5D75] text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
-        onClick={() => openVideo(video.embedHtml)}
-      >
-        <FaPlay size={16} />
-      </button>
+    <div className="flex justify-between items-center pt-4 mt-4 gap-2">
+  {/* כפתור נגן */}
+  <button
+    title="נגן"
+    className="transition-transform hover:scale-110 bg-[#2D3142] hover:bg-[#4F5D75] text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
+    onClick={() => openVideo(video.embedHtml)}
+  >
+    <FaPlay size={16} />
+  </button>
 
-      <button
-        title={watchedVideos.includes(video.uri) ? "הסר צפייה" : "סמן כנצפה"}
-        className={`transition-transform hover:scale-110 ${
-          watchedVideos.includes(video.uri)
-            ? "bg-gray-400 hover:bg-gray-500"
-            : "bg-[#833414] hover:bg-[#A3442D]"
-        } text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center`}
-        onClick={async () => {
-          if (!session || !session.user) {
-            toast.error("Please log in");
-            return;
-          }
+  {/* סטטוס נצפה */}
+  {(() => {
+    const watchedInfo = watchedVideos.find((v) => v.uri === video.uri);
+    const progress = watchedInfo?.progress || 0;
 
-          const alreadyWatched = watchedVideos.includes(video.uri);
+    return (
+      <div
+  className={`text-[11px] text-center px-3 py-1 rounded-full font-semibold shadow whitespace-nowrap ${
+    progress >= 99
+      ? "bg-green-100 text-green-700"
+      : "bg-[#F3E9E8] text-[#833414]"
+  }`}
+>
+  {progress >= 99 ? "✔ נצפה במלואו" : `התקדמות: ${progress}%`}
+</div>
+    );
+  })()}
 
-          try {
-            if (alreadyWatched) {
-              await axios.delete("/api/mark-watched", {
-                data: {
-                  userEmail: session.user.email,
-                  videoUri: video.uri,
-                },
-              });
-              setWatchedVideos((prev) =>
-                prev.filter((uri) => uri !== video.uri),
-              );
-            } else {
-              await axios.post("/api/mark-watched", {
-                userEmail: session.user.email,
-                videoUri: video.uri,
-              });
-              setWatchedVideos((prev) => [...prev, video.uri]);
-            }
-          } catch (err) {
-            console.error(err);
-            toast.error("משהו השתבש");
-          }
-        }}
-      >
-        {watchedVideos.includes(video.uri) ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
-      </button>
+  {/* כפתור מועדפים */}
+  <button
+    title="הוסף למועדפים"
+    className="transition-transform hover:scale-110 bg-[#EF8354] hover:bg-[#D9713C] text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
+    onClick={() => {
+      setSelectedVideoUri(video.uri);
+      openModal();
+      theUserId();
+    }}
+  >
+    <FaPlus size={16} />
+  </button>
+</div>
 
-      <button
-        title="הוסף למועדפים"
-        className="transition-transform hover:scale-110 bg-[#EF8354] hover:bg-[#D9713C] text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
-        onClick={() => {
-          setSelectedVideoUri(video.uri);
-          openModal();
-          theUserId();
-        }}
-      >
-        <FaPlus size={16} />
-      </button>
-    </div>
   </div>
 </div>
 

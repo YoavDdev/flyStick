@@ -1,4 +1,4 @@
-import prisma from "../../libs/prismadb"; // Adjust the path as needed
+import prisma from "../../libs/prismadb";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -20,12 +20,15 @@ export async function POST(request) {
 
     const watched = await prisma.watchedVideo.findMany({
       where: { userId: user.id },
-      select: { videoUri: true },
+      select: { videoUri: true, progress: true, resumeTime: true },
     });
+    const watchedVideos = watched.map((v) => ({
+      uri: v.videoUri,
+      progress: v.progress || 0,
+      resumeTime: v.resumeTime ?? 0, 
+    }));
 
-    const videoUris = watched.map((v) => v.videoUri);
-
-    return NextResponse.json({ watchedVideos: videoUris });
+    return NextResponse.json({ watchedVideos });
   } catch (error) {
     console.error("Error fetching watched videos:", error);
     return new NextResponse("Internal Server Error", { status: 500 });

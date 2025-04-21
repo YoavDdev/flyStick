@@ -11,7 +11,7 @@ const Page = () => {
   const [folderNames, setFolderNames] = useState([]);
   const [newFolderName, setNewFolderName] = useState("");
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false); // Added showForm state
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     fetchFolderNames();
@@ -26,7 +26,12 @@ const Page = () => {
         });
 
         if (response.status === 200) {
-          setFolderNames(response.data.folderNames);
+          let folders = response.data.folderNames;
+          // Add "watched" manually if it's not already there
+          if (!folders.includes("watched")) {
+            folders = ["watched", ...folders];
+          }
+          setFolderNames(folders);
         }
       }
     } catch (error) {
@@ -52,7 +57,7 @@ const Page = () => {
         toast.success("New folder added");
         fetchFolderNames();
         setNewFolderName("");
-        setShowForm(false); // Hide the form after adding a folder
+        setShowForm(false);
       }
     } catch (error) {
       console.error("Error adding new folder:", error);
@@ -62,7 +67,7 @@ const Page = () => {
 
   const handleDeleteFolder = (folderName: any) => {
     const confirmDelete = window.confirm(
-      `Are you sure you want to delete ${folderName}?`,
+      `Are you sure you want to delete ${folderName}?`
     );
 
     if (confirmDelete) {
@@ -94,7 +99,7 @@ const Page = () => {
             <div className="mx-auto max-w-7xl px-8 pb-10">
               <div className="mx-auto max-w-2xl text-center">
                 <h2 className="text-base font-semibold leading-7 text-[#990011]">
-               הספרייה האישית שלך
+                  הספרייה האישית שלך
                 </h2>
                 <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                   {loading
@@ -113,12 +118,10 @@ const Page = () => {
                     <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-[#FCF6F5] xl:aspect-h-8 xl:aspect-w-7">
                       <div className="h-full w-full flex flex-col justify-center items-center text-center">
                         <h3 className="text-2xl font-semibold text-[#EF8354] capitalize mb-2">
-                          {folderName}
+                          {folderName === "watched" ? "נצפו" : folderName}
                         </h3>
-                        <p className="text-sm text-gray-700">
-                        לכניסה
-                        </p>
-                        {folderName.toLowerCase() !== "favorites" && (
+                        <p className="text-sm text-gray-700">לכניסה</p>
+                        {folderName.toLowerCase() !== "favorites" && folderName.toLowerCase() !== "watched" && (
                           <button
                             onClick={(e) => {
                               e.preventDefault();
@@ -135,7 +138,6 @@ const Page = () => {
                 </div>
               ))}
 
-              {/* Placeholder for "Add New Folder" */}
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-[#FCF6F5] xl:aspect-h-8 xl:aspect-w-7">
                 <div className="h-full w-full flex flex-col justify-center  items-center text-center ">
                   {showForm ? (
@@ -182,7 +184,8 @@ const Page = () => {
         ) : (
           <div className="text-center">
             <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-            אנא היכנס כדי להמשיך            </h1>
+              אנא היכנס כדי להמשיך
+            </h1>
             <Link href="/login">
               <span className="text-[#EF8354] text-lg">כניסה</span>
             </Link>

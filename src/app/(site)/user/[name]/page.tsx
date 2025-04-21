@@ -17,7 +17,12 @@ const Page: FC<pageProps> = ({ params }) => {
   const value = params.name; // Extract the value
   const decodedString = decodeURIComponent(value);
 
-  const [watchedVideos, setWatchedVideos] = useState<string[]>([]);
+  type WatchedVideo = {
+    uri: string;
+    progress: number;
+    resumeTime?: number; // ✅ זה השדה החסר
+  };
+  const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);  
 
   const [videos, setVideos] = useState<any[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
@@ -203,15 +208,56 @@ const Page: FC<pageProps> = ({ params }) => {
       setPlayer(vimeoPlayer);
 
       // Resume from saved time
-      vimeoPlayer.on("loaded", () => {
-        vimeoPlayer.setCurrentTime(resumeTime);
+      vimeoPlayer.on("loaded", async () => {
+        const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
+        const videoUri = uri ? `/videos/${uri}` : null;
+        const resumeFrom = watchedVideos.find((v) => v.uri === videoUri)?.resumeTime ?? 0;
+      
+        try {
+          if (resumeFrom > 0) {
+            await vimeoPlayer.setCurrentTime(resumeFrom);
+          }
+          await vimeoPlayer.play();
+        } catch (err) {
+          console.error("❌ Failed to resume video:", err);
+        }
       });
+      
 
       // Update the resume time on pause or timeupdate
-      vimeoPlayer.on("timeupdate", (data) => {
-        setResumeTime(data.seconds);
+      vimeoPlayer.on("timeupdate", async (data) => {
+        const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
+        const videoUri = uri ? `/videos/${uri}` : null;
+        const duration = await vimeoPlayer.getDuration();
+        const percent = Math.floor((data.seconds / duration) * 100);
+      
+        if (session?.user && videoUri) {
+          try {
+            await axios.post("/api/mark-watched", {
+              userEmail: session.user.email,
+              videoUri,
+              progress: percent,
+              resumeTime: data.seconds,
+            });
+      
+            setWatchedVideos((prev) => {
+              const existing = prev.find((v) => v.uri === videoUri);
+              if (existing) {
+                return prev.map((v) =>
+                  v.uri === videoUri
+                    ? { ...v, progress: percent, resumeTime: data.seconds }
+                    : v
+                );
+              } else {
+                return [...prev, { uri: videoUri, progress: percent, resumeTime: data.seconds }];
+              }
+            });            
+          } catch (err) {
+            console.error("❌ Failed to save progress:", err);
+          }
+        }
       });
-
+      
       // Optional: auto play
       vimeoPlayer.play();
 
@@ -357,55 +403,30 @@ const Page: FC<pageProps> = ({ params }) => {
     {/* אייקונים בצמוד לתחתית */}
     <div className="flex justify-between items-center pt-4 mt-4">
       <button
-        title="נגן"
-        className="transition-transform hover:scale-110 bg-[#2D3142] hover:bg-[#4F5D75] text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
-        onClick={() => openVideo(video.embedHtml)}
-      >
-        <FaPlay size={16} />
-      </button>
-
-      <button
-        title={watchedVideos.includes(video.uri) ? "הסר צפייה" : "סמן כנצפה"}
-        className={`transition-transform hover:scale-110 ${
-          watchedVideos.includes(video.uri)
-            ? "bg-gray-400 hover:bg-gray-500"
-            : "bg-[#833414] hover:bg-[#A3442D]"
-        } text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center`}
-        onClick={async () => {
-          if (!session || !session.user) {
-            toast.error("Please log in");
-            return;
-          }
-
-          const alreadyWatched = watchedVideos.includes(video.uri);
-
-          try {
-            if (alreadyWatched) {
-              await axios.delete("/api/mark-watched", {
-                data: {
-                  userEmail: session.user.email,
-                  videoUri: video.uri,
-                },
-              });
-              setWatchedVideos((prev) =>
-                prev.filter((uri) => uri !== video.uri),
-              );
-            } else {
-              await axios.post("/api/mark-watched", {
-                userEmail: session.user.email,
-                videoUri: video.uri,
-              });
-              setWatchedVideos((prev) => [...prev, video.uri]);
-            }
-          } catch (err) {
-            console.error(err);
-            toast.error("משהו השתבש");
-          }
-        }}
-      >
-        {watchedVideos.includes(video.uri) ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
-      </button>
-
+         title="נגן"
+         className="transition-transform hover:scale-110 bg-[#2D3142] hover:bg-[#4F5D75] text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
+         onClick={() => openVideo(video.embedHtml)}
+       >
+         <FaPlay size={16} />
+       </button>
+     
+       {/* סטטוס נצפה */}
+       {(() => {
+         const watchedInfo = watchedVideos.find((v) => v.uri === video.uri);
+         const progress = watchedInfo?.progress || 0;
+     
+         return (
+<div
+  className={`text-[11px] text-center px-3 py-1 rounded-full font-semibold shadow whitespace-nowrap ${
+    progress >= 99
+      ? "bg-green-100 text-green-700"
+      : "bg-[#F3E9E8] text-[#833414]"
+  }`}
+>
+  {progress >= 99 ? "✔ נצפה במלואו" : `התקדמות: ${progress}%`}
+</div>
+         );
+       })()}
       <button
   title="הסר וידאו"
   className="transition-transform hover:scale-110 bg-red-800 hover:bg-red-700 text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
