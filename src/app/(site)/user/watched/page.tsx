@@ -170,11 +170,20 @@ const Page = () => {
   
 
   return (
-    <div className="bg-white min-h-screen text-white pt-20">
-      <div className="container mx-auto p-6">
-        <h1 className="text-4xl font-semibold text-gray-700 mb-4 text-center capitalize">
-          סרטונים שסומנו כנצפו
-        </h1>
+<div className="bg-white min-h-screen text-white pt-20">
+  <div className="container mx-auto p-6">
+    <h1 className="text-4xl font-semibold text-gray-700 mb-4 text-center capitalize">
+      שיעורים שצפית
+    </h1>
+
+    <div className="text-left mb-6">
+      <a
+        href="/user"
+        className="text-sm text-[#EF8354] hover:underline hover:text-[#D9713C] transition-all"
+      >
+       חזרה לספרייה שלי
+      </a>
+    </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {videos.map((video) => (

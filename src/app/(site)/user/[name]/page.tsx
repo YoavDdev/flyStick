@@ -355,6 +355,14 @@ const Page: FC<pageProps> = ({ params }) => {
           <h1 className="text-4xl font-semibold text-gray-700 mb-4 text-center capitalize">
             {decodedString}
           </h1>
+          <div className="text-left mb-6">
+  <Link
+    href="/user"
+    className="text-sm text-[#EF8354] hover:underline hover:text-[#D9713C] transition-all"
+  >
+  חזרה לספרייה שלי
+  </Link>
+</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {videos.map((video, index) => (
               <div

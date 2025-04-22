@@ -15,11 +15,38 @@ import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import DropdownMenu from "./DropdownMenu";
 
+
 const Navbar = () => {
   const [isTransparent, setIsTransparent] = useState(true);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [menuOpen, setMenuopen] = useState(false);
   const { data: session } = useSession();
+  const pathname = usePathname();
+ 
+
+  const pageTitles: Record<string, string> = {
+    "/explore": "חיפוש אישי",
+    "/styles": "טכניקות",
+    "/dashboard": "איזור אישי",
+    "/user": "הספרייה שלי",
+  };
+
+  const isUserFolder = pathname.startsWith("/user/");
+  let pageTitle = pageTitles[pathname] || "";
+
+  if (isUserFolder && pathname !== "/user") {
+    const folderName = decodeURIComponent(pathname.split("/")[2] || "");
+    const folderMap: Record<string, string> = {
+      favorites: "המועדפים שלי",
+      watched: "השיעורים שצפית",
+    };
+    pageTitle = folderMap[folderName] || folderName;
+  }
+
+  // אם לא מצאנו שם עמוד, נ fallback לשם המשתמש
+  if (!pageTitle && session?.user?.name) {
+    pageTitle = session.user.name;
+  }
 
   const currentPath = usePathname();
 
@@ -130,7 +157,7 @@ const Navbar = () => {
               <>
                 <div className="relative inline-block group ml-10">
                   <button className="text-[#EF8354] focus:outline-none capitalize ">
-                    {session.user.name}
+                  {pageTitle}
                     <span
                       className={`${
                         dropdownVisible ? "rotate-180" : "rotate-0"
@@ -179,7 +206,7 @@ const Navbar = () => {
                 <>
                   <div className="relative inline-block group">
                     <button className="text-[#EF8354] focus:outline-none capitalize ">
-                      {session.user.name}
+                    {pageTitle}
                       <span
                         className={`${
                           dropdownVisible ? "rotate-180" : "rotate-0"

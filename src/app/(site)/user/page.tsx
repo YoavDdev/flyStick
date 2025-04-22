@@ -67,7 +67,7 @@ const Page = () => {
 
   const handleDeleteFolder = (folderName: any) => {
     const confirmDelete = window.confirm(
-      `Are you sure you want to delete ${folderName}?`
+      `Are you sure you want to delete ${folderName}?`,
     );
 
     if (confirmDelete) {
@@ -115,31 +115,35 @@ const Page = () => {
               {folderNames.map((folderName: string) => (
                 <div key={folderName}>
                   <Link href={`/user/${folderName}`}>
-                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-[#FCF6F5] xl:aspect-h-8 xl:aspect-w-7">
-                      <div className="h-full w-full flex flex-col justify-center items-center text-center">
-                        <h3 className="text-2xl font-semibold text-[#EF8354] capitalize mb-2">
-                          {folderName === "watched" ? "נצפו" : folderName}
+                    <div className="h-40 sm:h-60 w-full overflow-hidden rounded-lg bg-[#FCF6F5] p-4 sm:p-6 md:p-8 xl:aspect-h-8 xl:aspect-w-7">
+                      <div className="flex flex-col justify-center items-center text-center h-full relative">
+                        <h3 className="text-xl sm:text-2xl font-semibold text-[#EF8354] capitalize mb-2">
+                          {folderName === "watched"
+                            ? "השיעורים שצפית"
+                            : folderName}
                         </h3>
                         <p className="text-sm text-gray-700">לכניסה</p>
-                        {folderName.toLowerCase() !== "favorites" && folderName.toLowerCase() !== "watched" && (
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleDeleteFolder(folderName);
-                            }}
-                            className="bg-red-800 hover:bg-red-700 text-white px-4 py-2 rounded-full focus:outline-none absolute bottom-4 left-4"
-                          >
-                            מחק
-                          </button>
-                        )}
+
+                        {folderName.toLowerCase() !== "favorites" &&
+                          folderName.toLowerCase() !== "watched" && (
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleDeleteFolder(folderName);
+                              }}
+                              className="bg-red-800 hover:bg-red-700 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-full focus:outline-none absolute bottom-2 left-2 sm:bottom-4 sm:left-4 text-sm sm:text-base"
+                            >
+                              מחק
+                            </button>
+                          )}
                       </div>
                     </div>
                   </Link>
                 </div>
               ))}
 
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-[#FCF6F5] xl:aspect-h-8 xl:aspect-w-7">
-                <div className="h-full w-full flex flex-col justify-center  items-center text-center ">
+              <div className="h-40 sm:h-60 w-full overflow-hidden rounded-lg bg-[#FCF6F5] p-4 sm:p-6 md:p-8 xl:aspect-h-8 xl:aspect-w-7">
+                <div className="flex flex-col justify-center items-center text-center h-full">
                   {showForm ? (
                     <form
                       onSubmit={(e) => {
@@ -149,7 +153,7 @@ const Page = () => {
                     >
                       <input
                         type="text"
-                        placeholder="Enter new folder name"
+                        placeholder="שם תיקייה חדשה"
                         value={newFolderName}
                         onChange={(e) => setNewFolderName(e.target.value)}
                         className="p-2 border border-gray-300 rounded-md focus:outline-none"
@@ -172,7 +176,7 @@ const Page = () => {
                   ) : (
                     <button
                       onClick={() => setShowForm(true)}
-                      className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-10 py-8 rounded-full focus:outline-none mt-2 text-5xl"
+                      className="bg-[#EF8354] hover:bg-[#D9713C] text-white px-6 py-4 sm:px-10 sm:py-8 rounded-full focus:outline-none mt-2 text-3xl sm:text-5xl transition-transform transform hover:scale-110 "
                     >
                       +
                     </button>
