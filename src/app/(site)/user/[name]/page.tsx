@@ -53,11 +53,46 @@ const Page: FC<pageProps> = ({ params }) => {
     window.history.pushState({}, "Video", ""); // Push new state when opening video
   };
 
-  const closeVideo = () => {
-    setSelectedVideo(null); // Close the video
-    isVideoOpenRef.current = false; // Reset video open state
-    window.history.pushState({}, ""); // Push an empty state to avoid returning to video
+  const closeVideo = async () => {
+    if (player) {
+      const currentTime = await player.getCurrentTime();
+      const duration = await player.getDuration();
+      const percent = Math.floor((currentTime / duration) * 100);
+      const uri = selectedVideo?.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
+      const videoUri = uri ? `/videos/${uri}` : null;
+  
+      if (session?.user && videoUri) {
+        try {
+          await axios.post("/api/mark-watched", {
+            userEmail: session.user.email,
+            videoUri,
+            progress: percent,
+            resumeTime: currentTime,
+          });
+  
+          setWatchedVideos((prev) => {
+            const existing = prev.find((v) => v.uri === videoUri);
+            if (existing) {
+              return prev.map((v) =>
+                v.uri === videoUri
+                  ? { ...v, progress: percent, resumeTime: currentTime }
+                  : v
+              );
+            } else {
+              return [...prev, { uri: videoUri, progress: percent, resumeTime: currentTime }];
+            }
+          });
+        } catch (err) {
+          console.error("❌ Failed to save on closeVideo:", err);
+        }
+      }
+    }
+  
+    setSelectedVideo(null);
+    isVideoOpenRef.current = false;
+    window.history.pushState({}, "");
   };
+  
 
   useEffect(() => {
     window.addEventListener("popstate", handleBackButton);
@@ -207,56 +242,44 @@ const Page: FC<pageProps> = ({ params }) => {
 
       setPlayer(vimeoPlayer);
 
-      // Resume from saved time
-      vimeoPlayer.on("loaded", async () => {
-        const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
-        const videoUri = uri ? `/videos/${uri}` : null;
-        const resumeFrom = watchedVideos.find((v) => v.uri === videoUri)?.resumeTime ?? 0;
-      
-        try {
-          if (resumeFrom > 0) {
-            await vimeoPlayer.setCurrentTime(resumeFrom);
-          }
-          await vimeoPlayer.play();
-        } catch (err) {
-          console.error("❌ Failed to resume video:", err);
-        }
-      });
-      
+      let lastSaved = 0; // מחוץ ל-vimeoPlayer.on
 
-      // Update the resume time on pause or timeupdate
-      vimeoPlayer.on("timeupdate", async (data) => {
-        const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
-        const videoUri = uri ? `/videos/${uri}` : null;
-        const duration = await vimeoPlayer.getDuration();
-        const percent = Math.floor((data.seconds / duration) * 100);
-      
-        if (session?.user && videoUri) {
-          try {
-            await axios.post("/api/mark-watched", {
-              userEmail: session.user.email,
-              videoUri,
-              progress: percent,
-              resumeTime: data.seconds,
-            });
-      
-            setWatchedVideos((prev) => {
-              const existing = prev.find((v) => v.uri === videoUri);
-              if (existing) {
-                return prev.map((v) =>
-                  v.uri === videoUri
-                    ? { ...v, progress: percent, resumeTime: data.seconds }
-                    : v
-                );
-              } else {
-                return [...prev, { uri: videoUri, progress: percent, resumeTime: data.seconds }];
-              }
-            });            
-          } catch (err) {
-            console.error("❌ Failed to save progress:", err);
-          }
-        }
+vimeoPlayer.on("timeupdate", async (data) => {
+  const now = Date.now();
+  if (now - lastSaved < 5000) return; // רק פעם ב-15 שניות
+  lastSaved = now;
+
+  const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
+  const videoUri = uri ? `/videos/${uri}` : null;
+  const duration = await vimeoPlayer.getDuration();
+  const percent = Math.floor((data.seconds / duration) * 100);
+
+  if (session?.user && videoUri) {
+    try {
+      await axios.post("/api/mark-watched", {
+        userEmail: session.user.email,
+        videoUri,
+        progress: percent,
+        resumeTime: data.seconds,
       });
+
+      setWatchedVideos((prev) => {
+        const existing = prev.find((v) => v.uri === videoUri);
+        if (existing) {
+          return prev.map((v) =>
+            v.uri === videoUri
+              ? { ...v, progress: percent, resumeTime: data.seconds }
+              : v
+          );
+        } else {
+          return [...prev, { uri: videoUri, progress: percent, resumeTime: data.seconds }];
+        }
+      });            
+    } catch (err) {
+      console.error("❌ Failed to save progress:", err);
+    }
+  }
+});
       
       // Optional: auto play
       vimeoPlayer.play();

@@ -9,110 +9,126 @@ import { FaEyeSlash, FaPlay } from "react-icons/fa";
 
 const Page = () => {
   const { data: session } = useSession();
-  const [watchedUris, setWatchedUris] = useState<{ uri: string; progress: number; resumeTime?: number }[]>([]);
+  const [watchedUris, setWatchedUris] = useState<
+    { uri: string; progress: number; resumeTime?: number }[]
+  >([]);
   const [videos, setVideos] = useState<any[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const [player, setPlayer] = useState<Player | null>(null);
 
-    type WatchedVideo = {
-      uri: string;
-      progress: number;
-      resumeTime?: number; // ✅ זה השדה החסר
-    };
-    const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);  
+  type WatchedVideo = {
+    uri: string;
+    progress: number;
+    resumeTime?: number; // ✅ זה השדה החסר
+  };
+  const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);
 
-    useEffect(() => {
-      const fetchWatchedVideos = async () => {
-        if (!session?.user) return;
+  useEffect(() => {
+    const fetchWatchedVideos = async () => {
+      if (!session?.user) return;
+      try {
+        const res = await axios.post("/api/get-watched-videos", {
+          userEmail: session.user.email,
+        });
+        if (res.status === 200) {
+          setWatchedVideos(res.data.watchedVideos); // [{ uri, progress }]
+        }
+      } catch (err) {
+        console.error("Failed to fetch watched videos", err);
+      }
+    };
+
+    fetchWatchedVideos();
+  }, [session]);
+
+  useEffect(() => {
+    if (selectedVideo && videoContainerRef.current) {
+      const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
+      if (!uri) return;
+
+      const vimeoPlayer = new Player(videoContainerRef.current, {
+        id: Number(uri),
+        width: 640,
+      });
+
+      setPlayer(vimeoPlayer);
+
+      // Resume from saved time
+      vimeoPlayer.on("loaded", async () => {
+        const uri = selectedVideo.match(
+          /player\.vimeo\.com\/video\/(\d+)/,
+        )?.[1];
+        const videoUri = uri ? `/videos/${uri}` : null;
+        const resumeFrom =
+          watchedVideos.find((v) => v.uri === videoUri)?.resumeTime ?? 0;
+
         try {
-          const res = await axios.post("/api/get-watched-videos", {
-            userEmail: session.user.email,
-          });
-          if (res.status === 200) {
-            setWatchedVideos(res.data.watchedVideos); // [{ uri, progress }]
+          if (resumeFrom > 0) {
+            await vimeoPlayer.setCurrentTime(resumeFrom);
           }
+          await vimeoPlayer.play();
         } catch (err) {
-          console.error("Failed to fetch watched videos", err);
+          console.error("❌ Failed to resume video:", err);
+        }
+      });
+
+      // Update the resume time on pause or timeupdate
+      let lastSaved = 0; // מחוץ ל-vimeoPlayer.on
+
+      const saveProgress = async (force = false) => {
+        const now = Date.now();
+        if (!force && now - lastSaved < 5000) return; // כל 5 שניות
+        lastSaved = now;
+
+        const currentTime = await vimeoPlayer.getCurrentTime();
+        const duration = await vimeoPlayer.getDuration();
+        const percent = Math.floor((currentTime / duration) * 100);
+        const videoUri = `/videos/${uri}`;
+
+        if (session?.user && videoUri) {
+          try {
+            await axios.post("/api/mark-watched", {
+              userEmail: session.user.email,
+              videoUri,
+              progress: percent,
+              resumeTime: currentTime,
+            });
+
+            setWatchedVideos((prev) => {
+              const existing = prev.find((v) => v.uri === videoUri);
+              if (existing) {
+                return prev.map((v) =>
+                  v.uri === videoUri
+                    ? { ...v, progress: percent, resumeTime: currentTime }
+                    : v,
+                );
+              } else {
+                return [
+                  ...prev,
+                  { uri: videoUri, progress: percent, resumeTime: currentTime },
+                ];
+              }
+            });
+          } catch (err) {
+            console.error("❌ Failed to save progress:", err);
+          }
         }
       };
-    
-      fetchWatchedVideos();
-    }, [session]);
-    
-      useEffect(() => {
-        if (selectedVideo && videoContainerRef.current) {
-          const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
-          if (!uri) return;
-    
-          const vimeoPlayer = new Player(videoContainerRef.current, {
-            id: Number(uri),
-            width: 640,
-          });
-    
-          setPlayer(vimeoPlayer);
-    
-          // Resume from saved time
-          vimeoPlayer.on("loaded", async () => {
-            const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
-            const videoUri = uri ? `/videos/${uri}` : null;
-            const resumeFrom = watchedVideos.find((v) => v.uri === videoUri)?.resumeTime ?? 0;
-          
-            try {
-              if (resumeFrom > 0) {
-                await vimeoPlayer.setCurrentTime(resumeFrom);
-              }
-              await vimeoPlayer.play();
-            } catch (err) {
-              console.error("❌ Failed to resume video:", err);
-            }
-          });
-          
-    
-          // Update the resume time on pause or timeupdate
-          vimeoPlayer.on("timeupdate", async (data) => {
-            const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
-            const videoUri = uri ? `/videos/${uri}` : null;
-            const duration = await vimeoPlayer.getDuration();
-            const percent = Math.floor((data.seconds / duration) * 100);
-          
-            if (session?.user && videoUri) {
-              try {
-                await axios.post("/api/mark-watched", {
-                  userEmail: session.user.email,
-                  videoUri,
-                  progress: percent,
-                  resumeTime: data.seconds,
-                });
-          
-                setWatchedVideos((prev) => {
-                  const existing = prev.find((v) => v.uri === videoUri);
-                  if (existing) {
-                    return prev.map((v) =>
-                      v.uri === videoUri
-                        ? { ...v, progress: percent, resumeTime: data.seconds }
-                        : v
-                    );
-                  } else {
-                    return [...prev, { uri: videoUri, progress: percent, resumeTime: data.seconds }];
-                  }
-                });            
-              } catch (err) {
-                console.error("❌ Failed to save progress:", err);
-              }
-            }
-          });
-          
-          // Optional: auto play
-          vimeoPlayer.play();
-    
-          return () => {
-            vimeoPlayer.unload(); // Clean up
-          };
-        }
-      }, [selectedVideo]);
-    
-  
+
+      vimeoPlayer.on("timeupdate", () => saveProgress());
+      vimeoPlayer.on("pause", () => saveProgress(true));
+      window.addEventListener("beforeunload", () => saveProgress(true));
+
+      // Optional: auto play
+      vimeoPlayer.play();
+
+      return () => {
+        vimeoPlayer.unload(); // Clean up
+      };
+    }
+  }, [selectedVideo]);
+
   const handleUnwatch = async (videoUri: string) => {
     if (!session?.user?.email) return toast.error("You must be logged in");
 
@@ -136,54 +152,55 @@ const Page = () => {
   useEffect(() => {
     const fetchVimeoVideos = async () => {
       if (watchedVideos.length === 0) return;
-  
+
       const accessToken = process.env.VIMEO_TOKEN;
       const headers = {
         Authorization: `Bearer ${accessToken}`,
       };
-  
-      const promises = watchedVideos.map(async ({ uri, progress, resumeTime }) => {
-        const res = await axios.get(`https://api.vimeo.com${uri}`, {
-          headers,
-          params: {
-            fields: "uri,embed.html,name,description,pictures",
-          },
-        });
-  
-        return {
-          uri: res.data.uri,
-          embedHtml: res.data.embed.html,
-          name: res.data.name,
-          description: res.data.description,
-          thumbnailUri: res.data.pictures.sizes[5].link,
-          progress,
-          resumeTime: resumeTime ?? 0, // ✅ קריטי
-        };
-      });
-  
+
+      const promises = watchedVideos.map(
+        async ({ uri, progress, resumeTime }) => {
+          const res = await axios.get(`https://api.vimeo.com${uri}`, {
+            headers,
+            params: {
+              fields: "uri,embed.html,name,description,pictures",
+            },
+          });
+
+          return {
+            uri: res.data.uri,
+            embedHtml: res.data.embed.html,
+            name: res.data.name,
+            description: res.data.description,
+            thumbnailUri: res.data.pictures.sizes[5].link,
+            progress,
+            resumeTime: resumeTime ?? 0, // ✅ קריטי
+          };
+        },
+      );
+
       const fetched = await Promise.all(promises);
       setVideos(fetched);
     };
-  
+
     fetchVimeoVideos();
   }, [watchedVideos]);
-  
 
   return (
-<div className="bg-white min-h-screen text-white pt-20">
-  <div className="container mx-auto p-6">
-    <h1 className="text-4xl font-semibold text-gray-700 mb-4 text-center capitalize">
-      שיעורים שצפית
-    </h1>
+    <div className="bg-white min-h-screen text-white pt-20">
+      <div className="container mx-auto p-6">
+        <h1 className="text-4xl font-semibold text-gray-700 mb-4 text-center capitalize">
+          שיעורים שצפית
+        </h1>
 
-    <div className="text-left mb-6">
-      <a
-        href="/user"
-        className="text-sm text-[#EF8354] hover:underline hover:text-[#D9713C] transition-all"
-      >
-       חזרה לספרייה שלי
-      </a>
-    </div>
+        <div className="text-left mb-6">
+          <a
+            href="/user"
+            className="text-sm text-[#EF8354] hover:underline hover:text-[#D9713C] transition-all"
+          >
+            חזרה לספרייה שלי
+          </a>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {videos.map((video) => (
@@ -227,14 +244,16 @@ const Page = () => {
                     </button>
 
                     <div
-  className={`text-[11px] text-center px-3 py-1 rounded-full font-semibold shadow whitespace-nowrap ${
-    video.progress >= 99
-      ? "bg-green-100 text-green-700"
-      : "bg-[#F3E9E8] text-[#833414]"
-  }`}
->
-  {video.progress >= 99 ? "✔ נצפה במלואו" : `התקדמות: ${video.progress}%`}
-</div>
+                      className={`text-[11px] text-center px-3 py-1 rounded-full font-semibold shadow whitespace-nowrap ${
+                        video.progress >= 99
+                          ? "bg-green-100 text-green-700"
+                          : "bg-[#F3E9E8] text-[#833414]"
+                      }`}
+                    >
+                      {video.progress >= 99
+                        ? "✔ נצפה במלואו"
+                        : `התקדמות: ${video.progress}%`}
+                    </div>
 
                     <button
                       title="הסר סימון כנצפה"
@@ -260,7 +279,43 @@ const Page = () => {
 
           <button
             className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
-            onClick={() => setSelectedVideo(null)}
+            onClick={async () => {
+              if (player) {
+                const currentTime = await player.getCurrentTime();
+                const duration = await player.getDuration();
+                const percent = Math.floor((currentTime / duration) * 100);
+                const uri = selectedVideo?.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
+                const videoUri = uri ? `/videos/${uri}` : null;
+            
+                if (session?.user && videoUri) {
+                  try {
+                    await axios.post("/api/mark-watched", {
+                      userEmail: session.user.email,
+                      videoUri,
+                      progress: percent,
+                      resumeTime: currentTime,
+                    });
+            
+                    setWatchedVideos((prev) => {
+                      const existing = prev.find((v) => v.uri === videoUri);
+                      if (existing) {
+                        return prev.map((v) =>
+                          v.uri === videoUri
+                            ? { ...v, progress: percent, resumeTime: currentTime }
+                            : v
+                        );
+                      } else {
+                        return [...prev, { uri: videoUri, progress: percent, resumeTime: currentTime }];
+                      }
+                    });
+                  } catch (err) {
+                    console.error("❌ Failed to save on close (X):", err);
+                  }
+                }
+              }
+            
+              setSelectedVideo(null);
+            }}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

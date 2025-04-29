@@ -54,12 +54,45 @@ const Page = () => {
     window.history.pushState({}, "Video", ""); // Push new state when opening video
   };
 
-  const closeVideo = () => {
+  const closeVideo = async () => {
+    if (player) {
+      const currentTime = await player.getCurrentTime();
+      const duration = await player.getDuration();
+      const percent = Math.floor((currentTime / duration) * 100);
+      const uri = selectedVideo?.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
+      const videoUri = uri ? `/videos/${uri}` : null;
+  
+      if (session?.user && videoUri) {
+        try {
+          await axios.post("/api/mark-watched", {
+            userEmail: session.user.email,
+            videoUri,
+            progress: percent,
+            resumeTime: currentTime,
+          });
+  
+          setWatchedVideos((prev) => {
+            const existing = prev.find((v) => v.uri === videoUri);
+            if (existing) {
+              return prev.map((v) =>
+                v.uri === videoUri
+                  ? { ...v, progress: percent, resumeTime: currentTime }
+                  : v
+              );
+            } else {
+              return [...prev, { uri: videoUri, progress: percent, resumeTime: currentTime }];
+            }
+          });
+        } catch (err) {
+          console.error("❌ Failed to save on closeVideo:", err);
+        }
+      }
+    }
+  
     setSelectedVideo(null); // Close the video
     isVideoOpenRef.current = false; // Reset video open state
-    window.history.pushState({}, ""); // Push an empty state to avoid returning to video
+    window.history.pushState({}, ""); // Reset history state
   };
-
   useEffect(() => {
     window.addEventListener("popstate", handleBackButton);
 
@@ -354,12 +387,17 @@ useEffect(() => {
 
     setPlayer(vimeoPlayer);
 
+    let lastSaved = 0; // ✅ משתנה עזר חדש
+
     const saveProgress = async () => {
+      const now = Date.now();
+      if (now - lastSaved < 5000) return; // ✅ שמור רק אם עברו 5 שניות
+      lastSaved = now;
+
       const currentTime = await vimeoPlayer.getCurrentTime();
       const duration = await vimeoPlayer.getDuration();
       const percent = Math.floor((currentTime / duration) * 100);
-      const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
-      const videoUri = uri ? `/videos/${uri}` : null;
+      const videoUri = `/videos/${uri}`;
 
       if (session?.user && videoUri) {
         try {
@@ -383,16 +421,14 @@ useEffect(() => {
             }
           });
         } catch (err) {
-          console.error("❌ Failed to save progress on pause/unload:", err);
+          console.error("❌ Failed to save progress:", err);
         }
       }
     };
 
     // Resume from saved time
     vimeoPlayer.on("loaded", async () => {
-      const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
-      const videoUri = uri ? `/videos/${uri}` : null;
-      const resumeFrom = watchedVideos.find((v) => v.uri === videoUri)?.resumeTime ?? 0;
+      const resumeFrom = watchedVideos.find((v) => v.uri === `/videos/${uri}`)?.resumeTime ?? 0;
 
       try {
         if (resumeFrom > 0) {
@@ -404,11 +440,12 @@ useEffect(() => {
       }
     });
 
-    // Track progress
+    // Track progress with throttling
     vimeoPlayer.on("timeupdate", saveProgress);
 
-    // Save on pause and before tab closes
+    // Save on pause immediately
     vimeoPlayer.on("pause", saveProgress);
+
     window.addEventListener("beforeunload", saveProgress);
 
     return () => {
@@ -417,6 +454,7 @@ useEffect(() => {
     };
   }
 }, [selectedVideo]);
+
 
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [loading, setLoading] = useState(true);
