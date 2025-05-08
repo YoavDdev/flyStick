@@ -7,8 +7,6 @@ import { toast } from "react-hot-toast";
 import Link from "next/link";
 import Player from "@vimeo/player";
 import { FaPlay, FaEye, FaEyeSlash, FaPlus } from "react-icons/fa";
-import { useSearchParams } from "next/navigation";
-
 
 
 const Page = () => {
@@ -42,10 +40,6 @@ const Page = () => {
   const [noResults, setNoResults] = useState(false);
   const [noMoreVideos, setNoMoreVideos] = useState<boolean>(false); // State to track if there are no more videos to load
   const isVideoOpenRef = useRef<boolean>(false);
-  const searchParams = useSearchParams();
-  const videoIdParam = searchParams.get("v"); // e.g. "123456789"
-  const videoAutoOpened = useRef(false);
-
 
   const handleBackButton = (event: PopStateEvent) => {
     if (isVideoOpenRef.current) {
@@ -97,8 +91,7 @@ const Page = () => {
   
     setSelectedVideo(null); // Close the video
     isVideoOpenRef.current = false; // Reset video open state
-    window.location.href = "/explore";
-
+    window.history.pushState({}, ""); // Reset history state
   };
   useEffect(() => {
     window.addEventListener("popstate", handleBackButton);
@@ -187,61 +180,6 @@ const Page = () => {
     }
   };
 
-  useEffect(() => {
-    const loadAndPlayVideoById = async () => {
-      if (!videoIdParam) return;
-  
-      // Step 1: Check local videos
-      const localMatch = videos.find((video) => {
-        const id = video.uri.match(/\/videos\/(\d+)/)?.[1];
-        return id === videoIdParam;
-      });
-  
-      if (localMatch && !videoAutoOpened.current) {
-        openVideo(localMatch.embedHtml);
-        setTimeout(() => {
-          document.querySelector(".video-container")?.scrollIntoView({ behavior: "smooth" });
-        }, 400);
-        return;
-      }
-  
-      // Step 2: Not found locally – fetch directly from Vimeo by ID
-      try {
-        const response = await axios.get(`https://api.vimeo.com/videos/${videoIdParam}`, {
-          headers,
-          params: {
-            fields: "uri,embed.html,name,description,pictures",
-          },
-        });
-  
-        const video = response.data;
-  
-        const newVideo = {
-          uri: video.uri,
-          embedHtml: video.embed.html,
-          name: video.name,
-          description: video.description,
-          thumbnailUri: video.pictures.sizes[5].link,
-          progress: 0,
-          resumeTime: 0,
-        };
-  
-        setVideos((prev) => [...prev, newVideo]); // Optional: keep in cache
-        openVideo(newVideo.embedHtml);
-  
-        setTimeout(() => {
-          document.querySelector(".video-container")?.scrollIntoView({ behavior: "smooth" });
-        }, 400);
-      } catch (err) {
-        toast.error("❌ לא נמצא סרטון עם מזהה זה");
-        console.error("Failed to fetch video by ID", err);
-      }
-    };
-  
-    loadAndPlayVideoById();
-  }, [videoIdParam, videos]);
-  
-  
 
   const hashtagOptions = [
     "הריון לידה",
@@ -748,21 +686,6 @@ useEffect(() => {
       }`}
     />
   </div>
-  {subscriptionId === "Admin" && (
-  <button
-    onClick={() => {
-      const videoId = video.uri.match(/\/videos\/(\d+)/)?.[1];
-      if (!videoId) return;
-
-      const link = `https://www.studioboazonline.com/explore?v=${videoId}`;
-      navigator.clipboard.writeText(link);
-      toast.success("📋 הקישור הועתק");
-    }}
-    className="text-xs text-blue-600 hover:underline mt-1"
-  >
-    📋 העתק קישור ישיר
-  </button>
-)}
 
   {/* טקסט ותיאור */}
   <div className="flex-1 flex flex-col justify-between p-4">
