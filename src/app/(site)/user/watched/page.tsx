@@ -6,6 +6,8 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import Player from "@vimeo/player";
 import { FaEyeSlash, FaPlay } from "react-icons/fa";
+import VideoProgressBadge from "@/app/components/VideoProgressBadge";
+
 
 const Page = () => {
   const { data: session } = useSession();
@@ -163,7 +165,7 @@ const Page = () => {
           const res = await axios.get(`https://api.vimeo.com${uri}`, {
             headers,
             params: {
-              fields: "uri,embed.html,name,description,pictures",
+              fields: "uri,embed.html,name,description,pictures,duration",
             },
           });
 
@@ -175,6 +177,7 @@ const Page = () => {
             thumbnailUri: res.data.pictures.sizes[5].link,
             progress,
             resumeTime: resumeTime ?? 0, // ✅ קריטי
+            duration: res.data.duration,
           };
         },
       );
@@ -224,6 +227,9 @@ const Page = () => {
                   <div>
                     <h2 className="text-lg font-semibold mb-2 text-black">
                       {video.name}
+                      <p className="text-sm text-gray-500">
+  משך: {Math.ceil(video.duration / 60)} דקות
+</p>
                     </h2>
                     {video.description && (
                       <p className="text-sm mb-2 text-gray-600">
@@ -235,34 +241,25 @@ const Page = () => {
                   </div>
 
                   <div className="flex justify-between items-center pt-4 mt-4 gap-2">
-                    <button
-                      title="נגן"
-                      className="transition-transform hover:scale-110 bg-[#2D3142] hover:bg-[#4F5D75] text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
-                      onClick={() => setSelectedVideo(video.embedHtml)}
-                    >
-                      <FaPlay size={16} />
-                    </button>
+  <button
+    title="נגן"
+    className="transition-transform hover:scale-110 bg-[#2D3142] hover:bg-[#4F5D75] text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
+    onClick={() => setSelectedVideo(video.embedHtml)}
+  >
+    <FaPlay size={16} />
+  </button>
 
-                    <div
-                      className={`text-[11px] text-center px-3 py-1 rounded-full font-semibold shadow whitespace-nowrap ${
-                        video.progress >= 99
-                          ? "bg-green-100 text-green-700"
-                          : "bg-[#F3E9E8] text-[#833414]"
-                      }`}
-                    >
-                      {video.progress >= 99
-                        ? "✔ נצפה במלואו"
-                        : `התקדמות: ${video.progress}%`}
-                    </div>
+  <VideoProgressBadge progress={video.progress} />
 
-                    <button
-                      title="הסר סימון כנצפה"
-                      className="transition-transform hover:scale-110 bg-gray-500 hover:bg-gray-600 text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
-                      onClick={() => handleUnwatch(video.uri)}
-                    >
-                      <FaEyeSlash size={16} />
-                    </button>
-                  </div>
+  <button
+    title="הסר סימון כנצפה"
+    className="transition-transform hover:scale-110 bg-gray-500 hover:bg-gray-600 text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
+    onClick={() => handleUnwatch(video.uri)}
+  >
+    <FaEyeSlash size={16} />
+  </button>
+</div>
+
                 </div>
               </div>
             </div>

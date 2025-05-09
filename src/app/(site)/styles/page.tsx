@@ -50,17 +50,21 @@ const Page = () => {
       const response: AxiosResponse = await axios.get(apiUrl, { headers });
       const data = response.data;
       const foldersData = data.data;
-
-      const folders = foldersData.map((folder: any) => ({
-        name: folder.name,
-        uri: folder.uri, // Include the folder URI
-      }));
-
+  
+      const folders = foldersData
+        .filter((folder: any) => folder.name.trim().toLowerCase() !== "my library")
+        .map((folder: any) => ({
+          name: folder.name,
+          uri: folder.uri,
+        }));
+  
       setFolders(folders);
     } catch (error) {
       console.error("Error:", error);
     }
   };
+  
+  
 
   // Function to get the first sentence of the folder description
   const getFirstSentence = (description: string) => {

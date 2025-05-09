@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast";
 import Link from "next/link";
 import Player from "@vimeo/player";
 import { FaPlay, FaEye, FaEyeSlash, FaPlus } from "react-icons/fa";
+import VideoProgressBadge from "@/app/components/VideoProgressBadge";
 
 
 const Page = () => {
@@ -40,6 +41,10 @@ const Page = () => {
   const [noResults, setNoResults] = useState(false);
   const [noMoreVideos, setNoMoreVideos] = useState<boolean>(false); // State to track if there are no more videos to load
   const isVideoOpenRef = useRef<boolean>(false);
+  const [videoToOpenFromUrl, setVideoToOpenFromUrl] = useState<string | null>(null);
+  const openedFromLink = useRef(false);
+
+
 
   const handleBackButton = (event: PopStateEvent) => {
     if (isVideoOpenRef.current) {
@@ -91,6 +96,9 @@ const Page = () => {
   
     setSelectedVideo(null); // Close the video
     isVideoOpenRef.current = false; // Reset video open state
+    if (openedFromLink.current) {
+      window.location.reload(); // רענון רגיל
+    }
     window.history.pushState({}, ""); // Reset history state
   };
   useEffect(() => {
@@ -100,6 +108,18 @@ const Page = () => {
       window.removeEventListener("popstate", handleBackButton);
     };
   }, []); // No dependencies needed here
+
+  // ✅ Extract ?video=name from URL and trigger search
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const videoParam = url.searchParams.get("video");
+  
+    if (videoParam) {
+      setSearchQuery(videoParam);
+      setDescriptionQuery(videoParam);
+      setVideoToOpenFromUrl(videoParam); // 💥 נשמר לשימוש מאוחר
+    }
+  }, []);
 
   useEffect(() => {
     // Reset the videos and currentPage when a new search is performed
@@ -141,7 +161,7 @@ const Page = () => {
         params: {
           page,
           query: descriptionQuery,
-          fields: "uri,embed.html,name,description,pictures",
+          fields: "uri,embed.html,name,description,pictures,duration",
         },
       });
 
@@ -163,6 +183,7 @@ const Page = () => {
             thumbnailUri: video.pictures.sizes[5].link,
             progress: matched?.progress || 0,
             resumeTime: matched?.resumeTime || 0, // ✅ זה הקריטי
+            duration: video.duration,
           };
         });
 
@@ -508,6 +529,28 @@ useEffect(() => {
     fetchUserData();
   }, [session]);
 
+
+  // ✅ After videos are loaded, auto-open matching video if ?video= was used
+  useEffect(() => {
+    if (!videoToOpenFromUrl || videos.length === 0) return;
+  
+    const match = videos.find((v) =>
+      v.name.toLowerCase().includes(videoToOpenFromUrl.toLowerCase())
+    );
+  
+    if (match) {
+      // ✅ השהייה קטנה מבטיחה שה־DOM מוכן
+      setTimeout(() => {
+        openVideo(match.embedHtml);
+        openedFromLink.current = true;
+        setVideoToOpenFromUrl(null);
+        window.history.replaceState({}, "", "/explore");
+      }, 300);
+      
+    }
+  }, [videos, videoToOpenFromUrl]);
+  
+
   if (loading) {
     // Display loading message while checking the subscription status
     return (
@@ -534,11 +577,7 @@ useEffect(() => {
               <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                 גלו את השיעור הבא שלכם
               </p>
-              <div className="text-center mt-2 sm:hidden">
-                <p className="text-gray-500">
-                  הקלידו נושא אחד או יותר או בחרו מתפריט ה-#
-                </p>
-              </div>
+              
             </div>
           </div>
           <form
@@ -693,6 +732,9 @@ useEffect(() => {
       <h2 className="text-lg font-semibold mb-2 text-black">{video.name}</h2>
       {video.description && (
   <>
+  <p className="text-sm text-gray-500">
+  משך: {Math.ceil(video.duration / 60)} דקות
+</p>
     <p className="text-sm mb-2 text-gray-600">
       {expandedDescriptions[index] || video.description.length <= 100
         ? video.description
@@ -728,15 +770,8 @@ useEffect(() => {
     const progress = watchedInfo?.progress || 0;
 
     return (
-      <div
-  className={`text-[11px] text-center px-3 py-1 rounded-full font-semibold shadow whitespace-nowrap ${
-    progress >= 99
-      ? "bg-green-100 text-green-700"
-      : "bg-[#F3E9E8] text-[#833414]"
-  }`}
->
-  {progress >= 99 ? "✔ נצפה במלואו" : `התקדמות: ${progress}%`}
-</div>
+      <VideoProgressBadge progress={progress} />
+
     );
   })()}
 

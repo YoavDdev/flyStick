@@ -6,6 +6,8 @@ import { toast } from "react-hot-toast";
 import Link from "next/link";
 import Player from "@vimeo/player";
 import { FaPlay, FaEye, FaEyeSlash, FaPlus } from "react-icons/fa";
+import VideoProgressBadge from "@/app/components/VideoProgressBadge";
+
 
 interface pageProps {
   params: { name: string };
@@ -240,7 +242,7 @@ const Page: FC<pageProps> = ({ params }) => {
           page,
           query: descriptionQuery,
           per_page: 50, // Max per request
-          fields: "uri,embed.html,name,description,pictures",
+          fields: "uri,embed.html,name,description,pictures,duration",
         },
       });
   
@@ -261,6 +263,7 @@ const Page: FC<pageProps> = ({ params }) => {
           thumbnailUri: video.pictures.sizes[5].link,
           progress: watched?.progress || 0,
           resumeTime: watched?.resumeTime || 0,
+          duration: video.duration,
         };
       });
   
@@ -828,6 +831,9 @@ vimeoPlayer.on("timeupdate", async (data) => {
       <h2 className="text-lg font-semibold mb-2 text-black">{video.name}</h2>
       {video.description && (
   <>
+  <p className="text-sm text-gray-500">
+  משך: {Math.ceil(video.duration / 60)} דקות
+</p>
     <p className="text-sm mb-2 text-gray-600">
       {expandedDescriptions[index] || video.description.length <= 100
         ? video.description
@@ -862,15 +868,7 @@ vimeoPlayer.on("timeupdate", async (data) => {
           const progress = watchedInfo?.progress || 0;
       
           return (
-<div
-  className={`text-[11px] text-center px-3 py-1 rounded-full font-semibold shadow whitespace-nowrap ${
-    progress >= 99
-      ? "bg-green-100 text-green-700"
-      : "bg-[#F3E9E8] text-[#833414]"
-  }`}
->
-  {progress >= 99 ? "✔ נצפה במלואו" : `התקדמות: ${progress}%`}
-</div>
+<VideoProgressBadge progress={progress} />
           );
         })()}
       
