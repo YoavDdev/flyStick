@@ -545,7 +545,7 @@ useEffect(() => {
         openedFromLink.current = true;
         setVideoToOpenFromUrl(null);
         window.history.replaceState({}, "", "/explore");
-      }, 300);
+      }, 1000);
       
     }
   }, [videos, videoToOpenFromUrl]);
