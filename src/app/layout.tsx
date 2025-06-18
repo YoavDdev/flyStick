@@ -9,7 +9,7 @@ const rubik = Rubik({ subsets: ["latin", "hebrew"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.studioboazonline.com/"),
-  title: "Boaz Nahaisi's Studio",
+  title: "Studio Boaz Online",
   description:
     "בואו לצלול לשפע עצום של שיעורים ותרגילים שפותחו כדי להעשיר ולפתח את החיבור בין הגוף לנפש שלכם ולשדרג את מצבו התפקודי עם אימונים וטכניקות ברמות קושי מגוונות.",
   keywords: ["studioboazonline"],
