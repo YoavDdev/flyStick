@@ -49,8 +49,9 @@ export async function POST(req) {
 }
 
 export async function DELETE(req) {
-  const body = await req.json();
-  const { userEmail, videoUri } = body;
+  const { searchParams } = new URL(req.url);
+  const userEmail = searchParams.get('userEmail');
+  const videoUri = searchParams.get('videoUri');
 
   if (!userEmail || !videoUri) {
     return new NextResponse("Missing userEmail or videoUri", { status: 400 });

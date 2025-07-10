@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Rubik } from "next/font/google";
-import { Footer, Navbar } from "./components";
+import { Footer, WabiSabiNavbar, WabiSabiFooter } from "./components";
 import Provider from "./context/AuthContext";
 import ToasterContext from "./context/ToasterContext";
 
@@ -43,9 +43,9 @@ export default function RootLayout({
       <body className={rubik.className}>
         <Provider>
           <ToasterContext />
-          <Navbar />
+          <WabiSabiNavbar />
           {children}
-          {showFooter && <Footer />}
+          {showFooter && <WabiSabiFooter />}
         </Provider>
       </body>
     </html>

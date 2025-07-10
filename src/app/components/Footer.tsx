@@ -54,17 +54,17 @@ const Footer = () => {
     ],
   };
   return (
-    <footer className="bg-white" aria-labelledby="footer-heading">
+    <footer className="bg-[#F7F3EB]" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">
         Footer
       </h2>
-      <div className="mx-auto max-w-7xl px-6 pb-8   lg:px-8 ">
-        <div className=" border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24 lg:flex lg:items-center lg:justify-between">
-          <div>
-            <h3 className="text-sm font-semibold leading-6 text-gray-900">
+      <div className="mx-auto max-w-7xl px-6 pb-8 lg:px-8">
+        <div className="border-t border-[#D5C4B7]/30 pt-8 sm:mt-16 lg:mt-20 lg:flex lg:items-center lg:justify-between">
+          <div className="text-right">
+            <h3 className="text-sm font-semibold leading-6 text-[#2D3142]">
               הירשמו לניוזלטר שלנו
             </h3>
-            <p className="mt-2 text-sm leading-6 text-gray-600">
+            <p className="mt-2 text-sm leading-6 text-[#3D3D3D]/80">
               עדכון ארועים, חדשות, שיעורים חדשים העולים לאתר ישלחו לתיבת הדואר
               שלכם.
             </p>
@@ -72,49 +72,54 @@ const Footer = () => {
           <NewsletterSignUpForm />
         </div>
 
-        <div className="mt-8 border-t border-gray-900/10 pt-8 md:flex md:items-center md:justify-between">
-          <div className="flex  md:order-2">
-            {navigation.social.map((item) => (
+        <div className="mt-8 border-t border-[#D5C4B7]/30 pt-8 md:flex md:items-center md:justify-between">
+          <div className="flex space-x-4 rtl:space-x-reverse justify-end md:order-2">
+            {navigation.social.map((item, index) => (
               <a
                 key={item.name}
                 href={item.href}
-                className="text-gray-400 hover:text-gray-500"
+                className="bg-[#E5DFD0]/70 hover:bg-[#D5C4B7]/70 p-2 rounded-full shadow-sm hover:shadow-md transition-all duration-300"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <span className="sr-only">{item.name}</span>
-                <item.icon className="h-6 w-6" aria-hidden="true" />
+                <item.icon className="h-5 w-5 text-[#B56B4A]" aria-hidden="true" />
               </a>
             ))}
           </div>
 
-          <div className="mt-8 text-xs leading-5 text-gray-500 md:order-1 md:mt-0">
-            <p>
-              &copy; 2024 סטודיו אונליין של בועז נחייסי, בע&quot;מ. כל הזכויות
+          <div className="mt-8 text-xs leading-5 text-[#3D3D3D]/70 md:order-1 md:mt-0 text-right">
+            <p className="mb-2">
+              &copy; {new Date().getFullYear()} סטודיו אונליין של בועז נחייסי, בע&quot;מ. כל הזכויות
               שמורות.
             </p>
-            <p>
-              <Link className="text-gray-400 hover:text-gray-500" href="/terms">
+            <p className="flex flex-wrap gap-2 justify-end">
+              <Link className="text-[#B56B4A]/80 hover:text-[#B56B4A] transition-colors duration-300" href="/terms">
                 תקנון אתר
               </Link>
 
-              {" | "}
+              <span className="text-[#8E9A7C]/70">|</span>
 
               <Link
-                className="text-gray-400 hover:text-gray-500"
+                className="text-[#B56B4A]/80 hover:text-[#B56B4A] transition-colors duration-300"
                 href="/privacyPolicy"
               >
                 מדיניות פרטיות
               </Link>
-              {" | "}
+              
+              <span className="text-[#8E9A7C]/70">|</span>
 
               <Link
-                className="text-gray-400 hover:text-gray-500"
+                className="text-[#B56B4A]/80 hover:text-[#B56B4A] transition-colors duration-300"
                 href="/accessibility"
               >
                 הצהרת נגישות
               </Link>
-              {" | "}
+              
+              <span className="text-[#8E9A7C]/70">|</span>
+              
               <Link
-                className="text-gray-400 hover:text-gray-500"
+                className="text-[#B56B4A]/80 hover:text-[#B56B4A] transition-colors duration-300"
                 href="/navigation"
               >
                 המדריך לסטודיו

@@ -8,16 +8,17 @@ const TermsAndConditions = () => {
         <div className="container mx-auto text-center lg:text-left xl:px-12">
           <div className="grid items-center lg:grid-cols-1">
             <div className="mb-12 lg:mb-0">
-              <div className="relative z-[1] block rounded-lg px-6 py-12 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] backdrop-blur-[30px] dark:shadow-black/20 md:px-12 bg-[#FCF6F5] text-right">
-                <h2 className="mb-12 text-3xl font-bold">
+              <div className="relative z-[1] block rounded-2xl px-6 py-12 shadow-md md:px-12 bg-[#F7F3EB] border border-[#D5C4B7] text-right transition-all duration-300 hover:shadow-lg">
+                <h2 className="mb-6 text-3xl font-bold text-[#5C4B3E]">
                   תקנון אתר - סטודיו אונליין של בועז נחייסי
                 </h2>
-                <p className="text-lg text-gray-700 mb-8">
+                <div className="w-28 h-1 bg-[#B8A99C] rounded-full mb-8 mr-1"></div>
+                <p className="text-lg text-[#5C4B3E] mb-8">
                   תאריך עדכון אחרון: 21/08/2024
                 </p>
 
-                <p className="text-lg text-gray-700 mb-8">
-                  <strong>1. כללי</strong>
+                <p className="text-lg text-[#5C4B3E] mb-8">
+                  <strong className="text-[#7D6E61]">1. כללי</strong>
                   <br />
                   1.1. ברוכים הבאים לאתר &quot;סטודיו אונליין של בועז נחייסי&quot; (להלן:
                     &quot;<a href='https://www.studioboazonline.com/'>https://www.studioboazonline.com/</a>&quot;).
@@ -27,8 +28,8 @@ const TermsAndConditions = () => {
                   לתנאים אלו.
                 </p>
 
-                <p className="text-lg text-gray-700 mb-8">
-                  <strong>2. שימוש באתר</strong>
+                <p className="text-lg text-[#5C4B3E] mb-8">
+                  <strong className="text-[#7D6E61]">2. שימוש באתר</strong>
                   <br />
                   2.1. האתר מספק מידע ושירותים בתחומים שונים הקשורים לתחום
                   [לדוגמה: פעילות גופנית, פילאטיס וכדומה].
@@ -37,8 +38,8 @@ const TermsAndConditions = () => {
                   החלים במדינת ישראל.
                 </p>
 
-                <p className="text-lg text-gray-700 mb-8">
-                  <strong>3. רכישת שירותים ומוצרים</strong>
+                <p className="text-lg text-[#5C4B3E] mb-8">
+                  <strong className="text-[#7D6E61]">3. רכישת שירותים ומוצרים</strong>
                   <br />
                   3.1. האתר מאפשר למשתמש לרכוש שירותים ומוצרים שונים, כפי שמפורט
                   באתר.
@@ -47,8 +48,8 @@ const TermsAndConditions = () => {
                   הנרכש.
                 </p>
 
-                <p className="text-lg text-gray-700 mb-8">
-                  <strong>4. זכויות יוצרים וקניין רוחני</strong>
+                <p className="text-lg text-[#5C4B3E] mb-8">
+                  <strong className="text-[#7D6E61]">4. זכויות יוצרים וקניין רוחני</strong>
                   <br />
                   4.1. כל התכנים המופיעים באתר, כולל טקסטים, תמונות, גרפיקה,
                   לוגואים, סרטונים וכו&apos;, מוגנים בזכויות יוצרים השייכות לחברה או
@@ -59,8 +60,8 @@ const TermsAndConditions = () => {
                   זכויות קניין רוחני אחרות הקיימות באתר.
                 </p>
 
-                <p className="text-lg text-gray-700 mb-8">
-                  <strong>5. פרטיות</strong>
+                <p className="text-lg text-[#5C4B3E] mb-8">
+                  <strong className="text-[#7D6E61]">5. פרטיות</strong>
                   <br />
                   5.1. החברה מכבדת את פרטיות המשתמשים ופועלת בהתאם להוראות חוק
                   הגנת הפרטיות.
@@ -68,7 +69,7 @@ const TermsAndConditions = () => {
                   5.2. מידע נוסף על ניהול הפרטיות והשימוש בנתוני המשתמש ניתן
                   למצוא{" "}
                   <Link
-                    className="text-black hover:text-gray-500"
+                    className="text-[#8B7D6F] hover:text-[#5C4B3E] transition-all duration-300 underline decoration-dotted"
                     href="/privacyPolicy"
                   >
                     מדיניות פרטיות
@@ -76,8 +77,8 @@ const TermsAndConditions = () => {
                   .
                 </p>
 
-                <p className="text-lg text-gray-700 mb-8">
-                  <strong>6. אחריות</strong>
+                <p className="text-lg text-[#5C4B3E] mb-8">
+                  <strong className="text-[#7D6E61]">6. אחריות</strong>
                   <br />
                   6.1. החברה עושה כל מאמץ לשמור על תקינות ואיכות האתר והשירותים
                   הניתנים בו, אך אינה מתחייבת לכך שהשירותים יהיו זמינים בכל עת,
@@ -89,8 +90,8 @@ const TermsAndConditions = () => {
                   6.3. המשתמש מסכים ומאשר כי כל פעילות גופנית או אחרת המתבצעת על סמך מידע או תוכן מהאתר היא על אחריותו בלבד, והחברה אינה נושאת באחריות לכל נזק גופני, בריאותי או כל נזק אחר שייגרם כתוצאה מהשימוש באתר.
                 </p>
 
-                <p className="text-lg text-gray-700 mb-8">
-                  <strong>7. שינויים בתקנון</strong>
+                <p className="text-lg text-[#5C4B3E] mb-8">
+                  <strong className="text-[#7D6E61]">7. שינויים בתקנון</strong>
                   <br />
                   7.1. החברה שומרת לעצמה את הזכות לשנות תקנון זה בכל עת. כל
                   שינוי ייכנס לתוקף מיידי עם פרסומו באתר.
@@ -99,15 +100,15 @@ const TermsAndConditions = () => {
                   לשינויים אלה.
                 </p>
 
-                <p className="text-lg text-gray-700 mb-8">
-                  <strong>8. יצירת קשר</strong>
+                <p className="text-lg text-[#5C4B3E] mb-8">
+                  <strong className="text-[#7D6E61]">8. יצירת קשר</strong>
                   <br />
                   8.1. בכל שאלה או בקשה, ניתן לפנות לחברה בדוא&quot;ל
                   info@studioboazonline.com או בטלפון 052-706-1212.
                 </p>
 
-                <p className="text-lg text-gray-700">
-                  <strong>9. סמכות שיפוט</strong>
+                <p className="text-lg text-[#5C4B3E]">
+                  <strong className="text-[#7D6E61]">9. סמכות שיפוט</strong>
                   <br />
                   9.1. תקנון זה והתקנון לשימוש באתר כפופים לדיני מדינת ישראל.
                   <br />

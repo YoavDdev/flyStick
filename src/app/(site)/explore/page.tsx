@@ -6,15 +6,18 @@ import { useSession, signOut } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
 import Player from "@vimeo/player";
-import { FaPlay, FaEye, FaEyeSlash, FaPlus } from "react-icons/fa";
+import { FaPlay, FaEye, FaEyeSlash, FaPlus, FaSearch } from "react-icons/fa";
 import VideoProgressBadge from "@/app/components/VideoProgressBadge";
-
+import VideoPlayer from "@/app/components/VideoPlayer";
+import PlaylistModal from "@/app/components/PlaylistModal";
+import SearchBar from "@/app/components/SearchBar";
+import VideoCard from "@/app/components/VideoCard";
 
 const Page = () => {
   type WatchedVideo = {
     uri: string;
     progress: number;
-    resumeTime?: number; // ✅ זה השדה החסר
+    resumeTime?: number; // 
   };
   const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);  
 
@@ -25,13 +28,13 @@ const Page = () => {
   const [videos, setVideos] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [descriptionQuery, setDescriptionQuery] = useState<string>("");
-  const [selectedVideo, setSelectedVideo] = useState<string | null>(null); // Track the selected video URI
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [selectedVideoUri, setSelectedVideoUri] = useState<string>(""); // Track the selected video URI
   const [selectedVideoData, setSelectedVideoData] = useState<any | null>(null); // Track the selected video data
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showHashtagDropdown, setShowHashtagDropdown] = useState(false);
   const { data: session } = useSession();
   const [showModal, setShowModal] = useState(false);
-  const [selectedVideoUri, setSelectedVideoUri] = useState<string>("");
   const [showForm, setShowForm] = useState(false);
   const [playlistName, setPlaylistName] = useState("");
   const [folderNames, setFolderNames] = useState([]);
@@ -53,8 +56,23 @@ const Page = () => {
     }
   };
 
-  const openVideo = (embedHtml: string) => {
+  const openVideo = (embedHtml: string, videoUri: string) => {
+    // Find if this video has been watched before and has a resumeTime
+    const watchedVideo = watchedVideos.find(v => {
+      // Extract video ID from both URIs for comparison
+      const watchedVideoId = v.uri.split('/').pop();
+      const currentVideoId = videoUri.split('/').pop();
+      return watchedVideoId === currentVideoId;
+    });
+    
+    if (watchedVideo && watchedVideo.resumeTime) {
+      setResumeTime(watchedVideo.resumeTime);
+    } else {
+      setResumeTime(0); // Reset resume time if no previous watch history
+    }
+    
     setSelectedVideo(embedHtml);
+    setSelectedVideoUri(videoUri);
     isVideoOpenRef.current = true; // Set video open state
     window.history.pushState({}, "Video", ""); // Push new state when opening video
   };
@@ -257,6 +275,7 @@ const Page = () => {
     "תודעה",
     "אימון קיר",
   ];
+
   const handleHashtagClick = (hashtag: string) => {
     setSearchQuery((prevQuery) => {
       // Check if the selected hashtag is already in the search query
@@ -376,6 +395,17 @@ const Page = () => {
       setShowForm(false);
       closeModal();
     }
+  };
+  
+  // Create playlist function for the PlaylistModal component
+  const createPlaylist = (playlistName: string) => {
+    if (playlistName.trim() === "") {
+      toast.error("Please enter a valid playlist name");
+      return;
+    }
+    
+    addToFavorites(selectedVideoUri, playlistName);
+    closeModal();
   };
 
 useEffect(() => {
@@ -541,7 +571,7 @@ useEffect(() => {
     if (match) {
       // ✅ השהייה קטנה מבטיחה שה־DOM מוכן
       setTimeout(() => {
-        openVideo(match.embedHtml);
+        openVideo(match.embedHtml, `/videos/${videoToOpenFromUrl}`);
         openedFromLink.current = true;
         setVideoToOpenFromUrl(null);
         window.history.replaceState({}, "", "/explore");
@@ -552,339 +582,106 @@ useEffect(() => {
   
 
   if (loading) {
-    // Display loading message while checking the subscription status
+    // Display loading spinner with Wabi-Sabi style background
     return (
-      <div className="text-center pt-28">
-        <h1 className="text-4xl font-semibold text-gray-700 mb-4">טעינה...</h1>
+      <div className="flex justify-center items-center min-h-screen bg-[#F7F3EB]">
+        <div className="flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-[#D5C4B7] border-t-[#B8A99C] rounded-full animate-spin"></div>
+          <p className="mt-4 text-[#3D3D3D] font-medium">טעינה...</p>
+        </div>
       </div>
     );
   }
 
-  if (
+  // Check if user is a subscriber or admin for VideoPlayer component
+  const isSubscriber = 
     subscriptionId === "Admin" ||
     subscriptionStatus === "ACTIVE" ||
-    subscriptionStatus === "PENDING_CANCELLATION"
-  ) {
-    // Render content for users with an active subscription
+    subscriptionStatus === "PENDING_CANCELLATION";
+    
+  // Render content for all users
     return (
-      <div className="bg-white min-h-screen pt-20">
+      <div className="bg-[#F7F3EB] min-h-screen pt-20">
         <div className="container mx-auto p-6">
           <div className="mx-auto max-w-7xl px-8 pb-10">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-base font-semibold leading-7 text-[#990011] no-wrap">
+              <h2 className="text-base font-semibold leading-7 text-[#EF8354] no-wrap">
                 המסע שלך והצרכים שלך בהתאמה אישית
               </h2>
-              <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              <p className="mt-2 text-3xl font-bold tracking-tight text-[#2D3142] sm:text-4xl">
                 גלו את השיעור הבא שלכם
               </p>
               
             </div>
+            
+           
           </div>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSearch(e);
-            }}
-            className="mb-8"
-            style={{ direction: "ltr" }}
-          >
-            <div className="flex items-center relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="חיפוש"
-                className="w-full p-3 rounded-l-xl bg-white text-black focus:outline-none border-slate-500 border-2 focus:ring-0"
-              />
 
-              <button
-                type="submit"
-                className="bg-slate-500 hover:bg-slate-700 p-3 rounded-r-xl focus:outline-none border-slate-500 border-2"
-              >
-                <span role="img" aria-label="Search icon">
-                  🔍
-                </span>
-              </button>
+           {/* Search Bar with Wabi-Sabi styling */}
+           <SearchBar 
+              onSearch={(query) => {
+                setSearchQuery(query);
+                handleSearch({ preventDefault: () => {} } as React.FormEvent);
+              }}
+              hashtags={hashtagOptions}
+              onHashtagClick={(hashtag) => {
+                setSearchQuery(`# ${hashtag}`);
+                handleSearch({ preventDefault: () => {} } as React.FormEvent);
+              }}
+            />
+          {/* The old search form has been removed and replaced with the SearchBar component above */}
 
-              <button
-                className="bg-slate-600 hover:bg-slate-700 w-10 h-10 sm:w-12 sm:h-12 rounded-full ml-2 focus:outline-none focus:ring-4 focus:ring-slate-300 transition duration-200 ease-in-out transform hover:scale-110 flex items-center justify-center text-white"
-                onClick={() => setSearchQuery("")}
-                aria-label="Clear search query"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-5 h-5 sm:w-6 sm:h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-
-              <button
-                className="bg-slate-600 hover:bg-slate-700 w-10 h-10 sm:w-12 sm:h-12 rounded-full ml-2 focus:outline-none focus:ring-4 focus:ring-slate-300 transition duration-200 ease-in-out transform hover:scale-110 flex items-center justify-center text-white"
-                onClick={toggleHashtagDropdown}
-                aria-label="Toggle hashtag dropdown"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-5 h-5 sm:w-6 sm:h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 3h14M5 9h14M5 15h14M5 21h14"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {showHashtagDropdown && (
-              <div className="dropdown relative top-full left-0 mt-1 bg-[#FCF6F5] border border-gray-300 shadow-lg rounded-lg z-10 text-black hashtag-container">
-                <p className="text-center text-gray-500 mt-1 text-sm sm:text-base">
-                  .בחרו נושא אחד או יותר לחוויה מותאמת אישית
-                </p>
-
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2 sm:gap-4 p-2 max-h-60 overflow-y-auto">
-                  {hashtagOptions.map((hashtag, index) => (
-                    <div
-                      key={index}
-                      className={`px-2 py-1 sm:px-4 sm:py-2 cursor-pointer rounded-md ${
-                        searchQuery.includes(hashtag)
-                          ? "bg-slate-700 text-white"
-                          : "bg-[#FCF6F5]"
-                      } hover:bg-slate-500`}
-                      onClick={() => handleHashtagClick(hashtag)}
-                    >
-                      <span
-                        className="block overflow-hidden text-ellipsis whitespace-nowrap"
-                        dir="rtl"
-                      >
-                        {hashtag}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <div className="text-center mt-2 text-gray-400 text-xs">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mx-auto"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
-            )}
-          </form>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {noResults ? (
-              <p className="text-center text-gray-500 mt-8">
-                <span className="font-bold text-red-600">Oops!</span> 🤷‍♂️ לא
-                נמצאו סרטונים עבור הנושא{" "}
-                <span className="font-bold">&quot;{searchQuery}&quot;</span> .
-                נסה להשתמש בכמות קטנה יותר של נושאים לתוצאות טובות יותר!{" "}
-              </p>
+              <div className="col-span-full text-center py-10 px-6 bg-[#F0E9DF] rounded-xl shadow-sm border border-[#D5C4B7] mt-8">
+                <p className="text-[#2D3142] text-lg">
+                  <span className="font-bold text-[#EF8354]">אופס!</span> 🤷‍♂️ לא
+                  נמצאו סרטונים עבור הנושא{" "}
+                  <span className="font-bold">&quot;{searchQuery}&quot;</span> .
+                  נסה להשתמש בכמות קטנה יותר של נושאים לתוצאות טובות יותר!{" "}
+                </p>
+              </div>
             ) : (
               videos
                 .filter((video) => !video.name.startsWith("[PRV]"))
                 .map((video, index) => (
-                  <div
-                    key={video.uri}
-                    className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
-                  >
-<div className="flex flex-col h-full">
-  {/* תמונה */}
-  <div
-    className="aspect-w-16 aspect-h-9 cursor-pointer"
-    onClick={() => openVideo(video.embedHtml)}
-  >
-    <img
-      src={video.thumbnailUri}
-      alt="Video Thumbnail"
-      className={`object-cover w-full h-full ${
-        watchedVideos.includes(video.uri) ? "grayscale opacity-70" : ""
-      }`}
-    />
-  </div>
-
-  {/* טקסט ותיאור */}
-  <div className="flex-1 flex flex-col justify-between p-4">
-    <div>
-      <h2 className="text-lg font-semibold mb-2 text-black">{video.name}</h2>
-      {video.description && (
-  <>
-  <p className="text-sm text-gray-500">
-  משך: {Math.ceil(video.duration / 60)} דקות
-</p>
-    <p className="text-sm mb-2 text-gray-600">
-      {expandedDescriptions[index] || video.description.length <= 100
-        ? video.description
-        : video.description.split(" ").slice(0, 10).join(" ") + " ..."}
-    </p>
-
-    {video.description.length > 100 && (
-      <button
-        className="text-blue-500 hover:underline focus:outline-none"
-        onClick={toggleDescription(index)}
-      >
-        {expandedDescriptions[index] ? "צמצם/י" : "קרא/י עוד"}
-      </button>
-    )}
-  </>
-)}
-    </div>
-
-    {/* אייקונים בצמוד לתחתית */}
-    <div className="flex justify-between items-center pt-4 mt-4 gap-2">
-  {/* כפתור נגן */}
-  <button
-    title="נגן"
-    className="transition-transform hover:scale-110 bg-[#2D3142] hover:bg-[#4F5D75] text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
-    onClick={() => openVideo(video.embedHtml)}
-  >
-    <FaPlay size={16} />
-  </button>
-
-  {/* סטטוס נצפה */}
-  {(() => {
-    const watchedInfo = watchedVideos.find((v) => v.uri === video.uri);
-    const progress = watchedInfo?.progress || 0;
-
-    return (
-      <VideoProgressBadge progress={progress} />
-
-    );
-  })()}
-
-  {/* כפתור מועדפים */}
-  <button
-    title="הוסף למועדפים"
-    className="transition-transform hover:scale-110 bg-[#EF8354] hover:bg-[#D9713C] text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
-    onClick={() => {
-      setSelectedVideoUri(video.uri);
-      openModal();
-      theUserId();
-    }}
-  >
-    <FaPlus size={16} />
-  </button>
-</div>
-
-  </div>
-</div>
-
+                  <div key={video.uri} className="transform hover:scale-105 transition-transform duration-300 hover:shadow-lg">
+                    <VideoCard
+                      video={video}
+                      watchedVideos={watchedVideos}
+                      isExpanded={expandedDescriptions[index]}
+                      onToggleDescription={() => toggleDescription(index)()}
+                      onPlayVideo={(embedHtml) => openVideo(embedHtml || video.embedHtml, video.uri)}
+                      onAddToFavorites={(videoUri) => {
+                        setSelectedVideoUri(videoUri);
+                        openModal();
+                        theUserId();
+                      }}
+                    />
                   </div>
                 ))
             )}
 
             {showModal && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="w-96 p-4 rounded-lg shadow-lg bg-white text-black relative">
-                  <button
-                    className="absolute top-4 left-4 text-white text-xl cursor-pointer bg-red-500 p-2 rounded-full hover:bg-red-600 transition-all duration-300"
-                    onClick={closeModal} // Close the video player
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                  <h2 className="text-2xl mb-4 font-semibold">
-                    שמור את הסרטון ל...
-                  </h2>
-                  <ul className="space-y-3 capitalize font-semibold pt-6">
-                    {folderNames.map((folderName) => (
-                      <li
-                        key={folderName}
-                        className="flex items-center justify-between"
-                      >
-                        <span className="text-lg">{folderName}</span>
-                        <button
-                          className="ml-2 px-4 py-2 rounded-md bg-[#2D3142] hover:bg-[#4F5D75] text-white  focus:outline-none font-normal"
-                          onClick={() => {
-                            addToFavorites(selectedVideoUri, folderName);
-                            closeModal(); // Close the modal after addToFavorites
-                          }}
-                        >
-                          הוסף לתיקייה
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-4">
-                    {showForm ? null : (
-                      <button
-                        className="text-white py-2 px-4 rounded-md bg-[#EF8354] hover:bg-[#D9713C] focus:outline-none"
-                        onClick={openForm}
-                      >
-                        צור רשימת חדשה
-                      </button>
-                    )}
-                  </div>
-                  {showForm && (
-                    <form onSubmit={handleSubmit} className="mt-4">
-                      <label className="block mb-2">
-                        <span className="text-lg font-semibold">שם:</span>
-                        <input
-                          type="text"
-                          value={playlistName}
-                          onChange={handlePlaylistNameChange}
-                          className="w-full rounded-md bg-gray-100 text-black py-1 px-2 focus:outline-none"
-                          placeholder="הכנס שם"
-                        />
-                      </label>
-                      <div className="mt-2">
-                        <button
-                          className="text-white py-2 px-4 rounded-md bg-[#EF8354] hover:bg-[#D9713C] focus:outline-none"
-                          type="submit"
-                        >
-                          צור
-                        </button>
-                      </div>
-                    </form>
-                  )}
-                </div>
-              </div>
+              <PlaylistModal
+                isOpen={showModal}
+                onClose={closeModal}
+                folderNames={folderNames}
+                selectedVideoUri={selectedVideoUri}
+                onAddToFavorites={addToFavorites}
+                onCreatePlaylist={createPlaylist}
+              />
             )}
           </div>
-          <div className="mt-8">
+          <div className="mt-10 flex justify-center">
             {noMoreVideos && (
-              <p className="text-center text-gray-500 mt-8">
+              <p className="text-center text-[#2D3142] py-4 px-8 bg-[#F0E9DF] rounded-lg shadow-sm border border-[#D5C4B7]">
                 אין עוד סרטונים לטעון.
               </p>
             )}
             {!noMoreVideos && (
               <button
-                className="bg-[#2D3142] hover:bg-[#4F5D75] text-white px-6 py-4 rounded-md focus:outline-none"
+                className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-8 py-4 rounded-lg focus:outline-none shadow-md transition-all duration-300 hover:shadow-lg font-medium"
                 onClick={loadMore}
               >
                 טען עוד
@@ -893,53 +690,17 @@ useEffect(() => {
           </div>
         </div>
         {selectedVideo && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
-            <div
-              className="video-container w-full max-w-4xl aspect-video"
-              ref={videoContainerRef}
-            />
-
-            <button
-              className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
-              onClick={closeVideo}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
+          <VideoPlayer
+            videoUri={selectedVideoUri}
+            embedHtml={selectedVideo}
+            onClose={closeVideo}
+            initialResumeTime={resumeTime}
+            isSubscriber={isSubscriber}
+            isAdmin={(session?.user as any)?.isAdmin}
+          />
         )}
       </div>
     );
-  } else {
-    // Render content for users without an active subscription
-    return (
-      <div className="text-center mt-28">
-        <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-          המנוי שלך אינו פעיל.
-        </h1>
-        <div className="mt-10 flex items-center justify-center">
-          <a
-            href="/#Pricing"
-            className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            הירשם כאן
-          </a>
-        </div>
-      </div>
-    );
-  }
 };
 
 export default Page;

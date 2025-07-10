@@ -5,10 +5,80 @@ import axios, { AxiosResponse } from "axios";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
-import Player from "@vimeo/player";
-import { FaTrash , FaPlay, FaEye, FaEyeSlash } from "react-icons/fa";
-import VideoProgressBadge from "@/app/components/VideoProgressBadge";
+// Removed direct Player import as we're using VideoPlayer component
+import { FaTrash, FaPlay, FaEye, FaEyeSlash, FaArrowRight } from "react-icons/fa";
+import { IoTime } from "react-icons/io5";
+import NewVideoProgressBadge from "@/app/components/NewVideoProgressBadge";
+import VideoPlayer from "@/app/components/VideoPlayer";
+import VideoCard from "@/app/components/VideoCard";
+import PlaylistModal from "@/app/components/PlaylistModal";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
+// Animation variants for Wabi-Sabi style
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      when: "beforeChildren"
+    }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 12,
+      ease: [0.25, 0.1, 0.25, 1.0] as [number, number, number, number]
+    }
+  },
+  hover: {
+    y: -5,
+    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+    transition: {
+      type: "spring",
+      stiffness: 400,
+      damping: 10
+    }
+  },
+  tap: { scale: 0.98 }
+};
+
+const modalVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.3 }
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.2 }
+  }
+};
+
+const modalContentVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 25
+    }
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.9,
+    transition: { duration: 0.2 }
+  }
+};
 
 interface pageProps {
   params: { name: string };
@@ -21,21 +91,22 @@ const Page: FC<pageProps> = ({ params }) => {
   type WatchedVideo = {
     uri: string;
     progress: number;
-    resumeTime?: number; // ✅ זה השדה החסר
+    resumeTime?: number;
   };
   const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);  
 
   const [videos, setVideos] = useState<any[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [selectedVideoUri, setSelectedVideoUri] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showLoading, setShowLoading] = useState(true); // Separate state for minimum loading duration
   const [selectedVideoData, setSelectedVideoData] = useState<any | null>(null);
   const [folderUrls, setFolderUrls] = useState<string[]>([]);
   const { data: session } = useSession();
   const [displayEmptyMessage, setDisplayEmptyMessage] = useState(false);
   const isVideoOpenRef = useRef<boolean>(false);
-
   const videoContainerRef = useRef<HTMLDivElement>(null);
-  const [player, setPlayer] = useState<Player | null>(null);
+
   const [resumeTime, setResumeTime] = useState<number>(0);
   const [expandedDescriptions, setExpandedDescriptions] = useState<boolean[]>(
     videos.map(() => false),
@@ -48,47 +119,28 @@ const Page: FC<pageProps> = ({ params }) => {
     }
   };
 
-  const openVideo = (embedHtml: string) => {
+  const openVideo = (embedHtml: string, videoUri: string) => {
+    // Find if this video has been watched before and has a resumeTime
+    const watchedVideo = watchedVideos.find(v => {
+      // Extract video ID from both URIs for comparison
+      const watchedVideoId = v.uri.split('/').pop();
+      const currentVideoId = videoUri.split('/').pop();
+      return watchedVideoId === currentVideoId;
+    });
+    
+    if (watchedVideo && watchedVideo.resumeTime) {
+      setResumeTime(watchedVideo.resumeTime);
+    } else {
+      setResumeTime(0); // Reset resume time if no previous watch history
+    }
+    
     setSelectedVideo(embedHtml);
-    isVideoOpenRef.current = true; // Set video open state
-    window.history.pushState({}, "Video", ""); // Push new state when opening video
+    setSelectedVideoUri(videoUri);
+    isVideoOpenRef.current = true;
+    window.history.pushState({}, "Video", "");
   };
 
-  const closeVideo = async () => {
-    if (player) {
-      const currentTime = await player.getCurrentTime();
-      const duration = await player.getDuration();
-      const percent = Math.floor((currentTime / duration) * 100);
-      const uri = selectedVideo?.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
-      const videoUri = uri ? `/videos/${uri}` : null;
-  
-      if (session?.user && videoUri) {
-        try {
-          await axios.post("/api/mark-watched", {
-            userEmail: session.user.email,
-            videoUri,
-            progress: percent,
-            resumeTime: currentTime,
-          });
-  
-          setWatchedVideos((prev) => {
-            const existing = prev.find((v) => v.uri === videoUri);
-            if (existing) {
-              return prev.map((v) =>
-                v.uri === videoUri
-                  ? { ...v, progress: percent, resumeTime: currentTime }
-                  : v
-              );
-            } else {
-              return [...prev, { uri: videoUri, progress: percent, resumeTime: currentTime }];
-            }
-          });
-        } catch (err) {
-          console.error("❌ Failed to save on closeVideo:", err);
-        }
-      }
-    }
-  
+  const closeVideo = () => {
     setSelectedVideo(null);
     isVideoOpenRef.current = false;
     window.history.pushState({}, "");
@@ -108,6 +160,11 @@ const Page: FC<pageProps> = ({ params }) => {
     if (session && session.user) {
       const folderName = decodeURIComponent(params.name);
 
+      // Ensure loading animation shows for at least 4 seconds
+      const minLoadingTimer = setTimeout(() => {
+        setShowLoading(false);
+      }, 4000);
+
       axios
         .post("/api/urls-video", {
           userEmail: session.user.email,
@@ -120,13 +177,15 @@ const Page: FC<pageProps> = ({ params }) => {
           }
         })
         .catch((error) => {
-          console.error("Error fetching folder URLs:", error);
+          toast.error("שגיאה בטעינת הסרטונים");
         })
         .finally(() => {
           setLoading(false);
-          // Set a timeout to display the empty message after 2 seconds
+          // Set a timeout to display the empty message after 4 seconds
           setTimeout(() => setDisplayEmptyMessage(true), 4000);
         });
+        
+      return () => clearTimeout(minLoadingTimer);
     }
   }, [session, params.name]);
 
@@ -180,12 +239,25 @@ const Page: FC<pageProps> = ({ params }) => {
     useState<boolean>(false);
 
     const toggleDescription = (index: number) => () => {
-      setExpandedDescriptions((prevExpanded) => {
-        const newExpanded = [...prevExpanded];
-        newExpanded[index] = !newExpanded[index];
-        return newExpanded;
-      });
+      const newExpandedDescriptions = [...expandedDescriptions];
+      newExpandedDescriptions[index] = !newExpandedDescriptions[index];
+      setExpandedDescriptions(newExpandedDescriptions);
     };
+  
+  // Function to get video progress for the NewVideoProgressBadge
+  const getVideoProgress = (uri: string): number => {
+    // Extract video ID from URI if it's in the format like "/videos/123456789"
+    const videoId = uri.match(/\/videos\/([0-9]+)/);
+    const videoUri = videoId ? `/videos/${videoId[1]}` : uri;
+    
+    // Find the watched video by URI
+    const watchedVideo = watchedVideos.find(v => {
+      // Compare either direct match or ID match
+      return v.uri === videoUri || v.uri === uri;
+    });
+    
+    return watchedVideo ? watchedVideo.progress : 0;
+  };
 
   const removeVideo = async (videoUri: any) => {
     try {
@@ -234,64 +306,10 @@ const Page: FC<pageProps> = ({ params }) => {
   }, [session]);
 
   useEffect(() => {
-    if (selectedVideo && videoContainerRef.current) {
-      const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
-      if (!uri) return;
-
-      const vimeoPlayer = new Player(videoContainerRef.current, {
-        id: Number(uri),
-        width: 640,
-      });
-
-      setPlayer(vimeoPlayer);
-
-      let lastSaved = 0; // מחוץ ל-vimeoPlayer.on
-
-vimeoPlayer.on("timeupdate", async (data) => {
-  const now = Date.now();
-  if (now - lastSaved < 5000) return; // רק פעם ב-15 שניות
-  lastSaved = now;
-
-  const uri = selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
-  const videoUri = uri ? `/videos/${uri}` : null;
-  const duration = await vimeoPlayer.getDuration();
-  const percent = Math.floor((data.seconds / duration) * 100);
-
-  if (session?.user && videoUri) {
-    try {
-      await axios.post("/api/mark-watched", {
-        userEmail: session.user.email,
-        videoUri,
-        progress: percent,
-        resumeTime: data.seconds,
-      });
-
-      setWatchedVideos((prev) => {
-        const existing = prev.find((v) => v.uri === videoUri);
-        if (existing) {
-          return prev.map((v) =>
-            v.uri === videoUri
-              ? { ...v, progress: percent, resumeTime: data.seconds }
-              : v
-          );
-        } else {
-          return [...prev, { uri: videoUri, progress: percent, resumeTime: data.seconds }];
-        }
-      });            
-    } catch (err) {
-      console.error("❌ Failed to save progress:", err);
-    }
-  }
-});
-      
-      // Optional: auto play
-      vimeoPlayer.play();
-
-      return () => {
-        vimeoPlayer.unload(); // Clean up
-      };
-    }
+    // This effect is now handled by the VideoPlayer component
   }, [selectedVideo]);
+  
+  // The toggleDescription function is already defined elsewhere in the file
 
   
 
@@ -351,20 +369,114 @@ vimeoPlayer.on("timeupdate", async (data) => {
   if (loading2) {
     // Display loading message while fetching videos
     return (
-      <div className="text-center pt-28 h-screen">
-        <h1 className="text-4xl font-semibold text-gray-700 mb-4">טעינה...</h1>
-      </div>
+      <motion.div 
+        className="bg-[#F7F3EB] min-h-screen text-[#2D3142] pt-20 pb-12"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
+        <div className="container mx-auto px-4 sm:px-6 relative">
+          {/* Decorative elements for Wabi-Sabi style */}
+          <div className="absolute -top-10 right-10 w-32 h-32 bg-[#D5C4B7] opacity-20 rounded-full blur-3xl"></div>
+          <div className="absolute top-40 left-10 w-40 h-40 bg-[#B8A99C] opacity-10 rounded-full blur-3xl"></div>
+          
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="relative w-24 h-24">
+              <motion.div 
+                className="absolute inset-0 bg-[#D5C4B7] rounded-full opacity-30"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <motion.div 
+                className="absolute inset-2 bg-[#B8A99C] rounded-full opacity-50"
+                animate={{ scale: [1, 1.15, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+              />
+              <motion.div 
+                className="absolute inset-4 bg-[#D9713C] rounded-full opacity-70"
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+              />
+              <motion.div 
+                className="absolute inset-0 w-full h-full flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                <span className="text-white font-medium">טוען</span>
+              </motion.div>
+            </div>
+            <motion.p 
+              className="text-[#3D3D3D] mt-6 max-w-md"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+            >
+              טוען את הסרטונים...
+            </motion.p>
+          </div>
+        </div>
+      </motion.div>
     );
   }
 
   // Check if the videos array is empty
   if (videos.length === 0 && !loading && displayEmptyMessage) {
     return (
-      <div className="text-center mt-28 h-screen">
-        <h1 className="text-4xl font-semibold text-gray-700 mb-4 capitalize">
-          {decodedString} folder is empty
-        </h1>
-      </div>
+      <motion.div 
+        className="bg-[#F7F3EB] min-h-screen text-[#2D3142] pt-20 pb-12"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
+        <div className="container mx-auto px-4 sm:px-6 relative">
+          {/* Decorative elements for Wabi-Sabi style */}
+          <div className="absolute -top-10 right-10 w-32 h-32 bg-[#D5C4B7] opacity-20 rounded-full blur-3xl"></div>
+          <div className="absolute top-40 left-10 w-40 h-40 bg-[#B8A99C] opacity-10 rounded-full blur-3xl"></div>
+          
+          <motion.div 
+            className="relative z-10 mb-10 text-right"
+            variants={itemVariants}
+          >
+            <h1 className="text-4xl font-bold text-[#2D3142] mb-4 text-center capitalize">
+              {decodedString}
+            </h1>
+            
+            <motion.div 
+              className="flex justify-end mb-6"
+              variants={itemVariants}
+            >
+              <motion.div
+                whileHover={{ x: -5 }}
+                whileTap={{ scale: 0.98 }}
+              >
+            <Link 
+              href="/user" 
+              className="text-[#2D3142] bg-[#D5C4B7]/50 hover:bg-[#D5C4B7] px-4 py-2 rounded-md transition-colors duration-300 flex items-center gap-2 shadow-sm"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              <span>חזרה לסגנונות</span>
+            </Link>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+          
+          <motion.div 
+            className="col-span-full flex flex-col items-center justify-center py-20 text-center"
+            variants={itemVariants}
+          >
+            <div className="w-20 h-20 bg-[#D5C4B7] rounded-full flex items-center justify-center mb-4">
+              <IoTime size={32} className="text-[#2D3142]" />
+            </div>
+            <h3 className="text-xl font-medium text-[#2D3142] mb-2 capitalize">
+              {decodedString} התיקייה ריקה
+            </h3>
+            <p className="text-[#3D3D3D] max-w-md">אין סרטונים בתיקייה זו כרגע</p>
+          </motion.div>
+        </div>
+      </motion.div>
     );
   }
 
@@ -376,129 +488,171 @@ vimeoPlayer.on("timeupdate", async (data) => {
     // Render content for users with an active subscription
 
     return (
-      <div className="bg-white min-h-screen text-white pt-20">
-        <div className="container mx-auto p-6">
-          <h1 className="text-4xl font-semibold text-gray-700 mb-4 text-center capitalize">
-            {decodedString}
-          </h1>
-          <div className="text-left mb-6">
-  <Link
-    href="/user"
-    className="text-sm text-[#EF8354] hover:underline hover:text-[#D9713C] transition-all"
-  >
-  חזרה לספרייה שלי
-  </Link>
-</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {videos.map((video, index) => (
-              <div
-                key={video.uri}
-                className="bg-[#FCF6F5] rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition-transform"
-              >
-                  <div className="flex flex-col h-full">
-  {/* תמונה */}
-  <div
-    className="aspect-w-16 aspect-h-9 cursor-pointer"
-    onClick={() => openVideo(video.embedHtml)}
-  >
-    <img
-      src={video.thumbnailUri}
-      alt="Video Thumbnail"
-      className={`object-cover w-full h-full ${
-        watchedVideos.includes(video.uri) ? "grayscale opacity-70" : ""
-      }`}
-    />
-  </div>
-
-  {/* טקסט ותיאור */}
-  <div className="flex-1 flex flex-col justify-between p-4">
-    <div>
-      <h2 className="text-lg font-semibold mb-2 text-black">{video.name}</h2>
-      {video.description && (
-  <>
- <p className="text-sm text-gray-500">
-  משך: {Math.ceil(video.duration / 60)} דקות
-</p>
-    <p className="text-sm mb-2 text-gray-600">
-      {expandedDescriptions[index] || video.description.length <= 100
-        ? video.description
-        : video.description.split(" ").slice(0, 10).join(" ") + " ..."}
-    </p>
-
-    {video.description.length > 100 && (
-      <button
-        className="text-blue-500 hover:underline focus:outline-none"
-        onClick={toggleDescription(index)}
+      <motion.div 
+        className="bg-[#F7F3EB] min-h-screen text-[#2D3142] pt-20 pb-12"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
       >
-        {expandedDescriptions[index] ? "צמצם/י" : "קרא/י עוד"}
-      </button>
-    )}
-  </>
-)}
-    </div>
-
-    {/* אייקונים בצמוד לתחתית */}
-    <div className="flex justify-between items-center pt-4 mt-4">
-      <button
-         title="נגן"
-         className="transition-transform hover:scale-110 bg-[#2D3142] hover:bg-[#4F5D75] text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
-         onClick={() => openVideo(video.embedHtml)}
-       >
-         <FaPlay size={16} />
-       </button>
-     
-       {/* סטטוס נצפה */}
-       {(() => {
-         const watchedInfo = watchedVideos.find((v) => v.uri === video.uri);
-         const progress = watchedInfo?.progress || 0;
-     
-         return (
-<VideoProgressBadge progress={progress} />
-         );
-       })()}
-      <button
-  title="הסר וידאו"
-  className="transition-transform hover:scale-110 bg-red-800 hover:bg-red-700 text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center"
-  onClick={() => removeVideo(video.uri)}
->
-  <FaTrash size={16} />
-</button>
-    </div>
-  </div>
-</div>
-              </div>
-            ))}
-          </div>
-        </div>
-        {selectedVideo && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex items-center justify-center">
-            <div
-              className="video-container w-full max-w-4xl aspect-video"
-              ref={videoContainerRef}
-            />
-
-            <button
-              className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
-              onClick={closeVideo}
+        <div className="container mx-auto px-4 sm:px-6 relative">
+          {/* Decorative elements for Wabi-Sabi style */}
+          <div className="absolute -top-10 right-10 w-32 h-32 bg-[#D5C4B7] opacity-20 rounded-full blur-3xl"></div>
+          <div className="absolute top-40 left-10 w-40 h-40 bg-[#B8A99C] opacity-10 rounded-full blur-3xl"></div>
+          
+          {/* Page header with Wabi-Sabi styling */}
+          <motion.div 
+            className="relative z-10 mb-10 text-right"
+            variants={itemVariants}
+          >
+            <h1 className="text-4xl font-bold text-[#2D3142] mb-4 text-center capitalize">
+              {decodedString}
+            </h1>
+            
+            <motion.div 
+              className="flex justify-end mb-6"
+              variants={itemVariants}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+              <motion.div
+                whileHover={{ x: -5 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
+                <Link
+                  href="/user"
+                  className="flex items-center gap-2 text-[#D9713C] hover:text-[#EF8354] transition-all duration-300 bg-white bg-opacity-50 px-4 py-2 rounded-full shadow-sm"
+                >
+                  <span>חזרה לספרייה שלי</span>
+                  <FaArrowRight size={14} />
+                </Link>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+
+          {/* Video grid with Wabi-Sabi styling */}
+          {(loading || showLoading) ? (
+            // Wabi-Sabi style loading animation
+            <motion.div 
+              className="flex flex-col items-center justify-center py-20 text-center"
+              variants={itemVariants}
+            >
+              <div className="relative w-24 h-24">
+                <motion.div 
+                  className="absolute inset-0 bg-[#D5C4B7] rounded-full opacity-30"
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 />
-              </svg>
-            </button>
-          </div>
+                <motion.div 
+                  className="absolute inset-2 bg-[#B8A99C] rounded-full opacity-50"
+                  animate={{ scale: [1, 1.15, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+                />
+                <motion.div 
+                  className="absolute inset-4 bg-[#D9713C] rounded-full opacity-70"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+                />
+                <motion.div 
+                  className="absolute inset-0 w-full h-full flex items-center justify-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <span className="text-white font-medium">טוען</span>
+                </motion.div>
+              </div>
+              <motion.p 
+                className="text-[#3D3D3D] mt-6 max-w-md"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+              >
+                טוען את הסרטונים...
+              </motion.p>
+            </motion.div>
+          ) : (
+            <motion.div 
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
+              variants={containerVariants}
+            >
+              {videos.map((video, index) => (
+                <motion.div
+                  key={video.uri}
+                  className="relative bg-white rounded-2xl overflow-hidden shadow-md"
+                  variants={itemVariants}
+                  whileHover="hover"
+                  whileTap="tap"
+                >
+                  <div className="relative aspect-video overflow-hidden rounded-t-2xl">
+                    {/* Paper texture overlay for Wabi-Sabi style */}
+                    <div className="absolute inset-0 bg-[url('/paper-texture.png')] opacity-10 mix-blend-overlay z-10"></div>
+                    
+                    <img 
+                      src={video.thumbnailUri || '/placeholder-thumbnail.jpg'} 
+                      alt={video.name} 
+                      className="w-full h-full object-cover"
+                    />
+                    
+                    {/* Progress badge positioned at upper right */}
+                    <div className="absolute top-3 right-3 z-10">
+                      <NewVideoProgressBadge 
+                        progress={Math.min(Math.round(getVideoProgress(video.uri) || 0), 100)}
+                        size="md"
+                        variant="fancy"
+                        showLabel={true}
+                      />
+                    </div>
+                    
+                    {/* Play button overlay */}
+                    <div 
+                      className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer z-10"
+                      onClick={() => openVideo(video.embedHtml, video.uri)}
+                    >
+                      <motion.div
+                        className="bg-[#D9713C] text-white p-4 rounded-full"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <FaPlay size={20} />
+                      </motion.div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4 bg-white">
+                    <h3 className="font-medium text-lg mb-2 line-clamp-2 text-[#2D3142]">{video.name}</h3>
+                    
+                    <div className="flex justify-between items-center mt-4">
+                      <div className="text-sm text-[#3D3D3D]">
+                        {Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, '0')}
+                      </div>
+                      
+                      <motion.button
+                        title="הסר מהתיקייה"
+                        className="text-[#3D3D3D] hover:text-[#D9713C] p-2 rounded-full transition-all duration-300"
+                        onClick={() => removeVideo(video.uri)}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <FaTrash size={16} />
+                      </motion.button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </div>
+        
+        {/* Video player using shared VideoPlayer component */}
+        {selectedVideo && (
+          <VideoPlayer
+            videoUri={selectedVideoUri}
+            embedHtml={selectedVideo}
+            onClose={closeVideo}
+            initialResumeTime={resumeTime}
+            isSubscriber={true} // Assuming this page is for subscribers
+            isAdmin={(session?.user as any)?.isAdmin}
+          />
         )}
-      </div>
+      </motion.div>
     );
   } else {
     // Render content for users without an active subscription

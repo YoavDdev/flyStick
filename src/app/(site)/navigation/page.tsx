@@ -5,17 +5,18 @@ const StudioGuide = () => {
     <div className="container pt-36 mx-auto md:px-6">
     <section className="mb-32">
       <div className="container mx-auto text-center lg:text-left xl:px-12">
-        <div className="block rounded-lg px-6 py-12 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] backdrop-blur-[30px] dark:shadow-black/20 md:px-12 lg:mr-14 bg-[#FCF6F5] text-right">
-          <h2 className="text-4xl font-bold mb-6">
+        <div className="block rounded-2xl px-6 py-12 shadow-md md:px-12 lg:mr-14 bg-[#F7F3EB] border border-[#D5C4B7] text-right transition-all duration-300 hover:shadow-lg">
+          <h2 className="text-4xl font-bold mb-6 text-[#5C4B3E]">
             ברוכים הבאים לסטודיו המקוון שלי
           </h2>
-          <p className="text-lg mb-8">
+          <div className="w-32 h-1 bg-[#B8A99C] rounded-full mb-8 mr-1"></div>
+          <p className="text-lg mb-8 text-[#5C4B3E]">
             ברוכים הבאים והבאות לסטודיו המקוון שלי, או כמו שאחת המנויות אמרה –
             ברוכים הבאים להכיר את הקיום שלנו. הפרויקט הזה הוא תוצאה של שנים רבות
             של חקירה וגילוי, וכאן מרוכז כל הידע שנצבר עבורכם. הסטודיו נולד מתוך
             צורך אמיתי – אנשים ביקשו ללמוד, אך לא תמיד יכלו להגיע.
           </p>
-          <p className="text-lg mb-8">
+          <p className="text-lg mb-8 text-[#5C4B3E]">
             התוכנית כאן מובנית להפליא: כל שיעור, תרגול וטכניקה נבחרו כדי להביא
             אתכם למקום עמוק יותר של הבנה, לא רק בראש אלא גם בגוף. השיעורים
             מתמקדים באזורים שונים של הגוף ומלווים בהרצאות תוכן של אנשי מקצוע.
@@ -23,61 +24,61 @@ const StudioGuide = () => {
             והבינה הפנימית.
           </p>
 
-          <h3 className="text-2xl font-semibold mb-4">אז מה מחכה לכם כאן?</h3>
-          <p className="text-lg mb-8">
+          <h3 className="text-2xl font-semibold mb-4 text-[#7D6E61]">אז מה מחכה לכם כאן?</h3>
+          <p className="text-lg mb-8 text-[#5C4B3E]">
             דרך לא שגרתית ומקורית להכיר את הגוף מחדש. השיעורים שלי הם לא סתם
             תרגילים – כל תנועה וכל תרגול נועדו לגעת במהות, לעורר נוכחות וליצור
             תחושה אמיתית בגוף. זו חוויה שאני קורא לה `&quot;`ידיעה סומטית`&quot;` ובה אתם לא
             רק מבצעים את התנועה, אלא מרגישים את החוכמה הפנימית של גופכם נחשפת.
           </p>
 
-          <h3 className="text-2xl font-semibold mb-4">איך להתחיל?</h3>
-          <p className="text-lg mb-8">
+          <h3 className="text-2xl font-semibold mb-4 text-[#7D6E61]">איך להתחיל?</h3>
+          <p className="text-lg mb-8 text-[#5C4B3E]">
             ממליץ להתחיל מהנשימה, ואז לעבור לאזור שמרגיש לכם רלוונטי. הסרטים כאן
             מסודרים לפי אזורי גוף: פלג גוף עליון, פלג גוף תחתון, וליבה, ומחולקים
             לתרגילים שנועדו להעמיק את הבנתכם בכל אחד מהאזורים הללו. כמו כן, אם
             יש לכם כאב מסוים, תוכלו למצוא סרטים המיועדים לכך.
           </p>
 
-          <h3 className="text-2xl font-semibold mb-4">מבנה הסטודיו</h3>
-          <p className="text-lg mb-8">
+          <h3 className="text-2xl font-semibold mb-4 text-[#7D6E61]">מבנה הסטודיו</h3>
+          <p className="text-lg mb-8 text-[#5C4B3E]">
             הסטודיו שלנו מחולק לארבעה אזורים עיקריים, כל אחד מהם מציע חוויה
             ייחודית ואפשרויות שונות. כדי לראות את האזורים הללו, אנא לחצו על שם
             המשתמש שלכם הנמצא בחלק העליון של תפריט הניווט:
           </p>
-          <p className="text-lg mb-8">
-            <strong>אזור אישי:</strong> באזור האישי תוכלו לנהל את המנוי שלכם
+          <p className="text-lg mb-8 text-[#5C4B3E]">
+            <strong className="text-[#8B7D6F]">אזור אישי:</strong> באזור האישי תוכלו לנהל את המנוי שלכם
             בצורה קלה ונוחה. תוכלו לראות את הסטטוס של המנוי, לחדש אותו או לבטל
             אותו אם תחליטו לכך. אם אתם בתהליך ביטול, תוכלו להמשיך לגשת לתכנים עד
             לתום תקופת החיוב.
           </p>
-          <p className="text-lg mb-8">
-            <strong>הספרייה שלי:</strong> מאגר הסרטים שצפיתם בהם, עם אפשרות
+          <p className="text-lg mb-8 text-[#5C4B3E]">
+            <strong className="text-[#8B7D6F]">הספרייה שלי:</strong> מאגר הסרטים שצפיתם בהם, עם אפשרות
             לשמור שיעורים, ליצור תיקיות ולהוסיף הערות. בספרייה תוכלו למצוא את כל
             התוכן שצפיתם בו, כך שתמיד יהיה נגיש לכם.
           </p>
-          <p className="text-lg mb-8">
-            <strong>טכניקות:</strong> בקטגוריית `&quot;`טכניקות`&quot;` תמצאו מגוון רחב של
+          <p className="text-lg mb-8 text-[#5C4B3E]">
+            <strong className="text-[#8B7D6F]">טכניקות:</strong> בקטגוריית `&quot;`טכניקות`&quot;` תמצאו מגוון רחב של
             שיטות, הרצאות, סדנאות והשתלמויות. זהו מקום מעולה להעמיק את הידע שלכם
             בתחומים שמעניינים אתכם.
           </p>
 
-          <p className="text-lg mb-8">
-            <strong>חיפוש אישי:</strong> כאן תוכלו להקליד נושא כמו `&quot;`גב תחתון`&quot;`
+          <p className="text-lg mb-8 text-[#5C4B3E]">
+            <strong className="text-[#8B7D6F]">חיפוש אישי:</strong> כאן תוכלו להקליד נושא כמו `&quot;`גב תחתון`&quot;`
             ותקבלו רשימת סרטים מתאימה. יש לכם אפשרות לחפש גם לפי תגיות (#) –
             פשוט לחצו על אחת מהתגיות שמופיעות, והמערכת תספק לכם פלייליסט של
             עשרות סרטים מכל הטכניקות. כך תוכלו למצוא בדיוק את מה שאתם זקוקים לו.
             אהבתם מה שמצאתם? אל תשכחו לשמור אותו ולחזור אליו.
           </p>
 
-          <p className="text-lg mt-10">
+          <p className="text-lg mt-10 text-[#5C4B3E]">
             צאו לדרך ואני מאחל לכם את הרגעים האלה בהם הגוף מבין, מתעלה ומציף
             בשמחה את המידע הזה ישר לתוך דעתכם החכמה ושיביא עימו שחרור מדפוסים,
             מחסומים וסבל. אמן. תזכרו, לגוף אין אג׳נדה של תקיפה עצמית, לגוף אין
             עמדה. הוא פועל בשירות התודעה בלבד. כל כולו אהבה וריפוי ואנו נעזור לו
             דרך שיעורי הסטודיו לפרק את עומסי האישיות הנספגים בו כל זמן שאנחנו
             נושמים.
-            <p className="text-lg mt-8">
+            <p className="text-lg mt-8 text-[#5C4B3E] italic">
               מאחל לכם חוויה עמוקה ומשמעותית בסטודיו שלי!
             </p>
           </p>

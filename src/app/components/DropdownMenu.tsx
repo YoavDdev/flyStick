@@ -1,39 +1,67 @@
+"use client";
+
 import React from "react";
-import { AiOutlineLogout } from "react-icons/ai";
+import { AiOutlineLogout, AiOutlineUser, AiOutlineBook, AiOutlineCompass, AiOutlineExperiment } from "react-icons/ai";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+// Use specific imports from framer-motion
+import * as FramerMotion from "framer-motion";
+const { motion } = FramerMotion;
 
-const DropdownMenu = ({ toggleDropdown }: any) => {
+const DropdownMenu = ({ onClose }: { onClose: () => void }) => {
   const { data: session } = useSession();
 
-  const itemClass =
-    "block px-8 py-2 hover:bg-[#EF8354] hover:text-white text-center focus:outline-none rounded-lg shadow-lg bg-[#FCF6F5] text-[#2D3142] whitespace-nowrap";
+  const menuItems = [
+    { href: "/dashboard", label: "איזור אישי", icon: AiOutlineUser },
+    { href: "/user", label: "הספרייה שלי", icon: AiOutlineBook },
+    { href: "/styles", label: "טכניקות", icon: AiOutlineExperiment },
+    { href: "/explore", label: "חיפוש אישי", icon: AiOutlineCompass },
+  ];
+
+  // Animation stagger delay for menu items
+  const getAnimationDelay = (i: number) => i * 0.05;
 
   return (
-    <div className="absolute flex flex-col gap-2 z-50">
-      <Link href="/dashboard" onClick={toggleDropdown}>
-        <div className={itemClass}>איזור אישי</div>
-      </Link>
-      <Link href="/user" onClick={toggleDropdown}>
-        <div className={itemClass}>הספרייה שלי</div>
-      </Link>
-      <Link href="/styles" onClick={toggleDropdown}>
-        <div className={itemClass}>טכניקות</div>
-      </Link>
-      <Link href="/explore" onClick={toggleDropdown}>
-        <div className={itemClass}>חיפוש אישי</div>
-      </Link>
-      <button
-        onClick={() => {
-          signOut();
-          toggleDropdown();
-        }}
-        className={`${itemClass} flex items-center justify-center gap-2`}
+    <motion.div 
+      className="py-2"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      {menuItems.map((item, i) => (
+        <motion.div
+          key={item.href}
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: getAnimationDelay(i), duration: 0.3 }}
+        >
+          <Link href={item.href} onClick={onClose}>
+            <div className="flex items-center gap-2 px-4 py-3 hover:bg-[#E5DFD0] text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
+              <item.icon className="ml-2" size={18} />
+              <span>{item.label}</span>
+            </div>
+          </Link>
+        </motion.div>
+      ))}
+      
+      <motion.div
+        className="mt-2 pt-2 border-t border-[#D0C8B0]/30"
+        initial={{ opacity: 0, y: -5 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: getAnimationDelay(menuItems.length), duration: 0.3 }}
       >
-        <AiOutlineLogout />
-        <span>החלף משתמש</span>
-      </button>
-    </div>
+        <button
+          onClick={() => {
+            signOut();
+            onClose();
+          }}
+          className="w-full flex items-center gap-2 px-4 py-3 hover:bg-[#E5DFD0] text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300"
+        >
+          <AiOutlineLogout className="ml-2" size={18} />
+          <span>החלף משתמש</span>
+        </button>
+      </motion.div>
+    </motion.div>
   );
 };
 

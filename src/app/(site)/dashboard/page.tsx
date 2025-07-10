@@ -8,14 +8,16 @@ import axios from "axios";
 import Image from "next/image";
 import Dashboardpic from "../../../../public/Dashboardpic.png";
 import ConvertkitEmailForm from "../../components/NewsletterSignUpForm";
+import { motion } from "framer-motion";
+import { FaWhatsapp, FaVideo, FaRegCalendarAlt, FaRegBookmark, FaRegHeart } from "react-icons/fa";
+import { MdOutlineSubscriptions } from "react-icons/md";
 
 const DashboardPage = () => {
   const { data: session } = useSession();
-  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(
-    null,
-  );
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [subscriptionId, setSubscriptionId] = useState(null);
+  const [showWhatsAppTooltip, setShowWhatsAppTooltip] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -30,7 +32,7 @@ const DashboardPage = () => {
 
           // Extract subscriptionId from userData
           const subscriptionId = userData.subscriptionId;
-          setSubscriptionId(subscriptionId); // Add this line to set the subscriptionId
+          setSubscriptionId(subscriptionId);
 
           // Fetch subscription details using the retrieved subscriptionId
           const clientId = process.env.PAYPAL_CLIENT_ID;
@@ -48,8 +50,6 @@ const DashboardPage = () => {
 
           const status = subscriptionResponse.data.status;
           setSubscriptionStatus(status);
-
-          // Update your database with the updated subscription status if needed
         }
       } catch (error) {
         console.error(
@@ -57,25 +57,21 @@ const DashboardPage = () => {
           error,
         );
       } finally {
-        // Set loading to false when the request is completed
         setLoading(false);
       }
     };
 
-    // Fetch user data when the component mounts or when the session changes
     fetchUserData();
   }, [session]);
 
   const cancelSubscription = async () => {
     try {
       if (session?.user) {
-        // Ask for confirmation before canceling subscription
         const confirmed = window.confirm(
-          "האם אתה בטוח שברצונך לבטל את המנוי שלך?",
+          "האם אתה בטוח שברצונך לבטל את המנוי שלך?"
         );
 
         if (confirmed) {
-          // Make a request to cancel subscription in PayPal
           const clientId = process.env.PAYPAL_CLIENT_ID;
           const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
@@ -84,14 +80,11 @@ const DashboardPage = () => {
             password: clientSecret!,
           };
 
-          // Retrieve the subscription ID from your user data
           const response = await axios.post("/api/get-user-subsciptionId", {
             userEmail: session.user.email,
           });
 
           const userData = response.data;
-
-          // Extract subscriptionId from userData
           const subscriptionId = userData.subscriptionId;
 
           const cancellationResponse = await axios.post(
@@ -101,7 +94,6 @@ const DashboardPage = () => {
           );
 
           if (cancellationResponse.status === 204) {
-            // Subscription canceled successfully
             setSubscriptionStatus("CANCELLED");
             console.log("Subscription canceled successfully");
           } else {
@@ -109,165 +101,287 @@ const DashboardPage = () => {
               "Failed to cancel subscription",
               cancellationResponse.data,
             );
-            // Handle the case where the cancellation request was not successful
           }
-        } else {
-          console.log("User canceled the subscription cancellation");
-          // Handle the case where the user canceled the subscription cancellation
         }
-      } else {
-        console.log("User session or user data not available");
-        // Handle the case where user session or user data is not available
       }
     } catch (error) {
       console.error("Error canceling subscription:", error);
     }
   };
 
+  // Animation variants for staggered animations
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: [0.25, 0.1, 0.25, 1.0] as [number, number, number, number],
+      },
+    },
+  };
+
+  // Function to handle WhatsApp group join
+  const handleWhatsAppJoin = () => {
+    // Replace with the actual WhatsApp group invite link
+    window.open('https://chat.whatsapp.com/your-group-invite-link', '_blank');
+  };
+
   return (
-    <div className="relative min-h-screen">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-[-1]">
-        <Image
-          src={Dashboardpic}
-          layout="fill"
-          objectFit="cover"
-          quality={100}
-          alt="BoazMain"
-        />
-      </div>
+    <div className="min-h-screen bg-[#F7F3EB] py-24">
+      <div className="container mx-auto px-4 max-w-6xl">
+        {session ? (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+            className="flex flex-col gap-8"
+          >
+            {/* Header with decorative element */}
+            <div className="relative overflow-hidden rounded-xl bg-[#D5C4B7]/20 p-8 border border-[#D5C4B7]/30">
+              <div className="absolute top-0 right-0 w-64 h-64 opacity-10 -mt-20 -mr-20">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    fill="#B8A99C"
+                    d="M45.7,-58.2C58.9,-48.3,69.2,-33.5,73.2,-16.9C77.2,-0.3,74.9,18.1,66.4,32.6C57.9,47.1,43.2,57.7,27.1,64.9C11,72.1,-6.5,75.9,-22.6,71.3C-38.7,66.7,-53.4,53.7,-62.3,37.8C-71.2,21.9,-74.3,3.1,-70.9,-14.1C-67.5,-31.3,-57.6,-46.9,-44.1,-56.8C-30.6,-66.7,-13.6,-70.8,1.5,-72.7C16.6,-74.6,32.5,-68.2,45.7,-58.2Z"
+                  />
+                </svg>
+              </div>
+              
+              <motion.div variants={itemVariants} className="relative z-10">
+                <h1 className="text-3xl font-bold text-[#2D3142] mb-2 text-center">
+                  {session.user?.name ? `שלום, ${session.user.name}` : 'ברוך הבא'}
+                </h1>
+                <p className="text-lg text-[#3D3D3D] text-center">
+                  ברוך הבא לדשבורד האישי שלך בסטודיו בועז אונליין
+                </p>
+              </motion.div>
+            </div>
 
-      {/* Main Content */}
-      <div className="relative flex flex-col items-center justify-start pt-20 sm:pt-60 px-4">
-        {session?.user ? (
-          <div className="bg-white bg-opacity-70 w-full max-w-screen-md p-8 rounded-lg shadow-lg">
-            {/* Welcome Message */}
-            <h2 className="text-3xl font-semibold text-[#EF8354] mb-4 capitalize text-center">
-              ברוך הבא, {session.user.name}!
-            </h2>
-            <p className="text-lg text-gray-700 text-center mb-10">
-              פה תמצאו את כל מה שאתם צריכים לדעת על המנוי.
-            </p>
+            {/* WhatsApp Group Join Section */}
+            <motion.div 
+              variants={itemVariants}
+              className="bg-[#F7F3EB] rounded-xl p-6 border border-[#D5C4B7]/30 shadow-md relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-32 h-32 opacity-10 -mt-10 -ml-10">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    fill="#25D366"
+                    d="M45.7,-58.2C58.9,-48.3,69.2,-33.5,73.2,-16.9C77.2,-0.3,74.9,18.1,66.4,32.6C57.9,47.1,43.2,57.7,27.1,64.9C11,72.1,-6.5,75.9,-22.6,71.3C-38.7,66.7,-53.4,53.7,-62.3,37.8C-71.2,21.9,-74.3,3.1,-70.9,-14.1C-67.5,-31.3,-57.6,-46.9,-44.1,-56.8C-30.6,-66.7,-13.6,-70.8,1.5,-72.7C16.6,-74.6,32.5,-68.2,45.7,-58.2Z"
+                  />
+                </svg>
+              </div>
+              
+              <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
+                <div className="flex-shrink-0 bg-[#25D366] text-white p-4 rounded-full">
+                  <FaWhatsapp size={32} />
+                </div>
+                
+                <div className="flex-grow">
+                  <h3 className="text-xl font-bold text-[#2D3142] mb-2">
+                    הצטרף לקבוצת הוואטסאפ שלנו
+                  </h3>
+                  <p className="text-[#3D3D3D] mb-4">
+                    הצטרף לקהילה שלנו בוואטסאפ כדי לקבל עדכונים, טיפים, ולהיות בקשר ישיר עם בועז והצוות. כאן תוכלו לשאול שאלות ולקבל תמיכה מהקהילה.
+                  </p>
+                  
+                  <motion.button
+                    onClick={handleWhatsAppJoin}
+                    className="bg-[#25D366] hover:bg-[#128C7E] text-white py-3 px-6 rounded-full flex items-center gap-2 transition-all duration-300"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <FaWhatsapp size={20} />
+                    <span>הצטרף לקבוצה עכשיו</span>
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
 
-            {/* Payment Section */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-xl font-bold text-[#2D3142] mb-4 text-center">
-                אזור תשלום
-              </h3>
+            {/* Dashboard Cards Grid */}
+            <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <DashboardCard
+                title="הסרטונים שלי"
+                description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
+                link="/user/watched"
+                icon={<FaVideo size={24} />}
+              />
+              <DashboardCard
+                title="חיפוש אישי"
+                description="חפש סרטונים לפי נושאים שמעניינים אותך"
+                link="/explore"
+                icon={<FaRegCalendarAlt size={24} />}
+              />
+              <DashboardCard
+                title="המועדפים שלי"
+                description="גישה מהירה לסרטונים שסימנת כמועדפים"
+                link="/user"
+                icon={<FaRegHeart size={24} />}
+              />
+              <DashboardCard
+                title="טכניקות"
+                description="למד טכניקות חדשות ושפר את המיומנויות שלך"
+                link="/techniques"
+                icon={<FaRegBookmark size={24} />}
+              />
+            </motion.div>
+
+            {/* Subscription Status Section */}
+            <motion.div variants={itemVariants} className="bg-white rounded-xl p-6 shadow-md">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="bg-[#D5C4B7] p-3 rounded-full">
+                  <MdOutlineSubscriptions size={24} className="text-[#2D3142]" />
+                </div>
+                <h3 className="text-xl font-bold text-[#2D3142]">סטטוס מנוי</h3>
+              </div>
 
               {loading ? (
-                <p className="text-center text-gray-600 mb-6">טוען נתונים...</p>
+                <p className="text-center py-4">טוען...</p>
               ) : (
-                <>
-                  {/* Subscription Status Display */}
-                  {subscriptionStatus !== null && (
-                    <p className="text-center text-gray-600 mb-6">
-                      סטטוס מנוי:{" "}
-                      <span
-                        className={
-                          subscriptionStatus ? "text-green-500" : "text-red-500"
-                        }
+                <div className="mt-4">
+                  {(subscriptionStatus === "ACTIVE" || subscriptionId === "Admin" || subscriptionStatus === "PENDING_CANCELLATION") && (
+                    <>
+                      <div className="bg-green-100 text-green-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
+                        <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                        <p>המנוי שלך פעיל</p>
+                      </div>
+                      <p className="mb-4">
+                        אתה נהנה כרגע מגישה מלאה לכל התכנים שלנו. אם ברצונך לבטל
+                        את המנוי שלך, אנא לחץ על הכפתור למטה או צור קשר ב
+                        <Link
+                          href="/contact"
+                          className="text-[#B8A99C] hover:text-[#D5C4B7] mx-1"
+                        >
+                          לחץ כאן
+                        </Link>
+                        . שימו לב, סיום מנוי מאפשר להנות מתכני הסטודיו עד לתום
+                        תקופת החיוב.
+                      </p>
+                      <motion.button
+                        onClick={cancelSubscription}
+                        className="bg-red-500 text-white py-2 px-6 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
+                        whileHover={{ y: -2 }}
+                        whileTap={{ y: 0 }}
                       >
-                        {subscriptionStatus}
-                      </span>
-                    </p>
+                        בטל מנוי
+                      </motion.button>
+                    </>
                   )}
 
-                  {/* Subscription Messages */}
-                  <div className="mb-6 text-center text-gray-700">
-                    {(subscriptionStatus === "ACTIVE" ||
-                      subscriptionId === "Admin") && (
-                      <>
-                        <p>
-                          כאן תוכלו לנהל את המנוי שלכם, לחדש או לבטל בכל שלב.
-                          במידה ובחרתם להנות מתקופת הנסיון של 3 ימים, הקפידו
-                          לסיים את המנוי לפני תום תקופת הניסיון. במידה והנכם
-                          מתלבטים, או זקוקים לעזרה והכוונה{" "}
-                          <Link
-                            href="/navigation"
-                            className="text-blue-600 font-bold underline"
-                          >
-                            לחץ כאן
-                          </Link>
-                          . שימו לב, סיום מנוי מאפשר להנות מתכני הסטודיו עד לתום
-                          תקופת החיוב.
-                        </p>
-                        <button
-                          onClick={cancelSubscription}
-                          className="bg-red-500 text-white py-2 px-6 mt-4 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
+                  {subscriptionStatus === "PENDING_CANCELLATION" && (
+                    <>
+                      <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
+                        <span className="w-3 h-3 bg-yellow-500 rounded-full"></span>
+                        <p>המנוי שלך בתהליך ביטול</p>
+                      </div>
+                      <p>
+                        המנוי שלך נמצא בתהליך ביטול. תוכל להמשיך להנות מהתכנים
+                        שלנו עד תום תקופת החיוב הנוכחית. במידה ואתה מעוניין
+                        להפסיק את תהליך הביטול ולהמשיך במנוי, צור איתנו קשר
+                        ב&apos;צרו קשר&apos;.
+                      </p>
+                    </>
+                  )}
+
+                  {subscriptionStatus === "CANCELLED" && (
+                    <>
+                      <div className="bg-red-100 text-red-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
+                        <span className="w-3 h-3 bg-red-500 rounded-full"></span>
+                        <p>המנוי שלך בוטל</p>
+                      </div>
+                      <p className="mb-4">
+                        המנוי שלך בוטל בהצלחה. לחידוש המנוי לחצו על הכפתור
+                        מטה.
+                      </p>
+                      <Link href="/#Pricing">
+                        <motion.span 
+                          className="inline-block bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] py-2 px-6 rounded-md transition duration-300 ease-in-out"
+                          whileHover={{ y: -2 }}
+                          whileTap={{ y: 0 }}
                         >
-                          בטל מנוי
-                        </button>
-                      </>
-                    )}
+                          חדש את המנוי שלך
+                        </motion.span>
+                      </Link>
+                    </>
+                  )}
 
-                    {subscriptionStatus === "PENDING_CANCELLATION" && (
-                      <>
-                        <p>
-                          המנוי שלך נמצא בתהליך ביטול. תוכל להמשיך להנות מהתכנים
-                          שלנו עד תום תקופת החיוב הנוכחית. במידה ואתה מעוניין
-                          להפסיק את תהליך הביטול ולהמשיך במנוי, צור איתנו קשר
-                          ב&aposצרו קשר&apos;.
-                        </p>
-                      </>
-                    )}
-
-                    {subscriptionStatus === "CANCELLED" && (
-                      <>
-                        <p>
-                          המנוי שלך בוטל בהצלחה. לחידוש המנוי לחצו על הכפתור
-                          מטה.
-                        </p>
-                        <Link href="/#Pricing">
-                          <span className="bg-slate-500 hover:bg-slate-700 text-white py-2 px-6 mt-4 rounded-md transition duration-300 ease-in-out inline-block">
-                            חדש את המנוי שלך
-                          </span>
-                        </Link>
-                      </>
-                    )}
-
-                    {subscriptionStatus === null && (
-                      <>
-                        <p>
-                          אין לך מנוי פעיל. להצטרפות למנוי חדש ולהנות מתכני
-                          הסטודיו, לחצו על הכפתור מטה.
-                        </p>
-                        <Link href="/#Pricing">
-                          <span className=" text-white py-2 px-6 mt-4 rounded-md ounded-md bg-slate-500 hover:bg-slate-700 transition duration-300 ease-in-out inline-block ">
-                            הפעל מנוי
-                          </span>
-                        </Link>
-                      </>
-                    )}
-                  </div>
-                </>
+                  {subscriptionStatus === null && (
+                    <>
+                      <div className="bg-gray-100 text-gray-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
+                        <span className="w-3 h-3 bg-gray-500 rounded-full"></span>
+                        <p>אין מנוי פעיל</p>
+                      </div>
+                      <p className="mb-4">
+                        אין לך מנוי פעיל. להצטרפות למנוי חדש ולהנות מתכני
+                        הסטודיו, לחצו על הכפתור מטה.
+                      </p>
+                      <Link href="/#Pricing">
+                        <motion.span 
+                          className="inline-block bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] py-2 px-6 rounded-md transition duration-300 ease-in-out"
+                          whileHover={{ y: -2 }}
+                          whileTap={{ y: 0 }}
+                        >
+                          הפעל מנוי
+                        </motion.span>
+                      </Link>
+                    </>
+                  )}
+                </div>
               )}
-            </div>
-            {/* Newsletter Message */}
-            <div className="bg-[#f9f9f9] border border-slate-500 rounded-lg p-4 mb-6 mt-6 shadow-md">
-              <p className="text-center text-[#2D3142] font-semibold mb-2">
-                אנא הקפידו להרשם לניוזלטר!
-              </p>
-              <p className="text-center text-gray-600">
+            </motion.div>
+
+            {/* Newsletter Section */}
+            <motion.div 
+              variants={itemVariants}
+              className="bg-[#F7F3EB] rounded-xl p-6 border border-[#D5C4B7]/30 shadow-md"
+            >
+              <h3 className="text-xl font-bold text-[#2D3142] mb-2 text-center">
+                הרשמו לניוזלטר שלנו
+              </h3>
+              <p className="text-center text-[#3D3D3D] mb-6">
                 כדי לקבל הסברים שימושיים שיעזרו לכם להתנהל בסטודיו ולדעת מה
                 מתאים עבורכם ומדי פעם תקבלו עדכון על סרט חשוב, המלצה, הרצאה חדשה
                 וכו&apos;.
               </p>
 
-              {/* Newsletter Subscription Form */}
               <div className="flex justify-center">
                 <ConvertkitEmailForm />
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         ) : (
-          <div className="text-center">
-            <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-              אנא התחבר כדי להמשיך
-            </h1>
-            <Link href="/login">
-              <span className="text-[#EF8354] text-lg">Login</span>
-            </Link>
+          <div className="flex flex-col items-center justify-center min-h-[60vh]">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full text-center"
+            >
+              <h1 className="text-3xl font-bold text-[#2D3142] mb-6">
+                אנא התחבר כדי להמשיך
+              </h1>
+              <Link href="/login">
+                <motion.span 
+                  className="inline-block bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] py-3 px-8 rounded-full transition-all duration-300"
+                  whileHover={{ y: -3, boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}
+                  whileTap={{ y: 0 }}
+                >
+                  התחברות
+                </motion.span>
+              </Link>
+            </motion.div>
           </div>
         )}
       </div>
