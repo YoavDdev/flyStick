@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { FaSearch, FaHashtag } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
+// Removed framer-motion import
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -104,19 +104,14 @@ const SearchBar = ({ onSearch, hashtags, onHashtagClick }: SearchBarProps) => {
       </form>
       
       {/* Hashtag Autocomplete Dropdown */}
-      <AnimatePresence>
-        {showHashtagSuggestions && filteredHashtags.length > 0 && (
-          <motion.div 
+      {showHashtagSuggestions && filteredHashtags.length > 0 && (
+          <div 
             className="absolute z-50 mt-1 right-0 w-full bg-[#F7F3EB] border border-[#D5C4B7] rounded-lg shadow-md overflow-hidden"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
             dir="rtl"
           >
             <div className="max-h-60 overflow-y-auto py-2">
               {filteredHashtags.map((hashtag, index) => (
-                <motion.button
+                <button
                   key={hashtag}
                   className="w-full text-right px-4 py-2 hover:bg-[#D5C4B7]/20 text-[#2D3142] flex items-center justify-start transition-colors duration-200"
                   onClick={() => {
@@ -127,22 +122,17 @@ const SearchBar = ({ onSearch, hashtags, onHashtagClick }: SearchBarProps) => {
                     setShowHashtagSuggestions(false);
                     inputRef.current?.focus();
                   }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: index * 0.05 }}
-                  whileHover={{ backgroundColor: 'rgba(213, 196, 183, 0.4)' }}
                   dir="rtl"
                 >
                   <div className="flex items-center gap-2 w-full">
                     <span className="text-[#B8A99C] font-medium">#</span>
                     <span>{hashtag}</span>
                   </div>
-                </motion.button>
+                </button>
               ))}
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
       {/* Hashtag dropdown has been replaced with autocomplete */}
     </div>
   );

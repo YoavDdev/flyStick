@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 
 interface PreviewOverlayProps {
   onClose: () => void;
@@ -11,11 +10,8 @@ interface PreviewOverlayProps {
 
 const PreviewOverlay = ({ onClose, onReplay }: PreviewOverlayProps) => {
   return (
-    <motion.div 
+    <div 
       className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 z-[10000] flex items-center justify-center"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
     >
       <div className="bg-[#F7F3EB] p-8 rounded-lg max-w-lg w-full mx-4 text-center relative overflow-hidden">
         {/* Decorative elements in Wabi-Sabi style */}
@@ -50,36 +46,30 @@ const PreviewOverlay = ({ onClose, onReplay }: PreviewOverlayProps) => {
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link href="/#Pricing" className="w-full sm:w-auto">
-            <motion.button 
+            <button 
               className="bg-[#B56B4A] text-white px-8 py-4 rounded-full text-xl font-bold hover:bg-[#A25539] transition-all duration-300 w-full shadow-lg relative overflow-hidden"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
             >
               <span className="relative z-10">הירשם עכשיו</span>
               <span className="absolute inset-0 bg-white opacity-20 transform -skew-x-12"></span>
-            </motion.button>
+            </button>
           </Link>
           
           <div className="flex flex-row gap-2 mt-4 sm:mt-0">
             {onReplay && (
-              <motion.button 
+              <button 
                 className="bg-[#D5C4B7] text-[#2D3142] px-3 py-2 rounded-full text-sm font-medium hover:bg-[#C5B4A7] transition-colors duration-300"
                 onClick={onReplay}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
               >
                 צפה שוב בקטע הראשון
-              </motion.button>
+              </button>
             )}
             
-            <motion.button 
+            <button 
               className="bg-transparent border border-[#B8A99C] text-[#3D3D3D] px-4 py-2 rounded-full text-sm font-medium hover:bg-[#E5DFD0] transition-colors duration-300"
               onClick={onClose}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
             >
               חזרה לעמוד הסרטים
-            </motion.button>
+            </button>
           </div>
         </div>
         
@@ -87,7 +77,7 @@ const PreviewOverlay = ({ onClose, onReplay }: PreviewOverlayProps) => {
           המנוי כולל גישה לכל התכנים, עדכונים שוטפים ותמיכה מלאה.
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

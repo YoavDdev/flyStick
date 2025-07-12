@@ -5,11 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import Logo from "../../../public/Flystick_logo.svg";
 import { AiOutlineInstagram, AiOutlineFacebook, AiOutlineYoutube } from "react-icons/ai";
-import * as FramerMotion from "framer-motion";
-import WabiSabiTexture from "./WabiSabiTexture";
-import NewsletterSignUpForm from "./NewsletterSignUpForm";
+import { motion } from "framer-motion";
 
-const { motion } = FramerMotion;
+import NewsletterSignUpForm from "./NewsletterSignUpForm";
 
 type SocialLink = {
   name: string;
@@ -56,12 +54,6 @@ const WabiSabiFooter = () => {
     <footer className="relative overflow-hidden bg-[#F5F2EB] text-right shadow-sm" aria-labelledby="footer-heading">
       {/* Wabi-Sabi Texture Background */}
       <div className="absolute inset-0 z-0 opacity-20">
-        <WabiSabiTexture 
-          type="paper" 
-          opacity={0.1}
-          animate={true}
-          className="opacity-20"
-        />
       </div>
       
       {/* Decorative wavy line at the top */}
@@ -74,19 +66,7 @@ const WabiSabiFooter = () => {
         </svg>
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-6 pt-10 pb-14 lg:px-8 lg:pt-12 lg:pb-16">
-        {/* Subtle decorative elements */}
-        <div className="absolute left-0 top-12 w-16 h-16 opacity-10 hidden md:block">
-          <motion.svg 
-            viewBox="0 0 100 100" 
-            xmlns="http://www.w3.org/2000/svg"
-            animate={{ rotate: [0, 5, 0, -5, 0] }}
-            transition={{ repeat: Infinity, duration: 20, ease: "easeInOut" }}
-          >
-            <path d="M30,10 Q50,5 70,10 T90,30 T70,50 T30,70 T10,50 T30,30 Z" fill="none" stroke="#B56B4A" strokeWidth="2" />
-          </motion.svg>
-        </div>
-        
+      <div className="relative z-10 mx-auto max-w-7xl px-6 pt-10 pb-14 lg:px-8 lg:pt-12 lg:pb-16">        
         {/* Additional decorative element for medium+ screens */}
         <div className="absolute right-12 bottom-24 w-20 h-20 opacity-10 hidden md:block">
           <motion.svg 

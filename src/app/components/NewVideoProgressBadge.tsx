@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 
 interface Props {
   progress: number;
@@ -39,57 +38,44 @@ const NewVideoProgressBadge: React.FC<Props> = ({
   // Minimal variant - just a simple line
   if (variant === 'minimal') {
     return (
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
+      <div 
         className={`${positionClass} ${sizeClass} ${className}`}
         title={isCompleted ? "נצפה במלואו" : `התקדמות: ${displayProgress}%`}
       >
         <div className="absolute inset-0 rounded-full bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center">
           <div className="w-full h-1 bg-gray-600 rounded-full overflow-hidden">
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: `${displayProgress}%` }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
+            <div 
+              style={{ width: `${displayProgress}%` }}
               className={`h-full ${isCompleted ? 'bg-green-500' : 'bg-[#EF8354]'}`}
             />
           </div>
           {showLabel && isCompleted && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+            <div 
               className="absolute inset-0 flex items-center justify-center text-white"
             >
               ✓
-            </motion.div>
+            </div>
           )}
         </div>
-      </motion.div>
+      </div>
     );
   }
   
   // Fancy variant - modern design with glow effect
   if (variant === 'fancy') {
     return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
+      <div
         className={`${positionClass} ${sizeClass} ${className}`}
         title={isCompleted ? "נצפה במלואו" : `התקדמות: ${displayProgress}%`}
       >
         <div className={`absolute inset-0 rounded-full ${isCompleted ? 'bg-gradient-to-br from-green-400 to-green-600' : 'bg-gradient-to-br from-[#EF8354] to-[#D9713C]'} flex items-center justify-center shadow-lg ${isCompleted ? 'shadow-green-400/30' : 'shadow-[#EF8354]/30'}`}>
           <div className="absolute inset-0.5 rounded-full bg-gray-900 flex items-center justify-center">
             {isCompleted ? (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              <div
                 className="text-green-400 font-bold"
               >
                 ✓
-              </motion.div>
+              </div>
             ) : (
               <>
                 <svg className="absolute inset-0" width="100%" height="100%" viewBox="0 0 100 100">
@@ -101,10 +87,7 @@ const NewVideoProgressBadge: React.FC<Props> = ({
                     stroke="rgba(255,255,255,0.1)" 
                     strokeWidth="8" 
                   />
-                  <motion.circle 
-                    initial={{ strokeDasharray: "0 289" }}
-                    animate={{ strokeDasharray: `${displayProgress * 2.89} 289` }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
+                  <circle 
                     cx="50" 
                     cy="50" 
                     r="46" 
@@ -129,16 +112,13 @@ const NewVideoProgressBadge: React.FC<Props> = ({
             )}
           </div>
         </div>
-      </motion.div>
+      </div>
     );
   }
   
   // Standard variant (default)
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3 }}
+    <div
       className={`${positionClass} ${sizeClass} ${className}`}
       title={isCompleted ? "נצפה במלואו" : `התקדמות: ${displayProgress}%`}
     >
@@ -156,10 +136,7 @@ const NewVideoProgressBadge: React.FC<Props> = ({
                 stroke="#e5e7eb" 
                 strokeWidth="8" 
               />
-              <motion.circle 
-                initial={{ strokeDasharray: "0 289" }}
-                animate={{ strokeDasharray: `${displayProgress * 2.89} 289` }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+              <circle 
                 cx="50" 
                 cy="50" 
                 r="46" 
@@ -177,7 +154,7 @@ const NewVideoProgressBadge: React.FC<Props> = ({
           </>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 };
 

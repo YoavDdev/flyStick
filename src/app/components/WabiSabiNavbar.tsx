@@ -10,7 +10,7 @@ import { AiOutlineMenu, AiOutlineClose, AiOutlineInstagram, AiOutlineFacebook, A
 import * as FramerMotion from "framer-motion";
 const { motion, AnimatePresence } = FramerMotion;
 type Variants = FramerMotion.Variants;
-import WabiSabiTexture from "./WabiSabiTexture";
+
 import DropdownMenu from "./DropdownMenu";
 
 interface WabiSabiNavbarProps {}
@@ -155,7 +155,7 @@ const WabiSabiNavbar = () => {
       {/* Texture overlay */}
       {!isTransparent && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <WabiSabiTexture type="paper" opacity={0.07} animate={false} />
+          {/* Texture removed */}
         </div>
       )}
       
@@ -305,7 +305,7 @@ const WabiSabiNavbar = () => {
           >
             {/* Texture overlay for mobile menu */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <WabiSabiTexture type="paper" opacity={0.1} animate={true} />
+              {/* Texture removed */}
             </div>
             
             {/* Decorative element */}

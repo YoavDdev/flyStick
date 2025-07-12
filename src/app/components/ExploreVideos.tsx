@@ -6,16 +6,16 @@ import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import Player from "@vimeo/player";
 import { FaPlay, FaEye, FaEyeSlash, FaPlus, FaSearch } from "react-icons/fa";
-import { motion } from "framer-motion";
+// Removed framer-motion import
 import VideoProgressBadge from "@/app/components/VideoProgressBadge";
 import VideoPlayer from "@/app/components/VideoPlayer";
 import PlaylistModal from "@/app/components/PlaylistModal";
 import VideoCard from "@/app/components/VideoCard";
 import SearchBar from "@/app/components/SearchBar";
-import WabiSabiHeading from "@/app/components/WabiSabiHeading";
-import WabiSabiPaperTexture from "@/app/components/WabiSabiPaperTexture";
+// WabiSabiHeading import removed
 
-import { standardEasing } from "@/app/styles/standardAnimations";
+
+// Removed standardAnimations import
 
 interface ExploreVideosProps {
   title?: string;
@@ -426,19 +426,13 @@ const ExploreVideos = ({
               </div>
               
               <div className="md:w-1/3">
-                <a href="/#Pricing" className="inline-block bg-[#B56B4A] text-white px-4 py-2 rounded-full text-base font-bold hover:bg-[#A25539] transition-all duration-300 shadow-md relative overflow-hidden transform hover:scale-105">
-                  <span className="relative z-10">הירשם למנוי מלא</span>
-                  <span className="absolute inset-0 bg-white opacity-20 transform -skew-x-12"></span>
-                </a>
-              </div>
             </div>
           </div>
         </div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: standardEasing.gentle }}
+      <div 
+        className="bg-white rounded-xl shadow-lg overflow-hidden relative"
       >
         <SearchBar 
           onSearch={(query) => {
@@ -451,36 +445,26 @@ const ExploreVideos = ({
             handleSearch({ preventDefault: () => {} } as React.FormEvent);
           }}
         />
-      </motion.div>
+      </div>
 
       {/* Scrollable video container with fixed height */}
-      <motion.div 
+      <div 
         className="relative border border-[#D5C4B7] border-opacity-40 rounded-xl overflow-hidden shadow-md bg-[#F7F3EB] bg-opacity-50 mb-6"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2, ease: standardEasing.gentle }}
       >
         {/* Paper texture overlay for container */}
-        <WabiSabiPaperTexture 
-          opacity={0.08} 
-          type="natural" 
-          className="absolute inset-0 pointer-events-none" 
-          animate={true}
-        />
+        {/* Paper texture removed */}
         {/* Container header with subtle gradient */}
         <div className="sticky top-0 z-10 bg-gradient-to-b from-[#F7F3EB] to-transparent py-3 px-5 flex justify-between items-center border-b border-[#D5C4B7] border-opacity-30 overflow-hidden">
-          <WabiSabiPaperTexture opacity={0.1} type="washi" className="absolute inset-0 pointer-events-none" />
+          {/* Paper texture removed */}
           <h3 className="text-[#2D3142] font-medium font-heebo relative z-10">סרטונים זמינים</h3>
           {!noMoreVideos && (
-            <motion.button
+            <button
               className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-4 py-1.5 text-sm rounded-full focus:outline-none shadow-sm transition-all duration-300 hover:shadow-md font-medium relative overflow-hidden"
               onClick={loadMore}
-              whileHover={{ scale: 1.05, boxShadow: "0 3px 10px rgba(0,0,0,0.1)" }}
-              whileTap={{ scale: 0.95 }}
             >
-              <WabiSabiPaperTexture opacity={0.1} type="natural" className="absolute inset-0 pointer-events-none" />
+              {/* Paper texture removed */}
               טען עוד
-            </motion.button>
+            </button>
           )}
         </div>
         
@@ -489,35 +473,25 @@ const ExploreVideos = ({
           {/* Subtle floating elements in the background */}
 
           {noResults ? (
-            <motion.div 
+            <div 
               className="text-center py-10 px-6 bg-[#F0E9DF] rounded-xl shadow-sm border border-[#D5C4B7] mt-8 relative overflow-hidden"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, ease: standardEasing.gentle }}
             >
-              <WabiSabiPaperTexture opacity={0.1} type="natural" className="absolute inset-0 pointer-events-none" />
+              {/* Paper texture removed */}
               <p className="text-[#2D3142] text-lg font-heebo">
                 <span className="font-bold text-[#EF8354]">אופס!</span> 🤷‍♂️ לא
                 נמצאו סרטונים עבור הנושא{" "}
                 <span className="font-bold">&quot;{searchQuery}&quot;</span> .
                 נסה להשתמש בכמות קטנה יותר של נושאים לתוצאות טובות יותר!{" "}
               </p>
-            </motion.div>
+            </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {videos
                 .filter((video) => !video.name.startsWith("[PRV]"))
                 .map((video, index) => (
-                  <motion.div 
+                  <div 
                     key={video.uri} 
                     className="transform hover:scale-105 transition-transform duration-300 hover:shadow-lg"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ 
-                      duration: 0.5, 
-                      delay: index * 0.05, 
-                      ease: standardEasing.gentle 
-                    }}
                   >
                     <VideoCard
                       video={video}
@@ -527,27 +501,24 @@ const ExploreVideos = ({
                       onPlayVideo={(embedHtml) => openVideo(embedHtml || video.embedHtml, video.uri)}
                       onAddToFavorites={() => {}}
                     />
-                  </motion.div>
+                  </div>
                 ))}
             </div>
           )}
           
           {/* Status message at the bottom of scrollable area */}
           {noMoreVideos && videos.length > 0 && (
-            <motion.div 
+            <div 
               className="text-center py-3 px-4 mt-6"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: standardEasing.gentle }}
             >
               <p className="text-[#2D3142] text-sm bg-[#F0E9DF] inline-block py-2 px-6 rounded-full shadow-sm border border-[#D5C4B7] relative overflow-hidden">
-                <WabiSabiPaperTexture opacity={0.1} type="natural" className="absolute inset-0 pointer-events-none" />
+                {/* Paper texture removed */}
                 <span className="relative z-10 font-heebo">אין עוד סרטונים לטעון</span>
               </p>
-            </motion.div>
+            </div>
           )}
         </div>
-      </motion.div>
+      </div>
         
         {showModal && (
           <PlaylistModal

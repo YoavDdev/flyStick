@@ -6,7 +6,7 @@ import contactMe4 from "../../../../public/contactMe4.jpeg";
 import contactMePhone4 from "../../../../public/contactMePhone4.jpeg";
 import Link from "next/link";
 import * as FramerMotion from "framer-motion";
-import WabiSabiTexture from "../../components/WabiSabiTexture";
+
 
 const { motion } = FramerMotion;
 
@@ -15,12 +15,7 @@ const WabiSabiContact = () => {
     <div className="relative h-screen overflow-hidden">
       {/* Background Texture Layer */}
       <div className="absolute inset-0 z-0">
-        <WabiSabiTexture 
-          type="paper" 
-          opacity={0.05}
-          animate={true}
-          className="opacity-30"
-        />
+        {/* Background texture removed */}
       </div>
 
       {/* Background Image for Desktop */}

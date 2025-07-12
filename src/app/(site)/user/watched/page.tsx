@@ -10,8 +10,8 @@ import { FaEyeSlash, FaPlay, FaArrowRight, FaChevronDown } from "react-icons/fa"
 import { IoTime } from "react-icons/io5";
 import NewVideoProgressBadge from "@/app/components/NewVideoProgressBadge";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import WabiSabiHeading from "@/app/components/WabiSabiHeading";
-import WabiSabiPaperTexture from "@/app/components/WabiSabiPaperTexture";
+// WabiSabiHeading import removed
+
 import VideoPlayer from "@/app/components/VideoPlayer";
 
 // Animation variants for Wabi-Sabi style
@@ -324,11 +324,7 @@ const Page = () => {
     >
 
       
-      <WabiSabiPaperTexture 
-        opacity={0.07} 
-        type="washi" 
-        className="fixed inset-0 pointer-events-none" 
-      />
+      {/* Paper texture removed */}
       
       <div className="container mx-auto px-4 sm:px-6 relative">
         {/* Decorative elements for Wabi-Sabi style */}
@@ -372,52 +368,23 @@ const Page = () => {
           variants={containerVariants}
         >
           {(isLoading || showLoading) ? (
-            /* Loading animation matching user/[name]/page.tsx style */
+            /* Loading animation matching explore/page.tsx style */
             <motion.div 
-              className="col-span-full flex flex-col items-center justify-center py-20 text-center relative"
+              className="col-span-full flex flex-col items-center justify-center py-20 text-center"
               variants={itemVariants}
             >
-              {/* Decorative elements for Wabi-Sabi style */}
-              <div className="absolute -top-10 right-10 w-32 h-32 bg-[#D5C4B7] opacity-20 rounded-full blur-3xl"></div>
-              <div className="absolute top-40 left-10 w-40 h-40 bg-[#B8A99C] opacity-10 rounded-full blur-3xl"></div>
-              
-              <div className="relative w-24 h-24 mb-8">
-                <motion.div 
-                  className="absolute inset-0 bg-[#D5C4B7] rounded-full opacity-30"
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                />
-                <motion.div 
-                  className="absolute inset-2 bg-[#B8A99C] rounded-full opacity-50"
-                  animate={{ scale: [1, 1.15, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-                />
-                <motion.div 
-                  className="absolute inset-4 bg-[#D9713C] rounded-full opacity-70"
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
-                />
-                <motion.div 
-                  className="absolute inset-0 w-full h-full flex items-center justify-center"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <span className="text-white font-medium">טוען</span>
-                </motion.div>
+              <div className="flex justify-center items-center">
+                <div className="w-16 h-16 border-4 border-[#D5C4B7] border-t-[#B8A99C] rounded-full animate-spin"></div>
               </div>
               
-              <motion.div 
-                className="relative overflow-hidden bg-white bg-opacity-60 px-8 py-3 rounded-full shadow-sm"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, type: "spring", stiffness: 100, damping: 15 }}
+              <motion.p 
+                className="text-[#3D3D3D] mt-6 max-w-md"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
               >
-                <WabiSabiPaperTexture opacity={0.1} type="natural" className="absolute inset-0 pointer-events-none" />
-                <p className="text-[#3D3D3D] font-light relative z-10">
-                  טוען את השיעורים שלך...
-                </p>
-              </motion.div>
+                טוען את הסרטונים...
+              </motion.p>
             </motion.div>
           ) : videos.length === 0 && !isLoading ? (
             <motion.div 
@@ -430,12 +397,7 @@ const Page = () => {
               {/* Enhanced background decorative elements */}
 
               
-              <WabiSabiPaperTexture 
-                opacity={0.12} 
-                type="natural" 
-                className="absolute inset-0 pointer-events-none" 
-                animate={true}
-              />
+              {/* Paper texture removed */}
               
               {/* Decorative background elements */}
               <div className="absolute top-1/3 right-1/4 w-40 h-40 bg-[#D5C4B7] opacity-10 rounded-full blur-3xl"></div>
@@ -450,7 +412,7 @@ const Page = () => {
                 transition={{ type: "spring", stiffness: 100, damping: 15, delay: 0.2 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] rounded-full flex items-center justify-center shadow-lg overflow-hidden">
-                  <WabiSabiPaperTexture opacity={0.2} type="natural" className="absolute inset-0" />
+                  {/* Paper texture removed */}
                   <motion.div
                     initial={{ scale: 0.7, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -493,15 +455,11 @@ const Page = () => {
               </motion.div>
               
               {/* Enhanced heading with accent */}
-              <WabiSabiHeading 
-                level={3} 
-                align="center" 
-                className="mb-4" 
-                withAccent={true}
-                accentColor="#D9713C"
-              >
+              <h3 className="text-2xl font-bold text-[#2D3142] text-center mb-4 relative">
+                {/* Accent line to replace WabiSabiHeading accent */}
+                <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 w-16 bg-[#D9713C] rounded-full"></span>
                 אין שיעורים שנצפו עדיין
-              </WabiSabiHeading>
+              </h3>
               
               {/* Enhanced message with better paper texture styling */}
               <motion.div 
@@ -510,7 +468,7 @@ const Page = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, type: "spring", stiffness: 100, damping: 15 }}
               >
-                <WabiSabiPaperTexture opacity={0.15} type="natural" className="absolute inset-0 pointer-events-none" />
+                {/* Paper texture removed */}
                 <p className="relative z-10">
                   השיעורים שתצפה בהם יופיעו כאן לצפייה מחדש
                 </p>
@@ -527,7 +485,7 @@ const Page = () => {
                   href="/explore"
                   className="flex items-center gap-2 bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-6 py-3 rounded-full shadow-md relative overflow-hidden group"
                 >
-                  <WabiSabiPaperTexture opacity={0.2} type="natural" className="absolute inset-0 pointer-events-none" />
+                  {/* Paper texture removed */}
                   <motion.span 
                     className="relative z-10 font-medium"
                     whileHover={{ scale: 1.05 }}
@@ -563,11 +521,7 @@ const Page = () => {
                 }}
               >
                 {/* Paper texture overlay for Wabi-Sabi style */}
-                <WabiSabiPaperTexture 
-                  opacity={0.05} 
-                  type="rice" 
-                  className="absolute inset-0 pointer-events-none" 
-                />
+                {/* Paper texture removed */}
                 
                 <div className="flex flex-col h-full">
                   {/* Video thumbnail with progress indicator */}
@@ -692,7 +646,7 @@ const Page = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 15 }}
           >
-            <WabiSabiPaperTexture opacity={0.1} type="natural" className="absolute inset-0 pointer-events-none" />
+            {/* Paper texture removed */}
             {loadingMore ? (
               <>
                 <motion.div 

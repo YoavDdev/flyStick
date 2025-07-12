@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import WabiSabiTexture from "../../../app/components/WabiSabiTexture";
+// Framer Motion import removed
+
 import Image from "next/image";
 
 // Icons for each technique category (you can replace these with actual icons later)
@@ -73,69 +73,46 @@ const StylesPage = () => {
       const response: AxiosResponse = await axios.get(apiUrl, { headers });
       const data = response.data;
       const foldersData = data.data;
-  
-      const folders = foldersData
-        .filter((folder: any) => folder.name.trim().toLowerCase() !== "my library")
-        .map((folder: any) => ({
-          name: folder.name,
-          uri: folder.uri,
-          description: folderDescriptions[folder.name as keyof typeof folderDescriptions] || "אין תיאור זמין.",
-        }));
-  
-      setFolders(folders);
+      
+      // Filter out any folders that might not have descriptions
+      const validFolders = foldersData.filter((folder: any) => 
+        folderDescriptions[folder.name as keyof typeof folderDescriptions]
+      );
+      
+      // Add descriptions to folders
+      const foldersWithDescriptions = validFolders.map((folder: any) => {
+        return {
+          ...folder,
+          description: folderDescriptions[folder.name as keyof typeof folderDescriptions] || "",
+        };
+      });
+      
+      setFolders(foldersWithDescriptions);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error fetching folders:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: [0.25, 0.1, 0.25, 1.0] as [number, number, number, number], // Custom easing for wabi-sabi feel
-      },
-    },
-  };
+  // Animation variants removed
 
   // Get a shortened description for cards
   const getShortenedDescription = (description: string) => {
     const maxLength = 80;
+    if (!description) return "";
     if (description.length <= maxLength) return description;
-    return description.substring(0, maxLength) + "...";
+    return `${description.substring(0, maxLength)}...`;
   };
 
   // Filter folders based on selected category
   const filteredFolders = selectedCategory
-    ? folders.filter(folder => folder.name === selectedCategory)
+    ? folders.filter((folder) => folder.name === selectedCategory)
     : folders;
 
   return (
-    <div className="relative min-h-screen bg-[#F7F3EB]">
-      {/* Background texture */}
-      <div className="absolute inset-0 z-0">
-        <WabiSabiTexture 
-          type="paper" 
-          opacity={0.05}
-          animate={true}
-          className="opacity-30"
-        />
-      </div>
+    <div className="min-h-screen bg-[#F7F3EB] relative">
+      {/* Background texture removed */}
       
       {/* Decorative elements */}
       <div className="absolute top-40 right-10 w-32 h-32 opacity-10 hidden lg:block">
@@ -153,31 +130,20 @@ const StylesPage = () => {
       <div className="relative z-10 pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
+          <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-medium tracking-wide text-[#3D3D3D] mb-4">
               <span className="border-b-2 border-[#B56B4A] pb-1">בחרו את הטכניקה שלכם</span>
             </h1>
-            <p className="text-lg text-[#5D5D5D] max-w-2xl mx-auto mt-6">
-              מגוון שיטות ותרגולים המותאמים לצרכים שונים, כל אחת מציעה חוויה ייחודית לגוף ולנפש
+            <p className="text-lg text-[#5D5D5D] max-w-2xl mx-auto">
+              אנו מציעים מגוון רחב של טכניקות תנועה לכל הרמות, מתחילים ועד מתקדמים
             </p>
-          </motion.div>
-
-          {/* Category filter - horizontal scrollable on mobile */}
-          <motion.div 
-            className="mb-10 overflow-x-auto pb-4 hide-scrollbar"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className="flex space-x-2 space-x-reverse justify-center min-w-max">
+            
+            {/* Category filter buttons */}
+            <div className="flex flex-wrap justify-center gap-2 mt-8 rtl">
               <button
                 onClick={() => setSelectedCategory(null)}
-                className={`px-5 py-2 rounded-full text-sm transition-all duration-300 ${!selectedCategory 
+                className={`px-5 py-2 rounded-full text-sm transition-all duration-300 ${
+                  selectedCategory === null 
                   ? 'bg-[#D5C4B7] text-[#3D3D3D] shadow-md' 
                   : 'bg-[#F7F3EB] text-[#5D5D5D] border border-[#D5C4B7] hover:bg-[#E6DEDA]'}`}
               >
@@ -196,7 +162,7 @@ const StylesPage = () => {
                 </button>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Loading state */}
           {loading && (
@@ -207,17 +173,11 @@ const StylesPage = () => {
 
           {/* Folders grid */}
           {!loading && (
-            <motion.div 
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredFolders.map((folder) => (
-                <motion.div 
-                  key={folder.uri}
-                  variants={itemVariants}
-                  whileHover={{ y: -5, transition: { duration: 0.3 } }}
+                <div 
+                  key={folder.uri} 
+                  className="transition-transform duration-300 hover:-translate-y-1"
                 >
                   <Link href={`/styles/${folder.uri.split("/").pop()}`}>
                     <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 h-full border border-[#E6DEDA]">
@@ -248,9 +208,9 @@ const StylesPage = () => {
                       </div>
                     </div>
                   </Link>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           )}
 
           {/* No results message */}

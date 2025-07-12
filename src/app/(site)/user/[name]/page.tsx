@@ -380,41 +380,7 @@ const Page: FC<pageProps> = ({ params }) => {
           <div className="absolute -top-10 right-10 w-32 h-32 bg-[#D5C4B7] opacity-20 rounded-full blur-3xl"></div>
           <div className="absolute top-40 left-10 w-40 h-40 bg-[#B8A99C] opacity-10 rounded-full blur-3xl"></div>
           
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="relative w-24 h-24">
-              <motion.div 
-                className="absolute inset-0 bg-[#D5C4B7] rounded-full opacity-30"
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              />
-              <motion.div 
-                className="absolute inset-2 bg-[#B8A99C] rounded-full opacity-50"
-                animate={{ scale: [1, 1.15, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-              />
-              <motion.div 
-                className="absolute inset-4 bg-[#D9713C] rounded-full opacity-70"
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
-              />
-              <motion.div 
-                className="absolute inset-0 w-full h-full flex items-center justify-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                <span className="text-white font-medium">טוען</span>
-              </motion.div>
-            </div>
-            <motion.p 
-              className="text-[#3D3D3D] mt-6 max-w-md"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-            >
-              טוען את הסרטונים...
-            </motion.p>
-          </div>
+          
         </div>
       </motion.div>
     );
@@ -457,7 +423,7 @@ const Page: FC<pageProps> = ({ params }) => {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
-              <span>חזרה לסגנונות</span>
+              <span>חזרה לספירה שלי</span>
             </Link>
               </motion.div>
             </motion.div>
@@ -516,54 +482,35 @@ const Page: FC<pageProps> = ({ params }) => {
                 whileHover={{ x: -5 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <Link
-                  href="/user"
-                  className="flex items-center gap-2 text-[#D9713C] hover:text-[#EF8354] transition-all duration-300 bg-white bg-opacity-50 px-4 py-2 rounded-full shadow-sm"
-                >
-                  <span>חזרה לספרייה שלי</span>
-                  <FaArrowRight size={14} />
-                </Link>
+            <Link 
+              href="/user" 
+              className="text-[#2D3142] bg-[#D5C4B7]/50 hover:bg-[#D5C4B7] px-4 py-2 rounded-md transition-colors duration-300 flex items-center gap-2 shadow-sm"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              <span>חזרה לספירה שלי</span>
+            </Link>
               </motion.div>
             </motion.div>
           </motion.div>
 
           {/* Video grid with Wabi-Sabi styling */}
           {(loading || showLoading) ? (
-            // Wabi-Sabi style loading animation
+            // Loading animation matching explore/page.tsx style
             <motion.div 
               className="flex flex-col items-center justify-center py-20 text-center"
               variants={itemVariants}
             >
-              <div className="relative w-24 h-24">
-                <motion.div 
-                  className="absolute inset-0 bg-[#D5C4B7] rounded-full opacity-30"
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                />
-                <motion.div 
-                  className="absolute inset-2 bg-[#B8A99C] rounded-full opacity-50"
-                  animate={{ scale: [1, 1.15, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-                />
-                <motion.div 
-                  className="absolute inset-4 bg-[#D9713C] rounded-full opacity-70"
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
-                />
-                <motion.div 
-                  className="absolute inset-0 w-full h-full flex items-center justify-center"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <span className="text-white font-medium">טוען</span>
-                </motion.div>
+              <div className="flex justify-center items-center">
+                <div className="w-16 h-16 border-4 border-[#D5C4B7] border-t-[#B8A99C] rounded-full animate-spin"></div>
               </div>
+              
               <motion.p 
                 className="text-[#3D3D3D] mt-6 max-w-md"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.7 }}
+                transition={{ delay: 0.3 }}
               >
                 טוען את הסרטונים...
               </motion.p>

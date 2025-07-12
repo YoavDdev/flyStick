@@ -6,7 +6,7 @@ import axios from "axios";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
-import { FaFolder, FaFolderOpen, FaPlus, FaTrash, FaEye, FaHeart } from "react-icons/fa";
+import { FaFolder, FaFolderOpen, FaPlus, FaTrash } from "react-icons/fa";
 import { MdFavorite, MdHistory } from "react-icons/md";
 
 const Page = () => {
@@ -18,7 +18,11 @@ const Page = () => {
   const [hoveredFolder, setHoveredFolder] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchFolderNames();
+    if (session && session.user && session.user.email) {
+      fetchFolderNames();
+    } else {
+      setLoading(false);
+    }
   }, [session]);
 
   const fetchFolderNames = async () => {
@@ -47,51 +51,49 @@ const Page = () => {
 
   const handleAddFolder = async () => {
     try {
-      if (!newFolderName.trim()) {
-        toast.error("Please enter a valid folder name");
+      if (!newFolderName) {
+        toast.error("אנא הזן שם לתיקייה");
+        return;
+      }
+
+      if (!session?.user?.email) {
+        toast.error("אנא התחבר כדי להוסיף תיקייה");
         return;
       }
 
       const response = await axios.post("/api/add-new-folder", {
-        userEmail: session?.user?.email,
+        userEmail: session.user.email,
         folderName: newFolderName,
       });
 
       if (response.status === 200) {
-        toast.success("New folder added");
-        fetchFolderNames();
+        setFolderNames((prev) => [...prev, newFolderName]);
         setNewFolderName("");
         setShowForm(false);
+        toast.success("התיקייה נוצרה בהצלחה");
       }
     } catch (error) {
-      console.error("Error adding new folder:", error);
-      toast.error("Error adding new folder");
+      console.error("Error adding folder:", error);
+      toast.error("אירעה שגיאה ביצירת התיקייה");
     }
   };
 
-  const handleDeleteFolder = (folderName: any) => {
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete ${folderName}?`,
-    );
+  const handleDeleteFolder = async (folderName: string) => {
+    try {
+      if (!session?.user?.email) return;
 
-    if (confirmDelete) {
-      axios
-        .delete("/api/delete-a-folder", {
-          data: {
-            userEmail: session?.user?.email,
-            folderName,
-          },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            toast.success("Folder deleted");
-            fetchFolderNames();
-          }
-        })
-        .catch((error) => {
-          console.error("Error deleting folder:", error);
-          toast.error("Error deleting the folder");
-        });
+      const response = await axios.post("/api/delete-a-folder", {
+        userEmail: session.user.email,
+        folderName,
+      });
+
+      if (response.status === 200) {
+        setFolderNames((prev) => prev.filter((name) => name !== folderName));
+        toast.success("התיקייה נמחקה בהצלחה");
+      }
+    } catch (error) {
+      console.error("Error deleting folder:", error);
+      toast.error("אירעה שגיאה במחיקת התיקייה");
     }
   };
 
@@ -127,7 +129,7 @@ const Page = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F3EB] py-24">
+    <div className="min-h-screen py-24">
       <div className="container mx-auto px-4 max-w-6xl">
         {session?.user ? (
           <motion.div
@@ -135,42 +137,39 @@ const Page = () => {
             animate="visible"
             variants={containerVariants}
           >
-            <div className="relative z-10 mb-12">
-              <motion.div variants={itemVariants} className="relative z-10">
+            <div className="mb-12">
+              <motion.div variants={itemVariants}>
                 <h1 className="text-3xl font-bold text-[#2D3142] mb-2 text-center">
                   הספרייה האישית שלך
                 </h1>
                 <p className="text-lg text-[#3D3D3D] text-center">
-                  {loading
-                    ? "טעינה..."
-                    : folderNames.length === 0
+                  {!loading && (folderNames.length === 0
                     ? "אין לך תיקיות עדיין"
-                    : "כאן תנהלו את הסרטים ששמרתם"}
+                    : "כאן תנהלו את הסרטים ששמרתם")}
                 </p>
+                
+                {/* Loading state */}
+                {loading && (
+                  <div className="flex justify-center items-center py-6">
+                    <div className="w-12 h-12 border-4 border-[#D5C4B7] border-t-[#B8A99C] rounded-full animate-spin"></div>
+                  </div>
+                )}
               </motion.div>
-              
-              {/* Decorative background elements */}
-              <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
-                <div className="absolute top-10 left-10 w-64 h-64 bg-[#D5C4B7] rounded-full opacity-10 transform -translate-x-1/2 -translate-y-1/2"></div>
-                <div className="absolute bottom-10 right-10 w-48 h-48 bg-[#B8A99C] rounded-full opacity-10 transform translate-x-1/3 translate-y-1/3"></div>
-              </div>
             </div>
 
-            <motion.div 
-              variants={itemVariants}
-              className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
-            >
+            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
               {folderNames.map((folderName: string) => (
                 <motion.div 
                   key={folderName} 
-                  variants={itemVariants}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   whileHover={{ y: -5, transition: { duration: 0.2 } }}
                   className="relative"
                   onMouseEnter={() => setHoveredFolder(folderName)}
                   onMouseLeave={() => setHoveredFolder(null)}
                 >
                   <Link href={`/user/${folderName}`}>
-                    <div className="h-48 sm:h-60 w-full overflow-hidden rounded-xl bg-white p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-[#D5C4B7]/20">
+                    <div className="h-48 sm:h-60 w-full overflow-hidden rounded-xl bg-[#F7F3EB] p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-[#D5C4B7]/20">
                       <div className="flex flex-col justify-center items-center text-center h-full relative">
                         <div className="mb-4 text-[#B8A99C]">
                           {folderName.toLowerCase() === "watched" ? (
@@ -218,7 +217,8 @@ const Page = () => {
               ))}
 
               <motion.div 
-                variants={itemVariants}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
               >
                 <div className="h-48 sm:h-60 w-full overflow-hidden rounded-xl bg-white p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-[#D5C4B7]/20 border-dashed">
@@ -244,7 +244,7 @@ const Page = () => {
                         <div className="flex justify-center gap-2">
                           <motion.button
                             type="submit"
-                            className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-4 py-2 rounded-lg focus:outline-none transition-colors duration-300"
+                            className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-4 py-2 rounded-lg focus:outline-none"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                           >
@@ -274,7 +274,7 @@ const Page = () => {
                   </div>
                 </div>
               </motion.div>
-            </motion.div>
+            </div>
           </motion.div>
         ) : (
           <motion.div 
@@ -283,7 +283,7 @@ const Page = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="relative z-10 bg-white p-10 rounded-xl shadow-md max-w-md mx-auto border border-[#D5C4B7]/20">
+            <div className="bg-white p-10 rounded-xl shadow-md max-w-md mx-auto border border-[#D5C4B7]/20">
               <h1 className="text-3xl font-bold text-[#2D3142] mb-6">
                 אנא היכנס כדי להמשיך
               </h1>
@@ -297,12 +297,6 @@ const Page = () => {
                   כניסה
                 </motion.div>
               </Link>
-            </div>
-            
-            {/* Decorative background elements */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
-              <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[#D5C4B7] rounded-full opacity-10"></div>
-              <div className="absolute bottom-1/3 right-1/3 w-48 h-48 bg-[#B8A99C] rounded-full opacity-10"></div>
             </div>
           </motion.div>
         )}

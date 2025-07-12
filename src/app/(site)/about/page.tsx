@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import boazAbout from "../../../../public/BoazAbout.jpeg";
 import * as FramerMotion from "framer-motion";
-import WabiSabiTexture from "../../../app/components/WabiSabiTexture";
+
 
 const { motion } = FramerMotion;
 
@@ -13,12 +13,7 @@ const WabiSabiAbout = () => {
     <div className="relative overflow-hidden pt-20 pb-16">
       {/* Background texture */}
       <div className="absolute inset-0 z-0">
-        <WabiSabiTexture 
-          type="paper" 
-          opacity={0.05}
-          animate={true}
-          className="opacity-30"
-        />
+        {/* Background texture removed */}
       </div>
       
       {/* Decorative elements */}
@@ -71,11 +66,7 @@ const WabiSabiAbout = () => {
               
               {/* Subtle texture overlay */}
               <div className="absolute inset-0 z-20 opacity-30 overflow-hidden rounded-lg">
-                <WabiSabiTexture 
-                  type="clay" 
-                  opacity={0.1}
-                  className="rounded-lg"
-                />
+                {/* Texture overlay removed */}
               </div>
             </div>
           </motion.div>

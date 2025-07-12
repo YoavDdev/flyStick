@@ -2,7 +2,6 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 
 interface Props {
   progress: number;
@@ -56,27 +55,21 @@ const VideoProgressBadge: React.FC<Props> = ({
   const selectedSize = sizeClasses[size];
   const selectedTheme = themeClasses[theme];
 
-  // Completed video badge
+  // Completed video badge (static version)
   if (progress >= 99) {
     return (
-      <motion.div
-        initial={animate ? { scale: 0.8, opacity: 0 } : undefined}
-        animate={animate ? { scale: 1, opacity: 1 } : undefined}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      <div
         title="נצפה במלואו"
         className={`${selectedSize} rounded-full ${selectedTheme.completed} flex items-center justify-center font-bold shadow-md hover:shadow-lg transition-all duration-300 ${className}`}
       >
         ✓
-      </motion.div>
+      </div>
     );
   }
 
-  // In-progress video badge
+  // In-progress video badge (static version)
   return (
-    <motion.div
-      initial={animate ? { scale: 0.8, opacity: 0 } : undefined}
-      animate={animate ? { scale: 1, opacity: 1 } : undefined}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+    <div
       title={`התקדמות: ${progress}%`}
       className={`relative ${selectedSize} rounded-full ${selectedTheme.bg} flex items-center justify-center ${selectedTheme.text} font-semibold shadow-md hover:shadow-lg transition-all duration-300 ${className}`}
     >
@@ -93,21 +86,18 @@ const VideoProgressBadge: React.FC<Props> = ({
           stroke="currentColor"
           strokeWidth="3.8"
         />
-        <motion.path
-          initial={animate ? { strokeDasharray: "0, 100" } : undefined}
-          animate={animate ? { strokeDasharray: `${progress}, 100` } : undefined}
-          transition={{ duration: 1, ease: "easeOut" }}
+        <path
           className={selectedTheme.progress}
           d="M18 2.0845
              a 15.9155 15.9155 0 0 1 0 31.831"
           fill="none"
           stroke="currentColor"
-          strokeDasharray={animate ? undefined : `${progress}, 100`}
+          strokeDasharray={`${progress}, 100`}
           strokeWidth="3.8"
         />
       </svg>
       {showPercentage && <span className="z-10">{progress}%</span>}
-    </motion.div>
+    </div>
   );
 };
 

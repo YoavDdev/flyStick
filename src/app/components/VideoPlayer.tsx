@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback, memo } from 'react';
 import Player from '@vimeo/player';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
@@ -28,7 +28,8 @@ const VideoPlayer = ({
   const { data: session } = useSession();
   const [showPreviewOverlay, setShowPreviewOverlay] = useState(false);
   const [previewTimeRemaining, setPreviewTimeRemaining] = useState(120);
-  const previewTimerRef = useRef<NodeJS.Timeout | null>(null);
+  // Updated ref type to handle both interval and animation frame
+  const previewTimerRef = useRef<NodeJS.Timeout | { clear: () => void } | null>(null);
 
   useEffect(() => {
     if (!videoContainerRef.current || !embedHtml) return;
@@ -65,22 +66,46 @@ const VideoPlayer = ({
           newPlayer.setCurrentTime(Math.min(initialResumeTime, PREVIEW_LIMIT));
         }
         
-        // Start the preview timer
-        previewTimerRef.current = setInterval(() => {
-          setPreviewTimeRemaining(prev => {
-            if (prev <= 1) {
-              // Time's up, show overlay and pause video
-              clearInterval(previewTimerRef.current as NodeJS.Timeout);
-              setShowPreviewOverlay(true);
-              newPlayer.pause();
-              
-              // Mark this video as watched in localStorage
-              localStorage.setItem(videoKey, 'watched');
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
+        // Start the preview timer using requestAnimationFrame instead of setInterval
+        // This is more efficient and will pause when tab is not active
+        let lastTimestamp = Date.now();
+        let animationFrameId: number;
+        
+        const updatePreviewTimer = () => {
+          const now = Date.now();
+          const deltaTime = now - lastTimestamp;
+          
+          // Only update once per second approximately
+          if (deltaTime >= 1000) {
+            lastTimestamp = now;
+            
+            setPreviewTimeRemaining(prev => {
+              if (prev <= 1) {
+                // Time's up, show overlay and pause video
+                setShowPreviewOverlay(true);
+                newPlayer.pause();
+                
+                // Mark this video as watched in localStorage
+                localStorage.setItem(videoKey, 'watched');
+                return 0;
+              }
+              return prev - 1;
+            });
+          }
+          
+          // Continue animation frame loop if preview time remaining
+          if (previewTimeRemaining > 0) {
+            animationFrameId = requestAnimationFrame(updatePreviewTimer);
+          }
+        };
+        
+        // Start the animation frame loop
+        animationFrameId = requestAnimationFrame(updatePreviewTimer);
+        
+        // Store the animation frame ID for cleanup
+        previewTimerRef.current = {
+          clear: () => cancelAnimationFrame(animationFrameId)
+        };
         
         // Add seek event listener to prevent seeking past the preview limit
         newPlayer.on('seeked', async () => {
@@ -112,7 +137,7 @@ const VideoPlayer = ({
       if (!session?.user || !videoUri) return;
       
       const now = Date.now();
-      if (now - lastSaved < 5000) return; // Save only if 5 seconds have passed
+      if (now - lastSaved < 15000) return; // Save only if 15 seconds have passed (increased from 5s)
       lastSaved = now;
       
       try {
@@ -151,13 +176,17 @@ const VideoPlayer = ({
       saveProgress(); // Save progress on unmount
       newPlayer.destroy();
       if (previewTimerRef.current) {
-        clearInterval(previewTimerRef.current);
+        if (previewTimerRef.current && 'clear' in previewTimerRef.current) {
+          previewTimerRef.current.clear();
+        } else if (previewTimerRef.current) {
+          clearInterval(previewTimerRef.current);
+        }
       }
       window.removeEventListener("beforeunload", saveProgress);
     };
   }, [embedHtml, initialResumeTime, isSubscriber, session, videoUri]);
 
-  const handleClose = async () => {
+  const handleClose = useCallback(async () => {
     if (player && videoUri && session?.user) {
       try {
         const currentTime = await player.getCurrentTime();
@@ -182,10 +211,10 @@ const VideoPlayer = ({
     }
     
     onClose();
-  };
+  }, [player, videoUri, session, onClose]);
 
   // Function to handle replaying the video from the beginning
-  const handleReplay = () => {
+  const handleReplay = useCallback(() => {
     if (player && videoUri) {
       // Reset the preview timer
       setPreviewTimeRemaining(120);
@@ -205,32 +234,61 @@ const VideoPlayer = ({
         }
       }
       
-      // Start the preview timer again
+      // Start the preview timer again using requestAnimationFrame
       if (previewTimerRef.current) {
-        clearInterval(previewTimerRef.current);
+        if (previewTimerRef.current && 'clear' in previewTimerRef.current) {
+          previewTimerRef.current.clear();
+        } else if (previewTimerRef.current) {
+          clearInterval(previewTimerRef.current);
+        }
       }
       
-      previewTimerRef.current = setInterval(() => {
-        setPreviewTimeRemaining(prev => {
-          if (prev <= 1) {
-            clearInterval(previewTimerRef.current as NodeJS.Timeout);
-            setShowPreviewOverlay(true);
-            player.pause();
-            
-            // Mark this video as watched in localStorage again
-            const videoIdMatch = embedHtml?.match(/player\.vimeo\.com\/video\/(\d+)/);
-            if (videoIdMatch) {
-              const videoId = videoIdMatch[1];
-              const videoKey = `preview_${videoId}_${session?.user?.email || 'guest'}`;
-              localStorage.setItem(videoKey, 'watched');
+      // Similar implementation as in useEffect but for replay
+      let lastTimestamp = Date.now();
+      let animationFrameId: number;
+      
+      const updatePreviewTimer = () => {
+        const now = Date.now();
+        const deltaTime = now - lastTimestamp;
+        
+        // Only update once per second approximately
+        if (deltaTime >= 1000) {
+          lastTimestamp = now;
+          
+          setPreviewTimeRemaining(prev => {
+            if (prev <= 1) {
+              // Time's up, show overlay and pause video
+              setShowPreviewOverlay(true);
+              player.pause();
+              
+              // Mark this video as watched in localStorage again
+              const videoIdMatch = embedHtml?.match(/player\.vimeo\.com\/video\/(\d+)/);
+              if (videoIdMatch) {
+                const videoId = videoIdMatch[1];
+                const videoKey = `preview_${videoId}_${session?.user?.email || 'guest'}`;
+                localStorage.setItem(videoKey, 'watched');
+              }
+              return 0;
             }
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
+            return prev - 1;
+          });
+        }
+        
+        // Continue animation frame loop if preview time remaining
+        if (previewTimeRemaining > 0) {
+          animationFrameId = requestAnimationFrame(updatePreviewTimer);
+        }
+      };
+      
+      // Start the animation frame loop
+      animationFrameId = requestAnimationFrame(updatePreviewTimer);
+      
+      // Store the animation frame ID for cleanup
+      previewTimerRef.current = {
+        clear: () => cancelAnimationFrame(animationFrameId)
+      };
     }
-  };
+  }, [player, videoUri, embedHtml, session, previewTimeRemaining, setPreviewTimeRemaining, setShowPreviewOverlay]);
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-[9999] flex items-center justify-center">

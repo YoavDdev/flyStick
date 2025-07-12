@@ -1,59 +1,59 @@
 /**
- * Standard Animation Utilities
+ * Standard Animation Utilities (Static Version)
  * 
- * Basic animation utilities for the application
+ * Static replacements for animation utilities - all animations removed
  */
 
-import { Easing, cubicBezier } from 'framer-motion';
+// Type definitions to maintain compatibility
+type Easing = number[];
 
-// Standard easing functions
+// Static easing functions (no actual animation effect)
 export const standardEasing: Record<string, Easing> = {
-  // Standard ease-in-out
+  // Kept for compatibility but no animation effect
   gentle: [0.4, 0.0, 0.2, 1],
-  // Standard ease
   standard: [0.25, 0.1, 0.25, 1],
-  // Quick ease-out
   quick: [0.0, 0.0, 0.2, 1],
-  // Slow ease-in
   slow: [0.4, 0.0, 1, 1],
 };
 
-// Page transition variants
+// Static page transition variants (no actual animation effect)
 export const pageTransitionVariants = {
+  // All states render the same way - no transitions
   initial: { 
-    opacity: 0,
-    y: 5,
+    opacity: 1,
+    y: 0,
   },
   animate: { 
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5,
+      duration: 0,
       ease: standardEasing.gentle,
-      staggerChildren: 0.1,
+      staggerChildren: 0,
     }
   },
   exit: { 
-    opacity: 0,
-    y: 5,
+    opacity: 1,
+    y: 0,
     transition: {
-      duration: 0.4,
+      duration: 0,
       ease: standardEasing.gentle,
     }
   }
 };
 
-// Staggered children animation variants
+// Static staggered children variants (no actual animation effect)
 export const staggerChildrenVariants = {
+  // All states render the same way - no transitions
   initial: { 
-    opacity: 0,
-    y: 15,
+    opacity: 1,
+    y: 0,
   },
   animate: { 
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5,
+      duration: 0,
       ease: standardEasing.standard,
     }
   }
