@@ -63,32 +63,26 @@ const WabiSabiFeature = () => {
   }, [controls, isInView]);
 
   return (
-    <div className="relative bg-[#F7F3EB] py-16 sm:py-24 overflow-hidden" dir="rtl" ref={ref}>
-      {/* Paper texture overlay */}
-      <div className="absolute inset-0 bg-[url('/paper-texture.png')] opacity-5 mix-blend-overlay pointer-events-none"></div>
+    <div className="relative overflow-hidden" dir="rtl" ref={ref}>
+      {/* Decorative elements */}
+      <div className="absolute -left-32 top-20 w-64 h-64 rounded-full bg-[#D5C4B7]/10 blur-md"></div>
+      <div className="absolute -right-20 bottom-20 w-80 h-80 rounded-full bg-[#B8A99C]/10 blur-md"></div>
       
-      {/* Decorative blob */}
-      <div className="absolute -left-20 top-20 w-64 h-64 opacity-10 pointer-events-none">
-        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <motion.path
-            fill="#D5C4B7"
-            d="M39.5,-65.3C50.2,-55.1,57.2,-42.1,63.4,-28.8C69.6,-15.5,74.9,-1.9,73.1,10.7C71.3,23.3,62.3,34.8,51.6,42.8C40.9,50.8,28.5,55.3,15.3,60.5C2.2,65.7,-11.7,71.7,-24.4,69.9C-37.1,68.1,-48.5,58.6,-57.4,47C-66.3,35.4,-72.6,21.7,-74.3,7.2C-76,-7.3,-73,-22.5,-65.3,-34.2C-57.6,-45.9,-45.2,-54,-32.5,-63.8C-19.8,-73.6,-6.6,-85.1,5.2,-83.3C17,-81.5,28.8,-75.5,39.5,-65.3Z"
-            initial={{ pathLength: 0 }}
-            animate={{ 
-              pathLength: 1,
-              transition: { duration: 2, ease: "easeInOut" }
-            }}
-          />
-        </svg>
-      </div>
-
-      <div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
+      {/* Main content */}
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 relative z-10">
         <motion.div
           className="mx-auto max-w-2xl lg:text-center"
           variants={containerVariants}
           initial="hidden"
           animate={controls}
         >
+          {/* Decorative element above heading */}
+          <motion.div 
+            className="w-16 h-1 bg-[#B56B4A]/30 rounded-full mx-auto mb-6"
+            initial={{ width: 0 }}
+            animate={{ width: 64, transition: { delay: 0.5, duration: 0.8 } }}
+          />
+          
           <motion.h2
             className="text-base font-semibold leading-7 text-[#5C6A85]"
             variants={itemVariants}
@@ -102,7 +96,7 @@ const WabiSabiFeature = () => {
             מסע התנועה והריפוי מתחיל עכשיו
           </motion.p>
           <motion.p
-            className="mt-6 text-lg leading-8 text-[#3D3D3D]"
+            className="mt-6 text-lg leading-8 text-[#3D3D3D] max-w-3xl mx-auto"
             variants={itemVariants}
           >
             לימוד והעמקה בהתאם לצורך והיכולת האישית. לכל אדם בכל שלב.
@@ -110,14 +104,14 @@ const WabiSabiFeature = () => {
           </motion.p>
         </motion.div>
 
-        {/* Feature circles */}
+        {/* Feature circles with enhanced styling */}
         <motion.div
           className="mx-auto mt-16 max-w-5xl sm:mt-20 lg:mt-24"
           variants={containerVariants}
           initial="hidden"
           animate={controls}
         >
-          <div className="flex flex-wrap justify-center gap-8 lg:gap-16">
+          <div className="flex flex-wrap justify-center gap-10 lg:gap-20">
             {features.map((feature, index) => (
               <motion.div
                 key={feature.name}
@@ -125,26 +119,32 @@ const WabiSabiFeature = () => {
                 variants={itemVariants}
                 whileHover={{ y: -5, transition: { duration: 0.3 } }}
               >
-                {/* Circular icon */}
+                {/* Enhanced circular icon with subtle shadow and border */}
                 <motion.div 
-                  className="w-20 h-20 rounded-full flex items-center justify-center shadow-md mb-4"
+                  className="w-24 h-24 rounded-full flex items-center justify-center shadow-lg mb-6 border border-white/20"
                   style={{ 
                     backgroundColor: feature.color,
+                    boxShadow: `0 10px 30px -5px ${feature.color}40`
                   }}
                   whileHover={{ 
                     scale: 1.05,
-                    boxShadow: "0 10px 25px -10px rgba(0,0,0,0.3)",
+                    boxShadow: `0 15px 30px -10px ${feature.color}60`,
                     transition: { duration: 0.3 }
                   }}
                 >
-                  <span className="text-2xl text-[#F7F3EB]">{feature.icon}</span>
+                  <span className="text-3xl text-[#F7F3EB]">{feature.icon}</span>
                 </motion.div>
                 
-                {/* Feature name and description */}
-                <h3 className="text-lg font-semibold text-[#2D3142] mt-2">
+                {/* Feature name with enhanced typography */}
+                <h3 className="text-xl font-semibold text-[#2D3142] mt-2">
                   {feature.name}
                 </h3>
-                <p className="mt-2 text-sm text-[#3D3D3D]">
+                
+                {/* Decorative divider */}
+                <div className="w-12 h-0.5 bg-[#D5C4B7] my-3 rounded-full"></div>
+                
+                {/* Feature description with improved readability */}
+                <p className="mt-2 text-base text-[#3D3D3D]">
                   {feature.description}
                 </p>
               </motion.div>

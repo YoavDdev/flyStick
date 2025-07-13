@@ -12,6 +12,7 @@ const { motion, AnimatePresence } = FramerMotion;
 type Variants = FramerMotion.Variants;
 
 import DropdownMenu from "./DropdownMenu";
+import { useVideoPlayer } from "../context/VideoPlayerContext";
 
 interface WabiSabiNavbarProps {}
 
@@ -35,6 +36,9 @@ const WabiSabiNavbar = () => {
   const { data: session } = useSession();
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  // Get video player state from context
+  const { isVideoOpen } = useVideoPlayer();
 
   // Navigation links with icons for improved UX
   const navigationLinks: NavigationLink[] = [
@@ -150,8 +154,15 @@ const WabiSabiNavbar = () => {
     ease: "easeInOut" // Using string easing that framer-motion supports
   };
 
+  // Don't render navbar when video is open
+  if (isVideoOpen) {
+    return null;
+  }
+  
   return (
-    <nav className={`fixed w-full h-20 z-[100] ${isTransparent ? 'bg-transparent' : 'bg-[#F7F3EB]'} transition-all duration-500 ease-in-out`}>
+    <nav
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${isTransparent ? 'bg-transparent' : 'bg-[#F7F3EB] shadow-sm'}`}
+    >
       {/* Texture overlay */}
       {!isTransparent && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">

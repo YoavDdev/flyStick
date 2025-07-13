@@ -1,21 +1,18 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import Player from "@vimeo/player";
 import { FaPlay, FaEye, FaEyeSlash, FaPlus, FaSearch } from "react-icons/fa";
-// Removed framer-motion import
-import VideoProgressBadge from "@/app/components/VideoProgressBadge";
+import { motion } from "framer-motion";
 import VideoPlayer from "@/app/components/VideoPlayer";
 import PlaylistModal from "@/app/components/PlaylistModal";
 import VideoCard from "@/app/components/VideoCard";
 import SearchBar from "@/app/components/SearchBar";
-// WabiSabiHeading import removed
-
-
-// Removed standardAnimations import
+import Image from "next/image";
+import { useVideoPlayer } from "../context/VideoPlayerContext";
 
 interface ExploreVideosProps {
   title?: string;
@@ -137,6 +134,18 @@ const ExploreVideos = ({
         // Get folder names for the user
         if (userData.folders) {
           setFolderNames(userData.folders.map((folder: any) => folder.name));
+        } else {
+          // Fetch folders separately if not included in user data
+          const foldersResponse = await axios.get("/api/folders", {
+            params: { email: session.user.email },
+          });
+
+          if (foldersResponse.data && foldersResponse.data.length > 0) {
+            const names = foldersResponse.data.map(
+              (folder: any) => folder.name
+            );
+            setFolderNames(names);
+          }
         }
       }
     } catch (error) {
@@ -166,48 +175,79 @@ const ExploreVideos = ({
       setWatchedVideos([]);
       setFolderNames([]);
     }
-    
+  }, [initialHashtag, session]);
+
+  useEffect(() => {
+    function preventDefault(e: Event) {
+      e.preventDefault();
+    }
+
+    // Add event listener to prevent scrolling when modal is open
+    if (selectedVideo) {
+      document.body.style.overflow = "hidden";
+      document.addEventListener("wheel", preventDefault, { passive: false });
+    } else {
+      document.body.style.overflow = "";
+      document.removeEventListener("wheel", preventDefault);
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("wheel", preventDefault);
+    };
+  }, [selectedVideo]);
+
+  useEffect(() => {
     // Handle back button for video player
     const handleBackButton = (event: PopStateEvent) => {
       if (isVideoOpenRef.current) {
-        event.preventDefault();
         closeVideo();
+        isVideoOpenRef.current = false;
       }
     };
-    
+
     window.addEventListener("popstate", handleBackButton);
-    
+
     return () => {
       window.removeEventListener("popstate", handleBackButton);
     };
-  }, [initialHashtag, session]);
+  }, []);
 
-  const openVideo = (embedHtml: string, videoUri: string) => {
-    // Find if this video has been watched before and has a resumeTime
-    const watchedVideo = watchedVideos.find(v => {
-      // Extract video ID from both URIs for comparison
-      const watchedVideoId = v.uri.split('/').pop();
-      const currentVideoId = videoUri.split('/').pop();
-      return watchedVideoId === currentVideoId;
-    });
+  useEffect(() => {
+    setCurrentPage(1);
+    setNoMoreVideos(false);
+    fetchVideos(1);
+  }, [initialSearchQuery, initialHashtag]);
+
+  const { setIsVideoOpen } = useVideoPlayer();
+
+  const openVideo = useCallback((embedHtml: string, videoUri: string) => {
+    // Find if this video has been watched before
+    const watchedVideo = watchedVideos.find((v) => v.uri === videoUri);
     
+    // Set resume time if available
     if (watchedVideo && watchedVideo.resumeTime) {
       setResumeTime(watchedVideo.resumeTime);
     } else {
-      setResumeTime(0); // Reset resume time if no previous watch history
+      setResumeTime(0);
     }
     
+    // Set the selected video
     setSelectedVideo(embedHtml);
     setSelectedVideoUri(videoUri);
-    isVideoOpenRef.current = true; // Set video open state
-    window.history.pushState({}, "Video", ""); // Push new state when opening video
-  };
+    
+    // Push state to handle back button
+    window.history.pushState({ videoOpen: true }, "");
+    isVideoOpenRef.current = true;
+    setIsVideoOpen(true);
+  }, [watchedVideos, setIsVideoOpen]);
 
-  const closeVideo = async () => {
+  const closeVideo = useCallback(async () => {
     isVideoOpenRef.current = false;
     setSelectedVideo(null);
     window.history.replaceState({}, "", window.location.pathname);
-  };
+    setIsVideoOpen(false);
+  }, [setIsVideoOpen]);
 
   const theUserId = async () => {
     if (!session?.user?.email) {
@@ -223,9 +263,12 @@ const ExploreVideos = ({
       if (response.data && response.data.folders) {
         setFolderNames(response.data.folders.map((folder: any) => folder.name));
       }
+      
+      return session.user.email;
     } catch (error) {
       console.error("Error fetching user data:", error);
       toast.error("שגיאה בטעינת נתוני משתמש");
+      return null;
     }
   };
 
@@ -284,9 +327,6 @@ const ExploreVideos = ({
           ...new Array(videosData.length).fill(false),
         ]);
       }
-      
-      // We're now using a static list of hashtags defined at the component level
-      // No need to extract hashtags from video descriptions
       
       return videosData.length > 0; // Indicate if more videos are available
     } catch (error) {
@@ -373,14 +413,11 @@ const ExploreVideos = ({
 
   // Create playlist function for the PlaylistModal component
   const createPlaylist = async (playlistName: string) => {
-    if (!session?.user?.email) return;
-
     try {
-      const response = await axios.post("/api/create-playlist", {
-        userEmail: session.user.email,
-        playlistName,
+      const response = await axios.post("/api/folders", {
+        name: playlistName,
+        email: session?.user?.email,
       });
-
       if (response.status === 200) {
         setFolderNames([...folderNames, playlistName]);
         toast.success("הרשימה נוצרה בהצלחה");
@@ -390,12 +427,45 @@ const ExploreVideos = ({
       toast.error("שגיאה ביצירת רשימה");
     }
   };
+  
+  // Memoize animation variants to prevent recreating on each render
+  const containerVariants = useMemo(() => ({
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05, // Reduced from 0.1 for better performance
+        when: "beforeChildren"
+      }
+    }
+  }), []);
+
+  const itemVariants = useMemo(() => ({
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 80, // Reduced from 100 for better performance
+        damping: 12
+      }
+    }
+  }), []);
 
   return (
-    <div className={`bg-[#F7F3EB] py-8 ${className}`}>
-      <div className="container mx-auto px-4">
-        <div className="relative mb-10 overflow-hidden">
-          {/* Decorative background elements */}
+    <div className={`w-full relative ${className}`}>
+
+
+
+      <div className="container mx-auto px-4 py-8 relative z-10">
+        {/* Premium Video Banner */}
+        <motion.div 
+          className="relative mb-10 overflow-hidden bg-[#F7F3EB] rounded-2xl shadow-md border border-[#D5C4B7]/30"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="absolute -top-16 -right-16 w-64 h-64 opacity-10 transform rotate-12">
             <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -405,120 +475,148 @@ const ExploreVideos = ({
             </svg>
           </div>
           
-          {/* Header content */}
-          <div className="relative z-10 text-center max-w-3xl mx-auto bg-[#F7F3EB] bg-opacity-80 py-6 px-4 rounded-2xl shadow-md border border-[#D5C4B7] border-opacity-30">
+          <div className="relative z-10 text-center md:text-right max-w-3xl mx-auto py-6 px-6 md:px-8">
             <div className="absolute top-0 left-0 w-full h-full bg-[url('/paper-texture.png')] opacity-5 mix-blend-overlay"></div>
             
             <div className="relative flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="text-right md:w-2/3">
-                <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#EF8354] bg-opacity-20 border border-[#EF8354] border-opacity-30 mb-2">
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#EF8354] text-white text-xs font-bold mr-2">2</span>
+                <motion.div 
+                  className="inline-flex items-center px-3 py-1 rounded-full bg-[#EF8354] bg-opacity-20 border border-[#EF8354] border-opacity-30 mb-2"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                >
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#EF8354] text-white text-xs font-bold ml-2">2</span>
                   <span className="text-[#2D3142] text-sm font-medium">דקות צפייה חינמית מכל סרטון</span>
-                </div>
+                </motion.div>
                 
-                <h2 className="text-xl font-bold text-[#2D3142] mb-1">
+                <motion.h2 
+                  className="text-xl font-bold text-[#2D3142] mb-1"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1, duration: 0.5 }}
+                >
                   חפש וצפה בכל הסרטונים שלנו
-                </h2>
+                </motion.h2>
                 
-                <p className="text-[#3D3D3D] text-sm">
+                <motion.p 
+                  className="text-[#3D3D3D] text-sm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                >
                   כל הסרטונים זמינים לצפייה מקדימה - הירשם למנוי מלא לצפייה ללא הגבלה
-                </p>
+                </motion.p>
               </div>
-              
-              <div className="md:w-1/3">
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
 
-      <div 
-        className="bg-white rounded-xl shadow-lg overflow-hidden relative"
-      >
-        <SearchBar 
-          onSearch={(query) => {
-            setSearchQuery(query);
-            handleSearch({ preventDefault: () => {} } as React.FormEvent);
-          }}
-          hashtags={hashtagOptions}
-          onHashtagClick={(hashtag) => {
-            setSearchQuery(`# ${hashtag}`);
-            handleSearch({ preventDefault: () => {} } as React.FormEvent);
-          }}
-        />
-      </div>
+        {/* Search Bar with Autocomplete */}
+        <motion.div 
+          className="mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <SearchBar 
+            onSearch={(query) => {
+              setSearchQuery(query);
+              handleSearch({ preventDefault: () => {} } as React.FormEvent);
+            }}
+            hashtags={hashtagOptions}
+            onHashtagClick={(hashtag) => {
+              setSearchQuery(`# ${hashtag}`);
+              handleSearch({ preventDefault: () => {} } as React.FormEvent);
+            }}
+          />
+        </motion.div>
 
-      {/* Scrollable video container with fixed height */}
-      <div 
-        className="relative border border-[#D5C4B7] border-opacity-40 rounded-xl overflow-hidden shadow-md bg-[#F7F3EB] bg-opacity-50 mb-6"
-      >
-        {/* Paper texture overlay for container */}
-        {/* Paper texture removed */}
-        {/* Container header with subtle gradient */}
-        <div className="sticky top-0 z-10 bg-gradient-to-b from-[#F7F3EB] to-transparent py-3 px-5 flex justify-between items-center border-b border-[#D5C4B7] border-opacity-30 overflow-hidden">
-          {/* Paper texture removed */}
-          <h3 className="text-[#2D3142] font-medium font-heebo relative z-10">סרטונים זמינים</h3>
-          {!noMoreVideos && (
-            <button
-              className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-4 py-1.5 text-sm rounded-full focus:outline-none shadow-sm transition-all duration-300 hover:shadow-md font-medium relative overflow-hidden"
-              onClick={loadMore}
-            >
-              {/* Paper texture removed */}
-              טען עוד
-            </button>
-          )}
-        </div>
-        
-        {/* Scrollable content area */}
-        <div className="h-[600px] overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-[#D5C4B7] scrollbar-track-transparent relative">
-          {/* Subtle floating elements in the background */}
-
-          {noResults ? (
-            <div 
-              className="text-center py-10 px-6 bg-[#F0E9DF] rounded-xl shadow-sm border border-[#D5C4B7] mt-8 relative overflow-hidden"
-            >
-              {/* Paper texture removed */}
-              <p className="text-[#2D3142] text-lg font-heebo">
-                <span className="font-bold text-[#EF8354]">אופס!</span> 🤷‍♂️ לא
-                נמצאו סרטונים עבור הנושא{" "}
-                <span className="font-bold">&quot;{searchQuery}&quot;</span> .
-                נסה להשתמש בכמות קטנה יותר של נושאים לתוצאות טובות יותר!{" "}
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {videos
-                .filter((video) => !video.name.startsWith("[PRV]"))
-                .map((video, index) => (
-                  <div 
-                    key={video.uri} 
-                    className="transform hover:scale-105 transition-transform duration-300 hover:shadow-lg"
-                  >
-                    <VideoCard
-                      video={video}
-                      watchedVideos={watchedVideos}
-                      isExpanded={expandedDescriptions[index]}
-                      onToggleDescription={() => toggleDescription(index)()}
-                      onPlayVideo={(embedHtml) => openVideo(embedHtml || video.embedHtml, video.uri)}
-                      onAddToFavorites={() => {}}
-                    />
-                  </div>
-                ))}
-            </div>
-          )}
+        <motion.div 
+          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden border border-[#D5C4B7]/30 mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          {/* Container header with subtle gradient */}
+          <div className="sticky top-0 z-10 bg-gradient-to-b from-[#F7F3EB] to-transparent py-3 px-5 flex justify-between items-center border-b border-[#D5C4B7] border-opacity-30 overflow-hidden">
+            <h3 className="text-[#2D3142] font-medium font-heebo relative z-10">סרטונים זמינים</h3>
+            {!noMoreVideos && (
+              <motion.button
+                className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-4 py-1.5 text-sm rounded-full focus:outline-none shadow-sm transition-all duration-300 hover:shadow-md font-medium relative overflow-hidden"
+                onClick={loadMore}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                טען עוד
+              </motion.button>
+            )}
+          </div>
           
-          {/* Status message at the bottom of scrollable area */}
-          {noMoreVideos && videos.length > 0 && (
-            <div 
-              className="text-center py-3 px-4 mt-6"
-            >
-              <p className="text-[#2D3142] text-sm bg-[#F0E9DF] inline-block py-2 px-6 rounded-full shadow-sm border border-[#D5C4B7] relative overflow-hidden">
-                {/* Paper texture removed */}
-                <span className="relative z-10 font-heebo">אין עוד סרטונים לטעון</span>
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
+          {/* Scrollable content area */}
+          <div className="h-[600px] overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-[#D5C4B7] scrollbar-track-transparent relative">
+            {noResults ? (
+              <motion.div 
+                className="text-center py-10 px-6 bg-[#F0E9DF] rounded-xl shadow-sm border border-[#D5C4B7] mt-8 relative overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <p className="text-[#2D3142] text-lg font-heebo">
+                  <span className="font-bold text-[#EF8354]">אופס!</span> 🤷‍♂️ לא
+                  נמצאו סרטונים עבור הנושא{" "}
+                  <span className="font-bold">&quot;{searchQuery}&quot;</span> .
+                  נסה להשתמש בכמות קטנה יותר של נושאים לתוצאות טובות יותר!{" "}
+                </p>
+              </motion.div>
+            ) : (
+              <motion.div 
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                {/* Only render videos that are likely to be visible in the viewport */}
+                {videos
+                  .filter((video) => !video.name.startsWith("[PRV]"))
+                  .slice(0, 12) /* Limit initial render to improve performance */
+                  .map((video, index) => (
+                    <motion.div 
+                      key={video.uri} 
+                      className="transform hover:scale-105 transition-transform duration-300 hover:shadow-lg"
+                      variants={itemVariants}
+                      /* Reduce motion complexity */
+                      transition={{ duration: 0.2 }}
+                      whileHover={{ scale: 1.03 }} /* Less intense hover effect */
+                    >
+                      <VideoCard
+                        video={video}
+                        watchedVideos={watchedVideos}
+                        isExpanded={expandedDescriptions[index]}
+                        onToggleDescription={() => toggleDescription(index)()}
+                        onPlayVideo={(embedHtml) => openVideo(embedHtml || video.embedHtml, video.uri)}
+                        onAddToFavorites={() => {}}
+                      />
+                    </motion.div>
+                  ))}
+              </motion.div>
+            )}
+            
+            {/* Status message at the bottom of scrollable area */}
+            {noMoreVideos && videos.length > 0 && (
+              <motion.div 
+                className="text-center py-3 px-4 mt-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
+                <p className="text-[#2D3142] text-sm bg-[#F0E9DF] inline-block py-2 px-6 rounded-full shadow-sm border border-[#D5C4B7] relative overflow-hidden">
+                  <span className="relative z-10 font-heebo">אין עוד סרטונים לטעון</span>
+                </p>
+              </motion.div>
+            )}
+          </div>
+        </motion.div>
         
         {showModal && (
           <PlaylistModal

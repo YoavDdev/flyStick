@@ -4,7 +4,9 @@ import React, { useEffect, useRef, useState, useCallback, memo } from 'react';
 import Player from '@vimeo/player';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
+import { motion } from 'framer-motion';
 import PreviewOverlay from './PreviewOverlay';
+import { useVideoPlayer } from '../context/VideoPlayerContext';
 
 interface VideoPlayerProps {
   videoUri: string | null;
@@ -23,13 +25,67 @@ const VideoPlayer = ({
   isSubscriber = true,
   isAdmin = false
 }: VideoPlayerProps) => {
+  // Use the video player context to manage global state
+  const { setIsVideoOpen } = useVideoPlayer();
   const videoContainerRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const [player, setPlayer] = useState<Player | null>(null);
   const { data: session } = useSession();
   const [showPreviewOverlay, setShowPreviewOverlay] = useState(false);
   const [previewTimeRemaining, setPreviewTimeRemaining] = useState(120);
   // Updated ref type to handle both interval and animation frame
   const previewTimerRef = useRef<NodeJS.Timeout | { clear: () => void } | null>(null);
+
+  // Function to save video progress - moved outside useEffect for reuse
+  const saveProgress = useCallback(async () => {
+    if (!session?.user || !videoUri || !player) return;
+    
+    try {
+      const currentTime = await player.getCurrentTime();
+      const duration = await player.getDuration();
+      const percent = Math.floor((currentTime / duration) * 100);
+      
+      // Extract video URI from the embed HTML if not provided
+      const uri = videoUri.startsWith('/videos/') 
+        ? videoUri 
+        : `/videos/${videoUri.split('/').pop()}`;
+      
+      await axios.post('/api/mark-watched', {
+        userEmail: session.user.email,
+        videoUri: uri,
+        progress: percent,
+        resumeTime: currentTime,
+      });
+    } catch (err) {
+      console.error("❌ Failed to save video progress:", err);
+    }
+  }, [player, videoUri, session]);
+
+  // Handle click outside to close the video player
+  const handleBackdropClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    // Only close if clicking directly on the backdrop (not on the video or controls)
+    if (e.target === e.currentTarget) {
+      // Save progress and close the video player
+      saveProgress().then(() => {
+        setIsVideoOpen(false); // Update global state
+        onClose();
+      });
+    }
+  }, [saveProgress, onClose, setIsVideoOpen]);
+
+  // Handle close button click
+  const handleCloseButton = useCallback(() => {
+    saveProgress().then(() => {
+      setIsVideoOpen(false); // Update global state
+      onClose();
+    });
+  }, [saveProgress, onClose, setIsVideoOpen]);
+
+  // Set video open state when component mounts
+  useEffect(() => {
+    setIsVideoOpen(true);
+    return () => setIsVideoOpen(false);
+  }, [setIsVideoOpen]);
 
   useEffect(() => {
     if (!videoContainerRef.current || !embedHtml) return;
@@ -133,48 +189,32 @@ const VideoPlayer = ({
     // Progress tracking with throttling
     let lastSaved = 0;
     
-    const saveProgress = async () => {
+    // Set up an interval to periodically save progress
+    const progressInterval = setInterval(async () => {
       if (!session?.user || !videoUri) return;
       
       const now = Date.now();
       if (now - lastSaved < 15000) return; // Save only if 15 seconds have passed (increased from 5s)
       lastSaved = now;
       
-      try {
-        const currentTime = await newPlayer.getCurrentTime();
-        const duration = await newPlayer.getDuration();
-        const percent = Math.floor((currentTime / duration) * 100);
-        
-        // Extract video URI from the embed HTML if not provided
-        const uri = videoUri.startsWith('/videos/') 
-          ? videoUri 
-          : `/videos/${videoUri.match(/\/(\d+)$/)?.[1] || ''}`;
-          
-        // Save progress for all logged-in users
-        await axios.post("/api/mark-watched", {
-          userEmail: session.user.email,
-          videoUri: uri,
-          progress: percent,
-          resumeTime: currentTime,
-        });
-      } catch (err) {
-        console.error("❌ Failed to save video progress:", err);
-      }
-    };
+      // Use the saveProgress function we defined earlier
+      saveProgress();
+    }, 15000); // Check every 15 seconds;
     
     // Track progress with throttling
     newPlayer.on("timeupdate", saveProgress);
     
-    // Save on pause immediately
     newPlayer.on("pause", saveProgress);
     
     // Save before page unload
     window.addEventListener("beforeunload", saveProgress);
 
-    // Clean up on unmount
+    // Clean up when component unmounts
     return () => {
-      saveProgress(); // Save progress on unmount
-      newPlayer.destroy();
+      // Clear the progress interval
+      clearInterval(progressInterval);
+      
+      // Clear the preview timer if it exists
       if (previewTimerRef.current) {
         if (previewTimerRef.current && 'clear' in previewTimerRef.current) {
           previewTimerRef.current.clear();
@@ -182,6 +222,10 @@ const VideoPlayer = ({
           clearInterval(previewTimerRef.current);
         }
       }
+      
+      // Save progress one last time before unmounting
+      saveProgress();
+      newPlayer.destroy();
       window.removeEventListener("beforeunload", saveProgress);
     };
   }, [embedHtml, initialResumeTime, isSubscriber, session, videoUri]);
@@ -290,36 +334,60 @@ const VideoPlayer = ({
     }
   }, [player, videoUri, embedHtml, session, previewTimeRemaining, setPreviewTimeRemaining, setShowPreviewOverlay]);
 
+  // This duplicate handleBackdropClick is removed
+
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-[9999] flex items-center justify-center">
+    <div 
+      className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-[9999] flex items-center justify-center"
+      onClick={handleBackdropClick}
+      ref={modalRef}
+    >
       <div
-        className="video-container w-full max-w-4xl aspect-video"
+        className="video-container w-full max-w-4xl aspect-video relative"
         ref={videoContainerRef}
       />
 
-      <button
-        className="absolute top-4 right-4 text-white text-xl cursor-pointer bg-red-600 p-2 rounded-full hover:bg-red-700 transition-all duration-300"
-        onClick={handleClose}
+      {/* More gentle close button positioned to avoid navbar overlap */}
+      <motion.button
+        className="absolute top-16 right-6 text-white text-sm cursor-pointer bg-black bg-opacity-50 hover:bg-opacity-70 p-2 rounded-full shadow-md z-10 flex items-center justify-center border border-white/30"
+        onClick={handleCloseButton}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+        aria-label="Close video"
+        title="Close video"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
+          className="h-5 w-5"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          strokeWidth={1.5}
         >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth="2"
             d="M6 18L18 6M6 6l12 12"
           />
         </svg>
-      </button>
+      </motion.button>
+      
+      {/* Subtle hint text - positioned to avoid navbar overlap */}
+      <motion.div
+        className="absolute bottom-6 left-6 bg-black bg-opacity-30 text-white text-xs px-2.5 py-1 rounded-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.7 }}
+        transition={{ delay: 2, duration: 0.8 }}
+      >
+        לחץ מחוץ לוידאו לסגירה
+      </motion.div>
 
       {showPreviewOverlay && (
         <PreviewOverlay 
-          onClose={handleClose} 
+          onClose={handleCloseButton} 
           onReplay={handleReplay}
         />
       )}

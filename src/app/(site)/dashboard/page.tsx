@@ -140,8 +140,8 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F3EB] py-24">
-      <div className="container mx-auto px-4 max-w-6xl">
+    <div className="min-h-screen relative">
+      <div className="container mx-auto px-4 py-8 md:py-12 relative z-10 max-w-6xl">
         {session ? (
           <motion.div
             initial="hidden"

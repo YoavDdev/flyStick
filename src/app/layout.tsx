@@ -4,6 +4,7 @@ import { Rubik } from "next/font/google";
 import { WabiSabiNavbar, WabiSabiFooter } from "./components";
 import Provider from "./context/AuthContext";
 import ToasterContext from "./context/ToasterContext";
+import { VideoPlayerProvider } from "./context/VideoPlayerContext";
 
 const rubik = Rubik({ subsets: ["latin", "hebrew"] });
 
@@ -42,10 +43,12 @@ export default function RootLayout({
     <html lang="he" dir="rtl">
       <body className={rubik.className}>
         <Provider>
-          <ToasterContext />
-          <WabiSabiNavbar />
-          {children}
-          {showFooter && <WabiSabiFooter />}
+          <VideoPlayerProvider>
+            <ToasterContext />
+            <WabiSabiNavbar />
+            {children}
+            {showFooter && <WabiSabiFooter />}
+          </VideoPlayerProvider>
         </Provider>
       </body>
     </html>
