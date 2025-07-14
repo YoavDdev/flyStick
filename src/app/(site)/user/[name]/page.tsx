@@ -604,17 +604,27 @@ const Page: FC<pageProps> = ({ params }) => {
   } else {
     // Render content for users without an active subscription
     return (
-      <div className="text-center mt-28">
-        <h1 className="text-4xl font-semibold text-gray-700 mb-4">
-          המנוי שלך אינו פעיל.
-        </h1>
-        <div className="mt-10 flex items-center justify-center">
-          <a
-            href="/#Pricing"
-            className="rounded-full bg-[#2D3142] px-6 py-3 text-lg text-white shadow-lg hover:bg-[#4F5D75] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            הירשם כאן
-          </a>
+      <div className="min-h-screen bg-[#F7F3EB] pt-20 px-4">
+        <div className="max-w-2xl mx-auto bg-[#F0E9DF] rounded-2xl shadow-md border border-[#D5C4B7] p-8 text-center mt-10">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#D5C4B7]/50 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-[#2D3142]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h1 className="text-4xl font-semibold text-[#2D3142] mb-6">
+            המנוי אינו פעיל
+          </h1>
+          <p className="text-[#2D3142] mb-8 text-lg">
+            כדי לצפות בתכנים שלנו, נדרש מנוי פעיל
+          </p>
+          <div className="mt-10 flex items-center justify-center">
+            <a
+              href="/#Pricing"
+              className="rounded-lg bg-[#D5C4B7] hover:bg-[#B8A99C] px-8 py-4 text-lg text-[#2D3142] shadow-md hover:shadow-lg transition-all duration-300 font-medium"
+            >
+              הירשם כאן
+            </a>
+          </div>
         </div>
       </div>
     );

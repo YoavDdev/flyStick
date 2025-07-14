@@ -97,17 +97,10 @@ const WabiSabiNavbar = () => {
   // Check if current path matches link path
   const isActiveLink = (path: string) => path === pathname;
 
-  // Handle scroll events to change navbar background
+  // Always show navbar background
   useEffect(() => {
-    function handleScroll() {
-      if (window.scrollY > 0) {
-        setIsTransparent(false);
-      } else {
-        setIsTransparent(true);
-      }
-    }
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Set navbar to always be non-transparent
+    setIsTransparent(false);
   }, []);
 
   // Close dropdown when clicking outside
@@ -161,14 +154,15 @@ const WabiSabiNavbar = () => {
   
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${isTransparent ? 'bg-transparent' : 'bg-[#F7F3EB] shadow-sm'}`}
+      className={`fixed top-0 w-full z-50 transition-all duration-300 bg-[#F7F3EB]/95 backdrop-blur-sm shadow-sm`}
     >
       {/* Texture overlay */}
-      {!isTransparent && (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Texture removed */}
-        </div>
-      )}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 opacity-10" style={{ 
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23D5C4B7' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+          backgroundSize: '200px 200px'
+        }}></div>
+      </div>
       
       {/* Decorative border - organic wabi-sabi style */}
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-[#D0C8B0]/40 overflow-hidden">
@@ -448,6 +442,27 @@ const WabiSabiNavbar = () => {
                     </motion.div>
                   </button>
                 </motion.div>
+              </motion.div>
+            )}
+            
+            {/* Login button for non-authenticated users */}
+            {!session?.user && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="mb-8 flex justify-center"
+              >
+                <Link href="/login" onClick={closeMobileMenu}>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="text-[#B56B4A] bg-transparent border-2 border-[#B56B4A]/50 hover:bg-[#F7F3EB] rounded-tl-xl rounded-br-xl rounded-tr-sm rounded-bl-sm px-6 py-3 transition duration-300 ease-in-out flex items-center"
+                  >
+                    <AiOutlineLogin className="ml-2" size={20} />
+                    <span className="text-lg font-medium">התחבר</span>
+                  </motion.div>
+                </Link>
               </motion.div>
             )}
             

@@ -8,21 +8,118 @@ import Link from "next/link";
 
 import Image from "next/image";
 
-// Icons for each technique category (you can replace these with actual icons later)
-const categoryIcons: Record<string, string> = {
-  Contrology: "🧘‍♀️",
-  אביזרים: "🔄",
-  "אימוני קיר": "🧱",
-  "הריון ולידה": "👶",
-  "הרצאות סדנאות והשתלמויות": "🎓",
-  "לימודי תודעה": "🧠",
-  "סטרונג-מובילי (פילאטיס מתקדמים)": "💪",
-  "פילאטיס-לייט (פילאטיס לימודי)": "🌱",
-  "פילאטיס מכשירים": "⚙️",
-  "פלייסטיק-Flystick": "🏒",
-  "קוויקיז Quickies": "⏱️",
-  "קורס מורות\\ים קונטרולוג׳י": "👩‍🏫",
-  "שיעורי כסא מרפאים": "🪑",
+// Custom SVG icons for each technique category in Wabi-Sabi style
+const CategoryIcon = ({ name }: { name: string }) => {
+  // Define SVG paths and styles based on category name
+  switch (name) {
+    case "Contrology":
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M12,2c-0.5,0-1,0.2-1.4,0.6C10.2,3,10,3.5,10,4c0,1.1,0.9,2,2,2s2-0.9,2-2c0-0.5-0.2-1-0.6-1.4C13,2.2,12.5,2,12,2z" fill="#2D3142" opacity="0.9" />
+          <path d="M18,15c-0.6-1.5-1.6-2.8-2.8-3.8c0.5-1,0.8-2.1,0.8-3.2c0-4-3.2-7.2-7.1-7.2c-3.9,0-7.1,3.2-7.1,7.2c0,1.1,0.3,2.2,0.8,3.2 C1.6,12.2,0.6,13.5,0,15c0,0,0,0.1,0,0.1c0,0.1,0,0.1,0,0.2c0,0.1,0,0.1,0,0.2c0,0,0,0.1,0,0.1c0.2,1.6,1.4,3,3,3.5 c0.5,0.2,1,0.3,1.5,0.3c0.9,0,1.7-0.3,2.4-0.7c1.2-0.8,2-2.1,2.1-3.5c0.1,1.4,0.9,2.7,2.1,3.5c0.7,0.5,1.5,0.7,2.4,0.7 c0.5,0,1-0.1,1.5-0.3c1.6-0.6,2.8-1.9,3-3.5c0,0,0-0.1,0-0.1c0-0.1,0-0.1,0-0.2c0-0.1,0-0.1,0-0.2C18,15.1,18,15,18,15z M8,17 c-0.8,0-1.5-0.4-2-1c-0.5-0.6-0.7-1.5-0.5-2.2c0.1-0.4,0.3-0.8,0.6-1.1c0.3-0.3,0.7-0.5,1.1-0.6c0.2-0.1,0.5-0.1,0.7-0.1 c0.5,0,1,0.1,1.4,0.4c0.4,0.3,0.7,0.6,0.9,1.1c0.2,0.4,0.2,0.9,0.2,1.3C10.4,16,9.3,17,8,17z M16,17c-0.8,0-1.5-0.4-2-1 c-0.5-0.6-0.7-1.5-0.5-2.2c0.1-0.4,0.3-0.8,0.6-1.1c0.3-0.3,0.7-0.5,1.1-0.6c0.2-0.1,0.5-0.1,0.7-0.1c0.5,0,1,0.1,1.4,0.4 c0.4,0.3,0.7,0.6,0.9,1.1c0.2,0.4,0.2,0.9,0.2,1.3C18.4,16,17.3,17,16,17z" fill="#2D3142" opacity="0.9" />
+        </svg>
+      );
+    case "אביזרים":
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <circle cx="12" cy="12" r="8" fill="none" stroke="#2D3142" strokeWidth="1.5" strokeDasharray="6,2" opacity="0.9" />
+          <path d="M12,4V20M4,12H20" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      );
+    case "אימוני קיר":
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <rect x="2" y="2" width="20" height="20" rx="2" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M2,8H22M8,8V22" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      );
+    case "הריון ולידה":
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <circle cx="12" cy="7" r="4" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M8,14c0,4,4,8,4,8s4-4,4-8s-8-4-8,0Z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      );
+    case "הרצאות סדנאות והשתלמויות":
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M12,2L2,8l10,6l10-6L12,2z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M4,11v6l8,5l8-5v-6" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      );
+    case "לימודי תודעה":
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M12,2c-5.5,0-10,4.5-10,10c0,5.5,4.5,10,10,10s10-4.5,10-10C22,6.5,17.5,2,12,2z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,7v10M7,12h10" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M9,9l6,6M9,15l6-6" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      );
+    case "סטרונג-מובילי (פילאטיס מתקדמים)":
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M4,17v2h16v-2" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M7,17V7c0-2.8,2.2-5,5-5s5,2.2,5,5v10" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,7v5" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      );
+    case "פילאטיס-לייט (פילאטיס לימודי)":
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M12,2c-0.5,0-1,0.2-1.4,0.6C10.2,3,10,3.5,10,4c0,1.1,0.9,2,2,2s2-0.9,2-2c0-0.5-0.2-1-0.6-1.4C13,2.2,12.5,2,12,2z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,8v8" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M8,12h8" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M7,20c0,1.1,2.2,2,5,2s5-0.9,5-2s-2.2-2-5-2S7,18.9,7,20z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      );
+    case "פילאטיס מכשירים":
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <circle cx="12" cy="12" r="3" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,2v7M12,15v7M2,12h7M15,12h7" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M4.9,4.9l5,5M14.1,14.1l5,5M4.9,19.1l5-5M14.1,9.9l5-5" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" strokeLinecap="round" />
+        </svg>
+      );
+    case "פלייסטיק-Flystick":
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M12,2v20" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M7,6c0,0,5-2,10,0" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M7,12c0,0,5-2,10,0" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M7,18c0,0,5-2,10,0" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      );
+    case "קוויקיז Quickies":
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,6v6l4,4" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      );
+    case "קורס מורות\\ים קונטרולוג׳י":
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M4,4h16v16H4V4z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M4,8h16M8,4v16" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <circle cx="16" cy="16" r="2" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      );
+    case "שיעורי כסא מרפאים":
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M6,12h12v4c0,1.1-0.9,2-2,2H8c-1.1,0-2-0.9-2-2V12z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M8,12V8c0-2.2,1.8-4,4-4s4,1.8,4,4v4" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M6,18v2M18,18v2" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      );
+    default:
+      return (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,8v8M8,12h8" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      );
+  }
 };
 
 const StylesPage = () => {
@@ -183,8 +280,8 @@ const StylesPage = () => {
                     <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 h-full border border-[#E6DEDA]">
                       {/* Card header with icon */}
                       <div className="bg-[#F7F3EB] p-6 flex items-center border-b border-[#E6DEDA]">
-                        <div className="w-12 h-12 flex items-center justify-center bg-[#D5C4B7] rounded-full text-2xl">
-                          {categoryIcons[folder.name] || "🧘"}
+                        <div className="w-12 h-12 flex items-center justify-center bg-[#D5C4B7] rounded-full p-2.5 overflow-hidden">
+                          <CategoryIcon name={folder.name} />
                         </div>
                         <h3 className="text-xl font-semibold text-[#3D3D3D] mr-4">
                           {folder.name}

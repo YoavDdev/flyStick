@@ -9,7 +9,8 @@ import Image from "next/image";
 import Dashboardpic from "../../../../public/Dashboardpic.png";
 import ConvertkitEmailForm from "../../components/NewsletterSignUpForm";
 import { motion } from "framer-motion";
-import { FaWhatsapp, FaVideo, FaRegCalendarAlt, FaRegBookmark, FaRegHeart } from "react-icons/fa";
+import { FaWhatsapp, FaVideo, FaRegHeart } from "react-icons/fa";
+import { AiOutlineExperiment, AiOutlineCompass } from "react-icons/ai";
 import { MdOutlineSubscriptions } from "react-icons/md";
 
 const DashboardPage = () => {
@@ -140,7 +141,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative pt-14">
       <div className="container mx-auto px-4 py-8 md:py-12 relative z-10 max-w-6xl">
         {session ? (
           <motion.div
@@ -150,16 +151,7 @@ const DashboardPage = () => {
             className="flex flex-col gap-8"
           >
             {/* Header with decorative element */}
-            <div className="relative overflow-hidden rounded-xl bg-[#D5C4B7]/20 p-8 border border-[#D5C4B7]/30">
-              <div className="absolute top-0 right-0 w-64 h-64 opacity-10 -mt-20 -mr-20">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    fill="#B8A99C"
-                    d="M45.7,-58.2C58.9,-48.3,69.2,-33.5,73.2,-16.9C77.2,-0.3,74.9,18.1,66.4,32.6C57.9,47.1,43.2,57.7,27.1,64.9C11,72.1,-6.5,75.9,-22.6,71.3C-38.7,66.7,-53.4,53.7,-62.3,37.8C-71.2,21.9,-74.3,3.1,-70.9,-14.1C-67.5,-31.3,-57.6,-46.9,-44.1,-56.8C-30.6,-66.7,-13.6,-70.8,1.5,-72.7C16.6,-74.6,32.5,-68.2,45.7,-58.2Z"
-                  />
-                </svg>
-              </div>
-              
+            <div className="relative overflow-hidden rounded-xl bg-[#D5C4B7]/20 p-8 border border-[#D5C4B7]/30">              
               <motion.div variants={itemVariants} className="relative z-10">
                 <h1 className="text-3xl font-bold text-[#2D3142] mb-2 text-center">
                   {session.user?.name ? `שלום, ${session.user.name}` : 'ברוך הבא'}
@@ -185,9 +177,7 @@ const DashboardPage = () => {
               </div>
               
               <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
-                <div className="flex-shrink-0 bg-[#25D366] text-white p-4 rounded-full">
-                  <FaWhatsapp size={32} />
-                </div>
+
                 
                 <div className="flex-grow">
                   <h3 className="text-xl font-bold text-[#2D3142] mb-2">
@@ -222,7 +212,7 @@ const DashboardPage = () => {
                 title="חיפוש אישי"
                 description="חפש סרטונים לפי נושאים שמעניינים אותך"
                 link="/explore"
-                icon={<FaRegCalendarAlt size={24} />}
+                icon={<AiOutlineCompass size={24} />}
               />
               <DashboardCard
                 title="המועדפים שלי"
@@ -234,7 +224,7 @@ const DashboardPage = () => {
                 title="טכניקות"
                 description="למד טכניקות חדשות ושפר את המיומנויות שלך"
                 link="/techniques"
-                icon={<FaRegBookmark size={24} />}
+                icon={<AiOutlineExperiment size={24} />}
               />
             </motion.div>
 

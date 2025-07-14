@@ -2,89 +2,169 @@
 
 import React from "react";
 import Image from "next/image";
-import boazAbout from "../../../../public/BoazAbout.jpeg";
+import newBoazAbout from "../../../../public/newAboutboaz.jpg";
 import * as FramerMotion from "framer-motion";
-
 
 const { motion } = FramerMotion;
 
 const WabiSabiAbout = () => {
+  // Animation variants for Wabi-Sabi style
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 100,
+        damping: 12,
+      },
+    },
+  };
+
+  const imageVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        type: "spring" as const,
+        stiffness: 80,
+        damping: 15,
+        delay: 0.2,
+      },
+    },
+  };
+
+  const floatingAnimation = {
+    y: [0, -10, 0],
+    transition: {
+      duration: 6,
+      repeat: Infinity,
+      repeatType: "reverse" as const,
+      ease: "easeInOut" as const,
+    },
+  };
+
   return (
-    <div className="relative overflow-hidden pt-20 pb-16">
-      {/* Background texture */}
-      <div className="absolute inset-0 z-0">
-        {/* Background texture removed */}
-      </div>
-      
-      {/* Decorative elements */}
-      <div className="absolute top-40 right-10 w-32 h-32 opacity-10 hidden lg:block">
+    <div className="relative overflow-hidden pt-20 pb-16 bg-[#F7F3EB]">
+      {/* Background decorative elements */}
+      <div className="absolute top-20 right-10 w-64 h-64 opacity-5 hidden lg:block">
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="40" fill="none" stroke="#B56B4A" strokeWidth="1" strokeDasharray="5,3" />
+          <path d="M25,25 Q40,10 60,25 T80,50 T60,75 T40,90 T25,75 Z" fill="none" stroke="#D5C4B7" strokeWidth="2" />
         </svg>
       </div>
       
-      <div className="absolute bottom-20 left-10 w-24 h-24 opacity-10 hidden lg:block">
+      <motion.div 
+        className="absolute top-40 left-10 w-40 h-40 opacity-5 hidden lg:block"
+        animate={floatingAnimation}
+      >
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20,20 Q40,5 60,20 T80,40 T60,60 T40,80 T20,60 Z" fill="none" stroke="#B56B4A" strokeWidth="1" />
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#D5C4B7" strokeWidth="2" strokeDasharray="5,3" />
         </svg>
-      </div>
+      </motion.div>
+      
+      <motion.div 
+        className="absolute bottom-20 right-10 w-32 h-32 opacity-5 hidden lg:block"
+        animate={{
+          rotate: [0, 360],
+          transition: { duration: 40, repeat: Infinity, ease: "linear" },
+        }}
+      >
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20,20 Q40,5 60,20 T80,40 T60,60 T40,80 T20,60 Z" fill="none" stroke="#B8A99C" strokeWidth="2" />
+        </svg>
+      </motion.div>
       
       <div className="container relative z-10 mx-auto px-6 md:px-12">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-12 text-center"
+          className="mb-16 text-center"
         >
-          <h1 className="text-4xl md:text-5xl font-medium text-[#B56B4A] mb-4">אודות</h1>
-          <div className="w-24 h-1 bg-[#D9C5B3] mx-auto rounded-full"></div>
+          <h1 className="text-4xl md:text-5xl font-medium text-[#2D3142] mb-4">אודות</h1>
+          <div className="w-32 h-1 bg-[#D5C4B7] mx-auto rounded-full"></div>
         </motion.div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          {/* Image section - right side on desktop (RTL) */}
+        <motion.div 
+          className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* Image section - right side on desktop (RTL), bottom on mobile */}
           <motion.div 
-            className="lg:col-span-5 lg:order-3 relative"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            className="lg:col-span-5 lg:order-3 order-2 relative mt-8 lg:mt-0"
+            variants={imageVariants}
           >
             <div className="relative">
-              {/* Image with color overlay */}
-              <div className="relative rounded-lg overflow-hidden shadow-xl">
-                <div className="absolute inset-0 bg-[#B56B4A] mix-blend-color opacity-20 z-10"></div>
+              {/* Main image with styling */}
+              <motion.div 
+                className="relative rounded-2xl overflow-hidden shadow-xl"
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring" as const, stiffness: 300, damping: 20 }}
+              >
+                {/* Subtle color overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#2D3142]/30 to-transparent z-10"></div>
+                
                 <Image
-                  src={boazAbout}
+                  src={newBoazAbout}
                   alt="בועז נחייסי"
-                  className="w-full h-auto object-cover rounded-lg"
-                  placeholder="blur"
+                  className="w-full h-auto object-cover rounded-2xl"
+                  width={600}
+                  height={800}
+                  priority
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
-              </div>
+              </motion.div>
               
-              {/* Decorative border */}
-              <div className="absolute -bottom-4 -right-4 w-full h-full border-2 border-[#D9C5B3] rounded-lg z-0"></div>
-              
-              {/* Subtle texture overlay */}
-              <div className="absolute inset-0 z-20 opacity-30 overflow-hidden rounded-lg">
-                {/* Texture overlay removed */}
-              </div>
+              {/* Decorative elements */}
+              <div className="absolute -bottom-4 -right-4 w-full h-full border-2 border-[#D5C4B7] rounded-2xl z-0"></div>
+              <motion.div 
+                className="absolute -top-6 -left-6 w-24 h-24 opacity-20 z-20"
+                animate={{
+                  rotate: [0, 360],
+                  transition: { duration: 30, repeat: Infinity, ease: "linear" },
+                }}
+              >
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#D5C4B7" strokeWidth="2" />
+                </svg>
+              </motion.div>
             </div>
           </motion.div>
           
-          {/* Content section - left side on desktop (RTL) */}
+          {/* Content section - left side on desktop (RTL), top on mobile */}
           <motion.div 
-            className="lg:col-span-7 lg:order-1"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            className="lg:col-span-7 lg:order-1 order-1"
+            variants={itemVariants}
           >
-            <div className="bg-[#F5F2EB]/80 backdrop-blur-sm p-8 rounded-lg shadow-sm text-right border border-[#D9C5B3]/30">
-              <h2 className="text-3xl md:text-4xl font-medium text-[#B56B4A] mb-6">
+            <motion.div 
+              className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-md text-right border border-[#D5C4B7]/30"
+              whileHover={{ boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)" }}
+              transition={{ type: "spring" as const, stiffness: 300, damping: 20 }}
+            >
+              <h2 className="text-3xl md:text-4xl font-medium text-[#2D3142] mb-6">
                 מנויים יקרים.
               </h2>
               
-              <div className="space-y-4 text-[#5D5D5D]">
-                <p className="leading-relaxed">
+              <div className="space-y-6 text-[#3D3D3D]">
+                <motion.p 
+                  className="leading-relaxed"
+                  variants={itemVariants}
+                >
                   שמח שהגעתם לסטודיו המקוון שלי ואני מקווה שהוא גורם לכם לעונג
                   ובריאות גופניים. דרכי בעולם התנועה החלה בגיל 38 כשאני חסר
                   נסיון תרגולי וכמובן, חסר גמישות ומודעות סומאטית. התשוקה לחקור
@@ -92,44 +172,73 @@ const WabiSabiAbout = () => {
                   וכמה תובנות היא תעניק לי אותם אני מגיש לכם באהבה בכל שיעור כאן
                   בסטודיו. הידע והנסיון שלי התפתחו דרך תהליך אישי ומעמיק כך שכל
                   המידע בסטודיו הוא ממקור ראשון ואינו העתקה והדבקה.
-                </p>
+                </motion.p>
                 
-                <p className="leading-relaxed">
+                <motion.p 
+                  className="leading-relaxed"
+                  variants={itemVariants}
+                >
                   אני המייסד של ׳בית הספר של בועז נחייסי׳ מאז 2012, מקום של
                   חדשנות, יזמות ועידוד לחיבור ושינוי. החוויה הגופנית הביאה אותי
                   להמציא את שיטת הפלייסטיק ב-2013 ומאז ועד היום אני מלמד
                   בפסטיבלים, כנסים, קהל אולימפי, קבוצות, קורסי מורים, הכשרות,
                   השתלמויות, חברות וועדי עובדים. מלמד גם בארץ וגם בעולם.
-                </p>
+                </motion.p>
                 
-                <p className="leading-relaxed">
+                <motion.p 
+                  className="leading-relaxed"
+                  variants={itemVariants}
+                >
                   אני מאמין באהבת הגוף וטיפוח הנפש. לתנועה יש כח עצום בהבראה.
                   היא מקדמת איזון בין הגוף לנפש הפועלת בתוכו, היא מעודדת גילוי
                   עצמי כפי שמתגלים שרירים וסיבים חדשים כך גם תפיסות המציאות
                   נהיות עשירות, מגוונות ומרווחות ללא מתח וסטרס. דרך התנועה אנו
                   גוברים על אתגרי החיים ואם נלמד לטפח את הזרימה שלה בגוף, כמו
                   שמים זורמים, נשוט ביתר קלות בנהר חיינו.
-                </p>
+                </motion.p>
                 
-                <p className="leading-relaxed">
+                <motion.p 
+                  className="leading-relaxed"
+                  variants={itemVariants}
+                >
                   כיישות מים אני פונה אליכם בחיבוק גדול יישויות מים יקרות ומבקש
                   שלא תעצרו לעולם את הכח המרפא והגדול שיש לנו-- נשימה ותנועה יחד
                   וכאן בסטודיו אני מרחיב את הלימוד וצולל לעומקים שיובילו בסופו
                   של דבר לסנכרון בין השתיים ואלו, יחזירו את הגוף שלכם להיות רענן
                   וטהור כבימי ילדותינו. הצטרפו אלי ויחד נשפר ונשדרג את מערכת
                   הגופנפש שלכם במסע החיים הפגיע והמשתנה הזה.
-                </p>
+                </motion.p>
               </div>
               
-              <div className="mt-8 text-left">
-                <div className="inline-block relative">
-                  <p className="text-xl text-[#B56B4A] font-medium">בועז.</p>
-                  <div className="absolute -bottom-2 right-0 w-full h-1 bg-[#D9C5B3]/50 rounded-full"></div>
-                </div>
-              </div>
-            </div>
+              <motion.div 
+                className="mt-10 text-left"
+                variants={itemVariants}
+              >
+                <motion.div 
+                  className="inline-block relative"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring" as const, stiffness: 400, damping: 10 }}
+                >
+                  <p className="text-xl text-[#D9713C] font-medium">בועז.</p>
+                  <div className="absolute -bottom-2 right-0 w-full h-1 bg-[#D5C4B7] rounded-full"></div>
+                </motion.div>
+              </motion.div>
+            </motion.div>
           </motion.div>
-        </div>
+
+          {/* Decorative floating elements */}
+          <motion.div
+            className="absolute -z-10 top-1/4 right-1/4 w-64 h-64 opacity-5"
+            animate={{
+              y: [0, -15, 0],
+              transition: { duration: 8, repeat: Infinity, repeatType: "reverse" },
+            }}
+          >
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <path d="M30,30 Q45,15 60,30 T75,45 T60,60 T45,75 T30,60 Z" fill="none" stroke="#D5C4B7" strokeWidth="1" />
+            </svg>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );

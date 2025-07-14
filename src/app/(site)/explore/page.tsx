@@ -605,7 +605,7 @@ useEffect(() => {
         <div className="container mx-auto p-6">
           <div className="mx-auto max-w-7xl px-8 pb-10">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-base font-semibold leading-7 text-[#EF8354] no-wrap">
+              <h2 className="text-base font-semibold leading-7 text-[#B56B4A] no-wrap">
                 המסע שלך והצרכים שלך בהתאמה אישית
               </h2>
               <p className="mt-2 text-3xl font-bold tracking-tight text-[#2D3142] sm:text-4xl">
@@ -635,7 +635,7 @@ useEffect(() => {
             {noResults ? (
               <div className="col-span-full text-center py-10 px-6 bg-[#F0E9DF] rounded-xl shadow-sm border border-[#D5C4B7] mt-8">
                 <p className="text-[#2D3142] text-lg">
-                  <span className="font-bold text-[#EF8354]">אופס!</span> 🤷‍♂️ לא
+                  <span className="font-bold text-[#B56B4A]">אופס!</span> 🤷‍♂️ לא
                   נמצאו סרטונים עבור הנושא{" "}
                   <span className="font-bold">&quot;{searchQuery}&quot;</span> .
                   נסה להשתמש בכמות קטנה יותר של נושאים לתוצאות טובות יותר!{" "}

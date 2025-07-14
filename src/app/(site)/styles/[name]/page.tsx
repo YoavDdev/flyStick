@@ -705,10 +705,10 @@ const Page: FC<pageProps> = ({ params }) => {
             </svg>
           </div>
           <h1 className="text-4xl font-semibold text-[#2D3142] mb-6">
-            המנוי שלך אינו פעיל.
+            המנוי אינו פעיל
           </h1>
           <p className="text-[#2D3142] mb-8 text-lg">
-            כדי לצפות בתכנים שלנו, אתה צריך מנוי פעיל.
+            כדי לצפות בתכנים שלנו, נדרש מנוי פעיל
           </p>
           <div className="mt-10 flex items-center justify-center">
             <a

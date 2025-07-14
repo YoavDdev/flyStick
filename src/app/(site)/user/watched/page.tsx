@@ -86,6 +86,8 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showLoading, setShowLoading] = useState(true); // Separate state for minimum loading duration
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
+  const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
   
   // Pagination state
   const [page, setPage] = useState(1);
@@ -144,6 +146,50 @@ const Page = () => {
       setLoadingMore(false);
     }
   };
+
+  // Fetch subscription status
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        if (session?.user) {
+          // Fetch user data including subscriptionId from the API route
+          const response = await axios.post("/api/get-user-subsciptionId", {
+            userEmail: session.user.email,
+          });
+
+          const userData = response.data;
+
+          // Extract subscriptionId from userData
+          const subscriptionId = userData.subscriptionId;
+          setSubscriptionId(subscriptionId);
+
+          const clientId = process.env.PAYPAL_CLIENT_ID;
+          const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+
+          const auth = {
+            username: clientId!,
+            password: clientSecret!,
+          };
+
+          const subscriptionResponse = await axios.get(
+            `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}`,
+            { auth },
+          );
+
+          const status = subscriptionResponse.data.status;
+          setSubscriptionStatus(status);
+        }
+      } catch (error) {
+        console.error(
+          "Error fetching user data or subscription details:",
+          error,
+        );
+      }
+    };
+
+    // Fetch user data when the component mounts or when the session changes
+    fetchUserData();
+  }, [session]);
 
   // Initial load
   useEffect(() => {
@@ -315,6 +361,42 @@ const Page = () => {
     fetchVimeoVideos();
   }, [watchedVideos, page]);
 
+  // Check if user is a subscriber or admin for VideoPlayer component
+  const isSubscriber = 
+    subscriptionId === "Admin" ||
+    subscriptionStatus === "ACTIVE" ||
+    subscriptionStatus === "PENDING_CANCELLATION";
+  
+  // If not a subscriber or admin, show the inactive subscription message
+  if (!isSubscriber && !(session?.user as any)?.isAdmin) {
+    return (
+      <div className="min-h-screen bg-[#F7F3EB] pt-20 px-4">
+        <div className="max-w-2xl mx-auto bg-[#F0E9DF] rounded-2xl shadow-md border border-[#D5C4B7] p-8 text-center mt-10">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#D5C4B7]/50 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-[#2D3142]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h1 className="text-4xl font-semibold text-[#2D3142] mb-6">
+            המנוי אינו פעיל
+          </h1>
+          <p className="text-[#2D3142] mb-8 text-lg">
+            כדי לצפות בתכנים שלנו, נדרש מנוי פעיל
+          </p>
+          <div className="mt-10 flex items-center justify-center">
+            <a
+              href="/#Pricing"
+              className="rounded-lg bg-[#D5C4B7] hover:bg-[#B8A99C] px-8 py-4 text-lg text-[#2D3142] shadow-md hover:shadow-lg transition-all duration-300 font-medium"
+            >
+              הירשם כאן
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  // If user is a subscriber, show the watched videos content
   return (
     <motion.div 
       className="bg-[#F7F3EB] min-h-screen text-[#2D3142] pt-20 pb-12 overflow-hidden"

@@ -353,9 +353,16 @@ const ExploreVideos = ({
   };
 
   const loadMore = () => {
+    // Increment the current page to fetch the next page of videos
     const nextPage = currentPage + 1;
-    setCurrentPage(nextPage);
-    fetchVideos(nextPage);
+
+    fetchVideos(nextPage).then((hasMoreVideos) => {
+      if (!hasMoreVideos) {
+        // If there are no more videos, set a state variable
+        setNoMoreVideos(true);
+      }
+      setCurrentPage(nextPage); // Increment currentPage here
+    });
   };
 
   const toggleDescription = (index: number) => () => {
@@ -475,39 +482,58 @@ const ExploreVideos = ({
             </svg>
           </div>
           
-          <div className="relative z-10 text-center md:text-right max-w-3xl mx-auto py-6 px-6 md:px-8">
-            <div className="absolute top-0 left-0 w-full h-full bg-[url('/paper-texture.png')] opacity-5 mix-blend-overlay"></div>
+          <div className="relative z-10 text-center md:text-right max-w-3xl mx-auto py-8 px-6 md:px-8">
+            <div className="absolute top-0 left-0 w-full h-full bg-[url('/paper-texture.png')] opacity-10 mix-blend-overlay"></div>
             
-            <div className="relative flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="text-right md:w-2/3">
                 <motion.div 
-                  className="inline-flex items-center px-3 py-1 rounded-full bg-[#EF8354] bg-opacity-20 border border-[#EF8354] border-opacity-30 mb-2"
+                  className="inline-flex items-center px-4 py-2 rounded-full bg-[#D5C4B7] bg-opacity-30 border border-[#B8A99C] border-opacity-40 mb-3 shadow-sm"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3, duration: 0.5 }}
+                  whileHover={{ scale: 1.03 }}
                 >
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#EF8354] text-white text-xs font-bold ml-2">2</span>
-                  <span className="text-[#2D3142] text-sm font-medium">דקות צפייה חינמית מכל סרטון</span>
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#B8A99C] text-[#F7F3EB] text-xs font-bold ml-2 shadow-inner">
+                    <span className="relative top-px">2</span>
+                  </span>
+                  <span className="text-[#2D3142] text-sm font-medium">דקות צפייה חינמית בכל סרטון</span>
                 </motion.div>
                 
                 <motion.h2 
-                  className="text-xl font-bold text-[#2D3142] mb-1"
+                  className="text-2xl font-bold text-[#2D3142] mb-2"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.1, duration: 0.5 }}
                 >
-                  חפש וצפה בכל הסרטונים שלנו
+                  גלו את אוסף הסרטונים שלנו
                 </motion.h2>
                 
                 <motion.p 
-                  className="text-[#3D3D3D] text-sm"
+                  className="text-[#3D3D3D] text-base leading-relaxed"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
                 >
-                  כל הסרטונים זמינים לצפייה מקדימה - הירשם למנוי מלא לצפייה ללא הגבלה
+                  טעמו מכל סרטון עם תצוגה מקדימה של 2 דקות. להנאה מלאה וצפייה ללא הגבלה, הצטרפו למנוי שלנו ופתחו את הדלת לחוויה מלאה.
                 </motion.p>
               </div>
+              
+              <motion.div
+                className="md:w-1/3 mt-4 md:mt-0"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+              >
+                <div className="bg-[#F7F3EB] p-4 rounded-lg border border-[#D5C4B7] shadow-sm text-center">
+                  <p className="text-[#2D3142] font-medium mb-2">מנוי מלא מעניק לך:</p>
+                  <ul className="text-sm text-[#3D3D3D] text-center space-y-1">
+                    <li className="flex items-center justify-center"><span className="ml-1">✓</span> צפייה מלאה בכל הסרטונים</li>
+                    <li className="flex items-center justify-center"><span className="ml-1">✓</span> תוכן חדש מדי שבוע</li>
+                    <li className="flex items-center justify-center"><span className="ml-1">✓</span> שמירת התקדמות אישית</li>
+                  </ul>
+                </div>
+              </motion.div>
             </div>
           </div>
         </motion.div>
@@ -576,10 +602,9 @@ const ExploreVideos = ({
                 initial="hidden"
                 animate="visible"
               >
-                {/* Only render videos that are likely to be visible in the viewport */}
+                {/* Render all videos */}
                 {videos
                   .filter((video) => !video.name.startsWith("[PRV]"))
-                  .slice(0, 12) /* Limit initial render to improve performance */
                   .map((video, index) => (
                     <motion.div 
                       key={video.uri} 

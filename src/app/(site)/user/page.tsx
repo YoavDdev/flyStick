@@ -82,9 +82,11 @@ const Page = () => {
     try {
       if (!session?.user?.email) return;
 
-      const response = await axios.post("/api/delete-a-folder", {
-        userEmail: session.user.email,
-        folderName,
+      const response = await axios.delete("/api/delete-a-folder", {
+        data: {
+          userEmail: session.user.email,
+          folderName,
+        }
       });
 
       if (response.status === 200) {
@@ -203,7 +205,7 @@ const Page = () => {
                                 handleDeleteFolder(folderName);
                               }}
                               title="מחק תיקייה"
-                              className="absolute bottom-2 left-2 bg-white text-[#990011] p-2 rounded-full shadow-sm hover:bg-[#990011] hover:text-white transition-colors duration-300"
+                              className="absolute bottom-2 left-2 text-[#3D3D3D] hover:text-[#D9713C] p-2 rounded-full shadow-sm transition-colors duration-300"
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.95 }}
                             >
