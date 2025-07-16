@@ -111,6 +111,30 @@ const Page: FC<pageProps> = ({ params }) => {
   const [expandedDescriptions, setExpandedDescriptions] = useState<boolean[]>(
     videos.map(() => false),
   );
+  
+  // Check if user has admin access, active subscription, or is a free/trial user
+  const [hasContentAccess, setHasContentAccess] = useState(false);
+  
+  // Update access status when session changes
+  useEffect(() => {
+    const checkAccess = async () => {
+      if (session?.user?.email) {
+        try {
+          // Check if user has admin access or is free/trial user
+          const adminCheckResponse = await axios.post("/api/check-admin", {
+            email: session.user.email,
+          });
+          
+          // Set content access based on response
+          setHasContentAccess(adminCheckResponse.data.hasContentAccess);
+        } catch (error) {
+          console.error("Error checking access:", error);
+        }
+      }
+    };
+    
+    checkAccess();
+  }, [session]);
 
   const handleBackButton = (event: PopStateEvent) => {
     if (isVideoOpenRef.current) {
@@ -446,7 +470,10 @@ const Page: FC<pageProps> = ({ params }) => {
     );
   }
 
+  // Access check is now at the top of the component
+  
   if (
+    hasContentAccess ||
     subscriptionId === "Admin" ||
     subscriptionStatus === "ACTIVE" ||
     subscriptionStatus === "PENDING_CANCELLATION"

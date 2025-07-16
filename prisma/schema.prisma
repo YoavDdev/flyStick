@@ -11,23 +11,23 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  name           String?
-  email          String?   @unique
-  subscriptionId String?
-  emailVerified  DateTime?
-  image          String?
-  favorites      Folder[]  @relation("UserToFolder")
-  favoritesIds   String[]  @db.ObjectId
-  hashedPassword String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  name              String?
+  email             String?   @unique
+  subscriptionId    String?
+  cancellationDate  DateTime? // Track when subscription was cancelled for grace period
+  emailVerified     DateTime?
+  image             String?
+  favorites         Folder[]  @relation("UserToFolder")
+  favoritesIds      String[]  @db.ObjectId
+  hashedPassword    String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   accounts       Account[]
   passwordResets PasswordReset[]
 
   watchedVideos  WatchedVideo[]
-
 }
 
 model Folder {
@@ -77,4 +77,3 @@ model PasswordReset {
 
   user User @relation(fields: [userId], references: [id])
 }
-

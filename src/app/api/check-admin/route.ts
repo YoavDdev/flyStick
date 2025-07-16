@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     const { email } = body;
 
     if (!email) {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+      return NextResponse.json({ error: "אימייל נדרש" }, { status: 400 });
     }
 
     // Find user by email
@@ -17,14 +17,39 @@ export async function POST(req: Request) {
       },
     });
 
-    // Check if user exists and has Admin role
-    const isAdmin = user?.role === "Admin" || user?.subscriptionId === "Admin";
+    if (!user) {
+      return NextResponse.json({ error: "משתמש לא נמצא" }, { status: 404 });
+    }
 
-    return NextResponse.json({ isAdmin });
+    // Check if user exists and has Admin role
+    const isAdmin = user.role === "Admin" || user.subscriptionId === "Admin";
+    
+    // Check if user has free or trial access
+    const isFreeOrTrial = user.subscriptionId === "free" || user.subscriptionId === "trial_30";
+    
+    // Check if user is in grace period after cancellation
+    let isInGracePeriod = false;
+    if (user.cancellationDate) {
+      const gracePeriodEnd = new Date(user.cancellationDate);
+      gracePeriodEnd.setDate(gracePeriodEnd.getDate() + 30); // 30-day grace period
+      isInGracePeriod = new Date() < gracePeriodEnd;
+    }
+    
+    // Users with free or trial access should have content access like subscribers
+    // Also include users in the 30-day grace period after cancellation
+    const hasContentAccess = isAdmin || isFreeOrTrial || user.subscriptionId?.startsWith("I-") || isInGracePeriod;
+    
+    // Return both admin status and subscription type
+    return NextResponse.json({ 
+      isAdmin,
+      subscriptionId: user.subscriptionId,
+      isFreeOrTrial,
+      hasContentAccess
+    });
   } catch (error) {
     console.error("[CHECK_ADMIN_ERROR]", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "שגיאת שרת פנימית" },
       { status: 500 }
     );
   }

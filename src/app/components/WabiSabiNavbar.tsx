@@ -33,19 +33,48 @@ const WabiSabiNavbar = () => {
   const [isTransparent, setIsTransparent] = useState(true);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { data: session } = useSession();
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   // Get video player state from context
   const { isVideoOpen } = useVideoPlayer();
+  
+  // Check if user is admin
+  useEffect(() => {
+    const checkAdmin = async () => {
+      if (!session?.user?.email) return;
+      
+      try {
+        const response = await fetch("/api/check-admin", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: session.user.email }),
+        });
+        
+        const data = await response.json();
+        // Only show admin link if user is actually an admin (not free or trial_30)
+        setIsAdmin(data.isAdmin && data.subscriptionId === "Admin");
+      } catch (error) {
+        console.error("Error checking admin status:", error);
+      }
+    };
+    
+    if (session?.user) {
+      checkAdmin();
+    }
+  }, [session]);
 
   // Navigation links with icons for improved UX
   const navigationLinks: NavigationLink[] = [
     { href: "/", label: "בית", icon: AiOutlineHome },
     { href: "/about", label: "אודות", icon: AiOutlineInfoCircle },
     { href: "/contact", label: "צור קשר", icon: AiOutlinePhone },
-    { href: "/", label: "מחיר", icon: AiOutlineDollar }
+    { href: "/", label: "מחיר", icon: AiOutlineDollar },
+    ...(isAdmin ? [{ href: "/admin", label: "ניהול", icon: AiOutlineLogin }] : [])
   ];
   
   // Social media links

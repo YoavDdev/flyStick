@@ -41,6 +41,7 @@ const Page: FC<pageProps> = ({ params }) => {
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [subscriptionId, setSubscriptionId] = useState(null);
+  const [hasContentAccess, setHasContentAccess] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedVideoUri, setSelectedVideoUri] = useState<string>("");
   const [showForm, setShowForm] = useState(false);
@@ -515,6 +516,14 @@ const Page: FC<pageProps> = ({ params }) => {
           // Extract subscriptionId from userData
           const subscriptionId = userData.subscriptionId;
           setSubscriptionId(subscriptionId);
+          
+          // Check if user has admin access or is free/trial user
+          const adminCheckResponse = await axios.post("/api/check-admin", {
+            email: session.user.email,
+          });
+          
+          // Set content access based on response
+          setHasContentAccess(adminCheckResponse.data.hasContentAccess);
 
           // Fetch subscription details using the retrieved subscriptionId
           const clientId = process.env.PAYPAL_CLIENT_ID;
@@ -563,6 +572,7 @@ const Page: FC<pageProps> = ({ params }) => {
   }
 
   if (
+    hasContentAccess ||
     subscriptionId === "Admin" ||
     subscriptionStatus === "ACTIVE" ||
     subscriptionStatus === "PENDING_CANCELLATION"
@@ -686,7 +696,7 @@ const Page: FC<pageProps> = ({ params }) => {
             embedHtml={selectedVideo}
             onClose={closeVideo}
             initialResumeTime={resumeTime}
-            isSubscriber={(session?.user as any)?.activeSubscription}
+            isSubscriber={hasContentAccess || (session?.user as any)?.activeSubscription}
             isAdmin={(session?.user as any)?.isAdmin}
           />
         )}
@@ -694,8 +704,8 @@ const Page: FC<pageProps> = ({ params }) => {
     );
   }
 
-  if (!session || !(session.user as any)?.activeSubscription) {
-    // Render content for users without an active subscription
+  if (!session || (!hasContentAccess && !(session.user as any)?.activeSubscription)) {
+    // Render content for users without an active subscription or content access
     return (
       <div className="min-h-screen bg-[#F7F3EB] pt-20 px-4">
         <div className="max-w-2xl mx-auto bg-[#F0E9DF] rounded-2xl shadow-md border border-[#D5C4B7] p-8 text-center mt-10">

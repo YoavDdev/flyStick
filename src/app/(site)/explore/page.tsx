@@ -510,6 +510,7 @@ useEffect(() => {
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [subscriptionId, setSubscriptionId] = useState(null);
+  const [hasContentAccess, setHasContentAccess] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -525,7 +526,15 @@ useEffect(() => {
           // Extract subscriptionId from userData
           const subscriptionId = userData.subscriptionId;
           setSubscriptionId(subscriptionId);
-
+          
+          // Check if user has admin access or is free/trial user
+          const adminCheckResponse = await axios.post("/api/check-admin", {
+            email: session.user.email,
+          });
+          
+          // Set content access based on response
+          setHasContentAccess(adminCheckResponse.data.hasContentAccess);
+          
           const clientId = process.env.PAYPAL_CLIENT_ID;
           const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
@@ -593,11 +602,12 @@ useEffect(() => {
     );
   }
 
-  // Check if user is a subscriber or admin for VideoPlayer component
+  // Legacy isSubscriber check combined with hasContentAccess
   const isSubscriber = 
-    subscriptionId === "Admin" ||
-    subscriptionStatus === "ACTIVE" ||
-    subscriptionStatus === "PENDING_CANCELLATION";
+      hasContentAccess ||
+      subscriptionId === "Admin" ||
+      subscriptionStatus === "ACTIVE" ||
+      subscriptionStatus === "PENDING_CANCELLATION";
     
   // Render content for all users
     return (

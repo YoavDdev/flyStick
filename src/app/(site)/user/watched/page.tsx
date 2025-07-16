@@ -361,13 +361,38 @@ const Page = () => {
     fetchVimeoVideos();
   }, [watchedVideos, page]);
 
-  // Check if user is a subscriber or admin for VideoPlayer component
+  // Check if user has admin access, active subscription, or is a free/trial user
+  const [hasContentAccess, setHasContentAccess] = useState(false);
+  
+  // Update access status when session changes
+  useEffect(() => {
+    const checkAccess = async () => {
+      if (session?.user?.email) {
+        try {
+          // Check if user has admin access or is free/trial user
+          const adminCheckResponse = await axios.post("/api/check-admin", {
+            email: session.user.email,
+          });
+          
+          // Set content access based on response
+          setHasContentAccess(adminCheckResponse.data.hasContentAccess);
+        } catch (error) {
+          console.error("Error checking access:", error);
+        }
+      }
+    };
+    
+    checkAccess();
+  }, [session]);
+  
+  // Check if user is a subscriber, admin, or has free/trial access for VideoPlayer component
   const isSubscriber = 
+    hasContentAccess ||
     subscriptionId === "Admin" ||
     subscriptionStatus === "ACTIVE" ||
     subscriptionStatus === "PENDING_CANCELLATION";
   
-  // If not a subscriber or admin, show the inactive subscription message
+  // If not a subscriber, admin, or free/trial user, show the inactive subscription message
   if (!isSubscriber && !(session?.user as any)?.isAdmin) {
     return (
       <div className="min-h-screen bg-[#F7F3EB] pt-20 px-4">
