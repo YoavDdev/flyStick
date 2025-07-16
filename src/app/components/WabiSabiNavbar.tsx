@@ -124,7 +124,15 @@ const WabiSabiNavbar = () => {
   const currentPath = usePathname();
 
   // Check if current path matches link path
-  const isActiveLink = (path: string) => path === pathname;
+  const isActiveLink = (path: string, label?: string) => {
+    // Special case for pricing link
+    if (label === "מחיר") {
+      // Only highlight pricing when we're on the homepage AND the URL has the #Pricing fragment
+      return pathname === "/" && typeof window !== "undefined" && window.location.hash === "#Pricing";
+    }
+    // Regular path matching for other links
+    return path === pathname;
+  };
 
   // Always show navbar background
   useEffect(() => {
@@ -266,7 +274,7 @@ const WabiSabiNavbar = () => {
                 >
                   <div className="flex items-center">
                     <span className={`text-lg ${
-                      isActiveLink(link.href)
+                      isActiveLink(link.href, link.label)
                         ? "text-[#B56B4A] border-b border-[#B56B4A]"
                         : "text-[#5D5D5D] hover:text-[#B56B4A]"
                       } transition-colors duration-300`}
@@ -525,7 +533,7 @@ const WabiSabiNavbar = () => {
                     initial={{ opacity: 0, x: -20 }} 
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1, duration: 0.3 }}
-                    className={`py-2 cursor-pointer border-b ${isActiveLink(link.href) ? 'border-[#B56B4A]/30' : 'border-[#D0C8B0]/20'}`}
+                    className={`py-2 cursor-pointer border-b ${isActiveLink(link.href, link.label) ? 'border-[#B56B4A]/30' : 'border-[#D0C8B0]/20'}`}
                     whileHover={{ x: -5, transition: { duration: 0.2 } }}
                   >
                     <Link 
@@ -545,14 +553,14 @@ const WabiSabiNavbar = () => {
                     >
                       <div className="flex items-center justify-end py-1.5 sm:py-2"> 
                         <span className={`text-base sm:text-lg ${
-                          isActiveLink(link.href)
+                          isActiveLink(link.href, link.label)
                             ? "text-[#B56B4A] font-medium"
                             : "text-[#5D5D5D] hover:text-[#B56B4A]"
                         } transition-colors duration-300 text-right w-full`}>
                           {link.label}
                         </span>
-                        <div className={`mr-2 p-1.5 rounded-full ${isActiveLink(link.href) ? 'bg-[#B56B4A]/10' : 'bg-[#8E9A7C]/5'}`}>
-                          <link.icon className={isActiveLink(link.href) ? 'text-[#B56B4A]' : 'text-[#8E9A7C]'} size={18} />
+                        <div className={`mr-2 p-1.5 rounded-full ${isActiveLink(link.href, link.label) ? 'bg-[#B56B4A]/10' : 'bg-[#8E9A7C]/5'}`}>
+                          <link.icon className={isActiveLink(link.href, link.label) ? 'text-[#B56B4A]' : 'text-[#8E9A7C]'} size={18} />
                         </div>
                       </div>
                     </Link>

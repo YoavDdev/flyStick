@@ -131,18 +131,6 @@ const WabiSabiAbout = () => {
               </motion.div>
               
               {/* Decorative elements */}
-              <div className="absolute -bottom-4 -right-4 w-full h-full border-2 border-[#D5C4B7] rounded-2xl z-0"></div>
-              <motion.div 
-                className="absolute -top-6 -left-6 w-24 h-24 opacity-20 z-20"
-                animate={{
-                  rotate: [0, 360],
-                  transition: { duration: 30, repeat: Infinity, ease: "linear" },
-                }}
-              >
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="50" cy="50" r="40" fill="none" stroke="#D5C4B7" strokeWidth="2" />
-                </svg>
-              </motion.div>
             </div>
           </motion.div>
           
