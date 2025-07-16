@@ -69,7 +69,7 @@ const WabiSabiFeature = () => {
       <div className="absolute -right-20 bottom-20 w-80 h-80 rounded-full bg-[#B8A99C]/10 blur-md"></div>
       
       {/* Main content */}
-      <div className="mx-auto max-w-7xl px-6 lg:px-8 relative z-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           className="mx-auto max-w-2xl lg:text-center"
           variants={containerVariants}
@@ -84,19 +84,19 @@ const WabiSabiFeature = () => {
           />
           
           <motion.h2
-            className="text-base font-semibold leading-7 text-[#5C6A85]"
+            className="text-base font-semibold leading-6 sm:leading-7 text-[#5C6A85]"
             variants={itemVariants}
           >
             ברוכים הבאים
           </motion.h2>
           <motion.p
-            className="mt-2 text-3xl font-bold tracking-tight text-[#B56B4A] sm:text-4xl"
+            className="mt-2 text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#B56B4A]"
             variants={itemVariants}
           >
             מסע התנועה והריפוי מתחיל עכשיו
           </motion.p>
           <motion.p
-            className="mt-6 text-lg leading-8 text-[#3D3D3D] max-w-3xl mx-auto"
+            className="mt-4 sm:mt-6 text-base sm:text-lg leading-6 sm:leading-8 text-[#3D3D3D] max-w-3xl mx-auto px-1 sm:px-0"
             variants={itemVariants}
           >
             לימוד והעמקה בהתאם לצורך והיכולת האישית. לכל אדם בכל שלב.
@@ -106,12 +106,12 @@ const WabiSabiFeature = () => {
 
         {/* Feature circles with enhanced styling */}
         <motion.div
-          className="mx-auto mt-16 max-w-5xl sm:mt-20 lg:mt-24"
+          className="mx-auto mt-10 sm:mt-16 lg:mt-20 max-w-5xl"
           variants={containerVariants}
           initial="hidden"
           animate={controls}
         >
-          <div className="flex flex-wrap justify-center gap-10 lg:gap-20">
+          <div className="flex flex-wrap justify-center gap-5 sm:gap-8 md:gap-10 lg:gap-20">
             {features.map((feature, index) => (
               <motion.div
                 key={feature.name}
@@ -121,10 +121,10 @@ const WabiSabiFeature = () => {
               >
                 {/* Enhanced circular icon with subtle shadow and border */}
                 <motion.div 
-                  className="w-24 h-24 rounded-full flex items-center justify-center shadow-lg mb-6 border border-white/20"
+                  className="w-18 h-18 sm:w-24 sm:h-24 rounded-full flex items-center justify-center shadow-lg mb-3 sm:mb-6 border border-white/20"
                   style={{ 
                     backgroundColor: feature.color,
-                    boxShadow: `0 10px 30px -5px ${feature.color}40`
+                    boxShadow: `0 8px 25px -5px ${feature.color}40`
                   }}
                   whileHover={{ 
                     scale: 1.05,
@@ -136,15 +136,15 @@ const WabiSabiFeature = () => {
                 </motion.div>
                 
                 {/* Feature name with enhanced typography */}
-                <h3 className="text-xl font-semibold text-[#2D3142] mt-2">
+                <h3 className="text-base sm:text-xl font-semibold text-[#2D3142] mt-2">
                   {feature.name}
                 </h3>
                 
                 {/* Decorative divider */}
-                <div className="w-12 h-0.5 bg-[#D5C4B7] my-3 rounded-full"></div>
+                <div className="w-10 sm:w-12 h-0.5 bg-[#D5C4B7] my-2 sm:my-3 rounded-full"></div>
                 
                 {/* Feature description with improved readability */}
-                <p className="mt-2 text-base text-[#3D3D3D]">
+                <p className="mt-1 sm:mt-2 text-sm sm:text-base text-[#3D3D3D]">
                   {feature.description}
                 </p>
               </motion.div>

@@ -99,14 +99,14 @@ const WabiSabiAbout = () => {
         </motion.div>
         
         <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
           {/* Image section - right side on desktop (RTL), bottom on mobile */}
           <motion.div 
-            className="lg:col-span-5 lg:order-3 order-2 relative mt-8 lg:mt-0"
+            className="lg:col-span-5 lg:order-3 order-2 relative mt-8 lg:mt-0 h-full"
             variants={imageVariants}
           >
             <div className="relative">
@@ -148,11 +148,11 @@ const WabiSabiAbout = () => {
           
           {/* Content section - left side on desktop (RTL), top on mobile */}
           <motion.div 
-            className="lg:col-span-7 lg:order-1 order-1"
+            className="lg:col-span-7 lg:order-1 order-1 h-full flex"
             variants={itemVariants}
           >
             <motion.div 
-              className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-md text-right border border-[#D5C4B7]/30"
+              className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-md text-right border border-[#D5C4B7]/30 h-full flex flex-col justify-between w-full"
               whileHover={{ boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)" }}
               transition={{ type: "spring" as const, stiffness: 300, damping: 20 }}
             >

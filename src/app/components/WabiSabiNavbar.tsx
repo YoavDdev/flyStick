@@ -45,7 +45,7 @@ const WabiSabiNavbar = () => {
     { href: "/", label: "בית", icon: AiOutlineHome },
     { href: "/about", label: "אודות", icon: AiOutlineInfoCircle },
     { href: "/contact", label: "צור קשר", icon: AiOutlinePhone },
-    { href: "/#Pricing", label: "מחיר", icon: AiOutlineDollar }
+    { href: "/", label: "מחיר", icon: AiOutlineDollar }
   ];
   
   // Social media links
@@ -176,7 +176,7 @@ const WabiSabiNavbar = () => {
         </svg>
       </div>
 
-      <div className="max-w-[1240px] mx-auto flex justify-between items-center h-full px-4 dir-rtl">
+      <div className="max-w-[1240px] mx-auto flex justify-between items-center h-full px-3 sm:px-4 dir-rtl">
         {/* Logo and Page Title */}
         <motion.div 
           initial={{ opacity: 0 }}
@@ -188,11 +188,11 @@ const WabiSabiNavbar = () => {
             <div className="relative">
               <Image 
                 src={Logo} 
-                width={35} 
+                width={32} 
                 height={1} 
                 alt="Logo" 
                 priority 
-                className="hover:opacity-80 transition-opacity duration-300"
+                className="hover:opacity-80 transition-opacity duration-300 sm:w-[35px]"
               />
               {/* Subtle glow effect */}
               <div className="absolute inset-0 bg-[#D9845E]/10 blur-md rounded-full opacity-0 hover:opacity-30 transition-opacity duration-500"></div>
@@ -203,7 +203,7 @@ const WabiSabiNavbar = () => {
               initial={{ opacity: 0, x: 10 }} 
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="mr-4 text-xl text-[#5D5D5D]"
+              className="mr-3 sm:mr-4 text-lg sm:text-xl text-[#5D5D5D]"
             >
               {pageTitle}
             </motion.h1>
@@ -223,7 +223,18 @@ const WabiSabiNavbar = () => {
                 variants={navItemVariants}
                 transition={{ delay: i * 0.1, duration: 0.3 }}
               >
-                <Link href={link.href}>
+                <Link 
+                  href={link.label === "מחיר" ? "/#Pricing" : link.href}
+                  onClick={(e) => {
+                    if (link.label === "מחיר") {
+                      e.preventDefault();
+                      const pricingSection = document.getElementById('Pricing');
+                      if (pricingSection) {
+                        pricingSection.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }
+                  }}
+                >
                   <div className="flex items-center">
                     <span className={`text-lg ${
                       isActiveLink(link.href)
@@ -251,7 +262,7 @@ const WabiSabiNavbar = () => {
                   <motion.button
                     whileHover={{ scale: 1.03 }}
                     onClick={toggleDropdown}
-                    className="text-[#5D5D5D] bg-[#E5DFD0] hover:bg-[#D5C4B7] border border-[#D0C8B0]/50 rounded-tl-xl rounded-br-xl rounded-tr-sm rounded-bl-sm px-4 py-2 transition duration-300 ease-in-out flex items-center"
+                    className="text-[#5D5D5D] bg-[#E5DFD0] hover:bg-[#D5C4B7] border border-[#D0C8B0]/50 rounded-tl-xl rounded-br-xl rounded-tr-sm rounded-bl-sm px-3 sm:px-4 py-1.5 sm:py-2 transition duration-300 ease-in-out flex items-center"
                   >
                     <span className="ml-2">
                       תפריט
@@ -266,7 +277,7 @@ const WabiSabiNavbar = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute left-0 mt-2 w-48 bg-[#FFFCF7] border border-[#D0C8B0]/30 rounded-tl-lg rounded-br-lg rounded-tr-sm rounded-bl-sm shadow-lg overflow-hidden z-10"
+                        className="absolute left-0 mt-2 w-44 sm:w-48 bg-[#FFFCF7] border border-[#D0C8B0]/30 rounded-tl-lg rounded-br-lg rounded-tr-sm rounded-bl-sm shadow-lg overflow-hidden z-10"
                       >
                         <DropdownMenu onClose={() => setDropdownVisible(false)} />
                       </motion.div>
@@ -277,7 +288,7 @@ const WabiSabiNavbar = () => {
                 <Link href="/login">
                   <motion.span
                     whileHover={{ y: -2 }}
-                    className="text-[#B56B4A] bg-transparent border border-[#B56B4A]/50 hover:bg-[#F7F3EB] rounded-tl-lg rounded-br-lg rounded-tr-sm rounded-bl-sm px-4 py-2 transition duration-300 ease-in-out text-lg"
+                    className="text-[#B56B4A] bg-transparent border border-[#B56B4A]/50 hover:bg-[#F7F3EB] rounded-tl-lg rounded-br-lg rounded-tr-sm rounded-bl-sm px-3 sm:px-4 py-1.5 sm:py-2 transition duration-300 ease-in-out text-base sm:text-lg"
                   >
                     התחבר
                   </motion.span>
@@ -291,9 +302,9 @@ const WabiSabiNavbar = () => {
         <motion.div 
           onClick={toggleMobileMenu}
           whileTap={{ scale: 0.95 }}
-          className="md:hidden cursor-pointer bg-[#E5DFD0]/70 p-2 rounded-full shadow-sm hover:shadow-md transition-all duration-300"
+          className="md:hidden cursor-pointer bg-[#E5DFD0]/70 p-2.5 rounded-full shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center"
         >
-          <AiOutlineMenu size={22} className="text-[#8E9A7C] hover:text-[#B56B4A] transition-colors duration-300" />
+          <AiOutlineMenu size={20} className="text-[#8E9A7C] hover:text-[#B56B4A] transition-colors duration-300" />
         </motion.div>
       </div>
 
@@ -306,7 +317,7 @@ const WabiSabiNavbar = () => {
             exit="closed"
             variants={mobileMenuVariants}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed top-0 right-0 h-screen w-3/4 md:hidden bg-[#F7F3EB] p-6 z-[101] shadow-lg overflow-y-auto dir-rtl"
+            className="fixed top-0 right-0 h-screen w-[85%] sm:w-3/4 md:hidden bg-[#F7F3EB] p-4 sm:p-6 z-[101] shadow-lg overflow-y-auto dir-rtl rounded-l-lg"
           >
             {/* Texture overlay for mobile menu */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -333,22 +344,31 @@ const WabiSabiNavbar = () => {
               </svg>
             </div>
             
-            {/* Mobile menu header - removed close button */}
-            <div className="mb-8"></div>
+            {/* Mobile menu header with close button */}
+            <div className="flex justify-end mb-6">
+              <motion.button
+                onClick={closeMobileMenu}
+                whileTap={{ scale: 0.95 }}
+                className="p-2 rounded-full bg-[#E5DFD0]/70 hover:bg-[#D5C4B7]/70 transition-colors duration-300 focus:outline-none"
+              >
+                <AiOutlineClose size={18} className="text-[#8E9A7C]" />
+              </motion.button>
+            </div>
             
             {/* User info if logged in */}
             {session?.user && (
               <motion.div 
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-8 p-5 bg-gradient-to-l from-[#E5DFD0]/70 to-[#E5DFD0]/40 rounded-tl-xl rounded-br-xl rounded-tr-sm rounded-bl-sm border border-[#D0C8B0]/30 shadow-sm"
+                className="mb-6 sm:mb-8 p-4 sm:p-5 bg-gradient-to-l from-[#E5DFD0]/70 to-[#E5DFD0]/40 rounded-tl-xl rounded-br-xl rounded-tr-sm rounded-bl-sm border border-[#D0C8B0]/30 shadow-sm"
               >
                 <div className="flex flex-col items-start">
                   <div className="flex justify-end mb-2">
                     <div className="text-right">
-                      <p className="text-[#5D5D5D] text-lg font-medium">
+                      <p className="text-[#5D5D5D] text-base sm:text-lg font-medium">
                         שלום, <span className="text-[#B56B4A]">{session.user.name?.split(" ")[0] || "משתמש"}</span>
                       </p>
+                      <p className="text-xs sm:text-sm text-[#8E9A7C]">{session.user.email}</p>
                     </div>
                   </div>
                   <div className="w-full h-0.5 bg-gradient-to-l from-[#B56B4A]/30 to-transparent rounded-full"></div>
@@ -364,7 +384,7 @@ const WabiSabiNavbar = () => {
                 transition={{ delay: 0.4 }}
                 className="mb-8 space-y-4"
               >
-                <h3 className="text-[#8E9A7C] font-medium mb-4 pr-1">האיזור האישי שלך</h3>
+                <h3 className="text-[#8E9A7C] font-medium mb-3 sm:mb-4 pr-1 text-base sm:text-lg">האיזור האישי שלך</h3>
                 <motion.div className="space-y-4">
                   <Link href="/dashboard" onClick={closeMobileMenu}>
                     <motion.div 
@@ -457,10 +477,10 @@ const WabiSabiNavbar = () => {
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.98 }}
-                    className="text-[#B56B4A] bg-transparent border-2 border-[#B56B4A]/50 hover:bg-[#F7F3EB] rounded-tl-xl rounded-br-xl rounded-tr-sm rounded-bl-sm px-6 py-3 transition duration-300 ease-in-out flex items-center"
+                    className="text-[#B56B4A] bg-transparent border-2 border-[#B56B4A]/50 hover:bg-[#F7F3EB] rounded-tl-xl rounded-br-xl rounded-tr-sm rounded-bl-sm px-5 sm:px-6 py-2.5 sm:py-3 transition duration-300 ease-in-out flex items-center"
                   >
                     <AiOutlineLogin className="ml-2" size={20} />
-                    <span className="text-lg font-medium">התחבר</span>
+                    <span className="text-base sm:text-lg font-medium">התחבר</span>
                   </motion.div>
                 </Link>
               </motion.div>
@@ -468,8 +488,8 @@ const WabiSabiNavbar = () => {
             
             {/* Navigation Links */}
             <div className="flex-col mb-8">
-              <h3 className="text-[#8E9A7C] font-medium mb-4 pr-1">תפריט ראשי</h3>
-              <ul className="text-xl space-y-4">
+              <h3 className="text-[#8E9A7C] font-medium mb-3 sm:mb-4 pr-1 text-base sm:text-lg">תפריט ראשי</h3>
+              <ul className="text-lg sm:text-xl space-y-3 sm:space-y-4">
                 {navigationLinks.map((link, index) => (
                   <motion.li 
                     key={link.href}
@@ -479,9 +499,23 @@ const WabiSabiNavbar = () => {
                     className={`py-2 cursor-pointer border-b ${isActiveLink(link.href) ? 'border-[#B56B4A]/30' : 'border-[#D0C8B0]/20'}`}
                     whileHover={{ x: -5, transition: { duration: 0.2 } }}
                   >
-                    <Link href={link.href} onClick={closeMobileMenu}>
-                      <div className="flex items-center justify-end py-2"> 
-                        <span className={`text-lg ${
+                    <Link 
+                      href={link.label === "מחיר" ? "/#Pricing" : link.href} 
+                      onClick={(e) => {
+                        closeMobileMenu();
+                        if (link.label === "מחיר") {
+                          e.preventDefault();
+                          const pricingSection = document.getElementById('Pricing');
+                          if (pricingSection) {
+                            setTimeout(() => {
+                              pricingSection.scrollIntoView({ behavior: 'smooth' });
+                            }, 300);
+                          }
+                        }
+                      }}
+                    >
+                      <div className="flex items-center justify-end py-1.5 sm:py-2"> 
+                        <span className={`text-base sm:text-lg ${
                           isActiveLink(link.href)
                             ? "text-[#B56B4A] font-medium"
                             : "text-[#5D5D5D] hover:text-[#B56B4A]"
@@ -506,24 +540,21 @@ const WabiSabiNavbar = () => {
               className="mt-10 pt-4"
             >
               <h3 className="text-[#8E9A7C] text-sm font-medium mb-4 text-center">בואו לעקוב אחרינו</h3>
-              <div className="flex justify-center space-x-4 rtl:space-x-reverse">
+              <div className="flex space-x-6 space-x-reverse justify-center">
                 {socialLinks.map((item, index) => (
                   <motion.a
                     key={item.name}
                     href={item.href}
-                    className="bg-[#E5DFD0]/70 hover:bg-[#D5C4B7]/70 p-3 rounded-full shadow-sm hover:shadow-md transition-all duration-300"
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ y: -3, scale: 1.05 }}
-                    initial={{ opacity: 0, y: 10 }}
+                    className="text-[#8E9A7C] hover:text-[#B56B4A] transition-colors duration-300 p-1.5"
+                    whileHover={{ scale: 1.1 }}
+                    initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 + (index * 0.1) }}
+                    transition={{ delay: 0.5 + (index * 0.1) }}
                   >
                     <span className="sr-only">{item.name}</span>
-                    <item.icon 
-                      className="h-5 w-5 text-[#B56B4A]" 
-                      aria-hidden="true" 
-                    />
+                    <item.icon className="h-5 sm:h-6 w-5 sm:w-6" aria-hidden="true" />
                   </motion.a>
                 ))}
               </div>

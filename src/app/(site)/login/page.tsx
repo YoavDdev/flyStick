@@ -31,7 +31,7 @@ const Page = () => {
     }
 
     if (callback?.ok && !callback?.error) {
-      toast.success("Logged in successfully!");
+      toast.success("התחברת בהצלחה!");
     }
 
     setLoading(false);
@@ -103,7 +103,7 @@ const Page = () => {
               <div className="mt-3 text-right">
                 <Link
                   href="/forgotPassword"
-                  className="text-sm text-[#EF8354] hover:text-[#D64933] transition-colors duration-200 hover:underline focus:outline-none"
+                  className="text-sm text-[#D9713C] hover:text-[#B8A99C] transition-colors duration-200 hover:underline focus:outline-none"
                 >
                   <p>שכחת את הסיסמה שלך?</p>
                 </Link>
@@ -130,7 +130,7 @@ const Page = () => {
               עדיין לא חבר?
               <Link
                 href="/register"
-                className="text-[#EF8354] hover:text-[#D64933] transition-colors duration-200 hover:underline focus:outline-none mr-1"
+                className="text-[#D9713C] hover:text-[#B8A99C] transition-colors duration-200 hover:underline focus:outline-none mr-1"
               >
                 הרשמה כאן
               </Link>

@@ -142,21 +142,21 @@ const DashboardPage = () => {
 
   return (
     <div className="min-h-screen relative pt-14">
-      <div className="container mx-auto px-4 py-8 md:py-12 relative z-10 max-w-6xl">
+      <div className="container mx-auto px-3 sm:px-6 py-6 sm:py-12">
         {session ? (
           <motion.div
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="flex flex-col gap-8"
+            className="flex flex-col gap-5 sm:gap-8"
           >
             {/* Header with decorative element */}
-            <div className="relative overflow-hidden rounded-xl bg-[#D5C4B7]/20 p-8 border border-[#D5C4B7]/30">              
+            <div className="relative overflow-hidden rounded-xl bg-[#D5C4B7]/20 p-5 sm:p-8 border border-[#D5C4B7]/30">              
               <motion.div variants={itemVariants} className="relative z-10">
-                <h1 className="text-3xl font-bold text-[#2D3142] mb-2 text-center">
+                <h1 className="text-2xl sm:text-3xl font-bold text-[#2D3142] mb-2 text-center">
                   {session.user?.name ? `שלום, ${session.user.name}` : 'ברוך הבא'}
                 </h1>
-                <p className="text-lg text-[#3D3D3D] text-center">
+                <p className="text-base sm:text-lg text-[#3D3D3D] text-center">
                   ברוך הבא לדשבורד האישי שלך בסטודיו בועז אונליין
                 </p>
               </motion.div>
@@ -165,7 +165,7 @@ const DashboardPage = () => {
             {/* WhatsApp Group Join Section */}
             <motion.div 
               variants={itemVariants}
-              className="bg-[#F7F3EB] rounded-xl p-6 border border-[#D5C4B7]/30 shadow-md relative overflow-hidden"
+              className="bg-[#F7F3EB] rounded-xl p-4 sm:p-6 border border-[#D5C4B7]/30 shadow-md relative overflow-hidden"
             >
               <div className="absolute top-0 left-0 w-32 h-32 opacity-10 -mt-10 -ml-10">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -176,20 +176,20 @@ const DashboardPage = () => {
                 </svg>
               </div>
               
-              <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
+              <div className="flex flex-col sm:flex-row items-center gap-6 relative z-10">
 
                 
                 <div className="flex-grow">
-                  <h3 className="text-xl font-bold text-[#2D3142] mb-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#2D3142] mb-2">
                     הצטרף לקבוצת הוואטסאפ שלנו
                   </h3>
-                  <p className="text-[#3D3D3D] mb-4">
+                  <p className="text-sm sm:text-base text-[#3D3D3D] mb-4">
                     הצטרף לקהילה שלנו בוואטסאפ כדי לקבל עדכונים, טיפים, ולהיות בקשר ישיר עם בועז והצוות. כאן תוכלו לשאול שאלות ולקבל תמיכה מהקהילה.
                   </p>
                   
                   <motion.button
                     onClick={handleWhatsAppJoin}
-                    className="bg-[#25D366] hover:bg-[#128C7E] text-white py-3 px-6 rounded-full flex items-center gap-2 transition-all duration-300"
+                    className="bg-[#25D366] hover:bg-[#128C7E] text-white py-2.5 sm:py-3 px-4 sm:px-6 rounded-full flex items-center gap-2 transition-all duration-300 text-sm sm:text-base"
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -201,7 +201,12 @@ const DashboardPage = () => {
             </motion.div>
 
             {/* Dashboard Cards Grid */}
-            <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <motion.div 
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8"
+            >
               <DashboardCard
                 title="הסרטונים שלי"
                 description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
@@ -229,7 +234,7 @@ const DashboardPage = () => {
             </motion.div>
 
             {/* Subscription Status Section */}
-            <motion.div variants={itemVariants} className="bg-white rounded-xl p-6 shadow-md">
+            <motion.div variants={itemVariants} className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
               <div className="flex items-center gap-4 mb-4">
                 <div className="bg-[#D5C4B7] p-3 rounded-full">
                   <MdOutlineSubscriptions size={24} className="text-[#2D3142]" />
@@ -335,12 +340,12 @@ const DashboardPage = () => {
             {/* Newsletter Section */}
             <motion.div 
               variants={itemVariants}
-              className="bg-[#F7F3EB] rounded-xl p-6 border border-[#D5C4B7]/30 shadow-md"
+              className="bg-[#F7F3EB] rounded-xl p-4 sm:p-6 border border-[#D5C4B7]/30 shadow-md"
             >
-              <h3 className="text-xl font-bold text-[#2D3142] mb-2 text-center">
+              <h3 className="text-lg sm:text-xl font-bold text-[#2D3142] mb-2 text-center">
                 הרשמו לניוזלטר שלנו
               </h3>
-              <p className="text-center text-[#3D3D3D] mb-6">
+              <p className="text-center text-sm sm:text-base text-[#3D3D3D] mb-4 sm:mb-6">
                 כדי לקבל הסברים שימושיים שיעזרו לכם להתנהל בסטודיו ולדעת מה
                 מתאים עבורכם ומדי פעם תקבלו עדכון על סרט חשוב, המלצה, הרצאה חדשה
                 וכו&apos;.

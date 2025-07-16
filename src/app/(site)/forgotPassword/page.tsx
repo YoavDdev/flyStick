@@ -13,7 +13,7 @@ const ForgotPasswordPage = () => {
     try {
       // Perform validation on the email if needed
       if (!email) {
-        toast.error("Please provide a valid email address.");
+        toast.error("אנא הכנס כתובת אימייל תקינה.");
         return;
       }
 
@@ -28,18 +28,18 @@ const ForgotPasswordPage = () => {
 
       if (response.ok) {
         toast.success(
-          "Password reset initiated. Check your email for instructions.",
+          "איפוס הסיסמה הותחל. בדוק את האימייל שלך להוראות נוספות.",
           {
             duration: 5000, // Set the duration in milliseconds
           },
         );
         router.push("/login"); // Redirect to login page or any desired page
       } else {
-        toast.error("Password reset initiation failed. Please try again.");
+        toast.error("איפוס הסיסמה נכשל. אנא נסה שוב.");
       }
     } catch (error) {
       console.error("Error initiating password reset:", error);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error("משהו השתבש. אנא נסה שוב מאוחר יותר.");
     }
   };
 
@@ -91,7 +91,7 @@ const ForgotPasswordPage = () => {
             <div className="mt-6 text-center">
               <Link
                 href="/login"
-                className="text-sm text-[#EF8354] hover:text-[#D64933] transition-colors duration-200 hover:underline focus:outline-none"
+                className="text-sm text-[#D9713C] hover:text-[#B8A99C] transition-colors duration-200 hover:underline focus:outline-none"
               >
                 חזור לדף הכניסה
               </Link>

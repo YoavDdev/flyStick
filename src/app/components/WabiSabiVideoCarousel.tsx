@@ -46,28 +46,28 @@ const WabiSabiVideoCarousel = () => {
       <div className="absolute -left-32 bottom-20 w-72 h-72 rounded-full bg-[#D5C4B7]/10 blur-xl"></div>
       <div className="absolute -right-20 top-40 w-64 h-64 rounded-full bg-[#B8A99C]/10 blur-lg"></div>
 
-      <div className="container mx-auto px-6 sm:px-8 lg:px-10 relative z-10">
+      <div className="container mx-auto px-3 sm:px-6 lg:px-8 relative z-10">
         <motion.div 
-          className="mx-auto max-w-2xl lg:text-center mb-16"
+          className="mx-auto max-w-2xl lg:text-center mb-6 sm:mb-12 md:mb-16"
           variants={containerVariants}
           initial="hidden"
           animate={controls}
         >
           {/* Decorative element above heading */}
           <motion.div 
-            className="w-16 h-1 bg-[#5C6A85]/30 rounded-full mx-auto mb-6"
+            className="w-12 sm:w-16 h-1 bg-[#5C6A85]/30 rounded-full mx-auto mb-4 sm:mb-6"
             initial={{ width: 0 }}
-            animate={{ width: 64, transition: { delay: 0.5, duration: 0.8 } }}
+            animate={{ width: 48, transition: { delay: 0.5, duration: 0.8 } }}
           />
           
           <motion.h2 
-            className="text-base font-semibold leading-7 text-[#5C6A85]"
+            className="text-base font-semibold leading-6 sm:leading-7 text-[#5C6A85]"
             variants={itemVariants}
           >
             צפו בנו
           </motion.h2>
           <motion.p 
-            className="mt-2 text-3xl font-bold tracking-tight text-[#3D3D3D] sm:text-4xl"
+            className="mt-2 text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#3D3D3D]"
             variants={itemVariants}
           >
             טעימה מהסטודיו
@@ -82,7 +82,7 @@ const WabiSabiVideoCarousel = () => {
         >
           {/* Enhanced decorative frame with Wabi-Sabi aesthetic */}
           <motion.div
-            className="absolute -inset-3 rounded-tl-2xl rounded-br-2xl rounded-tr-lg rounded-bl-lg bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] opacity-80"
+            className="absolute -inset-2 sm:-inset-3 rounded-tl-2xl rounded-br-2xl rounded-tr-lg rounded-bl-lg bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] opacity-80"
             variants={itemVariants}
             style={{ boxShadow: "0 20px 40px -15px rgba(184, 169, 156, 0.5)" }}
           />
@@ -110,7 +110,7 @@ const WabiSabiVideoCarousel = () => {
               <iframe
                 id="ytplayer"
                 width="50%"
-                height="500"
+                height="250"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 src="https://www.youtube.com/embed/VmxL_n52jPA?autoplay=1&loop=1&mute=1&si=r7sh91q0pP3U0mKG&playlist=VmxL_n52jPA"
                 className="w-full h-full object-cover rounded-tl-lg rounded-br-lg rounded-tr-sm rounded-bl-sm"
@@ -121,9 +121,9 @@ const WabiSabiVideoCarousel = () => {
           
           {/* Decorative element below video */}
           <motion.div 
-            className="w-24 h-1 bg-[#D5C4B7]/50 rounded-full mx-auto mt-8"
+            className="w-16 sm:w-24 h-1 bg-[#D5C4B7]/50 rounded-full mx-auto mt-4 sm:mt-8"
             initial={{ width: 0 }}
-            animate={{ width: 96, transition: { delay: 1, duration: 0.8 } }}
+            animate={{ width: 64, transition: { delay: 1, duration: 0.8 } }}
           />
         </motion.div>
       </div>

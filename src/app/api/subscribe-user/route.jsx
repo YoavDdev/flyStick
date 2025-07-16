@@ -3,9 +3,9 @@ import axios from "axios";
 const API_KEY = process.env.CONVERTKIT_API_KEY;
 const FORM_ID = process.env.CONVERTKIT_FORM_ID;
 const BASE_URL = "https://api.convertkit.com/v3";
-const email_required_message = "Email is required";
-const error_message = `Oops! Something went wrong. Please try again.`;
-const success_message = `Your email has been added to the newsletter!`;
+const email_required_message = "יש להכניס כתובת אימייל";
+const error_message = `אופס! משהו השתבש. אנא נסה שוב.`;
+const success_message = `האימייל שלך נוסף בהצלחה לרשימת התפוצה!`;
 
 export async function POST(request) {
   const body = await request.json();

@@ -274,7 +274,7 @@ const Page: FC<pageProps> = ({ params }) => {
 
       if (response.status === 200) {
         // Video removed successfully, you can update the UI accordingly
-        toast.success("Folder deleted");
+        toast.success("התיקייה נמחקה");
         // Refresh the list of videos or perform any other necessary UI updates
         // For example, you can filter the videos array to remove the deleted video
         setVideos((prevVideos) =>

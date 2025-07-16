@@ -25,7 +25,7 @@ const Register = () => {
     e.preventDefault();
 
     if (data.password.length < 6) {
-      toast.error("Password must be at least 6 characters long.");
+      toast.error("הסיסמה חייבת להיות באורך של 6 תווים לפחות.");
       return;
     }
 
@@ -33,7 +33,7 @@ const Register = () => {
       const res = await axios.post("/api/register", data);
 
       if (res.status === 200) {
-        toast.success("User is registered");
+        toast.success("המשתמש נרשם בהצלחה");
 
         // ✅ Subscribe to newsletter if requested
         if (data.subscribeToNewsletter) {
@@ -50,11 +50,11 @@ const Register = () => {
 
         router.push("/login");
       } else {
-        toast.error("Something went wrong");
+        toast.error("משהו השתבש, אנא נסה שוב");
       }
     } catch (error) {
       console.error("Error registering user:", error);
-      toast.error("Something went wrong");
+      toast.error("משהו השתבש, אנא נסה שוב");
     }
   };
 
@@ -162,7 +162,7 @@ const Register = () => {
           <div className="mt-8 border-t border-[#D5C4B7] pt-6">
             <p className="mb-6 text-center text-sm text-[#2D3142]">
               כבר יש לך חשבון?
-              <a href="/login" className="text-[#EF8354] hover:text-[#D64933] transition-colors duration-200 hover:underline focus:outline-none mr-1">
+              <a href="/login" className="text-[#D9713C] hover:text-[#B8A99C] transition-colors duration-200 hover:underline focus:outline-none mr-1">
                 התחבר כאן
               </a>
             </p>

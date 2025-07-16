@@ -51,7 +51,7 @@ const WabiSabiFooter = () => {
   ];
 
   return (
-    <footer className="relative overflow-hidden bg-[#F5F2EB] text-right shadow-sm" aria-labelledby="footer-heading">
+    <footer className="relative overflow-hidden bg-[#F5F2EB] text-right shadow-sm pt-1" aria-labelledby="footer-heading">
       {/* Wabi-Sabi Texture Background */}
       <div className="absolute inset-0 z-0 opacity-20">
       </div>
@@ -66,7 +66,7 @@ const WabiSabiFooter = () => {
         </svg>
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-6 pt-10 pb-14 lg:px-8 lg:pt-12 lg:pb-16">        
+      <div className="relative z-10 mx-auto max-w-7xl px-3 sm:px-6 pt-6 pb-8 sm:pt-10 sm:pb-12 lg:px-8 lg:pt-12 lg:pb-16">        
         {/* Additional decorative element for medium+ screens */}
         <div className="absolute right-12 bottom-24 w-20 h-20 opacity-10 hidden md:block">
           <motion.svg 
@@ -79,7 +79,7 @@ const WabiSabiFooter = () => {
           </motion.svg>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 border-b border-[#D9C5B3]/70 pb-8 md:pb-10 md:items-start md:justify-items-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-8 md:gap-12 border-b border-[#D9C5B3]/70 pb-5 sm:pb-8 md:pb-10 md:items-start md:justify-items-center">
           {/* Logo and About Section - Always first in DOM for semantics but visually ordered for RTL */}
           <div className="flex flex-col items-center order-1 md:order-3 md:w-full md:max-w-xs">
             <Link href="/" className="hidden md:block">
@@ -96,22 +96,21 @@ const WabiSabiFooter = () => {
                 <div className="absolute inset-0 bg-[#D9845E]/10 blur-md rounded-full opacity-30"></div>
               </div>
             </Link>
-            <p className="text-sm text-[#5D5D5D] mb-4 text-center md:text-right">
+            <p className="text-xs sm:text-sm text-[#5D5D5D] mb-2 sm:mb-4 text-center md:text-right">
               סטודיו אונליין של בועז נחייסי - המקום שלך לפילאטיס, יוגה ותנועה מכל מקום ובכל זמן.
             </p>
-            <div className="flex space-x-4 flex-row-reverse justify-center md:justify-end">
+            <div className="flex justify-center space-x-5 rtl:space-x-reverse mt-2 sm:mt-4">
               {socialLinks.map((item) => (
                 <motion.a
                   key={item.name}
                   href={item.href}
                   target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#B56B4A] hover:text-[#D9845E] transition-all duration-300 md:bg-[#F7F3EB]/70 md:p-2 md:rounded-full md:shadow-sm md:hover:shadow-md md:hover:bg-[#F7F3EB]"
+                  className="text-[#B56B4A] hover:text-[#D9845E] transition-colors duration-300 p-1"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <span className="sr-only">{item.name}</span>
-                  <item.icon className="h-6 w-6" aria-hidden="true" />
+                  <item.icon size={26} aria-hidden="true" />
                 </motion.a>
               ))}
             </div>
@@ -119,17 +118,17 @@ const WabiSabiFooter = () => {
 
           {/* Quick Links */}
           <div className="text-center md:text-center order-2 md:order-2 md:w-full md:max-w-xs">
-            <h3 className="text-sm font-medium text-[#B56B4A] mb-4 md:text-base md:relative md:inline-flex md:items-center md:justify-center md:gap-2">
+            <h3 className="text-xs sm:text-sm font-medium text-[#B56B4A] mb-3 sm:mb-4 md:text-base md:relative md:inline-flex md:items-center md:justify-center md:gap-2">
               <span className="md:w-2 md:h-2 md:bg-[#D9845E]/50 md:rounded-full md:inline-block"></span>
               ניווט מהיר
               <span className="md:w-2 md:h-2 md:bg-[#D9845E]/50 md:rounded-full md:inline-block"></span>
             </h3>
-            <ul className="space-y-2 md:space-y-3">
+            <ul className="space-y-1 sm:space-y-2 md:space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.name}>
                   <Link 
                     href={link.href}
-                    className="text-sm text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300 md:hover:pr-1"
+                    className="text-sm text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300 md:hover:pr-1 py-1 inline-block"
                   >
                     {link.name}
                   </Link>
@@ -140,15 +139,15 @@ const WabiSabiFooter = () => {
 
           {/* Newsletter Signup */}
           <div className="text-center order-3 md:order-1 md:w-full md:max-w-xs">
-            <h3 className="text-sm font-medium text-[#B56B4A] mb-4 md:text-base md:relative md:inline-flex md:items-center md:justify-center md:gap-2">
+            <h3 className="text-xs sm:text-sm font-medium text-[#B56B4A] mb-3 sm:mb-4 md:text-base md:relative md:inline-flex md:items-center md:justify-center md:gap-2">
               <span className="md:w-2 md:h-2 md:bg-[#D9845E]/50 md:rounded-full md:inline-block"></span>
               הירשמו לניוזלטר שלנו
               <span className="md:w-2 md:h-2 md:bg-[#D9845E]/50 md:rounded-full md:inline-block"></span>
             </h3>
-            <p className="text-sm text-[#5D5D5D] mb-4 md:leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#5D5D5D] mb-2 sm:mb-4 md:leading-relaxed px-2 sm:px-0">
               עדכון ארועים, חדשות, שיעורים חדשים העולים לאתר ישלחו לתיבת הדואר שלכם.
             </p>
-            <div className="mt-4 md:mt-6">
+            <div className="mt-3 sm:mt-4 md:mt-6">
               <div className="newsletter-wabisabi md:bg-[#F7F3EB]/60 md:p-3 md:rounded-lg md:shadow-sm">
                 <NewsletterSignUpForm />
               </div>
@@ -157,7 +156,7 @@ const WabiSabiFooter = () => {
         </div>
 
         {/* Copyright and Legal */}
-        <div className="pt-6 flex flex-col md:flex-row md:items-center md:justify-between md:pt-8 md:mt-2">
+        <div className="pt-3 sm:pt-6 flex flex-col md:flex-row md:items-center md:justify-between md:pt-8 md:mt-2">
           <div className="text-xs text-[#5D5D5D] text-center md:text-right md:order-2">
             <div className="flex flex-wrap justify-center md:justify-end gap-x-2 gap-y-1">
               {legalLinks.map((link, idx) => (

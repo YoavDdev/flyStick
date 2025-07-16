@@ -39,10 +39,10 @@ export default function WabiSabiPricing() {
   };
 
   return (
-    <div id="Pricing" className="relative overflow-hidden py-16 sm:py-24">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8 relative z-10">
+    <div id="Pricing" className="relative overflow-hidden py-8 sm:py-16 md:py-24">
+      <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 relative z-10">
         <motion.div
-          className="mx-auto max-w-2xl lg:text-center mb-16"
+          className="mx-auto max-w-2xl lg:text-center mb-8 sm:mb-12 md:mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -50,20 +50,20 @@ export default function WabiSabiPricing() {
         >
           {/* Decorative element above heading */}
           <motion.div 
-            className="w-16 h-1 bg-[#B56B4A]/30 rounded-full mx-auto mb-6"
+            className="w-12 sm:w-16 h-1 bg-[#B56B4A]/30 rounded-full mx-auto mb-4 sm:mb-6"
             initial={{ width: 0 }}
-            whileInView={{ width: 64 }}
+            whileInView={{ width: 48, transition: { delay: 0.5, duration: 0.8 } }}
             viewport={{ once: true }}
             transition={{ delay: 0.5, duration: 0.8 }}
           />
           
-          <h2 className="text-base font-semibold leading-7 text-[#5C6A85]">
+          <h2 className="text-base font-semibold leading-6 sm:leading-7 text-[#5C6A85]">
             מנוי מיוחד
           </h2>
-          <p className="mt-2 text-3xl font-bold tracking-tight text-[#B56B4A] sm:text-4xl">
+          <p className="mt-2 text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#B56B4A]">
             הצטרפו למסע התנועה והריפוי שלכם
           </p>
-          <p className="mt-4 text-lg text-[#5D5D5D] max-w-xl mx-auto">
+          <p className="mt-3 sm:mt-4 text-sm sm:text-lg text-[#5D5D5D] max-w-xl mx-auto px-1 sm:px-0">
             גלו את הדרך לחיבור עמוק עם הגוף והנפש שלכם, בין אם אתם גברים או נשים, מתחילים או מתקדמים
           </p>
         </motion.div>
@@ -75,16 +75,16 @@ export default function WabiSabiPricing() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          <div className="mx-auto max-w-2xl rounded-tl-3xl rounded-br-3xl rounded-tr-xl rounded-bl-xl overflow-hidden lg:mx-0 lg:flex lg:max-w-none shadow-xl border border-[#D5C4B7]/30">
+          <div className="mx-auto max-w-2xl rounded-tl-2xl sm:rounded-tl-3xl rounded-br-2xl sm:rounded-br-3xl rounded-tr-lg sm:rounded-tr-xl rounded-bl-lg sm:rounded-bl-xl overflow-hidden lg:mx-0 lg:flex lg:max-w-none shadow-xl border border-[#D5C4B7]/30">
             {/* Left side - Features with enhanced styling */}
-            <div className="p-10 sm:p-12 lg:flex-auto bg-gradient-to-br from-[#FFFCF7] to-[#F7F3EB] border border-[#D0C8B0]/30">
-              <h3 className="text-2xl font-bold tracking-tight text-[#B56B4A]">
+            <div className="p-4 sm:p-8 md:p-10 lg:p-12 lg:flex-auto bg-gradient-to-br from-[#FFFCF7] to-[#F7F3EB] border border-[#D0C8B0]/30">
+              <h3 className="text-lg sm:text-2xl font-bold tracking-tight text-[#B56B4A]">
                 מנוי לסטודיו אונליין של בועז נחייסי
               </h3>
-              <p className="text-sm text-[#8E9A7C] mt-1">לכל אחד ואחת מכם</p>
+              <p className="text-xs sm:text-sm text-[#8E9A7C] mt-1">לכל אחד ואחת מכם</p>
 
               {/* Decorative divider */}
-              <div className="w-16 h-1 bg-[#D5C4B7] rounded-full my-6"></div>
+              <div className="w-12 sm:w-16 h-1 bg-[#D5C4B7] rounded-full my-4 sm:my-6"></div>
 
               <p className="mt-6 text-base leading-7 text-[#3D3D3D]">
                 מאגר עצום של ידע שיאפשר לך להתחבר לגופך, להעמיק את הבנתך הסומטית

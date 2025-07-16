@@ -28,7 +28,7 @@ const WabiSabiHero = () => {
   }, []);
 
   return (
-    <div className="relative isolate overflow-hidden pt-0 md:h-screen flex items-center justify-center">
+    <div className="relative isolate overflow-hidden pt-0 md:h-screen flex items-center justify-center min-h-[85vh] sm:min-h-[90vh]">
       {/* Background Image with Wabi-Sabi texture overlay and parallax effect */}
       <motion.div
         className={`absolute inset-0 -z-10 h-full w-full object-cover transition-opacity ${
@@ -72,7 +72,7 @@ const WabiSabiHero = () => {
 
       {/* Content container with improved positioning */}
       <motion.div 
-        className="mx-auto max-w-2xl py-16 sm:py-24 lg:py-32 px-4 sm:px-6 relative z-10"
+        className="mx-auto max-w-2xl py-8 sm:py-16 md:py-24 lg:py-32 px-3 sm:px-6 relative z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3 }}
@@ -80,9 +80,9 @@ const WabiSabiHero = () => {
         <div className="text-center">
           {/* Heading with Wabi-Sabi styling and motion */}
           <motion.h1 
-            className="text-3xl font-bold tracking-tight text-white sm:text-6xl"
+            className="text-3xl sm:text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white"
             style={{ 
-              textShadow: "0 2px 4px rgba(0,0,0,0.2)",
+              textShadow: "0 2px 4px rgba(0,0,0,0.3)",
               letterSpacing: "0.02em"
             }}
             initial={{ opacity: 0, y: -20 }}
@@ -94,9 +94,9 @@ const WabiSabiHero = () => {
           
           {/* Subheading with Wabi-Sabi styling and motion */}
           <motion.p 
-            className="mt-6 text-lg leading-8 text-[#F7F3EB] font-light max-w-lg mx-auto"
+            className="mt-4 sm:mt-6 text-base sm:text-lg leading-7 sm:leading-8 text-[#F7F3EB] font-light max-w-lg mx-auto px-1 sm:px-0"
             style={{ 
-              textShadow: "0 1px 2px rgba(0,0,0,0.1)",
+              textShadow: "0 1px 3px rgba(0,0,0,0.2)",
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -122,7 +122,7 @@ const WabiSabiHero = () => {
           
           {/* CTA Button with Wabi-Sabi styling and motion */}
           <motion.div 
-            className="mt-8 flex flex-col sm:flex-row items-center justify-center"
+            className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.9 }}
@@ -130,20 +130,20 @@ const WabiSabiHero = () => {
             {loading ? (
               <p className="text-white opacity-80">טעינה...</p>
             ) : subscriptionStatus === "ACTIVE" ? (
-              <Link href="/explore">
+              <Link href="/explore" className="w-full sm:w-auto">
                 <span
-                  className="inline-block rounded-full bg-[#D5C4B7] px-8 py-4 text-lg text-[#3D3D3D] shadow-md hover:bg-[#B8A99C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B8A99C] transition-all duration-300 ease-in-out border border-[#B8A99C]/30"
+                  className="inline-block rounded-full bg-[#D5C4B7] px-5 sm:px-8 py-3 sm:py-4 text-base sm:text-lg text-[#3D3D3D] shadow-md hover:bg-[#B8A99C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B8A99C] transition-all duration-300 ease-in-out border border-[#B8A99C]/30 w-full sm:w-auto text-center font-medium"
                 >
                   חיפוש
                 </span>
               </Link>
             ) : (
-              <Link href="/register">
+              <Link href="/register" className="w-full sm:w-auto">
                 <span
-                  className="inline-block rounded-full bg-[#D5C4B7] px-8 py-4 text-lg text-[#3D3D3D] shadow-md hover:bg-[#B8A99C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B8A99C] transition-all duration-300 ease-in-out border border-[#B8A99C]/30"
+                  className="inline-block rounded-full bg-[#D5C4B7] px-5 sm:px-8 py-3 sm:py-4 text-base sm:text-lg text-[#3D3D3D] shadow-md hover:bg-[#B8A99C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B8A99C] transition-all duration-300 ease-in-out border border-[#B8A99C]/30 w-full sm:w-auto text-center font-medium"
                 >
                   הרשמו כמנויים חדשים וקבלו 3 ימי נסיון חינם
-                  </span>
+                </span>
               </Link>
             )}
           </motion.div>

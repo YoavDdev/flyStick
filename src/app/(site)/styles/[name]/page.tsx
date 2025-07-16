@@ -432,26 +432,26 @@ const Page: FC<pageProps> = ({ params }) => {
 
         if (response.status === 200) {
           if (response.data.message === "Add to favorites") {
-            toast.success(`The video add to ${folderName}`);
+            toast.success(`הסרטון נוסף ל${folderName}`);
           } else if (response.data.message === "Video already in favorites") {
-            toast.error("Video is already in favorites");
+            toast.error("הסרטון כבר נמצא במועדפים");
           } else if (
             response.data.message === "videoUri already exists in the folder"
           ) {
-            toast.error(`Video already in ${folderName}`);
+            toast.error(`הסרטון כבר נמצא ב${folderName}`);
           } else {
-            toast.error("An error occurred");
+            toast.error("אירעה שגיאה");
           }
         } else {
-          toast.error("An error occurred");
+          toast.error("אירעה שגיאה");
         }
       } else {
         console.error("User session is not available.");
-        toast.error("Please logIn");
+        toast.error("אנא התחבר");
       }
     } catch (error) {
       console.error("Error adding video to favorites:", error);
-      toast.error("An error occurred");
+      toast.error("אירעה שגיאה");
     }
   };
 

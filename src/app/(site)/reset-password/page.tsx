@@ -15,7 +15,7 @@ const ResetPasswordPage = () => {
     try {
       // Validate the password (add any necessary validation logic)
       if (!password) {
-        toast.error("Please enter a new password.");
+        toast.error("אנא הכנס סיסמה חדשה.");
         return;
       }
 
@@ -35,15 +35,15 @@ const ResetPasswordPage = () => {
 
       if (response.ok) {
         toast.success(
-          "Password reset successful. You can now log in with your new password.",
+          "איפוס הסיסמה הצליח. אתה יכול להתחבר עכשיו עם הסיסמה החדשה שלך.",
         );
         router.push("/login"); // Redirect to the login page or any desired page
       } else {
-        toast.error("Password reset failed. Please try again.");
+        toast.error("איפוס הסיסמה נכשל. אנא נסה שוב.");
       }
     } catch (error) {
       console.error("Error resetting password:", error);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error("משהו השתבש. אנא נסה שוב מאוחר יותר.");
     }
   };
 
@@ -95,7 +95,7 @@ const ResetPasswordPage = () => {
             <div className="mt-6 text-center">
               <Link
                 href="/login"
-                className="text-sm text-[#EF8354] hover:text-[#D64933] transition-colors duration-200 hover:underline focus:outline-none"
+                className="text-sm text-[#D9713C] hover:text-[#B8A99C] transition-colors duration-200 hover:underline focus:outline-none"
               >
                 חזור למסך הכניסה
               </Link>
