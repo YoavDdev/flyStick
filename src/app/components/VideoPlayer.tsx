@@ -104,6 +104,59 @@ const VideoPlayer = ({
     });
 
     setPlayer(newPlayer);
+    
+    // Add seek restriction for non-subscribers
+    if (!isSubscriber && !isAdmin) {
+      const PREVIEW_LIMIT = 120; // 2 minutes in seconds
+      let toastShown = false;
+      
+      // Add event listener for seeking
+      newPlayer.on('seeked', async () => {
+        const currentTime = await newPlayer.getCurrentTime();
+        
+        // If user tries to seek beyond the preview limit, reset to beginning
+        if (currentTime > PREVIEW_LIMIT) {
+          newPlayer.setCurrentTime(0);
+          showPreviewRestrictionToast();
+        }
+      });
+      
+      // Also monitor continuous playback to prevent playing beyond the limit
+      newPlayer.on('timeupdate', async () => {
+        const currentTime = await newPlayer.getCurrentTime();
+        
+        // If video plays beyond the preview limit, show overlay and pause
+        if (currentTime > PREVIEW_LIMIT) {
+          newPlayer.pause();
+          setShowPreviewOverlay(true);
+          
+          // Mark this video as watched in localStorage
+          const videoIdMatch = embedHtml?.match(/player\.vimeo\.com\/video\/(\d+)/);
+          if (videoIdMatch) {
+            const videoId = videoIdMatch[1];
+            const videoKey = `preview_${videoId}_${session?.user?.email || 'guest'}`;
+            localStorage.setItem(videoKey, 'watched');
+          }
+        }
+      });
+      
+      // Helper function to show toast notification
+      const showPreviewRestrictionToast = () => {
+        if (toastShown) return; // Prevent multiple toasts
+        
+        toastShown = true;
+        const toastDiv = document.createElement('div');
+        toastDiv.className = 'fixed top-24 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white px-4 py-2 rounded-md z-[10001] text-sm';
+        toastDiv.textContent = 'מנויים בלבד יכולים לצפות מעבר ל-2 דקות הראשונות';
+        document.body.appendChild(toastDiv);
+        
+        // Remove the toast after 3 seconds
+        setTimeout(() => {
+          document.body.removeChild(toastDiv);
+          toastShown = false;
+        }, 3000);
+      }
+    }
 
     // For non-subscribers, check if they've already watched this video
     if (!isSubscriber && !isAdmin && videoUri) {
