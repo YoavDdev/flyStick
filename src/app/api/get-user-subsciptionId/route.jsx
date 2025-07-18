@@ -1,34 +1,69 @@
-import prisma from "../../libs/prismadb";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route';
+import prisma from '@/app/libs/prismadb';
+
+export async function GET() {
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session || !session.user || !session.user.email) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
+    
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session.user.email
+      },
+      select: {
+        subscriptionId: true,
+        trialStartDate: true
+      }
+    });
+    
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+    
+    return NextResponse.json({ 
+      subscriptionId: user.subscriptionId,
+      trialStartDate: user.trialStartDate
+    });
+  } catch (error) {
+    console.error('Error fetching user subscription ID:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
 
 export async function POST(request) {
   try {
     const body = await request.json();
     const { userEmail } = body;
-
+    
     if (!userEmail) {
-      console.log("Missing userEmail");
-      return new NextResponse("Missing userEmail", { status: 400 });
+      return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
-
+    
     const user = await prisma.user.findUnique({
       where: {
-        email: userEmail,
+        email: userEmail
       },
       select: {
-        // Include any other fields you need from the user
         subscriptionId: true,
-      },
+        trialStartDate: true
+      }
     });
-
+    
     if (!user) {
-      console.log("User not found");
-      return new NextResponse("User not found", { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
-
-    return NextResponse.json(user);
+    
+    return NextResponse.json({
+      subscriptionId: user.subscriptionId,
+      trialStartDate: user.trialStartDate
+    });
   } catch (error) {
-    console.error("Error fetching user data:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error('Error fetching user subscription ID:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

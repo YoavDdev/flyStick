@@ -15,6 +15,7 @@ model User {
   name              String?
   email             String?   @unique
   subscriptionId    String?
+  trialStartDate    DateTime? // Track when trial subscription started
   cancellationDate  DateTime? // Track when subscription was cancelled for grace period
   emailVerified     DateTime?
   image             String?

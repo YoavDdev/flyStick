@@ -113,19 +113,26 @@ export default function AdminPage() {
     try {
       if (!session?.user?.email) return;
       
+      console.log("ADMIN PAGE DEBUG - Updates received:", updates);
+      console.log("ADMIN PAGE DEBUG - trialStartDate:", updates.trialStartDate);
+      
       setIsUpdating(true);
+      const requestBody = {
+        userId,
+        ...updates,
+        // Rename email field to avoid conflict in API
+        ...(updates.email && { userEmail: updates.email }),
+      };
+      
+      console.log("ADMIN PAGE DEBUG - Full request payload:", JSON.stringify(requestBody));
+      
       const response = await fetch("/api/admin/update-user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${session.user.email}`
         },
-        body: JSON.stringify({
-          userId,
-          ...updates,
-          // Rename email field to avoid conflict in API
-          ...(updates.email && { userEmail: updates.email }),
-        }),
+        body: JSON.stringify(requestBody),
       });
       
       if (!response.ok) {
@@ -133,8 +140,10 @@ export default function AdminPage() {
         throw new Error(errorData.error || "שגיאה בעדכון משתמש");
       }
       
+      const updatedUser = await response.json();
+      
       toast.success("המשתמש עודכן בהצלחה");
-      fetchUsers(); // Refresh user list
+      await fetchUsers(); // Refresh user list with await to ensure it completes
     } catch (error) {
       console.error("Error updating user:", error);
       toast.error("אירעה שגיאה בעדכון המשתמש");

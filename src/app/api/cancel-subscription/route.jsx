@@ -34,12 +34,15 @@ export async function POST(request) {
     console.log("Subscription canceled successfully");
 
     // Update the user's subscription status in the database
+    // Set cancellationDate to track when the subscription was cancelled
+    // This is used for both grace period calculation and recent cancellations stats
     await prisma.user.update({
       where: {
         email: userEmail,
       },
       data: {
         subscriptionId: null,
+        cancellationDate: new Date(), // Set cancellation date to now
       },
     });
 

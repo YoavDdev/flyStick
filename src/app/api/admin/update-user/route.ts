@@ -28,7 +28,17 @@ export async function POST(req: Request) {
     
     // Get request body
     const body = await req.json();
+    console.log("API DEBUG - Full request body:", JSON.stringify(body));
     const { userId, subscriptionId, name, userEmail, trialStartDate, cancellationDate } = body;
+    
+    console.log("API DEBUG - Extracted fields:", { 
+      userId, 
+      subscriptionId, 
+      name, 
+      userEmail,
+      trialStartDate,
+      cancellationDate 
+    });
     
     if (!userId) {
       return NextResponse.json(
@@ -37,22 +47,38 @@ export async function POST(req: Request) {
       );
     }
     
+    // Prepare update data object
+    let updateData: any = {
+      // Handle subscriptionId specially to allow empty string ("ללא מנוי")
+      ...(subscriptionId !== undefined ? { subscriptionId: subscriptionId } : {}),
+      ...(name && { name }),
+      ...(userEmail && { email: userEmail }),
+      // Handle cancellationDate field
+      ...(cancellationDate !== undefined ? { cancellationDate } : {}),
+    };
+    
+    // Special handling for trial_30 subscription - always ensure trialStartDate is set
+    if (subscriptionId === "trial_30") {
+      // If trialStartDate is provided, use it; otherwise set to current date
+      if (trialStartDate) {
+        updateData.trialStartDate = trialStartDate;
+      } else {
+        updateData.trialStartDate = new Date().toISOString();
+      }
+    } else if (trialStartDate !== undefined) {
+      // For other subscription types, only update trialStartDate if explicitly provided
+      updateData.trialStartDate = trialStartDate;
+    }
+    
     // Update user information
     const updatedUser = await prismadb.user.update({
       where: {
         id: userId,
       },
-      data: {
-        // Handle subscriptionId specially to allow empty string ("ללא מנוי")
-        ...(subscriptionId !== undefined ? { subscriptionId: subscriptionId } : {}),
-        ...(name && { name }),
-        ...(userEmail && { email: userEmail }),
-        // Handle trialStartDate field
-        ...(trialStartDate !== undefined ? { trialStartDate } : {}),
-        // Handle cancellationDate field
-        ...(cancellationDate !== undefined ? { cancellationDate } : {}),
-      },
+      data: updateData,
     });
+    
+    console.log("API DEBUG - Updated user returned from Prisma:", JSON.stringify(updatedUser));
     
     return NextResponse.json(updatedUser);
     

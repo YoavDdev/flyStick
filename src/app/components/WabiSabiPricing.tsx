@@ -39,7 +39,7 @@ export default function WabiSabiPricing() {
   };
 
   return (
-    <div id="Pricing" className="relative overflow-hidden py-8 sm:py-16 md:py-24">
+    <div id="Pricing" className="relative overflow-hidden py-4 sm:py-6 md:py-12">
       <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           className="mx-auto max-w-2xl lg:text-center mb-8 sm:mb-12 md:mb-16"

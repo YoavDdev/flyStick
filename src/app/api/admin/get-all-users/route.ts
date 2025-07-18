@@ -36,6 +36,7 @@ export async function GET(request: Request) {
         name: true,
         email: true,
         subscriptionId: true,
+        trialStartDate: true,  // Add trialStartDate field
         emailVerified: true,
         image: true,
         createdAt: true,
@@ -106,17 +107,27 @@ export async function GET(request: Request) {
         }
       };
       
-      // Enhance users with PayPal subscription details
-      const usersWithPayPalDetails = await Promise.all(
-        users.map(async (user: typeof users[0]) => {
-          // Only fetch PayPal details for users with subscription IDs that look like PayPal IDs
-          // (not Admin, active, or null)
-          if (user.subscriptionId && 
-              user.subscriptionId !== "Admin" && 
-              user.subscriptionId !== "active" &&
-              user.subscriptionId !== "free" &&
-              user.subscriptionId !== "trial_30" &&
-              user.subscriptionId.startsWith("I-")) {
+      // Process users in batches to avoid too many concurrent PayPal API calls
+      const BATCH_SIZE = 5; // Process 5 users at a time
+      const usersWithPayPalDetails = [...users]; // Create a copy of users array
+      
+      // Filter users with PayPal subscription IDs
+      const paypalUsers = users.filter((user: typeof users[0]) => 
+        user.subscriptionId && 
+        user.subscriptionId !== "Admin" && 
+        user.subscriptionId !== "active" &&
+        user.subscriptionId !== "free" &&
+        user.subscriptionId !== "trial_30" &&
+        user.subscriptionId.startsWith("I-")
+      );
+      
+      // Process PayPal users in batches
+      for (let i = 0; i < paypalUsers.length; i += BATCH_SIZE) {
+        const batch = paypalUsers.slice(i, i + BATCH_SIZE);
+        
+        // Process batch in parallel
+        await Promise.all(
+          batch.map(async (user: typeof users[0]) => {
             try {
               const subscriptionData = await fetchPayPalSubscriptionWithRetry(user.subscriptionId);
               
@@ -128,30 +139,47 @@ export async function GET(request: Request) {
                                  (subscriptionData.billing_info?.last_payment?.time) || null;
               }
               
-              return {
-                ...user,
-                paypalStatus: subscriptionData.status,
-                paypalId: user.subscriptionId,
-                paypalCancellationDate: cancellationDate
-              };
+              // Find user in the usersWithPayPalDetails array and update
+              const userIndex = usersWithPayPalDetails.findIndex(u => u.id === user.id);
+              if (userIndex !== -1) {
+                usersWithPayPalDetails[userIndex] = {
+                  ...usersWithPayPalDetails[userIndex],
+                  paypalStatus: subscriptionData.status,
+                  paypalId: user.subscriptionId,
+                  paypalCancellationDate: cancellationDate
+                };
+              }
             } catch (error) {
               console.error(`Error fetching PayPal details for user ${user.id}:`, error);
-              return {
-                ...user,
-                paypalStatus: "error",
-                paypalId: user.subscriptionId,
-                paypalCancellationDate: null
-              };
+              
+              // Find user in the usersWithPayPalDetails array and update with error status
+              const userIndex = usersWithPayPalDetails.findIndex(u => u.id === user.id);
+              if (userIndex !== -1) {
+                usersWithPayPalDetails[userIndex] = {
+                  ...usersWithPayPalDetails[userIndex],
+                  paypalStatus: "error",
+                  paypalId: user.subscriptionId,
+                  paypalCancellationDate: null
+                };
+              }
             }
-          }
-          return {
-            ...user,
-            paypalStatus: null,
-            paypalId: user.subscriptionId,
-            paypalCancellationDate: null
-          };
-        })
-      );
+          })
+        );
+        
+        // Add a small delay between batches to prevent rate limiting
+        if (i + BATCH_SIZE < paypalUsers.length) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+      
+      // Add PayPal fields to non-PayPal users
+      usersWithPayPalDetails.forEach((user: any) => {
+        if (!user.hasOwnProperty('paypalStatus')) {
+          user.paypalStatus = null;
+          user.paypalId = user.subscriptionId;
+          user.paypalCancellationDate = null;
+        }
+      });
       
       return NextResponse.json(usersWithPayPalDetails);
     }

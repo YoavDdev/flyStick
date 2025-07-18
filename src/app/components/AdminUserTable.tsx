@@ -102,7 +102,11 @@ export default function AdminUserTable({
       
       // If setting to trial_30, add current date as trialStartDate
       if (editForm.subscriptionId === "trial_30") {
-        updates.trialStartDate = new Date().toISOString();
+        // Set to current date in ISO format for proper DateTime handling
+        const trialDate = new Date().toISOString();
+        console.log("CLIENT DEBUG - Setting trialStartDate to:", trialDate);
+        updates.trialStartDate = trialDate;
+        toast.success("מנוי ניסיון הופעל - תאריך התחלה נקבע להיום");
       }
       
       // If setting cancellation date for grace period
@@ -419,26 +423,57 @@ export default function AdminUserTable({
                     <span>{formatShortDate(user.createdAt)}</span>
                   </div>
                   
-                  {user.subscriptionId === "trial_30" && user.trialStartDate && (
+                  {user.subscriptionId === "trial_30" && (
                     <>
+                      {/* Show trial start date if available */}
                       <div className="flex justify-between items-center mt-1">
-                        <span>תקופת ניסיון מאז:</span>
-                        <span>{formatShortDate(user.trialStartDate)}</span>
+                        <span>תקופת ניסיון:</span>
+                        {user.trialStartDate ? (
+                          <span>{formatShortDate(user.trialStartDate)}</span>
+                        ) : (
+                          <span className="text-amber-600">לא נקבע</span>
+                        )}
                       </div>
-                      {(() => {
-                        const trialStatus = calculateDaysRemaining(user.trialStartDate, 30);
-                        return (
-                          <div className="flex justify-between items-center">
-                            <span>ימים נותרו:</span>
-                            {!trialStatus.expired ? (
-                              <span className="text-blue-600 font-medium">
-                                {trialStatus.days} ימים
+                      
+                      {user.trialStartDate && (() => {
+                        try {
+                          // Convert to Date object to check if it's valid
+                          const startDate = new Date(user.trialStartDate);
+                          if (isNaN(startDate.getTime())) {
+                            return (
+                              <div className="flex justify-between items-center">
+                                <span>סטטוס:</span>
+                                <span className="text-amber-600 font-medium">
+                                  תאריך לא תקין
+                                </span>
+                              </div>
+                            );
+                          }
+                          
+                          const trialStatus = calculateDaysRemaining(user.trialStartDate, 30);
+                          return (
+                            <div className="flex justify-between items-center">
+                              <span>ימים נותרו:</span>
+                              {!trialStatus.expired ? (
+                                <span className="text-blue-600 font-medium">
+                                  {trialStatus.days} ימים
+                                </span>
+                              ) : (
+                                <span className="text-red-600 font-medium">פג תוקף</span>
+                              )}
+                            </div>
+                          );
+                        } catch (error) {
+                          console.error("Error calculating trial days:", error);
+                          return (
+                            <div className="flex justify-between items-center">
+                              <span>סטטוס:</span>
+                              <span className="text-amber-600 font-medium">
+                                שגיאה בחישוב ימים
                               </span>
-                            ) : (
-                              <span className="text-red-600 font-medium">פג תוקף</span>
-                            )}
-                          </div>
-                        );
+                            </div>
+                          );
+                        }
                       })()}
                     </>
                   )}

@@ -9,16 +9,27 @@ import Image from "next/image";
 import Dashboardpic from "../../../../public/Dashboardpic.png";
 import ConvertkitEmailForm from "../../components/NewsletterSignUpForm";
 import { motion } from "framer-motion";
-import { FaWhatsapp, FaVideo, FaRegHeart } from "react-icons/fa";
-import { AiOutlineExperiment, AiOutlineCompass } from "react-icons/ai";
-import { MdOutlineSubscriptions } from "react-icons/md";
+import { FaWhatsapp, FaVideo, FaRegHeart, FaClock, FaCalendarAlt, FaUserPlus } from "react-icons/fa";
+import { AiOutlineExperiment, AiOutlineCompass, AiOutlineTrophy } from "react-icons/ai";
+import { MdOutlineSubscriptions, MdOutlineAdminPanelSettings } from "react-icons/md";
+import { BiSolidBadgeCheck } from "react-icons/bi";
 
 const DashboardPage = () => {
   const { data: session } = useSession();
   const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [subscriptionId, setSubscriptionId] = useState(null);
+  const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
   const [showWhatsAppTooltip, setShowWhatsAppTooltip] = useState(false);
+  const [userStats, setUserStats] = useState({
+    daysLeft: 0,
+    watchedVideos: 0,
+    favorites: 0,
+    trialStartDate: null,
+    cancellationDate: null,
+    newUsers: 0,
+    newSubscriptions: 0,
+    recentCancellations: 0
+  });
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -32,25 +43,88 @@ const DashboardPage = () => {
           const userData = response.data;
 
           // Extract subscriptionId from userData
-          const subscriptionId = userData.subscriptionId;
+          const subscriptionId = userData.subscriptionId as string;
           setSubscriptionId(subscriptionId);
 
+          // Calculate stats based on subscription type
+          const stats = { ...userStats };
+          
+          // For trial users, calculate days left
+          if (subscriptionId && subscriptionId === "trial_30" && userData.trialStartDate) {
+            const trialStart = new Date(userData.trialStartDate);
+            const today = new Date();
+            const trialEnd = new Date(trialStart);
+            trialEnd.setDate(trialEnd.getDate() + 30);
+            const daysLeft = Math.max(0, Math.ceil((trialEnd.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+            stats.daysLeft = daysLeft;
+            stats.trialStartDate = userData.trialStartDate;
+          }
+          
+          // For users with cancellation date, calculate grace period
+          if (userData.cancellationDate) {
+            const cancelDate = new Date(userData.cancellationDate);
+            const today = new Date();
+            const graceEnd = new Date(cancelDate);
+            graceEnd.setDate(graceEnd.getDate() + 30);
+            const daysLeft = Math.max(0, Math.ceil((graceEnd.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+            stats.daysLeft = daysLeft;
+            stats.cancellationDate = userData.cancellationDate;
+          }
+          
+          // Get watched videos and favorites count
+          if (userData.watchedVideosCount !== undefined) {
+            stats.watchedVideos = userData.watchedVideosCount;
+          }
+          
+          if (userData.favoritesCount !== undefined) {
+            stats.favorites = userData.favoritesCount;
+          }
+          
+          // For admin users, fetch additional stats
+          if (subscriptionId && subscriptionId === "Admin") {
+            try {
+              const adminStatsResponse = await axios.get("/api/admin/get-dashboard-stats", {
+                headers: { Authorization: `Bearer ${session.user.email}` }
+              });
+              
+              if (adminStatsResponse.data) {
+                stats.newUsers = adminStatsResponse.data.newUsersLast30Days || 0;
+                stats.newSubscriptions = adminStatsResponse.data.newSubscriptionsLast30Days || 0;
+                stats.recentCancellations = adminStatsResponse.data.recentCancellations || 0;
+              }
+            } catch (adminError) {
+              console.error("Error fetching admin stats:", adminError);
+            }
+          }
+          
+          setUserStats(stats);
+
           // Fetch subscription details using the retrieved subscriptionId
-          const clientId = process.env.PAYPAL_CLIENT_ID;
-          const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+          if (subscriptionId && subscriptionId.startsWith("I-")) {
+            const clientId = process.env.PAYPAL_CLIENT_ID;
+            const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
-          const auth = {
-            username: clientId!,
-            password: clientSecret!,
-          };
+            const auth = {
+              username: clientId!,
+              password: clientSecret!,
+            };
 
-          const subscriptionResponse = await axios.get(
-            `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}`,
-            { auth },
-          );
+            const subscriptionResponse = await axios.get(
+              `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}`,
+              { auth },
+            );
 
-          const status = subscriptionResponse.data.status;
-          setSubscriptionStatus(status);
+            const status = subscriptionResponse.data.status;
+            setSubscriptionStatus(status);
+          } else if (subscriptionId === "Admin") {
+            setSubscriptionStatus("ACTIVE");
+          } else if (subscriptionId === "trial_30") {
+            setSubscriptionStatus("TRIAL");
+          } else if (subscriptionId === "free") {
+            setSubscriptionStatus("FREE");
+          } else {
+            setSubscriptionStatus(null);
+          }
         }
       } catch (error) {
         console.error(
@@ -95,6 +169,11 @@ const DashboardPage = () => {
           );
 
           if (cancellationResponse.status === 204) {
+            // Call our backend API to update the database with cancellation date
+            await axios.post("/api/cancel-subscription", {
+              userEmail: session.user.email,
+            });
+            
             setSubscriptionStatus("CANCELLED");
             console.log("Subscription canceled successfully");
           } else {
@@ -157,7 +236,17 @@ const DashboardPage = () => {
                   {session.user?.name ? `שלום, ${session.user.name}` : 'ברוך הבא'}
                 </h1>
                 <p className="text-base sm:text-lg text-[#3D3D3D] text-center">
-                  ברוך הבא לדשבורד האישי שלך בסטודיו בועז אונליין
+                  {subscriptionId === "Admin" ? 
+                    'ברוך הבא לדשבורד האישי שלך, מנהל יקר!' :
+                  subscriptionId === "trial_30" ? 
+                    `ברוך הבא לדשבורד האישי שלך! נותרו לך ${userStats.daysLeft} ימים בתקופת הניסיון` :
+                  subscriptionId === "free" ? 
+                    'ברוך הבא לדשבורד האישי שלך! אתה נהנה מגישה חופשית לתכני הסטודיו' :
+                  subscriptionId && subscriptionId.startsWith("I-") && userStats.cancellationDate ? 
+                    `ברוך הבא לדשבורד האישי שלך! נותרו לך ${userStats.daysLeft} ימים בתקופת החסד` :
+                  subscriptionId && subscriptionId.startsWith("I-") ? 
+                    'ברוך הבא לדשבורד האישי שלך בסטודיו בועז אונליין' :
+                    'ברוך הבא לדשבורד האישי שלך בסטודיו בועז אונליין'}
                 </p>
               </motion.div>
             </div>
@@ -200,6 +289,116 @@ const DashboardPage = () => {
               </div>
             </motion.div>
 
+            {/* User Stats Section - New Addition */}
+            <motion.div variants={itemVariants} className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="bg-[#D5C4B7] p-3 rounded-full">
+                  <AiOutlineTrophy size={24} className="text-[#2D3142]" />
+                </div>
+                <h3 className="text-xl font-bold text-[#2D3142]">סטטוס מנוי</h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                {/* Dynamic stats based on subscription type */}
+                {subscriptionId === "trial_30" && (
+                  <div className="bg-blue-50 p-4 rounded-lg flex items-center gap-3">
+                    <FaClock className="text-blue-500 text-xl" />
+                    <div>
+                      <h4 className="font-semibold text-[#2D3142]">ימים שנותרו בניסיון</h4>
+                      <p className="text-lg font-bold">{userStats.daysLeft} ימים</p>
+                    </div>
+                  </div>
+                )}
+
+                {userStats.cancellationDate && (
+                  <div className="bg-amber-50 p-4 rounded-lg flex items-center gap-3">
+                    <FaClock className="text-amber-500 text-xl" />
+                    <div>
+                      <h4 className="font-semibold text-[#2D3142]">ימים שנותרו בתקופת החסד</h4>
+                      <p className="text-lg font-bold">{userStats.daysLeft} ימים</p>
+                    </div>
+                  </div>
+                )}
+
+                {subscriptionId === "free" && (
+                  <div className="bg-green-50 p-4 rounded-lg flex items-center gap-3">
+                    <BiSolidBadgeCheck className="text-green-500 text-xl" />
+                    <div>
+                      <h4 className="font-semibold text-[#2D3142]">סטטוס גישה</h4>
+                      <p className="text-lg font-bold">גישה חופשית</p>
+                    </div>
+                  </div>
+                )}
+
+                {subscriptionId === "Admin" && (
+                  <>
+                    <div className="bg-purple-50 p-4 rounded-lg flex items-center gap-3">
+                      <MdOutlineAdminPanelSettings className="text-purple-500 text-xl" />
+                      <div>
+                        <h4 className="font-semibold text-[#2D3142]">סטטוס</h4>
+                        <p className="text-lg font-bold">מנהל מערכת</p>
+                      </div>
+                    </div>
+                    <div className="bg-blue-50 p-4 rounded-lg flex items-center gap-3">
+                      <FaUserPlus className="text-blue-500 text-xl" />
+                      <div>
+                        <h4 className="font-semibold text-[#2D3142]">משתמשים חדשים (30 ימים)</h4>
+                        <p className="text-lg font-bold">{userStats.newUsers}</p>
+                      </div>
+                    </div>
+                    <div className="bg-green-50 p-4 rounded-lg flex items-center gap-3">
+                      <MdOutlineSubscriptions className="text-green-500 text-xl" />
+                      <div>
+                        <h4 className="font-semibold text-[#2D3142]">מנויים חדשים (30 ימים)</h4>
+                        <p className="text-lg font-bold">{userStats.newSubscriptions}</p>
+                      </div>
+                    </div>
+                    <div className="bg-red-50 p-4 rounded-lg flex items-center gap-3">
+                      <MdOutlineSubscriptions className="text-red-500 text-xl" />
+                      <div>
+                        <h4 className="font-semibold text-[#2D3142]">ביטולי מנוי (30 ימים)</h4>
+                        <p className="text-lg font-bold">{userStats.recentCancellations}</p>
+                      </div>
+                    </div>
+                    <Link href="/admin" className="bg-gray-50 p-4 rounded-lg flex items-center gap-3 hover:bg-gray-100 transition-colors">
+                      <MdOutlineAdminPanelSettings className="text-gray-700 text-xl" />
+                      <div>
+                        <h4 className="font-semibold text-[#2D3142]">דף ניהול</h4>
+                        <p className="text-sm text-gray-600">לחץ כאן לניהול המערכת</p>
+                      </div>
+                    </Link>
+                  </>
+                )}
+
+                {/* Stats for regular users only - admin stats are handled separately */}
+                {subscriptionId !== "Admin" && (
+                  <>
+                    {/* No watched videos or favorites stats as requested */}
+                  </>
+                )}
+
+                {subscriptionId && subscriptionId.startsWith("I-") && !userStats.cancellationDate && (
+                  <div className="bg-green-50 p-4 rounded-lg flex items-center gap-3">
+                    <BiSolidBadgeCheck className="text-green-500 text-xl" />
+                    <div>
+                      <h4 className="font-semibold text-[#2D3142]">סטטוס:</h4>
+                      <p className="text-lg font-bold">פעיל</p>
+                    </div>
+                  </div>
+                )}
+
+                {userStats.trialStartDate && (
+                  <div className="bg-blue-50 p-4 rounded-lg flex items-center gap-3">
+                    <FaCalendarAlt className="text-blue-500 text-xl" />
+                    <div>
+                      <h4 className="font-semibold text-[#2D3142]">תאריך התחלת ניסיון</h4>
+                      <p className="text-lg font-bold">{new Date(userStats.trialStartDate).toLocaleDateString('he-IL')}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+
             {/* Dashboard Cards Grid */}
             <motion.div 
               variants={containerVariants}
@@ -222,13 +421,13 @@ const DashboardPage = () => {
               <DashboardCard
                 title="המועדפים שלי"
                 description="גישה מהירה לסרטונים שסימנת כמועדפים"
-                link="/user"
+                link="/user/favorites"
                 icon={<FaRegHeart size={24} />}
               />
               <DashboardCard
                 title="טכניקות"
                 description="למד טכניקות חדשות ושפר את המיומנויות שלך"
-                link="/techniques"
+                link="/styles"
                 icon={<AiOutlineExperiment size={24} />}
               />
             </motion.div>
@@ -239,7 +438,7 @@ const DashboardPage = () => {
                 <div className="bg-[#D5C4B7] p-3 rounded-full">
                   <MdOutlineSubscriptions size={24} className="text-[#2D3142]" />
                 </div>
-                <h3 className="text-xl font-bold text-[#2D3142]">סטטוס מנוי</h3>
+                <h3 className="text-xl font-bold text-[#2D3142]">ניהול מנוי</h3>
               </div>
 
               {loading ? (

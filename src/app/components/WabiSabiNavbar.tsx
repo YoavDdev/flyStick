@@ -73,9 +73,30 @@ const WabiSabiNavbar = () => {
     { href: "/", label: "בית", icon: AiOutlineHome },
     { href: "/about", label: "אודות", icon: AiOutlineInfoCircle },
     { href: "/contact", label: "צור קשר", icon: AiOutlinePhone },
-    { href: "/", label: "מחיר", icon: AiOutlineDollar },
+    { href: "#pricing", label: "מחיר", icon: AiOutlineDollar },
     ...(isAdmin ? [{ href: "/admin", label: "ניהול", icon: AiOutlineLogin }] : [])
   ];
+  
+  // Handle pricing navigation - first go to home, then scroll to pricing
+  const handlePricingClick = (e: React.MouseEvent, isMobile = false) => {
+    e.preventDefault();
+    
+    // If already on home page, just scroll to pricing
+    if (pathname === "/") {
+      const pricingSection = document.getElementById('pricing');
+      if (pricingSection) {
+        pricingSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Otherwise, navigate to home first, then scroll after a small delay
+      window.location.href = "/";
+      // The scroll will be handled by the home page's useEffect
+    }
+    
+    if (isMobile) {
+      closeMobileMenu();
+    }
+  };
   
   // Social media links
   const socialLinks: SocialLink[] = [
@@ -261,16 +282,8 @@ const WabiSabiNavbar = () => {
                 transition={{ delay: i * 0.1, duration: 0.3 }}
               >
                 <Link 
-                  href={link.label === "מחיר" ? "/#Pricing" : link.href}
-                  onClick={(e) => {
-                    if (link.label === "מחיר") {
-                      e.preventDefault();
-                      const pricingSection = document.getElementById('Pricing');
-                      if (pricingSection) {
-                        pricingSection.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }
-                  }}
+                  href={link.href}
+                  onClick={link.label === "מחיר" ? (e) => handlePricingClick(e, false) : undefined}
                 >
                   <div className="flex items-center">
                     <span className={`text-lg ${
@@ -537,19 +550,8 @@ const WabiSabiNavbar = () => {
                     whileHover={{ x: -5, transition: { duration: 0.2 } }}
                   >
                     <Link 
-                      href={link.label === "מחיר" ? "/#Pricing" : link.href} 
-                      onClick={(e) => {
-                        closeMobileMenu();
-                        if (link.label === "מחיר") {
-                          e.preventDefault();
-                          const pricingSection = document.getElementById('Pricing');
-                          if (pricingSection) {
-                            setTimeout(() => {
-                              pricingSection.scrollIntoView({ behavior: 'smooth' });
-                            }, 300);
-                          }
-                        }
-                      }}
+                      href={link.href} 
+                      onClick={link.label === "מחיר" ? (e) => handlePricingClick(e, true) : closeMobileMenu}
                     >
                       <div className="flex items-center justify-end py-1.5 sm:py-2"> 
                         <span className={`text-base sm:text-lg ${
