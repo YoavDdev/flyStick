@@ -33,70 +33,20 @@ const WabiSabiNavbar = () => {
   const [isTransparent, setIsTransparent] = useState(true);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const { data: session } = useSession();
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   // Get video player state from context
   const { isVideoOpen } = useVideoPlayer();
-  
-  // Check if user is admin
-  useEffect(() => {
-    const checkAdmin = async () => {
-      if (!session?.user?.email) return;
-      
-      try {
-        const response = await fetch("/api/check-admin", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: session.user.email }),
-        });
-        
-        const data = await response.json();
-        // Only show admin link if user is actually an admin (not free or trial_30)
-        setIsAdmin(data.isAdmin && data.subscriptionId === "Admin");
-      } catch (error) {
-        console.error("Error checking admin status:", error);
-      }
-    };
-    
-    if (session?.user) {
-      checkAdmin();
-    }
-  }, [session]);
 
   // Navigation links with icons for improved UX
   const navigationLinks: NavigationLink[] = [
     { href: "/", label: "בית", icon: AiOutlineHome },
     { href: "/about", label: "אודות", icon: AiOutlineInfoCircle },
     { href: "/contact", label: "צור קשר", icon: AiOutlinePhone },
-    { href: "#pricing", label: "מחיר", icon: AiOutlineDollar },
-    ...(isAdmin ? [{ href: "/admin", label: "ניהול", icon: AiOutlineLogin }] : [])
+    { href: "/pricing", label: "מחיר", icon: AiOutlineDollar }
   ];
-  
-  // Handle pricing navigation - first go to home, then scroll to pricing
-  const handlePricingClick = (e: React.MouseEvent, isMobile = false) => {
-    e.preventDefault();
-    
-    // If already on home page, just scroll to pricing
-    if (pathname === "/") {
-      const pricingSection = document.getElementById('pricing');
-      if (pricingSection) {
-        pricingSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else {
-      // Otherwise, navigate to home first, then scroll after a small delay
-      window.location.href = "/";
-      // The scroll will be handled by the home page's useEffect
-    }
-    
-    if (isMobile) {
-      closeMobileMenu();
-    }
-  };
   
   // Social media links
   const socialLinks: SocialLink[] = [
@@ -145,15 +95,7 @@ const WabiSabiNavbar = () => {
   const currentPath = usePathname();
 
   // Check if current path matches link path
-  const isActiveLink = (path: string, label?: string) => {
-    // Special case for pricing link
-    if (label === "מחיר") {
-      // Only highlight pricing when we're on the homepage AND the URL has the #Pricing fragment
-      return pathname === "/" && typeof window !== "undefined" && window.location.hash === "#Pricing";
-    }
-    // Regular path matching for other links
-    return path === pathname;
-  };
+  const isActiveLink = (path: string) => path === pathname;
 
   // Always show navbar background
   useEffect(() => {
@@ -283,11 +225,13 @@ const WabiSabiNavbar = () => {
               >
                 <Link 
                   href={link.href}
-                  onClick={link.label === "מחיר" ? (e) => handlePricingClick(e, false) : undefined}
+                  onClick={(e) => {
+                    // No special handling needed anymore as we navigate directly to the pricing page
+                  }}
                 >
                   <div className="flex items-center">
                     <span className={`text-lg ${
-                      isActiveLink(link.href, link.label)
+                      isActiveLink(link.href)
                         ? "text-[#B56B4A] border-b border-[#B56B4A]"
                         : "text-[#5D5D5D] hover:text-[#B56B4A]"
                       } transition-colors duration-300`}
@@ -546,23 +490,26 @@ const WabiSabiNavbar = () => {
                     initial={{ opacity: 0, x: -20 }} 
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1, duration: 0.3 }}
-                    className={`py-2 cursor-pointer border-b ${isActiveLink(link.href, link.label) ? 'border-[#B56B4A]/30' : 'border-[#D0C8B0]/20'}`}
+                    className={`py-2 cursor-pointer border-b ${isActiveLink(link.href) ? 'border-[#B56B4A]/30' : 'border-[#D0C8B0]/20'}`}
                     whileHover={{ x: -5, transition: { duration: 0.2 } }}
                   >
                     <Link 
                       href={link.href} 
-                      onClick={link.label === "מחיר" ? (e) => handlePricingClick(e, true) : closeMobileMenu}
+                      onClick={() => {
+                        closeMobileMenu();
+                        // No special handling needed anymore as we navigate directly to the pricing page
+                      }}
                     >
                       <div className="flex items-center justify-end py-1.5 sm:py-2"> 
                         <span className={`text-base sm:text-lg ${
-                          isActiveLink(link.href, link.label)
+                          isActiveLink(link.href)
                             ? "text-[#B56B4A] font-medium"
                             : "text-[#5D5D5D] hover:text-[#B56B4A]"
                         } transition-colors duration-300 text-right w-full`}>
                           {link.label}
                         </span>
-                        <div className={`mr-2 p-1.5 rounded-full ${isActiveLink(link.href, link.label) ? 'bg-[#B56B4A]/10' : 'bg-[#8E9A7C]/5'}`}>
-                          <link.icon className={isActiveLink(link.href, link.label) ? 'text-[#B56B4A]' : 'text-[#8E9A7C]'} size={18} />
+                        <div className={`mr-2 p-1.5 rounded-full ${isActiveLink(link.href) ? 'bg-[#B56B4A]/10' : 'bg-[#8E9A7C]/5'}`}>
+                          <link.icon className={isActiveLink(link.href) ? 'text-[#B56B4A]' : 'text-[#8E9A7C]'} size={18} />
                         </div>
                       </div>
                     </Link>
