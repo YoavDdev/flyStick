@@ -57,7 +57,7 @@ const WabiSabiFooter = () => {
       </div>
       
       {/* Decorative wavy line at the top */}
-      <div className="relative z-10">
+      <div className="relative">
         <svg className="w-full h-3 fill-[#E5DFD0]" viewBox="0 0 1200 24" preserveAspectRatio="none">
           <path 
             d="M0,0 C300,20 600,10 900,15 C1000,18 1100,22 1200,16 L1200,24 L0,24 Z" 
@@ -66,7 +66,7 @@ const WabiSabiFooter = () => {
         </svg>
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-3 sm:px-6 pt-6 pb-8 sm:pt-10 sm:pb-12 lg:px-8 lg:pt-12 lg:pb-16">        
+      <div className="relative mx-auto max-w-7xl px-3 sm:px-6 pt-6 pb-8 sm:pt-10 sm:pb-12 lg:px-8 lg:pt-12 lg:pb-16">        
         {/* Additional decorative element for medium+ screens */}
         <div className="absolute right-12 bottom-24 w-20 h-20 opacity-10 hidden md:block">
           <motion.svg 

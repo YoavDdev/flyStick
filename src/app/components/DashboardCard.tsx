@@ -18,7 +18,7 @@ const DashboardCard = ({ title, description, link, icon }: DashboardCardProps) =
         className="bg-[#F7F3EB] p-4 sm:p-6 rounded-xl shadow-md border border-[#D5C4B7]/30 relative overflow-hidden h-full flex flex-col cursor-pointer"
       > 
         {/* Card content */}
-        <div className="relative z-10 flex flex-col flex-grow">
+        <div className="relative flex flex-col flex-grow">
           {icon && (
             <motion.div 
               initial={{ scale: 0.9 }}

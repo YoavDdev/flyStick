@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import AdminUserTable from "../../components/AdminUserTable";
 import AdminDashboardSummary from "../../components/AdminDashboardSummary";
 import AdminUserActivityMetrics from "../../components/AdminUserActivityMetrics";
+import AdminMessageComposer from "../../components/AdminMessageComposer";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 
@@ -247,6 +248,10 @@ export default function AdminPage() {
           {/* User Activity Metrics */}
           <AdminUserActivityMetrics users={users} />
           
+          {/* Message Composer */}
+          <AdminMessageComposer />
+          
+
           <div className="mb-6 flex flex-wrap justify-center gap-3">
             <button
               onClick={async () => {

@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from 'react';
-import { FaPlay, FaPlus } from 'react-icons/fa';
+import { FaPlay, FaPlus, FaShare, FaCheck } from 'react-icons/fa';
 import NewVideoProgressBadge from './NewVideoProgressBadge';
+import toast from 'react-hot-toast';
 
 interface VideoCardProps {
   video: any;
@@ -11,6 +12,7 @@ interface VideoCardProps {
   onToggleDescription: () => void;
   onPlayVideo: (embedHtml: string) => void;
   onAddToFavorites: (videoUri: string) => void;
+  isAdmin?: boolean;
 }
 
 const VideoCard = ({
@@ -19,9 +21,23 @@ const VideoCard = ({
   isExpanded,
   onToggleDescription,
   onPlayVideo,
-  onAddToFavorites
+  onAddToFavorites,
+  isAdmin = false
 }: VideoCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [copied, setCopied] = useState(false);
+  
+  const copyVideoId = async () => {
+    const videoId = video.uri.split('/').pop();
+    try {
+      await navigator.clipboard.writeText(videoId);
+      setCopied(true);
+      toast.success(`מזהה סרטון הועתק: ${videoId}`);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      toast.error('שגיאה בהעתקת מזהה הסרטון');
+    }
+  };
   
   // Debug the video prop
   console.log('VideoCard received video prop:', video);
@@ -47,6 +63,17 @@ const VideoCard = ({
           alt={video.name || 'Video'}
           className="w-full h-48 object-cover"
         />
+        {/* Admin Copy Icon */}
+        {isAdmin && (
+          <button
+            onClick={copyVideoId}
+            className="absolute top-2 left-2 bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] p-2 rounded-full transition-all duration-200 z-20 shadow-md hover:shadow-lg"
+            title="העתק מזהה סרטון להודעה"
+          >
+            {copied ? <FaCheck className="text-green-600" /> : <FaShare />}
+          </button>
+        )}
+        
         {/* Create a placeholder div that reserves space but doesn't affect layout */}
         <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none"></div>
         {watchedVideo && (

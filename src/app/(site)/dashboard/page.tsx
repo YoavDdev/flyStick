@@ -13,6 +13,7 @@ import { FaWhatsapp, FaVideo, FaRegHeart, FaClock, FaCalendarAlt, FaUserPlus } f
 import { AiOutlineExperiment, AiOutlineCompass, AiOutlineTrophy } from "react-icons/ai";
 import { MdOutlineSubscriptions, MdOutlineAdminPanelSettings } from "react-icons/md";
 import { BiSolidBadgeCheck } from "react-icons/bi";
+import UserMessageNotification from "../../components/UserMessageNotification";
 
 const DashboardPage = () => {
   const { data: session } = useSession();
@@ -232,9 +233,12 @@ const DashboardPage = () => {
             {/* Header with decorative element */}
             <div className="relative overflow-hidden rounded-xl bg-[#D5C4B7]/20 p-5 sm:p-8 border border-[#D5C4B7]/30">              
               <motion.div variants={itemVariants} className="relative z-10">
-                <h1 className="text-2xl sm:text-3xl font-bold text-[#2D3142] mb-2 text-center">
-                  {session.user?.name ? `שלום, ${session.user.name}` : 'ברוך הבא'}
-                </h1>
+                <div className="flex justify-between items-start mb-2">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#2D3142] text-center flex-1">
+                    {session.user?.name ? `שלום, ${session.user.name}` : 'ברוך הבא'}
+                  </h1>
+                  <UserMessageNotification className="ml-4" />
+                </div>
                 <p className="text-base sm:text-lg text-[#3D3D3D] text-center">
                   {subscriptionId === "Admin" ? 
                     'ברוך הבא לדשבורד האישי שלך, מנהל יקר!' :
@@ -265,7 +269,7 @@ const DashboardPage = () => {
                 </svg>
               </div>
               
-              <div className="flex flex-col sm:flex-row items-center gap-6 relative z-10">
+              <div className="flex flex-col sm:flex-row items-center gap-6 relative">
 
                 
                 <div className="flex-grow">

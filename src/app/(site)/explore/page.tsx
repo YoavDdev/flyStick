@@ -573,14 +573,16 @@ useEffect(() => {
   useEffect(() => {
     if (!videoToOpenFromUrl || videos.length === 0) return;
   
-    const match = videos.find((v) =>
-      v.name.toLowerCase().includes(videoToOpenFromUrl.toLowerCase())
-    );
+    // Match by video ID from URI (e.g., /videos/1102449243)
+    const match = videos.find((v) => {
+      const videoId = v.uri.split('/').pop();
+      return videoId === videoToOpenFromUrl;
+    });
   
     if (match) {
       // ✅ השהייה קטנה מבטיחה שה־DOM מוכן
       setTimeout(() => {
-        openVideo(match.embedHtml, `/videos/${videoToOpenFromUrl}`);
+        openVideo(match.embedHtml, match.uri);
         openedFromLink.current = true;
         setVideoToOpenFromUrl(null);
         window.history.replaceState({}, "", "/explore");
@@ -667,6 +669,7 @@ useEffect(() => {
                         openModal();
                         theUserId();
                       }}
+                      isAdmin={subscriptionId === "Admin"}
                     />
                   </div>
                 ))

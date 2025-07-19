@@ -29,6 +29,7 @@ model User {
   passwordResets PasswordReset[]
 
   watchedVideos  WatchedVideo[]
+  messageReads   MessageRead[]
 }
 
 model Folder {
@@ -77,4 +78,29 @@ model PasswordReset {
   expiresAt DateTime
 
   user User @relation(fields: [userId], references: [id])
+}
+
+model Message {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  content     String
+  link        String?  // Optional link for "new video" or other announcements
+  linkText    String?  // Text to display for the link
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isActive    Boolean  @default(true) // Allow admin to deactivate messages
+  
+  messageReads MessageRead[]
+}
+
+model MessageRead {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  messageId String   @db.ObjectId
+  readAt    DateTime @default(now())
+  
+  user    User    @relation(fields: [userId], references: [id])
+  message Message @relation(fields: [messageId], references: [id])
+  
+  @@unique([userId, messageId]) // Prevent duplicate reads
 }
