@@ -89,6 +89,14 @@ const Page = () => {
   const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
   
+  // Loading states for different data fetching operations
+  const [loadingStates, setLoadingStates] = useState({
+    watchedVideos: true,
+    userData: true,
+    vimeoVideos: true,
+    accessCheck: true
+  });
+  
   // Pagination state
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -111,6 +119,7 @@ const Page = () => {
     
     if (pageNum === 1) {
       setIsLoading(true);
+      setLoadingStates(prev => ({ ...prev, watchedVideos: true }));
     } else {
       setLoadingMore(true);
     }
@@ -142,6 +151,9 @@ const Page = () => {
     } catch (err: any) {
       toast.error("שגיאה בטעינת הסרטונים שנצפו");
     } finally {
+      if (pageNum === 1) {
+        setLoadingStates(prev => ({ ...prev, watchedVideos: false }));
+      }
       setIsLoading(false);
       setLoadingMore(false);
     }
@@ -150,6 +162,7 @@ const Page = () => {
   // Fetch subscription status
   useEffect(() => {
     const fetchUserData = async () => {
+      setLoadingStates(prev => ({ ...prev, userData: true }));
       try {
         if (session?.user) {
           // Fetch user data including subscriptionId from the API route
@@ -184,6 +197,8 @@ const Page = () => {
           "Error fetching user data or subscription details:",
           error,
         );
+      } finally {
+        setLoadingStates(prev => ({ ...prev, userData: false }));
       }
     };
 
@@ -196,14 +211,22 @@ const Page = () => {
     if (session?.user?.email) {
       fetchWatchedVideos(1, false);
       
-      // Ensure loading animation shows for at least 4 seconds
+      // Ensure loading animation shows for at least 2 seconds
       const minLoadingTimer = setTimeout(() => {
         setShowLoading(false);
-      }, 4000);
+      }, 2000);
       
       return () => clearTimeout(minLoadingTimer);
     }
   }, [session]);
+  
+  // Check if all loading operations are complete
+  useEffect(() => {
+    const allLoadingComplete = !Object.values(loadingStates).some(loading => loading);
+    if (allLoadingComplete && !showLoading) {
+      setIsLoading(false);
+    }
+  }, [loadingStates, showLoading]);
 
   useEffect(() => {
     if (selectedVideo && videoContainerRef.current) {
@@ -316,8 +339,12 @@ const Page = () => {
 
   useEffect(() => {
     const fetchVimeoVideos = async () => {
-      if (watchedVideos.length === 0) return;
+      if (watchedVideos.length === 0) {
+        setLoadingStates(prev => ({ ...prev, vimeoVideos: false }));
+        return;
+      }
       
+      setLoadingStates(prev => ({ ...prev, vimeoVideos: true }));
       try {
         // Extract video IDs from URIs
         const videoIds = watchedVideos.map(({ uri }) => {
@@ -355,18 +382,22 @@ const Page = () => {
         }
       } catch (error: any) {
         toast.error("שגיאה בטעינת פרטי הסרטונים");
+      } finally {
+        setLoadingStates(prev => ({ ...prev, vimeoVideos: false }));
       }
     };
 
     fetchVimeoVideos();
   }, [watchedVideos, page]);
 
+  // Check if all loading operations are complete
   // Check if user has admin access, active subscription, or is a free/trial user
   const [hasContentAccess, setHasContentAccess] = useState(false);
   
   // Update access status when session changes
   useEffect(() => {
     const checkAccess = async () => {
+      setLoadingStates(prev => ({ ...prev, accessCheck: true }));
       if (session?.user?.email) {
         try {
           // Check if user has admin access or is free/trial user
@@ -380,6 +411,7 @@ const Page = () => {
           console.error("Error checking access:", error);
         }
       }
+      setLoadingStates(prev => ({ ...prev, accessCheck: false }));
     };
     
     checkAccess();
