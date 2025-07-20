@@ -9,6 +9,7 @@ import WabiSabiHero from "./WabiSabiHero";
 import WabiSabiFeature from "./WabiSabiFeature";
 import WabiSabiVideoCarousel from "./WabiSabiVideoCarousel";
 import WabiSabiPricing from "./WabiSabiPricing";
+import WabiSabiContact from "./WabiSabiContact";
 
 import WabiSabiNavbar from "./WabiSabiNavbar";
 
@@ -24,6 +25,7 @@ export {
   WabiSabiFeature,
   WabiSabiVideoCarousel,
   WabiSabiPricing,
+  WabiSabiContact,
 
   WabiSabiNavbar,
 };

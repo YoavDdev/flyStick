@@ -7,9 +7,13 @@ import {
   WabiSabiFeature,
   WabiSabiVideoCarousel,
   WabiSabiPricing,
+  WabiSabiContact,
 } from "./components";
 import ExploreVideos from "./components/ExploreVideos";
 import Image from "next/image";
+import desertImage from "../../public/contacMe2.jpeg";
+import * as FramerMotion from "framer-motion";
+const { motion } = FramerMotion;
 
 // Custom hook to handle hash-based scrolling
 export function useHashScroll() {
@@ -39,42 +43,48 @@ export default function HomePage() {
   useHashScroll();
   
   return (
-    <main className="relative overflow-hidden bg-[#F7F3EB]">
-
-      
-      {/* Hero section */}
-      <div className="relative z-10">
-        <WabiSabiHero />
+    <main className="relative min-h-screen overflow-hidden">
+      {/* Desert landscape background for entire page - optimized for performance */}
+      <div className="fixed inset-0 z-0">
+        <Image 
+          src={desertImage}
+          alt="Desert landscape meditation background"
+          fill
+          className="object-cover"
+          priority
+          quality={75}
+          placeholder="blur"
+          sizes="100vw"
+        />
+        {/* Static overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
       </div>
-      
-      {/* Main content sections */}
+
+      {/* All content with relative positioning over the background */}
       <div className="relative z-10">
-        {/* Features section with enhanced spacing */}
-        <section className="relative">
-          <div className="container mx-auto px-6 py-20 md:py-28">
-            <WabiSabiFeature />
-          </div>
-        </section>
+        {/* Hero section */}
+        <WabiSabiHero />
         
-        {/* Video carousel section with divider */}
-        <section className="relative py-20 md:py-28 overflow-hidden">
-          {/* Subtle divider */}
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-[#D5C4B7]/30 rounded-full"></div>
-          
+        {/* Features section */}
+        <WabiSabiFeature />
+        
+        {/* Video carousel section */}
+        <WabiSabiVideoCarousel />
+        
+        {/* Explore videos */}
+        <section className="py-16">
           <div className="container mx-auto px-6">
-            <WabiSabiVideoCarousel />
-            
-            <div className="mt-16 text-center">
-              <ExploreVideos />
-            </div>
+            <ExploreVideos />
           </div>
         </section>
         
-        {/* Pricing section with divider */}
-        <section className="relative" id="Pricing">
-          
+        {/* Pricing section */}
+        <section id="Pricing">
           <WabiSabiPricing />
         </section>
+        
+        {/* Contact section */}
+        <WabiSabiContact />
       </div>
     </main>
   );

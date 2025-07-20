@@ -39,35 +39,20 @@ export default function WabiSabiPricing() {
   };
 
   return (
-    <div id="Pricing" className="relative overflow-hidden py-4 sm:py-6 md:py-12">
+    <div id="Pricing" className="relative py-4 sm:py-6 md:py-12">
+      {/* Semi-transparent overlay for this section */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/15 to-black/10" />
       <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 relative z-10">
-        <motion.div
-          className="mx-auto max-w-2xl lg:text-center mb-8 sm:mb-12 md:mb-16"
+        <motion.h2
+          className="text-3xl md:text-4xl font-bold mb-6 text-center"
+          style={{ color: '#F5F1EB', textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)' }}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          {/* Decorative element above heading */}
-          <motion.div 
-            className="w-12 sm:w-16 h-1 bg-[#B56B4A]/30 rounded-full mx-auto mb-4 sm:mb-6"
-            initial={{ width: 0 }}
-            whileInView={{ width: 48, transition: { delay: 0.5, duration: 0.8 } }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-          />
-          
-          <h2 className="text-base font-semibold leading-6 sm:leading-7 text-[#5C6A85]">
-            מנוי מיוחד
-          </h2>
-          <p className="mt-2 text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#B56B4A]">
-            הצטרפו למסע התנועה והריפוי שלכם
-          </p>
-          <p className="mt-3 sm:mt-4 text-sm sm:text-lg text-[#5D5D5D] max-w-xl mx-auto px-1 sm:px-0">
-            גלו את הדרך לחיבור עמוק עם הגוף והנפש שלכם, בין אם אתם גברים או נשים, מתחילים או מתקדמים
-          </p>
-        </motion.div>
-        
+          סטודיו בועז אונליין
+        </motion.h2>
         <motion.div 
           className="mx-auto max-w-5xl"
           initial={{ opacity: 0, y: 30 }}
@@ -76,66 +61,54 @@ export default function WabiSabiPricing() {
           transition={{ duration: 0.7, delay: 0.2 }}
         >
           <div className="mx-auto max-w-2xl rounded-tl-2xl sm:rounded-tl-3xl rounded-br-2xl sm:rounded-br-3xl rounded-tr-lg sm:rounded-tr-xl rounded-bl-lg sm:rounded-bl-xl overflow-hidden lg:mx-0 lg:flex lg:max-w-none shadow-xl border border-[#D5C4B7]/30">
-            {/* Left side - Features with enhanced styling */}
-            <div className="p-4 sm:p-8 md:p-10 lg:p-12 lg:flex-auto bg-gradient-to-br from-[#FFFCF7] to-[#F7F3EB] border border-[#D0C8B0]/30">
-              <h3 className="text-lg sm:text-2xl font-bold tracking-tight text-[#B56B4A]">
-                מנוי לסטודיו אונליין של בועז נחייסי
-              </h3>
-              <p className="text-xs sm:text-sm text-[#8E9A7C] mt-1">לכל אחד ואחת מכם</p>
-
-              {/* Decorative divider */}
-              <div className="w-12 sm:w-16 h-1 bg-[#D5C4B7] rounded-full my-4 sm:my-6"></div>
-
-              <p className="mt-6 text-base leading-7 text-[#3D3D3D]">
-                מאגר עצום של ידע שיאפשר לך להתחבר לגופך, להעמיק את הבנתך הסומטית
-                ולהעשיר את הידע שלך באנטומיה יישומית. בין אם אתה מורה המעוניין להעשיר את השיעורים שלך
-                או מתאמנת המבקשת להעמיק את החיבור לגופך, תמצאו כאן את כל מה שאתם צריכים למסע האישי שלכם.
-              </p>
-              
-              <div className="mt-10 flex items-center gap-x-4">
-                <h4 className="flex-none text-sm font-semibold leading-6 text-[#7D8FAF]">
-                  מה זה כולל
-                </h4>
-                <div className="h-px flex-auto bg-[#D0C8B0]" />
-              </div>
-              
-              <ul
+            {/* Left side - Features */}
+            <div className="p-4 sm:p-8 md:p-10 lg:p-12 lg:flex-auto backdrop-blur-md border border-white/20" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+              <motion.h3
+                className="text-xl font-semibold mb-4"
+                style={{ color: '#F5F1EB', textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                גישה מלאה לכל התכנים
+              </motion.h3>
+              <motion.p
+                className="text-base leading-relaxed mb-6"
+                style={{ color: '#F5F1EB', textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)', opacity: '0.9' }}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                מאגר עצום של ידע שיאפשר לך להתחבר לגופך, להעמיק את הבנתך הסומטית ולהעשיר את הידע שלך באנטומיה יישומית וכיצד להביא את התובנות הללו לשיעור עם מתאמנים בכל הרמות.
+              </motion.p>
+              <motion.ul
                 role="list"
-                className="mt-8 grid grid-cols-1 gap-5 text-sm leading-6 text-[#5D5D5D] sm:grid-cols-2 sm:gap-6"
+                className="mt-8 grid grid-cols-1 gap-5 text-sm leading-6 text-[#F5F1EB] sm:grid-cols-2 sm:gap-6"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.4 }}
               >
                 {includedFeatures.map((feature, index) => (
                   <motion.li 
                     key={feature} 
-                    className="flex gap-x-3 items-start p-3 rounded-lg hover:bg-[#F0E9DF]/50 transition-colors duration-300"
+                    className="flex items-start space-x-3 rtl:space-x-reverse"
                     initial={{ opacity: 0, x: -10 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.1 * index }}
                   >
-                    <CheckIcon
-                      className="h-6 w-5 flex-none text-[#8E9A7C] mt-0.5"
-                      aria-hidden="true"
-                    />
+                    <span className="flex-shrink-0 w-2 h-2 bg-[#D5C4B7] rounded-full mt-2"></span>
                     <span>{feature}</span>
                   </motion.li>
                 ))}
-              </ul>
+              </motion.ul>
             </div>
 
-            {/* Right side - Pricing with enhanced styling */}
-            <div className="p-10 sm:p-12 lg:flex-shrink-0 lg:border-l lg:border-[#D0C8B0]/30 lg:p-12 bg-gradient-to-br from-[#F7F3EB] to-[#F0E9DF] relative">
-              {/* Decorative elements */}
-              <div className="absolute top-6 right-6 w-16 h-16 opacity-10">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="50" cy="50" r="40" fill="none" stroke="#B56B4A" strokeWidth="1" strokeDasharray="5,3" />
-                </svg>
-              </div>
-              <div className="absolute bottom-6 left-6 w-12 h-12 opacity-10">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20,20 Q40,5 60,20 T80,40 T60,60 T40,80 T20,60 Z" fill="none" stroke="#B56B4A" strokeWidth="1" />
-                </svg>
-              </div>
-              
+            {/* Right side - Pricing */}
+            <div className="p-10 sm:p-12 lg:flex-shrink-0 lg:border-l lg:border-white/20 lg:p-12 backdrop-blur-md relative" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}>
               <motion.div 
                 className="text-center"
                 initial={{ opacity: 0 }}
@@ -144,14 +117,14 @@ export default function WabiSabiPricing() {
                 transition={{ duration: 0.5 }}
               >
                 <div className="relative inline-block">
-                  <p className="text-base font-semibold text-[#5C6A85] bg-[#F7F3EB] px-4 relative z-10">
-                    מחיר חודשי מיוחד
+                  <p className="text-base font-semibold px-4 relative z-10" style={{ color: '#F5F1EB', backgroundColor: 'rgba(0, 0, 0, 0.3)', textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)' }}>
+                    מחיר
                   </p>
                   <div className="absolute top-1/2 left-0 right-0 h-px bg-[#D5C4B7] -z-0"></div>
                 </div>
                 
                 <motion.div 
-                  className="mt-6 bg-[#F7F3EB] p-6 rounded-lg border border-[#D5C4B7]/40 shadow-sm relative overflow-hidden"
+                  className="mt-6 backdrop-blur-md p-6 rounded-lg border border-white/20 shadow-lg relative overflow-hidden" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
                   initial={{ y: 20, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   viewport={{ once: true }}
@@ -163,7 +136,7 @@ export default function WabiSabiPricing() {
                   </div>
                   
                   <div className="flex items-baseline justify-center gap-x-2">
-                    <span className="text-6xl font-bold tracking-tight text-[#B56B4A]">
+                    <span className="text-6xl font-bold tracking-tight text-[#2D3142]">
                       ₪220
                     </span>
                     <span className="text-lg font-semibold leading-6 tracking-wide text-[#5D5D5D]">
@@ -171,15 +144,15 @@ export default function WabiSabiPricing() {
                     </span>
                   </div>
                   
-                  <p className="mt-2 text-sm text-[#8E9A7C] font-medium">
-                    השקעה בבריאות הגוף והנפש שלכם
+                  <p className="mt-2 text-sm font-medium" style={{ color: '#F5F1EB', textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)', opacity: '0.9' }}>
+                    מנוי חודשי
                   </p>
                   
                   <div className="w-16 h-1 bg-[#D5C4B7]/60 rounded-full mx-auto my-4"></div>
                   
-                  <div className="mt-3 p-3 bg-[#FFFCF7] rounded-lg border border-[#D5C4B7]/30">
-                    <p className="text-sm leading-6 text-[#5D5D5D]">
-                      <span className="font-medium text-[#B56B4A]">3 ימי נסיון חינם</span> - התחילו את המסע שלכם ללא התחייבות
+                  <div className="mt-3 p-3 backdrop-blur-md rounded-lg border border-white/20" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+                    <p className="text-sm leading-6" style={{ color: '#F5F1EB', textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
+                      <span className="font-medium" style={{ color: '#2D3142' }}>3 ימי חקירה חינם</span> - צאו למסע הפנימי ללא התחייבות
                     </p>
                   </div>
                 </motion.div>
@@ -191,8 +164,8 @@ export default function WabiSabiPricing() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.3 }}
                   >
-                    <p className="mt-5 text-lg text-[#8E9A7C] font-semibold">
-                      את/ה כבר במנוי!
+                    <p className="mt-5 text-lg font-semibold" style={{ color: '#F5F1EB', textShadow: '0 1px 3px rgba(0, 0, 0, 0.5)' }}>
+                      את/ה כבר במסע! 🌵
                     </p>
                     <div className="mt-6 flex items-center justify-center">
                       <Link href="/explore">
@@ -201,7 +174,7 @@ export default function WabiSabiPricing() {
                           whileHover={{ scale: 1.03 }}
                           transition={{ type: "spring", stiffness: 400, damping: 10 }}
                         >
-                          <span className="relative z-10">חקרו עכשיו</span>
+                          <span className="relative z-10">המשיכו במסע</span>
                           <span className="absolute inset-0 bg-[#B8A99C] transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 z-0"></span>
                         </motion.span>
                       </Link>
@@ -226,7 +199,7 @@ export default function WabiSabiPricing() {
                               document.getElementById('paypal-button-container')?.classList.remove('hidden');
                               document.getElementById('payment-buttons')?.classList.add('hidden');
                             }}
-                            className="w-full rounded-lg bg-[#B56B4A] px-6 py-4 text-center text-lg font-medium text-white shadow-md hover:bg-[#A25B3A] transition-all duration-300 ease-in-out border border-[#B56B4A]/30 relative overflow-hidden group"
+                            className="w-full rounded-lg bg-[#B8A99C] px-6 py-4 text-center text-lg font-medium text-white shadow-md hover:bg-[#D5C4B7] transition-all duration-300 ease-in-out border border-[#B8A99C]/30 relative overflow-hidden group"
                             whileHover={{ scale: 1.02 }}
                             transition={{ type: "spring", stiffness: 400, damping: 10 }}
                           >
@@ -234,7 +207,7 @@ export default function WabiSabiPricing() {
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                               </svg>
-                              הצטרפו עכשיו עם כרטיס אשראי
+                              צאו למסע עם כרטיס אשראי
                             </span>
                           </motion.button>
                           
@@ -253,7 +226,7 @@ export default function WabiSabiPricing() {
                               document.getElementById('paypal-button-container')?.classList.remove('hidden');
                               document.getElementById('payment-buttons')?.classList.add('hidden');
                             }}
-                            className="w-full rounded-lg bg-[#F7F3EB] px-6 py-4 text-center text-lg font-medium text-[#3D3D3D] shadow-md hover:bg-[#D5C4B7] transition-all duration-300 ease-in-out border border-[#D5C4B7] relative overflow-hidden group"
+                            className="w-full rounded-lg backdrop-blur-md px-6 py-4 text-center text-lg font-medium text-[#F5F1EB] shadow-md hover:bg-[#A25B3A]/20 transition-all duration-300 ease-in-out border border-white/20 relative overflow-hidden group" style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
                             whileHover={{ scale: 1.02 }}
                             transition={{ type: "spring", stiffness: 400, damping: 10 }}
                           >
@@ -268,7 +241,7 @@ export default function WabiSabiPricing() {
                         
                         {/* Hidden PayPal buttons that will be shown when custom buttons are clicked */}
                         <div id="paypal-button-container" className="mt-4 hidden">
-                          <div className="bg-[#F7F3EB] p-4 rounded-lg border border-[#D5C4B7]/40 mb-4">
+                          <div className="backdrop-blur-md p-4 rounded-lg border border-white/20 mb-4" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
                             <p className="text-sm text-[#5D5D5D] mb-2">בחרו את אמצעי התשלום המועדף עליכם:</p>
                           </div>
                           <PayPalScriptProvider
@@ -322,7 +295,7 @@ export default function WabiSabiPricing() {
                               document.getElementById('paypal-button-container')?.classList.add('hidden');
                               document.getElementById('payment-buttons')?.classList.remove('hidden');
                             }}
-                            className="w-full mt-3 text-sm text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-200"
+                            className="w-full mt-3 text-sm text-[#5D5D5D] hover:text-[#D5C4B7] transition-colors duration-200"
                           >
                             חזרה לאפשרויות תשלום
                           </button>
@@ -338,11 +311,11 @@ export default function WabiSabiPricing() {
                       >
                         <Link href="/register">
                           <motion.button
-                            className="w-full rounded-lg bg-[#B56B4A] px-6 py-4 text-center text-lg font-medium text-white shadow-md hover:bg-[#A25B3A] transition-all duration-300 ease-in-out border border-[#B56B4A]/30 relative overflow-hidden group"
+                            className="w-full rounded-lg bg-[#B8A99C] px-6 py-4 text-center text-lg font-medium text-white shadow-md hover:bg-[#D5C4B7] transition-all duration-300 ease-in-out border border-[#B8A99C]/30 relative overflow-hidden group"
                             whileHover={{ scale: 1.03 }}
                             transition={{ type: "spring", stiffness: 400, damping: 10 }}
                           >
-                            <span className="relative z-10">הירשמו והתחילו את המסע</span>
+                            <span className="relative z-10">הירשמו וצאו למסע הפנימי</span>
                             <span className="absolute inset-0 bg-[#A25B3A] transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 z-0"></span>
                           </motion.button>
                         </Link>
@@ -358,8 +331,8 @@ export default function WabiSabiPricing() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  <p className="text-xs leading-5 text-[#5D5D5D]">
-                    המנוי מתחדש אוטומטית מדי חודש. ניתן לבטל בכל עת ללא התחייבות.
+                  <p className="text-xs leading-5" style={{ color: '#F5F1EB', textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)', opacity: '0.8' }}>
+                    המנוי מתחדש מדי חודש. ניתן לבטל בכל עת ללא התחייבות.
                   </p>
                   <div className="mt-4 flex items-center justify-center space-x-2 rtl:space-x-reverse">
                     <span className="w-2 h-2 rounded-full bg-[#D5C4B7]"></span>

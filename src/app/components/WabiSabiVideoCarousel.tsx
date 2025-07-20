@@ -1,133 +1,98 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { motion, useAnimation, useInView } from "framer-motion";
-import { CursorResponsiveElement, InkFlowBorder } from "../styles/wabiSabiMotion";
+import React from "react";
 
 const WabiSabiVideoCarousel = () => {
-  const controls = useAnimation();
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
-
-  useEffect(() => {
-    if (isInView) {
-      controls.start("visible");
-    }
-  }, [controls, isInView]);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.3,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring" as const,
-        stiffness: 50,
-        damping: 10,
-      },
-    },
-  };
-
   return (
-    <div className="relative overflow-hidden" ref={ref}>
-      {/* Decorative background elements */}
-      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#F7F3EB] via-[#E5DFD0] to-[#F7F3EB] opacity-50"></div>
-      <div className="absolute -left-32 bottom-20 w-72 h-72 rounded-full bg-[#D5C4B7]/10 blur-xl"></div>
-      <div className="absolute -right-20 top-40 w-64 h-64 rounded-full bg-[#B8A99C]/10 blur-lg"></div>
+    <section className="py-20 md:py-28 relative">
+      {/* Semi-transparent overlay for this section */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/10 to-black/5" />
+      
 
-      <div className="container mx-auto px-3 sm:px-6 lg:px-8 relative z-10">
-        <motion.div 
-          className="mx-auto max-w-2xl lg:text-center mb-6 sm:mb-12 md:mb-16"
-          variants={containerVariants}
-          initial="hidden"
-          animate={controls}
-        >
-          {/* Decorative element above heading */}
-          <motion.div 
-            className="w-12 sm:w-16 h-1 bg-[#5C6A85]/30 rounded-full mx-auto mb-4 sm:mb-6"
-            initial={{ width: 0 }}
-            animate={{ width: 48, transition: { delay: 0.5, duration: 0.8 } }}
-          />
+
+      <div className="container mx-auto px-6 lg:px-8 relative z-10">
+        <div className="mx-auto max-w-4xl text-center mb-16">
+          <h1 
+            className="text-4xl md:text-5xl lg:text-6xl font-light mb-8 leading-tight"
+            style={{ 
+              color: '#F5F1EB',
+              textShadow: '0 2px 8px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(0, 0, 0, 0.3)'
+            }}
+          >
+            פלייסטיק סרום
+          </h1>
           
-          <motion.h2 
-            className="text-base font-semibold leading-6 sm:leading-7 text-[#5C6A85]"
-            variants={itemVariants}
+          <p 
+            className="text-xl md:text-2xl font-light leading-relaxed max-w-3xl mx-auto mb-6"
+            style={{ 
+              color: '#F5F1EB',
+              textShadow: '0 1px 4px rgba(0, 0, 0, 0.6)',
+              opacity: 0.95
+            }}
           >
-            צפו בנו
-          </motion.h2>
-          <motion.p 
-            className="mt-2 text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#3D3D3D]"
-            variants={itemVariants}
+            קחו מקל ובואו נצלול לרגע להעיר את הנמר
+          </p>
+          
+          <div 
+            className="inline-block px-6 py-3 rounded-full text-base font-medium backdrop-blur-md border mb-8"
+            style={{ 
+              backgroundColor: 'rgba(212, 165, 116, 0.2)',
+              color: '#F5F1EB',
+              border: '1px solid rgba(212, 165, 116, 0.4)',
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
+            }}
           >
-            טעימה מהסטודיו
-          </motion.p>
-        </motion.div>
+            ✨ תרגול חינם לטעימה ✨
+          </div>
+        </div>
         
-        <motion.div 
-          className="max-w-[900px] mx-auto relative"
-          variants={containerVariants}
-          initial="hidden"
-          animate={controls}
-        >
-          {/* Enhanced decorative frame with Wabi-Sabi aesthetic */}
-          <motion.div
-            className="absolute -inset-2 sm:-inset-3 rounded-tl-2xl rounded-br-2xl rounded-tr-lg rounded-bl-lg bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] opacity-80"
-            variants={itemVariants}
-            style={{ boxShadow: "0 20px 40px -15px rgba(184, 169, 156, 0.5)" }}
-          />
-          
-          <InkFlowBorder 
-            color="#D5C4B7" 
-            thickness={3}
-            duration={2.5}
-            delay={0.3}
-            className="absolute -inset-1 rounded-tl-xl rounded-br-xl rounded-tr-lg rounded-bl-lg transform rotate-0.5"
-          >
-            <div className="absolute inset-0 bg-[#D5C4B7] rounded-tl-xl rounded-br-xl rounded-tr-lg rounded-bl-lg transform rotate-0.5"></div>
-          </InkFlowBorder>
-          
-          {/* Video container with enhanced styling */}
-          <CursorResponsiveElement 
-            sensitivity={10} 
-            className="relative p-1 bg-[#F7F3EB] rounded-tl-lg rounded-br-lg rounded-tr-sm rounded-bl-sm overflow-hidden shadow-inner"
-          >
-            <motion.div 
-              className="relative overflow-hidden rounded-tl-lg rounded-br-lg rounded-tr-sm rounded-bl-sm"
-              variants={itemVariants}
-              whileHover={{ scale: 1.01, transition: { duration: 0.3 } }}
+        <div className="max-w-5xl mx-auto">
+          {/* Modern video container */}
+          <div className="relative group">
+            {/* Glow effect */}
+            <div 
+              className="absolute -inset-4 rounded-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-500 blur-xl"
+              style={{ background: 'linear-gradient(135deg, #8FA68E 0%, #A8B5A1 100%)' }}
+            />
+            
+            <div
+              className="relative rounded-3xl overflow-hidden transition-all duration-500 group-hover:scale-[1.02] backdrop-blur-sm"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                boxShadow: '0 20px 60px -12px rgba(143, 166, 142, 0.25)',
+                border: '1px solid rgba(143, 166, 142, 0.2)'
+              }}
             >
-              <iframe
-                id="ytplayer"
-                width="50%"
-                height="250"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                src="https://www.youtube.com/embed/VmxL_n52jPA?autoplay=1&loop=1&mute=1&si=r7sh91q0pP3U0mKG&playlist=VmxL_n52jPA"
-                className="w-full h-full object-cover rounded-tl-lg rounded-br-lg rounded-tr-sm rounded-bl-sm"
-                style={{ aspectRatio: "16/9" }}
-              ></iframe>
-            </motion.div>
-          </CursorResponsiveElement>
+              {/* Video frame with modern styling */}
+              <div className="p-4">
+                <div className="relative overflow-hidden rounded-2xl">
+
+                  
+                  <iframe
+                    id="ytplayer"
+                    width="100%"
+                    height="450"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    src="https://www.youtube.com/embed/G2QMpNsnUxk?start=4&autoplay=0&mute=0"
+                    className="w-full h-full object-cover rounded-2xl"
+                    style={{ aspectRatio: "16/9" }}
+                    loading="lazy"
+                  ></iframe>
+                </div>
+              </div>
+              
+              {/* Bottom accent */}
+              <div 
+                className="h-1 w-full"
+                style={{ background: 'linear-gradient(90deg, #D4A574 0%, #C4956A 50%, #B8860B 100%)' }}
+              />
+            </div>
+          </div>
           
-          {/* Decorative element below video */}
-          <motion.div 
-            className="w-16 sm:w-24 h-1 bg-[#D5C4B7]/50 rounded-full mx-auto mt-4 sm:mt-8"
-            initial={{ width: 0 }}
-            animate={{ width: 64, transition: { delay: 1, duration: 0.8 } }}
-          />
-        </motion.div>
+
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

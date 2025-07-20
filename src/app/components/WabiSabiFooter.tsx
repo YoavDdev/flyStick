@@ -51,137 +51,167 @@ const WabiSabiFooter = () => {
   ];
 
   return (
-    <footer className="relative overflow-hidden bg-[#F5F2EB] text-right shadow-sm pt-1" aria-labelledby="footer-heading">
-      {/* Wabi-Sabi Texture Background */}
-      <div className="absolute inset-0 z-0 opacity-20">
+    <footer className="relative overflow-hidden" aria-labelledby="footer-heading" style={{ background: 'linear-gradient(135deg, #F7F3EB 0%, #E8DDD0 50%, #D5C4B7 100%)' }}>
+      {/* Desert-inspired subtle background pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ backgroundColor: '#D5C4B7' }}></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ backgroundColor: '#B8A99C', animationDelay: '3s' }}></div>
       </div>
       
-      {/* Decorative wavy line at the top */}
-      <div className="relative">
-        <svg className="w-full h-3 fill-[#E5DFD0]" viewBox="0 0 1200 24" preserveAspectRatio="none">
-          <path 
-            d="M0,0 C300,20 600,10 900,15 C1000,18 1100,22 1200,16 L1200,24 L0,24 Z" 
-            className="text-[#E5DFD0]"
-          />
-        </svg>
-      </div>
-
-      <div className="relative mx-auto max-w-7xl px-3 sm:px-6 pt-6 pb-8 sm:pt-10 sm:pb-12 lg:px-8 lg:pt-12 lg:pb-16">        
-        {/* Additional decorative element for medium+ screens */}
-        <div className="absolute right-12 bottom-24 w-20 h-20 opacity-10 hidden md:block">
-          <motion.svg 
-            viewBox="0 0 100 100" 
-            xmlns="http://www.w3.org/2000/svg"
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ repeat: Infinity, duration: 15, ease: "easeInOut" }}
+      {/* Floating cards approach */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-16">
+        {/* Floating Cards Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          
+          {/* Brand Card */}
+          <motion.div 
+            className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300"
+            whileHover={{ y: -5, scale: 1.02 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
           >
-            <circle cx="50" cy="50" r="40" fill="none" stroke="#D9845E" strokeWidth="1.5" strokeDasharray="5,5" />
-          </motion.svg>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-8 md:gap-12 border-b border-[#D9C5B3]/70 pb-5 sm:pb-8 md:pb-10 md:items-start md:justify-items-center">
-          {/* Logo and About Section - Always first in DOM for semantics but visually ordered for RTL */}
-          <div className="flex flex-col items-center order-1 md:order-3 md:w-full md:max-w-xs">
-            <Link href="/" className="hidden md:block">
-              <div className="relative mb-4">
+            <div className="text-center">
+              <div className="mb-4 flex justify-center">
                 <Image 
                   src={Logo} 
-                  width={35} 
-                  height={1} 
+                  width={50} 
+                  height={50} 
                   alt="סטודיו בועז אונליין" 
                   priority 
                   className="h-auto"
                 />
-                {/* Subtle glow effect */}
-                <div className="absolute inset-0 bg-[#D9845E]/10 blur-md rounded-full opacity-30"></div>
               </div>
-            </Link>
-            <p className="text-xs sm:text-sm text-[#5D5D5D] mb-2 sm:mb-4 text-center md:text-right">
-              סטודיו אונליין של בועז נחייסי - המקום שלך לפילאטיס, יוגה ותנועה מכל מקום ובכל זמן.
-            </p>
-            <div className="flex justify-center space-x-5 rtl:space-x-reverse mt-2 sm:mt-4">
-              {socialLinks.map((item) => (
-                <motion.a
-                  key={item.name}
-                  href={item.href}
-                  target="_blank"
-                  className="text-[#B56B4A] hover:text-[#D9845E] transition-colors duration-300 p-1"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <span className="sr-only">{item.name}</span>
-                  <item.icon size={26} aria-hidden="true" />
-                </motion.a>
-              ))}
+              <p className="text-sm leading-relaxed" style={{ color: '#2D3142' }}>
+                סטודיו אונליין של בועז נחייסי - המקום שלך לפילאטיס, יוגה ותנועה מכל מקום ובכל זמן.
+              </p>
+              <div className="flex justify-center space-x-4 rtl:space-x-reverse mt-6">
+                {socialLinks.map((item) => (
+                  <motion.a
+                    key={item.name}
+                    href={item.href}
+                    target="_blank"
+                    className="transition-colors duration-200 p-2 rounded-full"
+                    style={{ color: '#B8A99C' }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#2D3142';
+                      e.currentTarget.style.backgroundColor = 'rgba(213, 196, 183, 0.2)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = '#B8A99C';
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span className="sr-only">{item.name}</span>
+                    <item.icon size={20} aria-hidden="true" />
+                  </motion.a>
+                ))}
+              </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Quick Links */}
-          <div className="text-center md:text-center order-2 md:order-2 md:w-full md:max-w-xs">
-            <h3 className="text-xs sm:text-sm font-medium text-[#B56B4A] mb-3 sm:mb-4 md:text-base md:relative md:inline-flex md:items-center md:justify-center md:gap-2">
-              <span className="md:w-2 md:h-2 md:bg-[#D9845E]/50 md:rounded-full md:inline-block"></span>
+          {/* Quick Links Card */}
+          <motion.div 
+            className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300"
+            whileHover={{ y: -5, scale: 1.02 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h3 className="text-white font-semibold text-lg mb-4 text-center">
               ניווט מהיר
-              <span className="md:w-2 md:h-2 md:bg-[#D9845E]/50 md:rounded-full md:inline-block"></span>
             </h3>
-            <ul className="space-y-1 sm:space-y-2 md:space-y-3">
-              {quickLinks.map((link) => (
-                <li key={link.name}>
+            <ul className="space-y-3">
+              {quickLinks.map((link, index) => (
+                <motion.li 
+                  key={link.name}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + index * 0.1 }}
+                >
                   <Link 
                     href={link.href}
-                    className="text-sm text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300 md:hover:pr-1 py-1 inline-block"
+                    className="transition-colors duration-200 block py-2 px-3 rounded-lg text-center"
+                    style={{ color: '#2D3142' }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#B8A99C';
+                      e.currentTarget.style.backgroundColor = 'rgba(213, 196, 183, 0.2)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = '#2D3142';
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
                   >
                     {link.name}
                   </Link>
-                </li>
+                </motion.li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
-          {/* Newsletter Signup */}
-          <div className="text-center order-3 md:order-1 md:w-full md:max-w-xs">
-            <h3 className="text-xs sm:text-sm font-medium text-[#B56B4A] mb-3 sm:mb-4 md:text-base md:relative md:inline-flex md:items-center md:justify-center md:gap-2">
-              <span className="md:w-2 md:h-2 md:bg-[#D9845E]/50 md:rounded-full md:inline-block"></span>
+          {/* Newsletter Card */}
+          <motion.div 
+            className="backdrop-blur-sm rounded-2xl p-6 border transition-all duration-300"
+            style={{ 
+              background: 'linear-gradient(135deg, rgba(213, 196, 183, 0.3) 0%, rgba(184, 169, 156, 0.3) 100%)',
+              borderColor: '#B8A99C',
+              boxShadow: '0 8px 32px rgba(181, 169, 156, 0.15)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(213, 196, 183, 0.5) 0%, rgba(184, 169, 156, 0.5) 100%)';
+              e.currentTarget.style.boxShadow = '0 12px 40px rgba(181, 169, 156, 0.25)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(213, 196, 183, 0.3) 0%, rgba(184, 169, 156, 0.3) 100%)';
+              e.currentTarget.style.boxShadow = '0 8px 32px rgba(181, 169, 156, 0.15)';
+            }}
+            whileHover={{ y: -5, scale: 1.02 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h3 className="text-white font-semibold text-lg mb-4 text-center">
               הירשמו לניוזלטר שלנו
-              <span className="md:w-2 md:h-2 md:bg-[#D9845E]/50 md:rounded-full md:inline-block"></span>
             </h3>
-            <p className="text-xs sm:text-sm text-[#5D5D5D] mb-2 sm:mb-4 md:leading-relaxed px-2 sm:px-0">
+            <p className="text-sm mb-4 text-center leading-relaxed" style={{ color: '#2D3142', opacity: '0.8' }}>
               עדכון ארועים, חדשות, שיעורים חדשים העולים לאתר ישלחו לתיבת הדואר שלכם.
             </p>
-            <div className="mt-3 sm:mt-4 md:mt-6">
-              <div className="newsletter-wabisabi md:bg-[#F7F3EB]/60 md:p-3 md:rounded-lg md:shadow-sm">
-                <NewsletterSignUpForm />
-              </div>
+            <div className="rounded-xl p-4 backdrop-blur-sm" style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', border: '1px solid #D5C4B7' }}>
+              <NewsletterSignUpForm />
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        {/* Copyright and Legal */}
-        <div className="pt-3 sm:pt-6 flex flex-col md:flex-row md:items-center md:justify-between md:pt-8 md:mt-2">
-          <div className="text-xs text-[#5D5D5D] text-center md:text-right md:order-2">
-            <div className="flex flex-wrap justify-center md:justify-end gap-x-2 gap-y-1">
-              {legalLinks.map((link, idx) => (
-                <React.Fragment key={link.name}>
-                  <Link 
-                    href={link.href}
-                    className="hover:text-[#B56B4A] transition-colors duration-300 md:relative md:hover:opacity-80"
-                  >
-                    <motion.span 
-                      className="relative md:after:absolute md:after:w-0 md:after:h-px md:after:bg-[#B56B4A] md:after:bottom-0 md:after:right-0 md:hover:after:w-full md:after:transition-all md:after:duration-300"
-                      whileHover={{ y: -1 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      {link.name}
-                    </motion.span>
-                  </Link>
-                  {idx < legalLinks.length - 1 && <span className="text-[#D9C5B3] mx-1 md:mx-2">|</span>}
-                </React.Fragment>
-              ))}
-            </div>
+        {/* Bottom Bar */}
+        <motion.div 
+          className="pt-8 flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0"
+          style={{ borderTop: '1px solid #D5C4B7' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          <div className="text-center md:text-right">
+            <p className="text-sm" style={{ color: '#2D3142', opacity: '0.7' }}>
+              &copy; {new Date().getFullYear()} סטודיו בועז אונליין. כל הזכויות שמורות.
+            </p>
           </div>
-          <p className="text-xs text-[#5D5D5D] mt-4 md:mt-0 text-center md:text-right md:order-1 md:bg-[#F7F3EB]/50 md:py-1 md:px-3 md:rounded-full md:shadow-sm">
-            &copy; {new Date().getFullYear()} סטודיו אונליין של בועז נחייסי, בע&quot;מ. כל הזכויות שמורות.
-          </p>
-        </div>
+          <div className="flex flex-wrap justify-center md:justify-start space-x-6 rtl:space-x-reverse">
+            {legalLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="text-sm transition-colors duration-200 hover:underline"
+                style={{ color: '#2D3142', opacity: '0.7' }}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </footer>
   );

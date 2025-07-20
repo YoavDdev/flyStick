@@ -462,13 +462,14 @@ const ExploreVideos = ({
 
   return (
     <div className={`w-full relative ${className}`}>
-
-
-
+      {/* Semi-transparent overlay for this section */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/10 to-black/5" />
+      
       <div className="container mx-auto px-4 py-8 relative z-10">
-        {/* Premium Video Banner */}
+        {/* Desert Journey Video Banner */}
         <motion.div 
-          className="relative mb-10 overflow-hidden bg-[#F7F3EB] rounded-2xl shadow-md border border-[#D5C4B7]/30"
+          className="relative mb-10 overflow-hidden backdrop-blur-md rounded-2xl shadow-lg border border-white/20"
+          style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -483,57 +484,33 @@ const ExploreVideos = ({
           </div>
           
           <div className="relative z-10 text-center md:text-right max-w-3xl mx-auto py-8 px-6 md:px-8">
-            <div className="absolute top-0 left-0 w-full h-full bg-[url('/paper-texture.png')] opacity-10 mix-blend-overlay"></div>
             
-            <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="text-right md:w-2/3">
-                <motion.div 
-                  className="inline-flex items-center px-4 py-2 rounded-full bg-[#D5C4B7] bg-opacity-30 border border-[#B8A99C] border-opacity-40 mb-3 shadow-sm"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
-                  whileHover={{ scale: 1.03 }}
-                >
-                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#B8A99C] text-[#F7F3EB] text-xs font-bold ml-2 shadow-inner">
-                    <span className="relative top-px">2</span>
-                  </span>
-                  <span className="text-[#2D3142] text-sm font-medium">דקות צפייה חינמית בכל סרטון</span>
-                </motion.div>
+            <div className="relative flex flex-col items-center justify-center text-center">
+              <div className="max-w-4xl mx-auto">
+
                 
                 <motion.h2 
-                  className="text-2xl font-bold text-[#2D3142] mb-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.1, duration: 0.5 }}
+                  className="text-3xl md:text-4xl font-light mb-4 leading-tight"
+                  style={{ color: '#F5F1EB', textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)' }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.6 }}
                 >
-                  גלו את אוסף הסרטונים שלנו
+                  אוסף התרגולים שלנו
                 </motion.h2>
                 
                 <motion.p 
-                  className="text-[#3D3D3D] text-base leading-relaxed"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.5 }}
+                  className="text-lg md:text-xl font-light leading-relaxed max-w-2xl"
+                  style={{ color: '#F5F1EB', textShadow: '0 1px 4px rgba(0, 0, 0, 0.6)', opacity: '0.95' }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.6 }}
                 >
-                  טעמו מכל סרטון עם תצוגה מקדימה של 2 דקות. להנאה מלאה וצפייה ללא הגבלה, הצטרפו למנוי שלנו ופתחו את הדלת לחוויה מלאה.
+                  גלו את עולם התרגול שלנו דרך חוויה אישית ומותאמת. כל סרטון מזמין אתכם לטעימה ראשונה - התחילו את המסע שלכם עכשיו.
                 </motion.p>
               </div>
               
-              <motion.div
-                className="md:w-1/3 mt-4 md:mt-0"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-              >
-                <div className="bg-[#F7F3EB] p-4 rounded-lg border border-[#D5C4B7] shadow-sm text-center">
-                  <p className="text-[#2D3142] font-medium mb-2">מנוי מלא מעניק לך:</p>
-                  <ul className="text-sm text-[#3D3D3D] text-center space-y-1">
-                    <li className="flex items-center justify-center"><span className="ml-1">✓</span> צפייה מלאה בכל הסרטונים</li>
-                    <li className="flex items-center justify-center"><span className="ml-1">✓</span> תוכן חדש מדי שבוע</li>
-                    <li className="flex items-center justify-center"><span className="ml-1">✓</span> שמירת התקדמות אישית</li>
-                  </ul>
-                </div>
-              </motion.div>
+
             </div>
           </div>
         </motion.div>
@@ -559,17 +536,19 @@ const ExploreVideos = ({
         </motion.div>
 
         <motion.div 
-          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden border border-[#D5C4B7]/30 mb-10"
+          className="backdrop-blur-md rounded-2xl shadow-lg overflow-hidden border border-white/20 mb-10"
+          style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
         >
-          {/* Container header with subtle gradient */}
-          <div className="sticky top-0 z-10 bg-gradient-to-b from-[#F7F3EB] to-transparent py-3 px-5 flex justify-between items-center border-b border-[#D5C4B7] border-opacity-30 overflow-hidden">
-            <h3 className="text-[#2D3142] font-medium font-heebo relative z-10">סרטונים זמינים</h3>
+          {/* Container header with desert theme */}
+          <div className="sticky top-0 z-10 py-3 px-5 flex justify-between items-center border-b border-white/20 overflow-hidden" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+
             {!noMoreVideos && (
               <motion.button
-                className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-4 py-1.5 text-sm rounded-full focus:outline-none shadow-sm transition-all duration-300 hover:shadow-md font-medium relative overflow-hidden"
+                className="px-4 py-1.5 text-sm rounded-full focus:outline-none shadow-sm transition-all duration-300 hover:shadow-md font-medium relative overflow-hidden backdrop-blur-md border border-white/30"
+                style={{ backgroundColor: 'rgba(212, 165, 116, 0.8)', color: '#F5F1EB' }}
                 onClick={loadMore}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -580,7 +559,7 @@ const ExploreVideos = ({
           </div>
           
           {/* Scrollable content area */}
-          <div className="h-[600px] overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-[#D5C4B7] scrollbar-track-transparent relative">
+          <div className="h-[800px] overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-[#D5C4B7] scrollbar-track-transparent relative">
             {noResults ? (
               <motion.div 
                 className="text-center py-10 px-6 bg-[#F0E9DF] rounded-xl shadow-sm border border-[#D5C4B7] mt-8 relative overflow-hidden"

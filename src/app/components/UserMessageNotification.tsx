@@ -104,9 +104,30 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
   useEffect(() => {
     fetchMessages();
     
-    // Poll for new messages every 30 seconds
-    const interval = setInterval(fetchMessages, 30000);
-    return () => clearInterval(interval);
+    // Poll for new messages every 5 minutes (reduced from 30 seconds)
+    // Only poll when page is visible to save resources
+    const pollInterval = 300000; // 5 minutes
+    
+    const interval = setInterval(() => {
+      // Only fetch if page is visible
+      if (!document.hidden) {
+        fetchMessages();
+      }
+    }, pollInterval);
+    
+    // Also fetch when page becomes visible again
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchMessages();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [session]);
 
   const formatDate = (dateString: string) => {

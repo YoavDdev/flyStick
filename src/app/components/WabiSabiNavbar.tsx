@@ -40,12 +40,56 @@ const WabiSabiNavbar = () => {
   // Get video player state from context
   const { isVideoOpen } = useVideoPlayer();
 
+  // Handle pricing navigation - scroll to pricing section or navigate to home page with anchor
+  const handlePricingClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    // If we're on the home page, scroll to pricing section
+    if (pathname === '/') {
+      const pricingElement = document.getElementById('Pricing');
+      if (pricingElement) {
+        pricingElement.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    } else {
+      // If we're on another page, navigate to home page with pricing anchor
+      window.location.href = '/#Pricing';
+    }
+    
+    // Close mobile menu if open
+    closeMobileMenu();
+  };
+
+  // Handle contact navigation - scroll to contact section or navigate to home page with anchor
+  const handleContactClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    // If we're on the home page, scroll to contact section
+    if (pathname === '/') {
+      const contactElement = document.getElementById('Contact');
+      if (contactElement) {
+        contactElement.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    } else {
+      // If we're on another page, navigate to home page with contact anchor
+      window.location.href = '/#Contact';
+    }
+    
+    // Close mobile menu if open
+    closeMobileMenu();
+  };
+
   // Navigation links with icons for improved UX
   const navigationLinks: NavigationLink[] = [
     { href: "/", label: "בית", icon: AiOutlineHome },
     { href: "/about", label: "אודות", icon: AiOutlineInfoCircle },
-    { href: "/contact", label: "צור קשר", icon: AiOutlinePhone },
-    { href: "/pricing", label: "מחיר", icon: AiOutlineDollar }
+    { href: "/#Contact", label: "צור קשר", icon: AiOutlinePhone },
+    { href: "/#Pricing", label: "מחיר", icon: AiOutlineDollar }
   ];
   
   // Social media links
@@ -97,9 +141,9 @@ const WabiSabiNavbar = () => {
   // Check if current path matches link path
   const isActiveLink = (path: string) => path === pathname;
 
-  // Always show navbar background
+  // Always show navbar background - no scroll listener needed for performance
   useEffect(() => {
-    // Set navbar to always be non-transparent
+    // Set navbar to always be non-transparent to avoid scroll calculations
     setIsTransparent(false);
   }, []);
 
@@ -157,24 +201,10 @@ const WabiSabiNavbar = () => {
       className={`fixed top-0 w-full z-50 transition-all duration-300 bg-[#F7F3EB]/95 backdrop-blur-sm shadow-sm`}
     >
       {/* Texture overlay */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 opacity-10" style={{ 
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23D5C4B7' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E")`,
-          backgroundSize: '200px 200px'
-        }}></div>
-      </div>
+
       
       {/* Decorative border - organic wabi-sabi style */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-[#D0C8B0]/40 overflow-hidden">
-        <svg width="100%" height="3" viewBox="0 0 1200 3" preserveAspectRatio="none">
-          <path 
-            d="M0,1 C100,2 200,0.5 300,1.5 C400,2.5 500,0 600,1 C700,2 800,0.5 900,1.5 C1000,2.5 1100,0 1200,1" 
-            stroke="#8E9A7C" 
-            strokeWidth="0.5" 
-            fill="none"
-          />
-        </svg>
-      </div>
+
 
       <div className="max-w-[1240px] mx-auto flex justify-between items-center h-full px-3 sm:px-4 dir-rtl">
         {/* Logo and Page Title */}
@@ -226,7 +256,14 @@ const WabiSabiNavbar = () => {
                 <Link 
                   href={link.href}
                   onClick={(e) => {
-                    // No special handling needed anymore as we navigate directly to the pricing page
+                    // Handle pricing navigation specially
+                    if (link.label === "מחיר") {
+                      handlePricingClick(e);
+                    }
+                    // Handle contact navigation specially
+                    if (link.label === "צור קשר") {
+                      handleContactClick(e);
+                    }
                   }}
                 >
                   <div className="flex items-center">
@@ -319,24 +356,10 @@ const WabiSabiNavbar = () => {
             </div>
             
             {/* Decorative element */}
-            <div className="absolute top-0 left-0 w-32 h-32 opacity-10 -rotate-12">
-              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fill="#B8A99C"
-                  d="M47.7,-51.2C59.5,-37.7,65.5,-19.9,65.2,-2.6C64.9,14.7,58.3,31.8,46.5,43.9C34.7,56,17.3,63.1,0.2,62.9C-17,62.7,-34,55.2,-47.2,43C-60.5,30.8,-70,14.4,-70.3,-2.5C-70.6,-19.4,-61.8,-36.8,-48.4,-50.3C-35,-63.8,-17.5,-73.4,0.5,-74C18.5,-74.6,36.9,-64.7,47.7,-51.2Z"
-                />
-              </svg>
-            </div>
+    
             
             {/* Decorative element bottom */}
-            <div className="absolute bottom-0 right-0 w-40 h-40 opacity-10 rotate-45">
-              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fill="#D5C4B7"
-                  d="M39.5,-65.3C50.2,-55.1,57.2,-42.1,63.4,-28.8C69.6,-15.5,74.9,-1.9,73.1,10.7C71.3,23.3,62.3,34.8,51.6,42.8C40.9,50.8,28.5,55.3,15.3,60.5C2.2,65.7,-11.7,71.7,-24.4,69.9C-37.1,68.1,-48.5,58.6,-57.4,47C-66.3,35.4,-72.6,21.7,-74.3,7.2C-76,-7.3,-73,-22.5,-65.3,-34.2C-57.6,-45.9,-45.2,-54,-32.5,-63.8C-19.8,-73.6,-6.6,-85.1,5.2,-83.3C17,-81.5,28.8,-75.5,39.5,-65.3Z"
-                />
-              </svg>
-            </div>
+
             
             {/* Mobile menu header with close button */}
             <div className="flex justify-end mb-6">
@@ -495,9 +518,43 @@ const WabiSabiNavbar = () => {
                   >
                     <Link 
                       href={link.href} 
-                      onClick={() => {
-                        closeMobileMenu();
-                        // No special handling needed anymore as we navigate directly to the pricing page
+                      onClick={(e) => {
+                        // Handle pricing navigation specially
+                        if (link.label === "מחיר") {
+                          e.preventDefault();
+                          // Close mobile menu first
+                          closeMobileMenu();
+                          // Then scroll to pricing section
+                          setTimeout(() => {
+                            // Try to find the pricing section - there might be duplicate IDs
+                            const pricingElements = document.querySelectorAll('[id="Pricing"]');
+                            const pricingElement = pricingElements[0]; // Use the first one (main page wrapper)
+                            if (pricingElement) {
+                              pricingElement.scrollIntoView({ 
+                                behavior: 'smooth',
+                                block: 'start'
+                              });
+                            }
+                          }, 100);
+                        }
+                        // Handle contact navigation specially
+                        else if (link.label === "צור קשר") {
+                          e.preventDefault();
+                          // Close mobile menu first
+                          closeMobileMenu();
+                          // Then scroll to contact section
+                          setTimeout(() => {
+                            const contactElement = document.getElementById('Contact');
+                            if (contactElement) {
+                              contactElement.scrollIntoView({ 
+                                behavior: 'smooth',
+                                block: 'start'
+                              });
+                            }
+                          }, 100);
+                        } else {
+                          closeMobileMenu();
+                        }
                       }}
                     >
                       <div className="flex items-center justify-end py-1.5 sm:py-2"> 
