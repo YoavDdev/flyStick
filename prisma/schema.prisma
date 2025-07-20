@@ -14,9 +14,10 @@ model User {
   id                String    @id @default(auto()) @map("_id") @db.ObjectId
   name              String?
   email             String?   @unique
-  subscriptionId    String?
-  trialStartDate    DateTime? // Track when trial subscription started
-  cancellationDate  DateTime? // Track when subscription was cancelled for grace period
+  subscriptionId      String?
+  trialStartDate      DateTime? // Track when trial subscription started
+  subscriptionStartDate DateTime? // Track when paid subscription started
+  cancellationDate    DateTime? // Track when subscription was cancelled for grace period
   emailVerified     DateTime?
   image             String?
   favorites         Folder[]  @relation("UserToFolder")

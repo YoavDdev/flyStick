@@ -179,11 +179,31 @@ export default function AdminPage() {
     if (activeFilter === 'free') return user.subscriptionId === 'free';
     if (activeFilter === 'admin') return user.subscriptionId === 'Admin';
     if (activeFilter === 'grace') {
-      if (!user.cancellationDate) return false;
-      
-      const gracePeriodEnd = new Date(user.cancellationDate);
-      gracePeriodEnd.setDate(gracePeriodEnd.getDate() + 30); // 30-day grace period
-      return new Date() < gracePeriodEnd;
+      return user.cancellationDate && (() => {
+        // Check if user was subscribed for at least 4 days before cancellation
+        let qualifiesForGracePeriod = false;
+        
+        if ((user as any).subscriptionStartDate) {
+          // Calculate days between subscription start and cancellation
+          const subscriptionDuration = Math.floor(
+            (new Date(user.cancellationDate).getTime() - new Date((user as any).subscriptionStartDate).getTime()) / (1000 * 60 * 60 * 24)
+          );
+          qualifiesForGracePeriod = subscriptionDuration >= 4;
+        } else {
+          // If no subscriptionStartDate, fall back to createdAt (for existing users)
+          const subscriptionDuration = Math.floor(
+            (new Date(user.cancellationDate).getTime() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)
+          );
+          qualifiesForGracePeriod = subscriptionDuration >= 4;
+        }
+        
+        // Only include if user qualifies AND is still within the grace period
+        if (!qualifiesForGracePeriod) return false;
+        
+        const gracePeriodEnd = new Date(user.cancellationDate);
+        gracePeriodEnd.setDate(gracePeriodEnd.getDate() + 30); // 30-day grace period
+        return new Date() < gracePeriodEnd;
+      })();
     }
     return true;
   });

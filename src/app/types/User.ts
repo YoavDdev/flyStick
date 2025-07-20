@@ -10,6 +10,7 @@ export type User = {
   updatedAt: string;
   lastLogin?: string | null;
   trialStartDate?: string | null;
+  subscriptionStartDate?: string | null;
   cancellationDate?: string | null;
   paypalStatus?: string | null;
   paypalId?: string | null;

@@ -11,6 +11,7 @@ type User = {
   createdAt: string;
   updatedAt: string;
   lastLogin?: string | null;
+  subscriptionStartDate?: string | null;
   cancellationDate?: string | null;
   paypalStatus?: string | null;
   _count: {
@@ -84,9 +85,29 @@ const AdminDashboardSummary: React.FC<AdminDashboardSummaryProps> = ({
     user.subscriptionId === 'Admin'
   ).length;
 
-  // Users in grace period (have cancellationDate and within 30 days)
+  // Users in grace period (have cancellationDate, were subscribed at least 4 days, and within 30 days)
   const usersInGracePeriod = users.filter(user => {
     if (!user.cancellationDate) return false;
+    
+    // Check if user was subscribed for at least 4 days before cancellation
+    let qualifiesForGracePeriod = false;
+    
+    if (user.subscriptionStartDate) {
+      // Calculate days between subscription start and cancellation
+      const subscriptionDuration = Math.floor(
+        (new Date(user.cancellationDate).getTime() - new Date(user.subscriptionStartDate).getTime()) / (1000 * 60 * 60 * 24)
+      );
+      qualifiesForGracePeriod = subscriptionDuration >= 4;
+    } else {
+      // If no subscriptionStartDate, fall back to createdAt (for existing users)
+      const subscriptionDuration = Math.floor(
+        (new Date(user.cancellationDate).getTime() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)
+      );
+      qualifiesForGracePeriod = subscriptionDuration >= 4;
+    }
+    
+    // Only count if user qualifies AND is still within the grace period
+    if (!qualifiesForGracePeriod) return false;
     
     const gracePeriodEnd = new Date(user.cancellationDate);
     gracePeriodEnd.setDate(gracePeriodEnd.getDate() + 30); // 30-day grace period

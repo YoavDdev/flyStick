@@ -30,9 +30,29 @@ export async function POST(req: Request) {
     // Check if user is in grace period after cancellation
     let isInGracePeriod = false;
     if (user.cancellationDate) {
-      const gracePeriodEnd = new Date(user.cancellationDate);
-      gracePeriodEnd.setDate(gracePeriodEnd.getDate() + 30); // 30-day grace period
-      isInGracePeriod = new Date() < gracePeriodEnd;
+      // Check if user was subscribed for at least 4 days before cancellation
+      let qualifiesForGracePeriod = false;
+      
+      if (user.subscriptionStartDate) {
+        // Calculate days between subscription start and cancellation
+        const subscriptionDuration = Math.floor(
+          (new Date(user.cancellationDate).getTime() - new Date(user.subscriptionStartDate).getTime()) / (1000 * 60 * 60 * 24)
+        );
+        qualifiesForGracePeriod = subscriptionDuration >= 4;
+      } else {
+        // If no subscriptionStartDate, fall back to createdAt (for existing users)
+        const subscriptionDuration = Math.floor(
+          (new Date(user.cancellationDate).getTime() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)
+        );
+        qualifiesForGracePeriod = subscriptionDuration >= 4;
+      }
+      
+      // Only apply grace period if user qualifies AND is still within the grace period
+      if (qualifiesForGracePeriod) {
+        const gracePeriodEnd = new Date(user.cancellationDate);
+        gracePeriodEnd.setDate(gracePeriodEnd.getDate() + 30); // 30-day grace period
+        isInGracePeriod = new Date() < gracePeriodEnd;
+      }
     }
     
     // Users with free or trial access should have content access like subscribers
