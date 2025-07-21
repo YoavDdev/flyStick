@@ -7,9 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Logo from "../../../public/Flystick_logo.svg";
 import { AiOutlineMenu, AiOutlineClose, AiOutlineInstagram, AiOutlineFacebook, AiOutlineYoutube, AiOutlineHome, AiOutlineInfoCircle, AiOutlinePhone, AiOutlineDollar, AiOutlineLogin } from "react-icons/ai";
-import * as FramerMotion from "framer-motion";
-const { motion, AnimatePresence } = FramerMotion;
-type Variants = FramerMotion.Variants;
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
 import DropdownMenu from "./DropdownMenu";
 import { useVideoPlayer } from "../context/VideoPlayerContext";

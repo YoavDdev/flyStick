@@ -5,10 +5,7 @@ import Image from "next/image";
 import contactMe4 from "../../../../public/contactMe4.jpeg";
 import contactMePhone4 from "../../../../public/contactMePhone4.jpeg";
 import Link from "next/link";
-import * as FramerMotion from "framer-motion";
-
-
-const { motion } = FramerMotion;
+import { motion } from "framer-motion";
 
 const WabiSabiContact = () => {
   return (

@@ -12,8 +12,7 @@ import {
 import ExploreVideos from "./components/ExploreVideos";
 import Image from "next/image";
 import desertImage from "../../public/contacMe2.jpeg";
-import * as FramerMotion from "framer-motion";
-const { motion } = FramerMotion;
+import { motion } from "framer-motion";
 
 // Custom hook to handle hash-based scrolling
 export function useHashScroll() {
