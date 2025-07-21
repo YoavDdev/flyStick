@@ -247,7 +247,7 @@ const DashboardPage = () => {
                   subscriptionId === "free" ? 
                     'ברוך הבא לדשבורד האישי שלך! אתה נהנה מגישה חופשית לתכני הסטודיו' :
                   subscriptionId && subscriptionId.startsWith("I-") && userStats.cancellationDate ? 
-                    `ברוך הבא לדשבורד האישי שלך! נותרו לך ${userStats.daysLeft} ימים בתקופת החסד` :
+                    `המנוי שלך בוטל. נותרו לך עוד ${userStats.daysLeft} ימי גישה לתכנים` :
                   subscriptionId && subscriptionId.startsWith("I-") ? 
                     'ברוך הבא לדשבורד האישי שלך בסטודיו בועז אונליין' :
                     'ברוך הבא לדשבורד האישי שלך בסטודיו בועז אונליין'}

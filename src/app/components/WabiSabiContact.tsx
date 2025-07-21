@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiSend } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 const WabiSabiContact = () => {
   const [formData, setFormData] = useState({
@@ -27,20 +28,68 @@ const WabiSabiContact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      message: ''
-    });
-    setIsSubmitting(false);
-    
-    // You can add actual form submission logic here
-    alert('הודעתך נשלחה בהצלחה!');
+    try {
+      const response = await fetch('/api/send-contact-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          message: ''
+        });
+        toast.success('הודעתך נשלחה בהצלחה! נחזור אליך בהקדם.', {
+          duration: 4000,
+          position: 'top-center',
+          style: {
+            background: '#D5C4B7',
+            color: '#2D3142',
+            fontWeight: 'bold',
+            borderRadius: '12px',
+            padding: '16px 20px',
+            fontSize: '16px'
+          }
+        });
+      } else {
+        toast.error(result.error || 'שגיאה בשליחת ההודעה. אנא נסה שוב.', {
+          duration: 4000,
+          position: 'top-center',
+          style: {
+            background: '#f87171',
+            color: 'white',
+            fontWeight: 'bold',
+            borderRadius: '12px',
+            padding: '16px 20px',
+            fontSize: '16px'
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error sending contact email:', error);
+      toast.error('שגיאה בשליחת ההודעה. אנא בדוק את החיבור לאינטרנט ונסה שוב.', {
+        duration: 4000,
+        position: 'top-center',
+        style: {
+          background: '#f87171',
+          color: 'white',
+          fontWeight: 'bold',
+          borderRadius: '12px',
+          padding: '16px 20px',
+          fontSize: '16px'
+        }
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const whatsappMessage = `אל תהססו לפנות בשאלות, בקשות מיוחדות או סתם להגיד שלום.

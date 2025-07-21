@@ -42,6 +42,7 @@
     "react-intersection-observer": "^9.16.0",
     "react-modal": "^3.16.1",
     "react-player": "^2.13.0",
+    "resend": "^4.7.0",
     "typescript": "5.2.2",
     "uuid": "^9.0.1",
     "vimeo": "^2.3.1"

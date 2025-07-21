@@ -57,6 +57,46 @@ export const authOptions = {
     signIn: async ({ user, account }) => {
       console.log(`User signed in: ${user.id}`);
 
+      // Check if this is a new user (created recently)
+      const userData = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { 
+          id: true, 
+          email: true, 
+          createdAt: true,
+          messageReads: {
+            where: {
+              message: {
+                title: "Welcome to Studio Boaz Online! 🌟"
+              }
+            }
+          }
+        }
+      });
+
+      // Check if user is new (created within last 24 hours) and hasn't received welcome message
+      const isNewUser = userData && 
+        new Date() - new Date(userData.createdAt) < 24 * 60 * 60 * 1000 && 
+        userData.messageReads.length === 0;
+
+      // Send welcome message for new users
+      if (isNewUser) {
+        try {
+          await prisma.message.create({
+            data: {
+              title: "ברוכים הבאים לסטודיו בועז! 🌟",
+              content: `מנויים אהובים,\n\nאיזה כיף שהצטרפתם!\nהצעד הזה מסמן התחלה של מסע – תנועתי, רגשי, תודעתי. מסע שבו תלמדו להכיר את הגוף לעומק, לפתח מודעות סומאטית, לנשום אחרת, ולנוע מתוך הקשבה ולא מתוך מאמץ.\n\nאני מאמין שכל אדם – בכל גיל ובכל שלב – יכול לגלות את העוצמה, הריפוי והחיוניות שטמונים בגופו. וכאן, בסטודיו, אני מזמין אתכם לצלול פנימה. להרגיש. לחקור. להשתחרר.\n\nמה עכשיו?\nבחרו מסלול שמתאים לכם – יש שיעורים קצרים, ארוכים, נושאים ממוקדים, תרגולי נשימה, והרבה ידע מעשי\n\nקחו את הזמן – אל תמהרו. זה לא מרתון, זה ריקוד\n\nסמכו על הגוף – הוא יודע את הדרך\n\nאני כאן איתכם – בכל שיעור, בכל תנועה, עם הלב פתוח והכוונה מדויקת.\nמאחל לכם התחלה נעימה, מסקרנת ומחוברת.\n\nשלכם בתנועה,\nבועז נחייסי`,
+              link: "https://www.studioboazonline.com/explore",
+              linkText: "התחילו את המסע שלכם כאן",
+              isActive: true
+            }
+          });
+          console.log(`✅ Welcome message sent to new user: ${user.email}`);
+        } catch (error) {
+          console.error(`❌ Error sending welcome message to ${user.email}:`, error);
+        }
+      }
+
       // Create "favorites" folder if not exists
       const isFolderExist = await prisma.folder.findFirst({
         where: { userId: user.id, name: "favorites" },
