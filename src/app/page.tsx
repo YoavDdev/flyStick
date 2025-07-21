@@ -15,7 +15,7 @@ import desertImage from "../../public/contacMe2.jpeg";
 import { motion } from "framer-motion";
 
 // Custom hook to handle hash-based scrolling
-export function useHashScroll() {
+function useHashScroll() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 

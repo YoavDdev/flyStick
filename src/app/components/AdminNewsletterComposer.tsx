@@ -363,7 +363,7 @@ const AdminNewsletterComposer = () => {
                       {searchTerm ? (
                         <>נמצאו {filteredSubscribers.length} תוצאות מתוך {subscribers.length} מנויים</>
                       ) : (
-                        <>סה"כ מנויים: {subscribers.length}</>
+                        <>סה&quot;כ מנויים: {subscribers.length}</>
                       )}
                     </div>
                     <div className="space-y-2">
