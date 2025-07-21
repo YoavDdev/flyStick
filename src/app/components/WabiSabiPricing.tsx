@@ -60,9 +60,9 @@ export default function WabiSabiPricing() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          <div className="mx-auto max-w-2xl rounded-tl-2xl sm:rounded-tl-3xl rounded-br-2xl sm:rounded-br-3xl rounded-tr-lg sm:rounded-tr-xl rounded-bl-lg sm:rounded-bl-xl overflow-hidden lg:mx-0 lg:flex lg:max-w-none shadow-xl border border-[#D5C4B7]/30">
+          <div className="mx-auto max-w-2xl rounded-tl-2xl sm:rounded-tl-3xl rounded-br-2xl sm:rounded-br-3xl rounded-tr-lg sm:rounded-tr-xl rounded-bl-lg sm:rounded-bl-xl overflow-hidden lg:mx-0 lg:flex lg:max-w-none shadow-md border border-[#D5C4B7]/30">
             {/* Left side - Features */}
-            <div className="p-4 sm:p-8 md:p-10 lg:p-12 lg:flex-auto backdrop-blur-md border border-white/20" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+            <div className="p-4 sm:p-8 md:p-10 lg:p-12 lg:flex-auto bg-white/10 border border-white/20" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
               <motion.h3
                 className="text-xl font-semibold mb-4"
                 style={{ color: '#F5F1EB', textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}
@@ -108,7 +108,7 @@ export default function WabiSabiPricing() {
             </div>
 
             {/* Right side - Pricing */}
-            <div className="p-10 sm:p-12 lg:flex-shrink-0 lg:border-l lg:border-white/20 lg:p-12 backdrop-blur-md relative" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}>
+            <div className="p-10 sm:p-12 lg:flex-shrink-0 lg:border-l lg:border-white/20 lg:p-12 bg-white/10 relative" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}>
               <motion.div 
                 className="text-center"
                 initial={{ opacity: 0 }}
@@ -124,7 +124,7 @@ export default function WabiSabiPricing() {
                 </div>
                 
                 <motion.div 
-                  className="mt-6 backdrop-blur-md p-6 rounded-lg border border-white/20 shadow-lg relative overflow-hidden" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
+                  className="mt-6 bg-white/10 p-6 rounded-lg border border-white/20 shadow-md relative overflow-hidden" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
                   initial={{ y: 20, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   viewport={{ once: true }}
@@ -150,7 +150,7 @@ export default function WabiSabiPricing() {
                   
                   <div className="w-16 h-1 bg-[#D5C4B7]/60 rounded-full mx-auto my-4"></div>
                   
-                  <div className="mt-3 p-3 backdrop-blur-md rounded-lg border border-white/20" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+                  <div className="mt-3 p-3 bg-white/10 rounded-lg border border-white/20" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
                     <p className="text-sm leading-6" style={{ color: '#F5F1EB', textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
                       <span className="font-medium" style={{ color: '#2D3142' }}>3 ימי חקירה חינם</span> - צאו למסע הפנימי ללא התחייבות
                     </p>
@@ -171,8 +171,8 @@ export default function WabiSabiPricing() {
                       <Link href="/explore">
                         <motion.span
                           className="inline-block rounded-full bg-[#D5C4B7] px-8 py-4 text-lg text-[#3D3D3D] shadow-md hover:bg-[#B8A99C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B8A99C] transition-all duration-300 ease-in-out border border-[#B8A99C]/30 relative overflow-hidden group"
-                          whileHover={{ scale: 1.03 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                          whileHover={{ opacity: 0.9 }}
+                          transition={{ duration: 0.2 }}
                         >
                           <span className="relative z-10">המשיכו במסע</span>
                           <span className="absolute inset-0 bg-[#B8A99C] transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 z-0"></span>
@@ -200,8 +200,8 @@ export default function WabiSabiPricing() {
                               document.getElementById('payment-buttons')?.classList.add('hidden');
                             }}
                             className="w-full rounded-lg bg-[#B8A99C] px-6 py-4 text-center text-lg font-medium text-white shadow-md hover:bg-[#D5C4B7] transition-all duration-300 ease-in-out border border-[#B8A99C]/30 relative overflow-hidden group"
-                            whileHover={{ scale: 1.02 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                            whileHover={{ opacity: 0.9 }}
+                            transition={{ duration: 0.2 }}
                           >
                             <span className="relative z-10 flex items-center justify-center">
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -226,9 +226,9 @@ export default function WabiSabiPricing() {
                               document.getElementById('paypal-button-container')?.classList.remove('hidden');
                               document.getElementById('payment-buttons')?.classList.add('hidden');
                             }}
-                            className="w-full rounded-lg backdrop-blur-md px-6 py-4 text-center text-lg font-medium text-[#F5F1EB] shadow-md hover:bg-[#A25B3A]/20 transition-all duration-300 ease-in-out border border-white/20 relative overflow-hidden group" style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
-                            whileHover={{ scale: 1.02 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                            className="w-full rounded-lg bg-white/10 px-6 py-4 text-center text-lg font-medium text-[#F5F1EB] shadow-md hover:bg-[#A25B3A]/20 transition-all duration-300 ease-in-out border border-white/20 relative overflow-hidden group" style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
+                            whileHover={{ opacity: 0.9 }}
+                            transition={{ duration: 0.2 }}
                           >
                             <span className="relative z-10 flex items-center justify-center">
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="#3D3D3D">
@@ -241,7 +241,7 @@ export default function WabiSabiPricing() {
                         
                         {/* Hidden PayPal buttons that will be shown when custom buttons are clicked */}
                         <div id="paypal-button-container" className="mt-4 hidden">
-                          <div className="backdrop-blur-md p-4 rounded-lg border border-white/20 mb-4" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+                          <div className="bg-white/10 p-4 rounded-lg border border-white/20 mb-4" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
                             <p className="text-sm text-[#5D5D5D] mb-2">בחרו את אמצעי התשלום המועדף עליכם:</p>
                           </div>
                           <PayPalScriptProvider
@@ -312,8 +312,8 @@ export default function WabiSabiPricing() {
                         <Link href="/register">
                           <motion.button
                             className="w-full rounded-lg bg-[#B8A99C] px-6 py-4 text-center text-lg font-medium text-white shadow-md hover:bg-[#D5C4B7] transition-all duration-300 ease-in-out border border-[#B8A99C]/30 relative overflow-hidden group"
-                            whileHover={{ scale: 1.03 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                            whileHover={{ opacity: 0.9 }}
+                            transition={{ duration: 0.2 }}
                           >
                             <span className="relative z-10">הירשמו וצאו למסע הפנימי</span>
                             <span className="absolute inset-0 bg-[#A25B3A] transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 z-0"></span>

@@ -646,7 +646,7 @@ const Page: FC<pageProps> = ({ params }) => {
               videos.map((video, index) => {
                 console.log('Video data in styles page:', video);
                 return (
-                  <div key={video.uri} className="transform hover:scale-105 transition-transform duration-300 hover:shadow-lg">
+                  <div key={video.uri} className="transform hover:opacity-90 transition-all duration-300 hover:shadow-lg">
                     <VideoCard
                       video={video}
                       watchedVideos={watchedVideos}

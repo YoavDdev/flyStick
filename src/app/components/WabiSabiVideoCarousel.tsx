@@ -56,10 +56,10 @@ const WabiSabiVideoCarousel = () => {
             />
             
             <div
-              className="relative rounded-3xl overflow-hidden transition-all duration-500 group-hover:scale-[1.02] backdrop-blur-sm"
+              className="relative rounded-3xl overflow-hidden transition-all duration-500 group-hover:opacity-90 bg-white/10"
               style={{
                 backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                boxShadow: '0 20px 60px -12px rgba(143, 166, 142, 0.25)',
+                boxShadow: '0 4px 12px -4px rgba(143, 166, 142, 0.25)',
                 border: '1px solid rgba(143, 166, 142, 0.2)'
               }}
             >

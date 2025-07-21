@@ -54,8 +54,8 @@ const WabiSabiFooter = () => {
     <footer className="relative overflow-hidden" aria-labelledby="footer-heading" style={{ background: 'linear-gradient(135deg, #F7F3EB 0%, #E8DDD0 50%, #D5C4B7 100%)' }}>
       {/* Desert-inspired subtle background pattern */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ backgroundColor: '#D5C4B7' }}></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ backgroundColor: '#B8A99C', animationDelay: '3s' }}></div>
+        {/* Removed extremely GPU-intensive blur filter to prevent overheating */}
+        {/* Removed extremely GPU-intensive blur filter to prevent overheating */}
       </div>
       
       {/* Floating cards approach */}
@@ -65,8 +65,8 @@ const WabiSabiFooter = () => {
           
           {/* Brand Card */}
           <motion.div 
-            className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300"
-            whileHover={{ y: -5, scale: 1.02 }}
+            className="bg-white/10 rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300"
+            whileHover={{ y: -5, opacity: 0.9 }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -101,7 +101,7 @@ const WabiSabiFooter = () => {
                       e.currentTarget.style.color = '#B8A99C';
                       e.currentTarget.style.backgroundColor = 'transparent';
                     }}
-                    whileHover={{ scale: 1.1 }}
+                    whileHover={{ opacity: 0.9 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     <span className="sr-only">{item.name}</span>
@@ -114,8 +114,8 @@ const WabiSabiFooter = () => {
 
           {/* Quick Links Card */}
           <motion.div 
-            className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300"
-            whileHover={{ y: -5, scale: 1.02 }}
+            className="bg-white/10 rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300"
+            whileHover={{ y: -5, opacity: 0.9 }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -153,21 +153,21 @@ const WabiSabiFooter = () => {
 
           {/* Newsletter Card */}
           <motion.div 
-            className="backdrop-blur-sm rounded-2xl p-6 border transition-all duration-300"
+            className="bg-white/10 rounded-2xl p-6 border transition-all duration-300"
             style={{ 
               background: 'linear-gradient(135deg, rgba(213, 196, 183, 0.3) 0%, rgba(184, 169, 156, 0.3) 100%)',
               borderColor: '#B8A99C',
-              boxShadow: '0 8px 32px rgba(181, 169, 156, 0.15)'
+              boxShadow: '0 2px 8px rgba(181, 169, 156, 0.15)'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = 'linear-gradient(135deg, rgba(213, 196, 183, 0.5) 0%, rgba(184, 169, 156, 0.5) 100%)';
-              e.currentTarget.style.boxShadow = '0 12px 40px rgba(181, 169, 156, 0.25)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(181, 169, 156, 0.25)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'linear-gradient(135deg, rgba(213, 196, 183, 0.3) 0%, rgba(184, 169, 156, 0.3) 100%)';
-              e.currentTarget.style.boxShadow = '0 8px 32px rgba(181, 169, 156, 0.15)';
+              e.currentTarget.style.boxShadow = '0 2px 8px rgba(181, 169, 156, 0.15)';
             }}
-            whileHover={{ y: -5, scale: 1.02 }}
+            whileHover={{ y: -5, opacity: 0.9 }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -178,7 +178,7 @@ const WabiSabiFooter = () => {
             <p className="text-sm mb-4 text-center leading-relaxed" style={{ color: '#2D3142', opacity: '0.8' }}>
               עדכון ארועים, חדשות, שיעורים חדשים העולים לאתר ישלחו לתיבת הדואר שלכם.
             </p>
-            <div className="rounded-xl p-4 backdrop-blur-sm" style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', border: '1px solid #D5C4B7' }}>
+            <div className="rounded-xl p-4 bg-white/10" style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', border: '1px solid #D5C4B7' }}>
               <NewsletterSignUpForm />
             </div>
           </motion.div>

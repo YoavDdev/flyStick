@@ -291,7 +291,7 @@ const WabiSabiNavbar = () => {
               {session?.user ? (
                 <div className="relative" ref={dropdownRef}>
                   <motion.button
-                    whileHover={{ scale: 1.03 }}
+                    whileHover={{ opacity: 0.9 }}
                     onClick={toggleDropdown}
                     className="text-[#5D5D5D] bg-[#E5DFD0] hover:bg-[#D5C4B7] border border-[#D0C8B0]/50 rounded-tl-xl rounded-br-xl rounded-tr-sm rounded-bl-sm px-3 sm:px-4 py-1.5 sm:py-2 transition duration-300 ease-in-out flex items-center"
                   >
@@ -308,7 +308,7 @@ const WabiSabiNavbar = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute left-0 mt-2 w-44 sm:w-48 bg-[#FFFCF7] border border-[#D0C8B0]/30 rounded-tl-lg rounded-br-lg rounded-tr-sm rounded-bl-sm shadow-lg overflow-hidden z-10"
+                        className="absolute left-0 mt-2 w-44 sm:w-48 bg-[#FFFCF7] border border-[#D0C8B0]/30 rounded-tl-lg rounded-br-lg rounded-tr-sm rounded-bl-sm shadow-md overflow-hidden z-10"
                       >
                         <DropdownMenu onClose={() => setDropdownVisible(false)} />
                       </motion.div>
@@ -348,7 +348,7 @@ const WabiSabiNavbar = () => {
             exit="closed"
             variants={mobileMenuVariants}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed top-0 right-0 h-screen w-[85%] sm:w-3/4 md:hidden bg-[#F7F3EB] p-4 sm:p-6 z-[101] shadow-lg overflow-y-auto dir-rtl rounded-l-lg"
+            className="fixed top-0 right-0 h-screen w-[85%] sm:w-3/4 md:hidden bg-[#F7F3EB] p-4 sm:p-6 z-[101] shadow-md overflow-y-auto dir-rtl rounded-l-lg"
           >
             {/* Texture overlay for mobile menu */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -492,7 +492,7 @@ const WabiSabiNavbar = () => {
               >
                 <Link href="/login" onClick={closeMobileMenu}>
                   <motion.div
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ opacity: 0.9 }}
                     whileTap={{ scale: 0.98 }}
                     className="text-[#B56B4A] bg-transparent border-2 border-[#B56B4A]/50 hover:bg-[#F7F3EB] rounded-tl-xl rounded-br-xl rounded-tr-sm rounded-bl-sm px-5 sm:px-6 py-2.5 sm:py-3 transition duration-300 ease-in-out flex items-center"
                   >
@@ -591,7 +591,7 @@ const WabiSabiNavbar = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#8E9A7C] hover:text-[#B56B4A] transition-colors duration-300 p-1.5"
-                    whileHover={{ scale: 1.1 }}
+                    whileHover={{ opacity: 0.9 }}
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 + (index * 0.1) }}
@@ -621,7 +621,7 @@ const WabiSabiNavbar = () => {
                   }}
                   transition={{ 
                     duration: 3, 
-                    repeat: Infinity,
+                    // Removed infinite animation to prevent CPU/GPU overheating
                     repeatType: "reverse" as const
                   }}
                 ></motion.div>

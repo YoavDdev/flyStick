@@ -442,7 +442,7 @@ useEffect(() => {
 
     const saveProgress = async () => {
       const now = Date.now();
-      if (now - lastSaved < 5000) return; // ✅ שמור רק אם עברו 5 שניות
+      if (now - lastSaved < 30000) return; // ✅ שמור רק אם עברו 30 שניות - מופחת עומס CPU
       lastSaved = now;
 
       const currentTime = await vimeoPlayer.getCurrentTime();
@@ -500,7 +500,8 @@ useEffect(() => {
     window.addEventListener("beforeunload", saveProgress);
 
     return () => {
-      vimeoPlayer.unload();
+      // Properly destroy player to prevent memory leaks - critical for CPU/GPU performance
+      vimeoPlayer.destroy();
       window.removeEventListener("beforeunload", saveProgress);
     };
   }
@@ -657,7 +658,7 @@ useEffect(() => {
               videos
                 .filter((video) => !video.name.startsWith("[PRV]"))
                 .map((video, index) => (
-                  <div key={video.uri} className="transform hover:scale-105 transition-transform duration-300 hover:shadow-lg">
+                  <div key={video.uri} className="transform hover:opacity-90 transition-all duration-300 hover:shadow-lg">
                     <VideoCard
                       video={video}
                       watchedVideos={watchedVideos}

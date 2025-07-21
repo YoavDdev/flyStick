@@ -35,7 +35,7 @@ class ConvertkitEmailForm extends Component {
       const json_res = await res.json();
       
       if (res.ok) {
-        toast.success(json_res.message || 'נרשמת בהצלחה לניוזלטר!', {
+        toast.success('📧 נרשמת בהצלחה לניוזלטר! נשמח לשתף אותך בעדכונים', {
           duration: 4000,
           position: 'top-center',
           style: {
@@ -53,7 +53,7 @@ class ConvertkitEmailForm extends Component {
           email: "",
         });
       } else {
-        toast.error(json_res.error || 'שגיאה ברישום לניוזלטר', {
+        toast.error(json_res.error || '❌ אירעה שגיאה ברישום לניוזלטר - אנא נסה שוב', {
           duration: 4000,
           position: 'top-center',
           style: {
@@ -68,7 +68,7 @@ class ConvertkitEmailForm extends Component {
       }
     } catch (error) {
       console.error('Newsletter subscription error:', error);
-      toast.error('שגיאה ברישום לניוזלטר. אנא נסה שוב.', {
+      toast.error('❌ אירעה שגיאה ברישום לניוזלטר - אנא נסה שוב', {
         duration: 4000,
         position: 'top-center',
         style: {
@@ -99,7 +99,7 @@ class ConvertkitEmailForm extends Component {
         {/* Enhanced Input Field */}
         <motion.div 
           className="relative group"
-          whileHover={{ scale: 1.02 }}
+          whileHover={{ opacity: 0.9 }}
           transition={{ duration: 0.2 }}
         >
           <motion.input
@@ -124,7 +124,7 @@ class ConvertkitEmailForm extends Component {
               disabled:opacity-50 disabled:cursor-not-allowed
               shadow-sm hover:shadow-md
               ${isFocused 
-                ? 'border-[#B56B4A] bg-white shadow-lg shadow-[#B56B4A]/20' 
+                ? 'border-[#B56B4A] bg-white shadow-md shadow-[#B56B4A]/20' 
                 : 'border-[#D5C4B7] hover:border-[#B8A99C]'
               }
             `}
@@ -154,14 +154,14 @@ class ConvertkitEmailForm extends Component {
             transition-all duration-300 ease-in-out
             focus:outline-none focus:ring-4 focus:ring-[#B56B4A]/30
             disabled:opacity-50 disabled:cursor-not-allowed
-            shadow-lg hover:shadow-xl
+            shadow-md hover:shadow-lg
             ${
               isLoading || !email.trim()
                 ? 'bg-[#D5C4B7] text-[#8A8A8A] cursor-not-allowed'
                 : 'bg-gradient-to-r from-[#B56B4A] to-[#D9845E] text-white hover:from-[#A25539] hover:to-[#C7734D] active:scale-95'
             }
           `}
-          whileHover={!isLoading && email.trim() ? { y: -2, scale: 1.02 } : {}}
+          whileHover={!isLoading && email.trim() ? { y: -2, opacity: 0.9 } : {}}
           whileTap={!isLoading && email.trim() ? { scale: 0.98 } : {}}
           transition={{ duration: 0.2 }}
         >
@@ -174,7 +174,7 @@ class ConvertkitEmailForm extends Component {
                 <motion.div
                   className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  // Removed infinite animation to prevent CPU/GPU overheating
                 />
                 <span>נרשם...</span>
               </>
@@ -184,7 +184,7 @@ class ConvertkitEmailForm extends Component {
                 <motion.span
                   className="text-lg"
                   animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  // Removed infinite animation to prevent CPU/GPU overheating
                 >
                   ←
                 </motion.span>

@@ -301,7 +301,7 @@ const DashboardPage = () => {
                   <motion.button
                     onClick={handleWhatsAppJoin}
                     className="bg-[#25D366] hover:bg-[#128C7E] text-white py-2.5 sm:py-3 px-4 sm:px-6 rounded-full flex items-center gap-2 transition-all duration-300 text-sm sm:text-base"
-                    whileHover={{ scale: 1.03 }}
+                    whileHover={{ opacity: 0.9 }}
                     whileTap={{ scale: 0.98 }}
                   >
                     <FaWhatsapp size={20} />
@@ -591,7 +591,7 @@ const DashboardPage = () => {
               <Link href="/login">
                 <motion.span 
                   className="inline-block bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] py-3 px-8 rounded-full transition-all duration-300"
-                  whileHover={{ y: -3, boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}
+                  whileHover={{ y: -3, boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}
                   whileTap={{ y: 0 }}
                 >
                   התחברות

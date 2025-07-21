@@ -140,19 +140,16 @@ const VideoPlayer = ({
         }
       });
       
-      // Helper function to show toast notification
+      // Helper function to show toast notification - optimized to use React state
       const showPreviewRestrictionToast = () => {
         if (toastShown) return; // Prevent multiple toasts
         
         toastShown = true;
-        const toastDiv = document.createElement('div');
-        toastDiv.className = 'fixed top-24 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white px-4 py-2 rounded-md z-[10001] text-sm';
-        toastDiv.textContent = 'מנויים בלבד יכולים לצפות מעבר ל-2 דקות הראשונות';
-        document.body.appendChild(toastDiv);
+        // Use React state instead of DOM manipulation for better performance
+        setShowPreviewOverlay(true);
         
-        // Remove the toast after 3 seconds
+        // Hide toast after 3 seconds
         setTimeout(() => {
-          document.body.removeChild(toastDiv);
           toastShown = false;
         }, 3000);
       }
@@ -406,7 +403,7 @@ const VideoPlayer = ({
         onClick={handleCloseButton}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.05 }}
+        whileHover={{ opacity: 0.9 }}
         whileTap={{ scale: 0.95 }}
         transition={{ type: 'spring', stiffness: 200, damping: 20 }}
         aria-label="Close video"

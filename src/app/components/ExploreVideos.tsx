@@ -178,22 +178,15 @@ const ExploreVideos = ({
   }, [initialHashtag, session]);
 
   useEffect(() => {
-    function preventDefault(e: Event) {
-      e.preventDefault();
-    }
-
-    // Add event listener to prevent scrolling when modal is open
+    // Simply prevent body scrolling when modal is open - much more efficient
     if (selectedVideo) {
       document.body.style.overflow = "hidden";
-      document.addEventListener("wheel", preventDefault, { passive: false });
     } else {
       document.body.style.overflow = "";
-      document.removeEventListener("wheel", preventDefault);
     }
 
     return () => {
       document.body.style.overflow = "";
-      document.removeEventListener("wheel", preventDefault);
     };
   }, [selectedVideo]);
 
@@ -468,7 +461,7 @@ const ExploreVideos = ({
       <div className="container mx-auto px-4 py-8 relative z-10">
         {/* Desert Journey Video Banner */}
         <motion.div 
-          className="relative mb-10 overflow-hidden backdrop-blur-md rounded-2xl shadow-lg border border-white/20"
+          className="relative mb-10 overflow-hidden bg-white/10 rounded-2xl shadow-md border border-white/20"
           style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -536,7 +529,7 @@ const ExploreVideos = ({
         </motion.div>
 
         <motion.div 
-          className="backdrop-blur-md rounded-2xl shadow-lg overflow-hidden border border-white/20 mb-10"
+          className="bg-white/10 rounded-2xl shadow-md overflow-hidden border border-white/20 mb-10"
           style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -547,10 +540,10 @@ const ExploreVideos = ({
 
             {!noMoreVideos && (
               <motion.button
-                className="px-4 py-1.5 text-sm rounded-full focus:outline-none shadow-sm transition-all duration-300 hover:shadow-md font-medium relative overflow-hidden backdrop-blur-md border border-white/30"
+                className="px-4 py-1.5 text-sm rounded-full focus:outline-none shadow-sm transition-all duration-300 hover:shadow-md font-medium relative overflow-hidden bg-white/10 border border-white/30"
                 style={{ backgroundColor: 'rgba(212, 165, 116, 0.8)', color: '#F5F1EB' }}
                 onClick={loadMore}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ opacity: 0.9 }}
                 whileTap={{ scale: 0.95 }}
               >
                 טען עוד
@@ -587,11 +580,11 @@ const ExploreVideos = ({
                   .map((video, index) => (
                     <motion.div 
                       key={video.uri} 
-                      className="transform hover:scale-105 transition-transform duration-300 hover:shadow-lg"
+                      className="hover:opacity-90 transition-opacity duration-300"
                       variants={itemVariants}
                       /* Reduce motion complexity */
                       transition={{ duration: 0.2 }}
-                      whileHover={{ scale: 1.03 }} /* Less intense hover effect */
+                      whileHover={{ opacity: 0.9 }} /* Less intense hover effect */
                     >
                       <VideoCard
                         video={video}

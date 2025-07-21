@@ -12,7 +12,7 @@ const Register = () => {
     name: "",
     email: "",
     password: "",
-    subscribeToNewsletter: false,
+    subscribeToNewsletter: true,
   });
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const Register = () => {
     e.preventDefault();
 
     if (data.password.length < 6) {
-      toast.error("הסיסמה חייבת להיות באורך של 6 תווים לפחות.");
+      toast.error("❌ אירעה שגיאה ברישום - הסיסמה חייבת להיות באורך של 6 תווים לפחות.");
       return;
     }
 
@@ -33,7 +33,7 @@ const Register = () => {
       const res = await axios.post("/api/register", data);
 
       if (res.status === 200) {
-        toast.success("המשתמש נרשם בהצלחה");
+        toast.success("🎉 נרשמת בהצלחה! ברוך הבא למשפחה שלנו");
 
         // ✅ Subscribe to newsletter if requested
         if (data.subscribeToNewsletter) {

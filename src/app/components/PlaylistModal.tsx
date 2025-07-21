@@ -54,7 +54,7 @@ const PlaylistModal = ({
             onClick={onClose}
           />
           <div 
-            className="relative bg-[#F7F3EB] p-6 rounded-2xl shadow-xl max-w-md w-full border border-[#D5C4B7] overflow-hidden"
+            className="relative bg-[#F7F3EB] p-6 rounded-2xl shadow-md max-w-md w-full border border-[#D5C4B7] overflow-hidden"
             style={{
               backgroundImage: "url('/paper-texture.png')",
               backgroundBlendMode: "overlay",

@@ -92,7 +92,7 @@ const VideoCard = ({
         >
           <button
             onClick={() => onPlayVideo(video.embed?.html || `<iframe src="https://player.vimeo.com/video/${video.uri?.split('/').pop()}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`)}
-            className="bg-[#EF8354] hover:bg-[#D9713C] text-white p-3 rounded-full transition-all duration-300 transform hover:scale-110"
+            className="bg-[#EF8354] hover:bg-[#D9713C] text-white p-3 rounded-full transition-all duration-300 transform hover:opacity-90"
           >
             <FaPlay />
           </button>

@@ -264,7 +264,7 @@ const Page = () => {
 
       const saveProgress = async (force = false) => {
         const now = Date.now();
-        if (!force && now - lastSaved < 5000) return; // כל 5 שניות
+        if (!force && now - lastSaved < 30000) return; // כל 30 שניות - מופחת עומס CPU
         lastSaved = now;
 
         const currentTime = await vimeoPlayer.getCurrentTime();
@@ -310,7 +310,9 @@ const Page = () => {
       vimeoPlayer.play();
 
       return () => {
-        vimeoPlayer.unload(); // Clean up
+        // Properly destroy player and remove event listeners to prevent memory leaks
+        vimeoPlayer.destroy();
+        window.removeEventListener("beforeunload", () => saveProgress(true));
       };
     }
   }, [selectedVideo]);
@@ -484,7 +486,7 @@ const Page = () => {
             variants={itemVariants}
           >
             <motion.div
-              whileHover={{ x: -5, scale: 1.03 }}
+              whileHover={{ x: -5, opacity: 0.9 }}
               whileTap={{ scale: 0.97 }}
               className="relative overflow-hidden"
             >
@@ -571,7 +573,7 @@ const Page = () => {
                   }}
                   transition={{ 
                     duration: 6, 
-                    repeat: Infinity, 
+                    // Removed infinite animation to prevent CPU/GPU overheating
                     ease: "easeInOut",
                     times: [0, 0.25, 0.5, 0.75, 1]
                   }}
@@ -585,7 +587,7 @@ const Page = () => {
                   }}
                   transition={{ 
                     duration: 8, 
-                    repeat: Infinity, 
+                    // Removed infinite animation to prevent CPU/GPU overheating
                     ease: "easeInOut", 
                     delay: 0.5,
                     times: [0, 0.25, 0.5, 0.75, 1]
@@ -627,7 +629,7 @@ const Page = () => {
                   {/* Paper texture removed */}
                   <motion.span 
                     className="relative z-10 font-medium"
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ opacity: 0.9 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     גלה שיעורים חדשים
@@ -635,7 +637,7 @@ const Page = () => {
                   <motion.div
                     className="relative z-10"
                     animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    // Removed infinite animation to prevent CPU/GPU overheating
                   >
                     <FaArrowRight size={16} />
                   </motion.div>
@@ -671,14 +673,14 @@ const Page = () => {
                     <img
                       src={video.thumbnailUri}
                       alt={video.name}
-                      className="object-cover w-full h-full rounded-t-2xl transition-all duration-500 group-hover:scale-105 group-hover:brightness-110"
+                      className="object-cover w-full h-full rounded-t-2xl transition-all duration-500 group-hover:opacity-90 "
                     />
                     
                     {/* Play overlay */}
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
                       <motion.div 
                         className="bg-[#D9713C] bg-opacity-90 w-16 h-16 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
-                        whileHover={{ scale: 1.1 }}
+                        whileHover={{ opacity: 0.9 }}
                         whileTap={{ scale: 0.95 }}
                       >
                         <div className="absolute inset-0 bg-[url('/paper-texture.png')] opacity-10 mix-blend-overlay rounded-full"></div>
@@ -730,7 +732,7 @@ const Page = () => {
                         title="נגן"
                         className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-4 py-2 rounded-full flex items-center gap-2 text-sm font-medium transition-all duration-300 shadow-sm relative overflow-hidden"
                         onClick={() => setSelectedVideo(video.embedHtml)}
-                        whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+                        whileHover={{ opacity: 0.9 }}
                         whileTap={{ scale: 0.98 }}
                       >
                         <div className="absolute inset-0 bg-[url('/paper-texture.png')] opacity-10 mix-blend-overlay"></div>
@@ -742,7 +744,7 @@ const Page = () => {
                         title="הסר סימון כנצפה"
                         className="text-[#3D3D3D] hover:text-[#D9713C] p-2 rounded-full transition-all duration-300 bg-[#F7F3EB] bg-opacity-50 hover:bg-opacity-70"
                         onClick={() => handleUnwatch(video.uri)}
-                        whileHover={{ scale: 1.1, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+                        whileHover={{ opacity: 0.9 }}
                         whileTap={{ scale: 0.95 }}
                       >
                         <FaEyeSlash size={16} />
@@ -779,7 +781,7 @@ const Page = () => {
             onClick={() => fetchWatchedVideos(page + 1, true)}
             disabled={loadingMore}
             className="px-6 py-3 bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] rounded-full shadow-md transition-all duration-300 flex items-center space-x-2 disabled:opacity-50 relative overflow-hidden"
-            whileHover={{ scale: 1.03, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+            whileHover={{ opacity: 0.9 }}
             whileTap={{ scale: 0.97 }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -791,7 +793,7 @@ const Page = () => {
                 <motion.div 
                   className="relative h-6 w-6 ml-2"
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                  // Removed infinite animation to prevent CPU/GPU overheating
                 >
                   <div className="absolute inset-0 rounded-full border-2 border-[#2D3142] border-t-transparent" />
                 </motion.div>

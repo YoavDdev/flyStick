@@ -67,13 +67,13 @@ const WabiSabiHero = () => {
                 {subscriptionStatus === "ACTIVE" ? (
                   <motion.button
                     onClick={() => scrollToSection('explore')}
-                    className="group px-10 py-4 rounded-2xl text-white font-medium text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl relative overflow-hidden backdrop-blur-md cursor-pointer"
+                    className="group px-10 py-4 rounded-2xl text-white font-medium text-lg transition-all duration-300 hover:opacity-90 relative overflow-hidden bg-black/20 cursor-pointer"
                     style={{ 
                       background: 'linear-gradient(135deg, rgba(139, 115, 85, 0.9) 0%, rgba(107, 91, 71, 0.9) 100%)',
-                      boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.3)',
+                      boxShadow: '0 2px 8px -2px rgba(0, 0, 0, 0.2)',
                       border: '1px solid rgba(255, 255, 255, 0.2)'
                     }}
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ opacity: 0.9 }}
                     whileTap={{ scale: 0.98 }}
                     transition={{ duration: 0.2 }}
                   >
@@ -83,13 +83,13 @@ const WabiSabiHero = () => {
                 ) : (
                   <motion.button
                     onClick={() => scrollToSection('pricing')}
-                    className="group px-10 py-4 rounded-2xl text-white font-medium text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl relative overflow-hidden backdrop-blur-md cursor-pointer"
+                    className="group px-10 py-4 rounded-2xl text-white font-medium text-lg transition-all duration-300 hover:opacity-90 relative overflow-hidden bg-black/20 cursor-pointer"
                     style={{ 
                       background: 'linear-gradient(135deg, rgba(139, 115, 85, 0.9) 0%, rgba(107, 91, 71, 0.9) 100%)',
-                      boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.3)',
+                      boxShadow: '0 2px 8px -2px rgba(0, 0, 0, 0.2)',
                       border: '1px solid rgba(255, 255, 255, 0.2)'
                     }}
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ opacity: 0.9 }}
                     whileTap={{ scale: 0.98 }}
                     transition={{ duration: 0.2 }}
                   >
@@ -104,14 +104,14 @@ const WabiSabiHero = () => {
                 
                 <motion.button
                   onClick={() => scrollToSection('features')}
-                  className="px-10 py-4 rounded-2xl font-medium text-lg border-2 transition-all duration-300 hover:scale-105 backdrop-blur-md cursor-pointer"
+                  className="px-10 py-4 rounded-2xl font-medium text-lg border-2 transition-all duration-300 hover:opacity-90 bg-black/20 cursor-pointer"
                   style={{ 
                     color: '#F5F1EB',
                     borderColor: 'rgba(255, 255, 255, 0.3)',
                     backgroundColor: 'rgba(255, 255, 255, 0.1)',
                     textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
                   }}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ opacity: 0.9 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >

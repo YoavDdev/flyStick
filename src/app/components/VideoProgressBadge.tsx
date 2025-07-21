@@ -60,7 +60,7 @@ const VideoProgressBadge: React.FC<Props> = ({
     return (
       <div
         title="נצפה במלואו"
-        className={`${selectedSize} rounded-full ${selectedTheme.completed} flex items-center justify-center font-bold shadow-md hover:shadow-lg transition-all duration-300 ${className}`}
+        className={`${selectedSize} rounded-full ${selectedTheme.completed} flex items-center justify-center font-bold shadow-sm hover:shadow-md transition-all duration-300 ${className}`}
       >
         ✓
       </div>
@@ -71,7 +71,7 @@ const VideoProgressBadge: React.FC<Props> = ({
   return (
     <div
       title={`התקדמות: ${progress}%`}
-      className={`relative ${selectedSize} rounded-full ${selectedTheme.bg} flex items-center justify-center ${selectedTheme.text} font-semibold shadow-md hover:shadow-lg transition-all duration-300 ${className}`}
+      className={`relative ${selectedSize} rounded-full ${selectedTheme.bg} flex items-center justify-center ${selectedTheme.text} font-semibold shadow-sm hover:shadow-md transition-all duration-300 ${className}`}
     >
       <svg
         viewBox="0 0 36 36"

@@ -154,6 +154,44 @@ export default function AdminPage() {
     }
   };
 
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      if (!session?.user?.email) return;
+      
+      console.log("🗑️ ADMIN PAGE DEBUG - Deleting user:", userId);
+      
+      setIsUpdating(true);
+      const response = await fetch("/api/admin/delete-user", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.user.email}`
+        },
+        body: JSON.stringify({
+          userId,
+          confirmationText: "DELETE" // Required by API for safety
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "שגיאה במחיקת המשתמש");
+      }
+
+      const data = await response.json();
+      console.log("✅ ADMIN PAGE DEBUG - Delete response:", data);
+      
+      // Refresh user list to show updated data
+      fetchUsers();
+      
+    } catch (error) {
+      console.error("❌ Error deleting user:", error);
+      throw error; // Re-throw to let AdminUserTable handle the error display
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   // Filter users based on search term and active filter
   const filteredUsers = users.filter(user => {
     // First apply search term filter
@@ -282,7 +320,43 @@ export default function AdminPage() {
                 try {
                   if (!session?.user?.email) return;
                   
-                  toast.loading('בודק מנויי ניסיון פגי תוקף...');
+                  toast.loading('🔄 מעדכן נתוני תשלומים...');
+                  const response = await fetch("/api/admin/sync-paypal", {
+                    method: 'POST',
+                    headers: {
+                      "Authorization": `Bearer ${session.user.email}`
+                    },
+                    cache: 'no-store'
+                  });
+                  
+                  if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || "שגיאה בעדכון נתוני התשלומים");
+                  }
+                  
+                  const data = await response.json();
+                  toast.dismiss();
+                  toast.success(`✨ נתוני התשלומים עודכנו בהצלחה! עודכנו ${data.successCount} משתמשים`);
+                  
+                  // Refresh user list to show updated PayPal data
+                  fetchUsers();
+                } catch (error) {
+                  console.error("Error syncing PayPal:", error);
+                  toast.dismiss();
+                  toast.error("❌ אירעה שגיאה בעדכון נתוני התשלומים");
+                }
+              }}
+              className="bg-[#D4AF37] hover:bg-[#B8941F] text-white py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/30 text-sm sm:text-base"
+            >
+              סנכרן נתוני PayPal
+            </button>
+            
+            <button
+              onClick={async () => {
+                try {
+                  if (!session?.user?.email) return;
+                  
+                  toast.loading('⏰ בודק תוקף מנויי הניסיון...');
                   const response = await fetch("/api/check-trial-expiry", {
                     headers: {
                       "Authorization": `Bearer ${session.user.email}`
@@ -292,19 +366,19 @@ export default function AdminPage() {
                   
                   if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.error || "שגיאה בבדיקת מנויי ניסיון");
+                    throw new Error(errorData.error || "שגיאה בבדיקת מנויי הניסיון");
                   }
                   
                   const data = await response.json();
                   toast.dismiss();
-                  toast.success(data.message || "בדיקת מנויי ניסיון הושלמה");
+                  toast.success(data.message || "✅ בדיקת מנויי הניסיון הושלמה בהצלחה");
                   
                   // Refresh user list
                   fetchUsers();
                 } catch (error) {
                   console.error("Error checking trial expiry:", error);
                   toast.dismiss();
-                  toast.error("אירעה שגיאה בבדיקת מנויי ניסיון");
+                  toast.error("❌ אירעה שגיאה בבדיקת מנויי הניסיון");
                 }
               }}
               className="bg-[#B56B4A] hover:bg-[#A25A39] text-white py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#B56B4A]/30 text-sm sm:text-base"
@@ -338,7 +412,8 @@ export default function AdminPage() {
           <div className="overflow-x-auto">
             <AdminUserTable 
               users={sortedUsers} 
-              onUpdateUser={handleUpdateUser} 
+              onUpdateUser={handleUpdateUser}
+              onDeleteUser={handleDeleteUser}
               sortField={sortField}
               sortDirection={sortDirection}
               isUpdating={isUpdating}

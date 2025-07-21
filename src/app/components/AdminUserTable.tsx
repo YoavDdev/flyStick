@@ -46,6 +46,7 @@ import { User } from "../types/User";
 type AdminUserTableProps = {
   users: User[];
   onUpdateUser: (userId: string, updates: Partial<User>) => Promise<void>;
+  onDeleteUser: (userId: string) => Promise<void>;
   sortField: keyof User;
   sortDirection: "asc" | "desc";
   onSort: (field: string) => void;
@@ -55,12 +56,19 @@ type AdminUserTableProps = {
 export default function AdminUserTable({
   users,
   onUpdateUser,
+  onDeleteUser,
   sortField,
   sortDirection,
   onSort,
   isUpdating = false
 }: AdminUserTableProps) {
   const [editingUser, setEditingUser] = useState<string | null>(null);
+  const [deletingUser, setDeletingUser] = useState<string | null>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    step: 1 | 2;
+    userEmail: string;
+    confirmationText: string;
+  } | null>(null);
   const [editForm, setEditForm] = useState<{
     name: string;
     subscriptionId: string;
@@ -122,6 +130,57 @@ export default function AdminUserTable({
       console.error("Error saving user:", error);
       toast.error("אירעה שגיאה בשמירת המשתמש");
     }
+  };
+
+  // Handle delete user - First confirmation
+  const handleDeleteClick = (user: User) => {
+    // Prevent deletion of admin users
+    if (user.subscriptionId === "Admin") {
+      toast.error("❌ לא ניתן למחוק משתמש מנהל");
+      return;
+    }
+
+    setDeleteConfirmation({
+      step: 1,
+      userEmail: user.email || 'משתמש לא ידוע',
+      confirmationText: ''
+    });
+    setDeletingUser(user.id);
+  };
+
+  // Handle delete confirmation - Second step
+  const handleDeleteConfirm = async () => {
+    if (!deleteConfirmation || !deletingUser) return;
+
+    if (deleteConfirmation.step === 1) {
+      // Move to step 2 - require typing DELETE
+      setDeleteConfirmation({
+        ...deleteConfirmation,
+        step: 2
+      });
+      return;
+    }
+
+    // Step 2 - Check confirmation text
+    if (deleteConfirmation.confirmationText !== 'DELETE') {
+      toast.error("❌ יש להקליד בדיוק 'DELETE' כדי לאשר את המחיקה");
+      return;
+    }
+
+    try {
+      await onDeleteUser(deletingUser);
+      toast.success(`✅ המשתמש ${deleteConfirmation.userEmail} נמחק בהצלחה`);
+      handleDeleteCancel();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      toast.error("❌ אירעה שגיאה במחיקת המשתמש");
+    }
+  };
+
+  // Handle delete cancellation
+  const handleDeleteCancel = () => {
+    setDeleteConfirmation(null);
+    setDeletingUser(null);
   };
 
   // Format date helper function
@@ -587,19 +646,113 @@ export default function AdminUserTable({
                     </div>
                   </div>
                 ) : (
-                  <button
-                    onClick={() => handleEditClick(user)}
-                    disabled={isUpdating}
-                    className={`${isUpdating ? 'bg-[#D5C4B7]/30 text-[#5D5D5D]/50 cursor-not-allowed' : 'bg-[#D5C4B7]/50 text-[#5D5D5D] hover:bg-[#D5C4B7] cursor-pointer'} px-2 py-1 rounded-md text-xs transition-colors`}
-                  >
-                    ערוך
-                  </button>
+                  <div className="flex gap-2 justify-end">
+                    <button
+                      onClick={() => handleEditClick(user)}
+                      disabled={isUpdating}
+                      className={`${isUpdating ? 'bg-[#D5C4B7]/30 text-[#5D5D5D]/50 cursor-not-allowed' : 'bg-[#D5C4B7]/50 text-[#5D5D5D] hover:bg-[#D5C4B7] cursor-pointer'} px-2 py-1 rounded-md text-xs transition-colors`}
+                    >
+                      ערוך
+                    </button>
+                    {user.subscriptionId !== "Admin" && (
+                      <button
+                        onClick={() => handleDeleteClick(user)}
+                        disabled={isUpdating}
+                        className={`${isUpdating ? 'bg-red-300 text-red-500 cursor-not-allowed' : 'bg-red-500 text-white hover:bg-red-600 cursor-pointer'} px-2 py-1 rounded-md text-xs transition-colors`}
+                      >
+                        מחק
+                      </button>
+                    )}
+                  </div>
                 )}
               </td>
             </motion.tr>
           ))}
         </tbody>
       </table>
+      
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style={{ direction: 'rtl' }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl"
+          >
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              
+              <h3 className="text-lg font-medium text-[#2D3142] mb-2">
+                {deleteConfirmation.step === 1 ? 'אישור מחיקת משתמש' : 'אישור סופי למחיקה'}
+              </h3>
+              
+              {deleteConfirmation.step === 1 ? (
+                <div className="text-right">
+                  <p className="text-sm text-[#3D3D3D] mb-4">
+                    האם אתה בטוח שברצונך למחוק את המשתמש:
+                  </p>
+                  <p className="text-base font-semibold text-[#B56B4A] mb-4">
+                    {deleteConfirmation.userEmail}
+                  </p>
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+                    <p className="text-sm text-red-800 font-medium">
+                      ⚠️ אזהרה: פעולה זו תמחק לצמיתות:
+                    </p>
+                    <ul className="text-xs text-red-700 mt-2 list-disc list-inside text-right">
+                      <li>את כל נתוני המשתמש</li>
+                      <li>את כל הסרטונים שצפה בהם</li>
+                      <li>את כל התיקיות והמועדפים שלו</li>
+                      <li>את כל ההודעות שקרא</li>
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-right">
+                  <p className="text-sm text-[#3D3D3D] mb-4">
+                    כדי לאשר את המחיקה הסופית של המשתמש {deleteConfirmation.userEmail}, 
+                    אנא הקלד <strong>DELETE</strong> בתיבה למטה:
+                  </p>
+                  <input
+                    type="text"
+                    value={deleteConfirmation.confirmationText}
+                    onChange={(e) => setDeleteConfirmation({
+                      ...deleteConfirmation,
+                      confirmationText: e.target.value
+                    })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-center font-mono"
+                    placeholder="הקלד DELETE כדי לאשר"
+                    autoFocus
+                  />
+                </div>
+              )}
+              
+              <div className="flex gap-3 justify-center mt-6">
+                <button
+                  onClick={handleDeleteConfirm}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    deleteConfirmation.step === 2 && deleteConfirmation.confirmationText !== 'DELETE'
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-red-600 text-white hover:bg-red-700'
+                  }`}
+                  disabled={deleteConfirmation.step === 2 && deleteConfirmation.confirmationText !== 'DELETE'}
+                >
+                  {deleteConfirmation.step === 1 ? 'המשך למחיקה' : 'מחק סופית'}
+                </button>
+                <button
+                  onClick={handleDeleteCancel}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+                >
+                  ביטול
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

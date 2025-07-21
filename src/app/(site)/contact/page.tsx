@@ -92,7 +92,7 @@ const WabiSabiContact = () => {
           
           <div className="mt-8 flex justify-center">
             <motion.div
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ opacity: 0.9 }}
               whileTap={{ scale: 0.95 }}
               className="relative"
             >

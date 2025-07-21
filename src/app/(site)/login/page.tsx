@@ -27,11 +27,11 @@ const Page = () => {
     const callback = await signIn("credentials", { ...data, redirect: false });
 
     if (callback?.error) {
-      toast.error(callback.error);
+      toast.error("❌ אירעה שגיאה בהתחברות - אנא נסה שוב");
     }
 
     if (callback?.ok && !callback?.error) {
-      toast.success("התחברת בהצלחה!");
+      toast.success("🎉 התחברת בהצלחה! ברוך הבא");
     }
 
     setLoading(false);
@@ -98,6 +98,7 @@ const Page = () => {
                   onChange={(e) => setData({ ...data, password: e.target.value })}
                   className="block w-full rounded-lg border-0 py-3 px-4 text-[#2D3142] bg-white/90 shadow-sm ring-1 ring-inset ring-[#D5C4B7] placeholder:text-[#B8A99C] focus:ring-2 focus:ring-inset focus:ring-[#B8A99C] focus:outline-none sm:text-sm sm:leading-6 transition-all duration-200"
                   placeholder="הכנס את הסיסמה שלך"
+                  onError={() => toast.error("🔐 אימייל או סיסמה שגויים - אנא בדוק ונסה שוב")}
                 />
               </div>
               <div className="mt-3 text-right">

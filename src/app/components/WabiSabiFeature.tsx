@@ -144,12 +144,12 @@ const WabiSabiFeature = () => {
                     className="w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center shadow-lg mb-3 sm:mb-6 border border-white/20"
                     style={{ 
                       backgroundColor: feature.color,
-                      boxShadow: `0 8px 25px -5px ${feature.color}40`,
+                      boxShadow: `0 2px 8px -2px ${feature.color}40`,
                       borderRadius: '50%' // Ensure perfect circle on all devices
                     }}
                     whileHover={{ 
                       scale: 1.05,
-                      boxShadow: `0 15px 30px -10px ${feature.color}60`,
+                      boxShadow: `0 4px 12px -4px ${feature.color}60`,
                       transition: { duration: 0.3 }
                     }}
                   >

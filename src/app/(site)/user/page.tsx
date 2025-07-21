@@ -272,7 +272,7 @@ const Page = () => {
                               }}
                               title="מחק תיקייה"
                               className="absolute bottom-2 left-2 text-[#3D3D3D] hover:text-[#D9713C] p-2 rounded-full shadow-sm transition-colors duration-300"
-                              whileHover={{ scale: 1.1 }}
+                              whileHover={{ opacity: 0.9 }}
                               whileTap={{ scale: 0.95 }}
                             >
                               <FaTrash size={16} />
@@ -313,7 +313,7 @@ const Page = () => {
                           <motion.button
                             type="submit"
                             className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-4 py-2 rounded-lg focus:outline-none"
-                            whileHover={{ scale: 1.05 }}
+                            whileHover={{ opacity: 0.9 }}
                             whileTap={{ scale: 0.95 }}
                           >
                             הוסף
@@ -321,7 +321,7 @@ const Page = () => {
                           <motion.button
                             onClick={() => setShowForm(false)}
                             className="bg-[#F7F3EB] text-[#3D3D3D] px-4 py-2 rounded-lg focus:outline-none border border-[#D5C4B7]/30"
-                            whileHover={{ scale: 1.05 }}
+                            whileHover={{ opacity: 0.9 }}
                             whileTap={{ scale: 0.95 }}
                           >
                             ביטול
@@ -332,7 +332,7 @@ const Page = () => {
                       <motion.button
                         onClick={() => setShowForm(true)}
                         className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] w-16 h-16 rounded-full flex items-center justify-center shadow-md"
-                        whileHover={{ scale: 1.1, rotate: 90 }}
+                        whileHover={{ opacity: 0.9, rotate: 90 }}
                         whileTap={{ scale: 0.95 }}
                         transition={{ duration: 0.3 }}
                       >
@@ -359,7 +359,7 @@ const Page = () => {
               <Link href="/login">
                 <motion.div 
                   className="inline-block bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-8 py-3 rounded-lg shadow-sm transition-colors duration-300"
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ opacity: 0.9 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   כניסה

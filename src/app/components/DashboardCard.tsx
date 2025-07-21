@@ -13,7 +13,7 @@ const DashboardCard = ({ title, description, link, icon }: DashboardCardProps) =
   return (
     <Link href={link} className="block h-full">
       <motion.div 
-        whileHover={{ y: -3, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)" }}
+        whileHover={{ y: -3, boxShadow: "0 4px 8px -2px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05)" }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
         className="bg-[#F7F3EB] p-4 sm:p-6 rounded-xl shadow-md border border-[#D5C4B7]/30 relative overflow-hidden h-full flex flex-col cursor-pointer"
       > 

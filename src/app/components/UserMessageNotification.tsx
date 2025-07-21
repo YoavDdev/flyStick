@@ -149,7 +149,7 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
       <motion.button
         onClick={handleModalOpen}
         className={`relative p-2 rounded-full bg-[#F7F3EB] hover:bg-[#D5C4B7] transition-colors duration-200 ${className}`}
-        whileHover={{ scale: 1.05 }}
+        whileHover={{ opacity: 0.9 }}
         whileTap={{ scale: 0.95 }}
       >
         <FaEnvelope className="text-[#2D3142] text-lg" />
@@ -179,7 +179,7 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-[#F7F3EB] rounded-xl max-w-2xl w-full max-h-[80vh] overflow-hidden shadow-2xl"
+              className="bg-[#F7F3EB] rounded-xl max-w-2xl w-full max-h-[80vh] overflow-hidden shadow-md"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}

@@ -18,6 +18,13 @@ model User {
   trialStartDate      DateTime? // Track when trial subscription started
   subscriptionStartDate DateTime? // Track when paid subscription started
   cancellationDate    DateTime? // Track when subscription was cancelled for grace period
+  
+  // PayPal cached data fields
+  paypalStatus      String?   // ACTIVE, CANCELLED, EXPIRED, etc.
+  paypalId          String?   // PayPal subscription ID
+  paypalCancellationDate DateTime? // When PayPal subscription was cancelled
+  paypalLastSyncAt  DateTime? // Last time PayPal data was synced
+  
   emailVerified     DateTime?
   image             String?
   favorites         Folder[]  @relation("UserToFolder")

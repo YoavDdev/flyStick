@@ -229,28 +229,52 @@ const Page: FC<pageProps> = ({ params }) => {
 
   const fetchVideos = async (videoIds: string[]) => {
     try {
+      // Batch size to prevent overwhelming the API and browser
+      const BATCH_SIZE = 10;
       const fetchedVideos: Video[] = [];
 
-      for (const videoId of videoIds) {
-        const apiUrl = `https://api.vimeo.com${videoId}`;
-        const response: AxiosResponse = await axios.get(apiUrl, {
-          headers,
-          params: {
-            fields: "uri,embed.html,name,description,pictures,duration", 
-          },
+      // Process videos in batches to prevent overloading
+      for (let i = 0; i < videoIds.length; i += BATCH_SIZE) {
+        const batch = videoIds.slice(i, i + BATCH_SIZE);
+        
+        // Parallelize API calls within each batch
+        const batchPromises = batch.map(async (videoId) => {
+          try {
+            const apiUrl = `https://api.vimeo.com${videoId}`;
+            const response: AxiosResponse = await axios.get(apiUrl, {
+              headers,
+              params: {
+                fields: "uri,embed.html,name,description,pictures,duration", 
+              },
+              timeout: 5000, // Add timeout to prevent hanging
+            });
+
+            const videoData = response.data;
+            return {
+              uri: videoData.uri,
+              embedHtml: videoData.embed.html,
+              name: videoData.name,
+              description: videoData.description,
+              thumbnailUri: videoData.pictures.sizes?.[5]?.link || '',
+              duration: videoData.duration,
+            };
+          } catch (error) {
+            console.warn(`Failed to fetch video ${videoId}:`, error);
+            return null; // Skip failed videos instead of breaking everything
+          }
         });
 
-        const videoData = response.data;
-        const video: Video = {
-          uri: videoData.uri,
-          embedHtml: videoData.embed.html,
-          name: videoData.name,
-          description: videoData.description,
-          thumbnailUri: videoData.pictures.sizes[5].link,
-          duration: videoData.duration,
-        };
-
-        fetchedVideos.push(video);
+        // Wait for batch to complete
+        const batchResults = await Promise.all(batchPromises);
+        
+        // Filter out failed requests and add to results
+        const validVideos = batchResults.filter(video => video !== null) as Video[];
+        fetchedVideos.push(...validVideos);
+        
+        // Small delay between batches to prevent API rate limiting
+        if (i + BATCH_SIZE < videoIds.length) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
       }
 
       setVideos(fetchedVideos);
@@ -582,7 +606,7 @@ const Page: FC<pageProps> = ({ params }) => {
                     >
                       <motion.div
                         className="bg-[#D9713C] text-white p-4 rounded-full"
-                        whileHover={{ scale: 1.1 }}
+                        whileHover={{ opacity: 0.9 }}
                         whileTap={{ scale: 0.95 }}
                       >
                         <FaPlay size={20} />
@@ -602,7 +626,7 @@ const Page: FC<pageProps> = ({ params }) => {
                         title="הסר מהתיקייה"
                         className="text-[#3D3D3D] hover:text-[#D9713C] p-2 rounded-full transition-all duration-300"
                         onClick={() => removeVideo(video.uri)}
-                        whileHover={{ scale: 1.1 }}
+                        whileHover={{ opacity: 0.9 }}
                         whileTap={{ scale: 0.95 }}
                       >
                         <FaTrash size={16} />

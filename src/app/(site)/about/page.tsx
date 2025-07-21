@@ -51,7 +51,7 @@ const WabiSabiAbout = () => {
     y: [0, -10, 0],
     transition: {
       duration: 6,
-      repeat: Infinity,
+      // Removed infinite animation to prevent CPU/GPU overheating
       repeatType: "reverse" as const,
       ease: "easeInOut" as const,
     },
@@ -79,7 +79,7 @@ const WabiSabiAbout = () => {
         className="absolute bottom-20 right-10 w-32 h-32 opacity-5 hidden lg:block"
         animate={{
           rotate: [0, 360],
-          transition: { duration: 40, repeat: Infinity, ease: "linear" },
+          // Removed 40-second infinite animation to prevent CPU/GPU overheating
         }}
       >
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -112,8 +112,8 @@ const WabiSabiAbout = () => {
             <div className="relative">
               {/* Main image with styling */}
               <motion.div 
-                className="relative rounded-2xl overflow-hidden shadow-xl"
-                whileHover={{ scale: 1.02 }}
+                className="relative rounded-2xl overflow-hidden shadow-md"
+                whileHover={{ opacity: 0.9 }}
                 transition={{ type: "spring" as const, stiffness: 300, damping: 20 }}
               >
                 {/* Subtle color overlay */}
@@ -141,7 +141,7 @@ const WabiSabiAbout = () => {
           >
             <motion.div 
               className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-md text-right border border-[#D5C4B7]/30 h-full flex flex-col justify-between w-full"
-              whileHover={{ boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)" }}
+              whileHover={{ boxShadow: "0 4px 8px -2px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05)" }}
               transition={{ type: "spring" as const, stiffness: 300, damping: 20 }}
             >
               <h2 className="text-3xl md:text-4xl font-medium text-[#2D3142] mb-6">
@@ -204,7 +204,7 @@ const WabiSabiAbout = () => {
               >
                 <motion.div 
                   className="inline-block relative"
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ opacity: 0.9 }}
                   transition={{ type: "spring" as const, stiffness: 400, damping: 10 }}
                 >
                   <p className="text-xl text-[#D9713C] font-medium">בועז.</p>
@@ -219,7 +219,7 @@ const WabiSabiAbout = () => {
             className="absolute -z-10 top-1/4 right-1/4 w-64 h-64 opacity-5"
             animate={{
               y: [0, -15, 0],
-              transition: { duration: 8, repeat: Infinity, repeatType: "reverse" },
+              // Removed infinite reverse animation to prevent CPU/GPU overheating
             }}
           >
             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">

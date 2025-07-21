@@ -21,14 +21,12 @@ export async function POST(request) {
       Authorization: `Bearer ${accessToken}`,
     };
 
-    // Process videos with error handling
-    const results = [];
-    
-    for (const videoId of videoIds) {
+    // Use Promise.allSettled to parallelize all API calls and prevent blocking
+    const videoPromises = videoIds.map(async (videoId) => {
       try {
         // Skip empty or invalid video IDs
         if (!videoId || typeof videoId !== 'string') {
-          continue;
+          return null;
         }
         
         // Extract video ID from URI if needed
@@ -43,9 +41,9 @@ export async function POST(request) {
         
         // Skip if we don't have a valid ID after cleaning
         if (!cleanVideoId) {
-          continue;
+          return null;
         }
-          
+        
         const apiUrl = `https://api.vimeo.com/videos/${cleanVideoId}`;
         
         const res = await axios.get(apiUrl, {
@@ -53,25 +51,35 @@ export async function POST(request) {
           params: {
             fields: "uri,embed.html,name,description,pictures,duration",
           },
+          timeout: 5000 // Prevent hanging requests
         });
         
         if (!res.data || !res.data.uri) {
-          continue;
+          return null;
         }
         
-        // Add to results array
-        results.push({
+        // Return video data
+        return {
           uri: res.data.uri,
           embedHtml: res.data.embed?.html || "",
           name: res.data.name || "Untitled Video",
           description: res.data.description || "",
           thumbnailUri: res.data.pictures?.sizes?.[5]?.link || "",
           duration: res.data.duration || 0,
-        });
+        };
       } catch (error) {
-        // Silently continue with other videos
+        console.warn(`Failed to fetch video ${videoId}:`, error.message);
+        return null; // Return null for failed requests
       }
-    }
+    });
+    
+    // Wait for all requests to complete (successful or failed)
+    const settledResults = await Promise.allSettled(videoPromises);
+    
+    // Extract successful results
+    const results = settledResults
+      .filter(result => result.status === 'fulfilled' && result.value !== null)
+      .map(result => result.value);
 
     return NextResponse.json({ videos: results }, { status: 200 });
   } catch (error) {

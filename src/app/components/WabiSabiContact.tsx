@@ -109,7 +109,7 @@ const WabiSabiContact = () => {
               <motion.div
                 className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 mx-auto lg:mx-0"
                 style={{ backgroundColor: '#25D366' }}
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ opacity: 0.9 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <FaWhatsapp className="w-10 h-10 text-white" />
@@ -139,7 +139,7 @@ const WabiSabiContact = () => {
                 onClick={handleWhatsAppClick}
                 className="inline-flex items-center px-8 py-4 rounded-xl font-semibold text-white transition-all duration-300 space-x-3 rtl:space-x-reverse"
                 style={{ backgroundColor: '#25D366' }}
-                whileHover={{ scale: 1.05, backgroundColor: '#22C55E' }}
+                whileHover={{ opacity: 0.9, backgroundColor: '#22C55E' }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -162,7 +162,7 @@ const WabiSabiContact = () => {
             <div className="p-8 rounded-3xl backdrop-blur-sm border" style={{ 
               backgroundColor: 'rgba(245, 241, 235, 0.1)',
               borderColor: 'rgba(245, 241, 235, 0.2)',
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)'
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
             }}>
               <h3 className="text-2xl font-semibold mb-6" style={{ color: '#F5F1EB', textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)' }}>
                 שלחו לנו הודעה
@@ -263,7 +263,7 @@ const WabiSabiContact = () => {
                   disabled={isSubmitting}
                   className="w-full py-4 px-6 rounded-xl font-semibold text-white transition-all duration-300 flex items-center justify-center space-x-2 rtl:space-x-reverse"
                   style={{ backgroundColor: '#F5F1EB', color: '#2D3142' }}
-                  whileHover={{ scale: 1.02, backgroundColor: '#E8DDD0' }}
+                  whileHover={{ opacity: 0.9, backgroundColor: '#E8DDD0' }}
                   whileTap={{ scale: 0.98 }}
                 >
                   {isSubmitting ? (
