@@ -16,14 +16,61 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [hoveredFolder, setHoveredFolder] = useState<string | null>(null);
+  const [isGraceUser, setIsGraceUser] = useState(false);
+  const [graceDaysLeft, setGraceDaysLeft] = useState(0);
 
   useEffect(() => {
     if (session && session.user && session.user.email) {
       fetchFolderNames();
+      checkGracePeriodStatus();
     } else {
       setLoading(false);
     }
   }, [session]);
+
+  const checkGracePeriodStatus = async () => {
+    try {
+      if (session?.user?.email) {
+        const response = await axios.post("/api/get-user-subsciptionId", {
+          userEmail: session.user.email,
+        });
+
+        const userData = response.data;
+        
+        // Check if user is in grace period
+        if (userData.cancellationDate) {
+          const cancelDate = new Date(userData.cancellationDate);
+          const today = new Date();
+          
+          // Check if user qualifies for grace period (subscribed for at least 4 days)
+          let qualifiesForGracePeriod = false;
+          
+          if (userData.subscriptionStartDate) {
+            const subscriptionStart = new Date(userData.subscriptionStartDate);
+            const subscriptionDuration = Math.floor((cancelDate.getTime() - subscriptionStart.getTime()) / (1000 * 60 * 60 * 24));
+            qualifiesForGracePeriod = subscriptionDuration >= 4;
+          } else if (userData.trialStartDate) {
+            const trialStart = new Date(userData.trialStartDate);
+            const subscriptionDuration = Math.floor((cancelDate.getTime() - trialStart.getTime()) / (1000 * 60 * 60 * 24));
+            qualifiesForGracePeriod = subscriptionDuration >= 4;
+          }
+          
+          if (qualifiesForGracePeriod) {
+            const graceEnd = new Date(cancelDate);
+            graceEnd.setDate(graceEnd.getDate() + 30);
+            const daysLeft = Math.max(0, Math.ceil((graceEnd.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+            
+            if (daysLeft > 0) {
+              setIsGraceUser(true);
+              setGraceDaysLeft(daysLeft);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error checking grace period status:", error);
+    }
+  };
 
   const fetchFolderNames = async () => {
     try {
@@ -158,6 +205,25 @@ const Page = () => {
                 )}
               </motion.div>
             </div>
+
+            {/* Grace Period Message */}
+            {isGraceUser && (
+              <motion.div 
+                variants={itemVariants}
+                className="mb-8 mx-auto max-w-4xl"
+              >
+                <div className="bg-gradient-to-r from-[#F7F3EB] to-[#E8DDD4] p-6 rounded-xl shadow-md border border-[#D5C4B7]/30">
+                  <div className="text-center">
+                    <h2 className="text-xl font-bold text-[#2D3142] mb-4">
+                      מקווים שנהנת מתקופת המנוי והתחדשת בידע חדש ומעניין לגוף ולתודעה. זוהי רק פרידה זמנית אנו בטוחים.
+                    </h2>
+                    <p className="text-lg text-[#3D3D3D] leading-relaxed">
+                      נותרו לך {graceDaysLeft} ימים נוספים כדי להנות מהתכנים המתחדשים ולתת לגוף שלך עוד מהידע והתנועה להם הוא זקוק
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
               {folderNames.map((folderName: string) => (

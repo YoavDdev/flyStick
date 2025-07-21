@@ -40,15 +40,9 @@ const PreviewOverlay = ({ onClose, onReplay }: PreviewOverlayProps) => {
     >
       <div className="bg-[#F7F3EB] p-8 rounded-lg max-w-lg w-full mx-4 text-center relative overflow-hidden">
         
-        <h2 className="text-3xl font-bold text-[#2D3142] mb-4 relative">
-          <span className="relative inline-block">
-            <span className="absolute -bottom-2 left-0 w-full h-1 bg-[#EF8354] rounded-full opacity-70"></span>
-            הגעת לסוף הצפייה החינמית של שתי דקות
-          </span>
-        </h2>
+
         <p className="text-[#3D3D3D] mb-6">
-          כדי להמשיך לצפות בתוכן האיכותי שלנו, אנא הירשמו למנוי.
-          המנוי מאפשר גישה בלתי מוגבלת לכל הסרטונים באתר.
+          לצפייה בהמשך השיעור ושפע תכנים נוספים, אנו מזמינים אותך להירשם כמנוי הכולל גישה בלתי מוגבלת לכל הסרטונים באתר
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

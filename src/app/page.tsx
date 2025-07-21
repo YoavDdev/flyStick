@@ -66,25 +66,31 @@ export default function HomePage() {
         <WabiSabiHero />
         
         {/* Features section */}
-        <WabiSabiFeature />
+        <section id="features">
+          <WabiSabiFeature />
+        </section>
         
         {/* Video carousel section */}
-        <WabiSabiVideoCarousel />
+        <section id="videos">
+          <WabiSabiVideoCarousel />
+        </section>
         
         {/* Explore videos */}
-        <section className="py-16">
+        <section id="explore" className="py-16">
           <div className="container mx-auto px-6">
             <ExploreVideos />
           </div>
         </section>
         
         {/* Pricing section */}
-        <section id="Pricing">
+        <section id="pricing">
           <WabiSabiPricing />
         </section>
         
         {/* Contact section */}
-        <WabiSabiContact />
+        <section id="contact">
+          <WabiSabiContact />
+        </section>
       </div>
     </main>
   );

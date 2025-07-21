@@ -8,6 +8,17 @@ import { motion } from "framer-motion";
 const WabiSabiHero = () => {
   const { subscriptionStatus, loading } = SubscriptionDetails();
 
+  // Smooth scroll function
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   return (
     <section className="min-h-screen flex items-center justify-center py-20">
       <div className="container mx-auto px-6 lg:px-8">
@@ -54,61 +65,58 @@ const WabiSabiHero = () => {
                 transition={{ delay: 1.2, duration: 0.6 }}
               >
                 {subscriptionStatus === "ACTIVE" ? (
-                  <Link href="/explore">
-                    <motion.button
-                      className="group px-10 py-4 rounded-2xl text-white font-medium text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl relative overflow-hidden backdrop-blur-md"
-                      style={{ 
-                        background: 'linear-gradient(135deg, rgba(139, 115, 85, 0.9) 0%, rgba(107, 91, 71, 0.9) 100%)',
-                        boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.3)',
-                        border: '1px solid rgba(255, 255, 255, 0.2)'
-                      }}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <span className="relative z-10">המשיכו לחקור</span>
-                      <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </motion.button>
-                  </Link>
+                  <motion.button
+                    onClick={() => scrollToSection('explore')}
+                    className="group px-10 py-4 rounded-2xl text-white font-medium text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl relative overflow-hidden backdrop-blur-md cursor-pointer"
+                    style={{ 
+                      background: 'linear-gradient(135deg, rgba(139, 115, 85, 0.9) 0%, rgba(107, 91, 71, 0.9) 100%)',
+                      boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(255, 255, 255, 0.2)'
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <span className="relative z-10">חקרו את הסרטונים</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </motion.button>
                 ) : (
-                  <Link href="/register">
-                    <motion.button
-                      className="group px-10 py-4 rounded-2xl text-white font-medium text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl relative overflow-hidden backdrop-blur-md"
-                      style={{ 
-                        background: 'linear-gradient(135deg, rgba(139, 115, 85, 0.9) 0%, rgba(107, 91, 71, 0.9) 100%)',
-                        boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.3)',
-                        border: '1px solid rgba(255, 255, 255, 0.2)'
-                      }}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <span className="relative z-10">
+                  <motion.button
+                    onClick={() => scrollToSection('pricing')}
+                    className="group px-10 py-4 rounded-2xl text-white font-medium text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl relative overflow-hidden backdrop-blur-md cursor-pointer"
+                    style={{ 
+                      background: 'linear-gradient(135deg, rgba(139, 115, 85, 0.9) 0%, rgba(107, 91, 71, 0.9) 100%)',
+                      boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(255, 255, 255, 0.2)'
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <span className="relative z-10">
 הצטרפו לדרכי הייחודית
-                        <br />
-                        <span className="text-sm opacity-90">3 ימי חקירה ללא עלות</span>
-                      </span>
-                      <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </motion.button>
-                  </Link>
+                      <br />
+                      <span className="text-sm opacity-90">3 ימי חקירה ללא עלות</span>
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </motion.button>
                 )}
                 
-                <Link href="#features">
-                  <motion.button
-                    className="px-10 py-4 rounded-2xl font-medium text-lg border-2 transition-all duration-300 hover:scale-105 backdrop-blur-md"
-                    style={{ 
-                      color: '#F5F1EB',
-                      borderColor: 'rgba(255, 255, 255, 0.3)',
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
-                    }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  >
-                    למדו עוד על הדרך
-                  </motion.button>
-                </Link>
+                <motion.button
+                  onClick={() => scrollToSection('features')}
+                  className="px-10 py-4 rounded-2xl font-medium text-lg border-2 transition-all duration-300 hover:scale-105 backdrop-blur-md cursor-pointer"
+                  style={{ 
+                    color: '#F5F1EB',
+                    borderColor: 'rgba(255, 255, 255, 0.3)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  למדו עוד על הדרך
+                </motion.button>
               </motion.div>
             )}
           </div>
