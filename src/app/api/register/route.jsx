@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 import prisma from "../../libs/prismadb";
-import axios from "axios";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -34,27 +33,24 @@ export async function POST(request) {
   // Newsletter Subscription Logic
   if (subscribeToNewsletter) {
     try {
-      const convertKitUrl = `https://api.convertkit.com/v3/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`;
-      const convertKitData = {
-        api_key: process.env.CONVERTKIT_API_KEY,
-        email,
-      };
+      const newsletterResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/newsletter/subscribe`, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          email,
+          name,
+          source: 'registration'
+        })
+      });
 
-      const convertKitResponse = await axios.post(
-        convertKitUrl,
-        convertKitData,
-        {
-          headers: { "Content-Type": "application/json; charset=utf-8" },
-        },
-      );
-
-      if (convertKitResponse.status === 200) {
-        console.log("User subscribed to ConvertKit newsletter");
+      if (newsletterResponse.ok) {
+        console.log("✅ User subscribed to newsletter");
       } else {
-        console.error("ConvertKit API error:", convertKitResponse.data);
+        const errorData = await newsletterResponse.json();
+        console.error("❌ Newsletter subscription error:", errorData.error);
       }
-    } catch (convertKitError) {
-      console.error("Error subscribing user to ConvertKit:", convertKitError);
+    } catch (newsletterError) {
+      console.error("❌ Error subscribing user to newsletter:", newsletterError);
     }
   }
 

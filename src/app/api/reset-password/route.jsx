@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import prisma from "../../libs/prismadb";
 import { v4 as uuidv4 } from "uuid";
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { Resend } from 'resend';
 
 export async function POST(request) {
   try {
@@ -32,45 +32,54 @@ export async function POST(request) {
       },
     });
 
-    // Send a confirmation email with the reset link
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
-      },
+    // Initialize Resend
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    // Send password reset email using Resend
+    console.log('🔄 Sending password reset email to:', user.email);
+    
+    const { data, error } = await resend.emails.send({
+      from: 'info@studioboazonline.com',
+      to: user.email,
+      subject: 'איפוס סיסמה - Studio Boaz',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #F7F3EB; direction: rtl;">
+          <div style="background-color: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <h2 style="color: #2D3142; margin-bottom: 20px; text-align: center; direction: rtl;">איפוס סיסמה</h2>
+            
+            <p style="color: #3D3D3D; line-height: 1.6; margin-bottom: 20px; text-align: right;">שלום,</p>
+            
+            <p style="color: #3D3D3D; line-height: 1.6; margin-bottom: 20px; text-align: right;">
+              קיבלנו בקשה לאיפוס הסיסמה שלך. לחץ על הקישור למטה כדי לאפס את הסיסמה:
+            </p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="https://www.studioboazonline.com/reset-password?token=${token}" 
+                 style="background-color: #D5C4B7; color: #2D3142; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
+                איפוס סיסמה
+              </a>
+            </div>
+            
+            <p style="color: #3D3D3D; line-height: 1.6; margin-bottom: 20px; text-align: right;">
+              הקישור תקף למשך שעה אחת. אם לא ביקשת איפוס סיסמה, אנא התעלם מהודעה זו.
+            </p>
+            
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #D5C4B7;">
+              <p style="color: #B8A99C; font-size: 14px;">
+                בברכה,<br>Studio Boaz
+              </p>
+            </div>
+          </div>
+        </div>
+      `,
     });
 
-    // const transporter = nodemailer.createTransport({
-    //   host: "mail.privateemail.com",
-    //   port: 465,
-    //   secure: true,
-    //   auth: {
-    //     user: process.env.EMAIL_USER,
-    //     pass: process.env.EMAIL_PASSWORD,
-    //   },
-    // });
-    const mailOptions = {
-      from: '"SupportStudioBoaz" <' + process.env.EMAIL_USER + ">",
-      to: user.email,
-      subject: "Password Reset",
-      html: `
-        <p>Hello,</p>
-        <p>We received a request to reset your password. Click the link below to reset your password:</p>
-        <p>
-          <a href="https://www.studioboazonline.com/reset-password?token=${token}" target="_blank" rel="noopener noreferrer">
-            Reset Password
-          </a>
-        </p>
-        <p>This link is valid for the next 1 hour. If you didn't request a password reset, please ignore this email.</p>
-        <p>Thank you,</p>
-        <p>Boaz Nahaisi's Online Studio</p>
-      `,
-    };
-    await transporter.sendMail(mailOptions);
+    if (error) {
+      console.error('❌ Password reset email failed:', error);
+      throw new Error('Failed to send password reset email');
+    }
+    
+    console.log('✅ Password reset email sent successfully:', data);
 
     return new NextResponse({ message: "Password reset initiated" });
   } catch (error) {

@@ -7,6 +7,7 @@ import AdminUserTable from "../../components/AdminUserTable";
 import AdminDashboardSummary from "../../components/AdminDashboardSummary";
 import AdminUserActivityMetrics from "../../components/AdminUserActivityMetrics";
 import AdminMessageComposer from "../../components/AdminMessageComposer";
+import AdminNewsletterComposer from "../../components/AdminNewsletterComposer";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 
@@ -270,6 +271,9 @@ export default function AdminPage() {
           
           {/* Message Composer */}
           <AdminMessageComposer />
+          
+          {/* Newsletter Composer */}
+          <AdminNewsletterComposer />
           
 
           <div className="mb-6 flex flex-wrap justify-center gap-3">

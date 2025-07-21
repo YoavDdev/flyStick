@@ -47,46 +47,13 @@ const WabiSabiContact = () => {
           phone: '',
           message: ''
         });
-        toast.success('הודעתך נשלחה בהצלחה! נחזור אליך בהקדם.', {
-          duration: 4000,
-          position: 'top-center',
-          style: {
-            background: '#D5C4B7',
-            color: '#2D3142',
-            fontWeight: 'bold',
-            borderRadius: '12px',
-            padding: '16px 20px',
-            fontSize: '16px'
-          }
-        });
+        toast.success('הודעתך נשלחה בהצלחה! נחזור אליך בהקדם.');
       } else {
-        toast.error(result.error || 'שגיאה בשליחת ההודעה. אנא נסה שוב.', {
-          duration: 4000,
-          position: 'top-center',
-          style: {
-            background: '#f87171',
-            color: 'white',
-            fontWeight: 'bold',
-            borderRadius: '12px',
-            padding: '16px 20px',
-            fontSize: '16px'
-          }
-        });
+        toast.error(result.error || 'שגיאה בשליחת ההודעה. אנא נסה שוב.');
       }
     } catch (error) {
       console.error('Error sending contact email:', error);
-      toast.error('שגיאה בשליחת ההודעה. אנא בדוק את החיבור לאינטרנט ונסה שוב.', {
-        duration: 4000,
-        position: 'top-center',
-        style: {
-          background: '#f87171',
-          color: 'white',
-          fontWeight: 'bold',
-          borderRadius: '12px',
-          padding: '16px 20px',
-          fontSize: '16px'
-        }
-      });
+      toast.error('שגיאה בשליחת ההודעה. אנא בדוק את החיבור לאינטרנט ונסה שוב.');
     } finally {
       setIsSubmitting(false);
     }

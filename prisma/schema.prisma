@@ -105,3 +105,14 @@ model MessageRead {
   
   @@unique([userId, messageId]) // Prevent duplicate reads
 }
+
+model NewsletterSubscriber {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  email         String   @unique
+  name          String?
+  isActive      Boolean  @default(true) // Allow unsubscribe
+  source        String?  // "registration", "footer", "dashboard", etc.
+  subscribedAt  DateTime @default(now())
+  unsubscribedAt DateTime?
+  unsubscribeToken String? @unique // For unsubscribe links
+}

@@ -14,18 +14,43 @@ class ConvertkitEmailForm extends Component {
 
   subscribeUser = async (e: any) => {
     e.preventDefault();
-    const res = await fetch("/api/subscribe-user", {
-      body: JSON.stringify({ email: this.state.email }),
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      method: "POST",
-    });
+    
+    try {
+      const res = await fetch("/api/newsletter/subscribe", {
+        body: JSON.stringify({ 
+          email: this.state.email,
+          source: "footer" // Track where subscription came from
+        }),
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        method: "POST",
+      });
 
-    const json_res = await res.json();
-    toast.success(json_res.message);
-
-    this.setState({
-      email: "",
-    });
+      const json_res = await res.json();
+      
+      if (res.ok) {
+        toast.success(json_res.message);
+        
+        this.setState({
+          email: "",
+        });
+      } else {
+        toast.error(json_res.error || 'שגיאה ברישום לניוזלטר');
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      toast.error('שגיאה ברישום לניוזלטר. אנא נסה שוב.', {
+        duration: 4000,
+        position: 'top-center',
+        style: {
+          background: '#f87171',
+          color: 'white',
+          fontWeight: 'bold',
+          borderRadius: '12px',
+          padding: '16px 20px',
+          fontSize: '16px'
+        }
+      });
+    }
   };
 
   render() {

@@ -14,6 +14,8 @@ import { AiOutlineExperiment, AiOutlineCompass, AiOutlineTrophy } from "react-ic
 import { MdOutlineSubscriptions, MdOutlineAdminPanelSettings } from "react-icons/md";
 import { BiSolidBadgeCheck } from "react-icons/bi";
 import UserMessageNotification from "../../components/UserMessageNotification";
+import AdminMessageComposer from "../../components/AdminMessageComposer";
+import AdminNewsletterComposer from "../../components/AdminNewsletterComposer";
 
 const DashboardPage = () => {
   const { data: session } = useSession();
@@ -21,6 +23,7 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
   const [showWhatsAppTooltip, setShowWhatsAppTooltip] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [userStats, setUserStats] = useState({
     daysLeft: 0,
     watchedVideos: 0,
@@ -46,6 +49,9 @@ const DashboardPage = () => {
           // Extract subscriptionId from userData
           const subscriptionId = userData.subscriptionId as string;
           setSubscriptionId(subscriptionId);
+          
+          // Check if user is admin
+          setIsAdmin(subscriptionId === "Admin");
 
           // Calculate stats based on subscription type
           const stats = { ...userStats };
@@ -254,6 +260,18 @@ const DashboardPage = () => {
                 </p>
               </motion.div>
             </div>
+
+            {/* Admin Components - Only visible to admin users */}
+            {isAdmin && (
+              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <AdminMessageComposer />
+                </div>
+                <div className="flex-1">
+                  <AdminNewsletterComposer />
+                </div>
+              </motion.div>
+            )}
 
             {/* WhatsApp Group Join Section */}
             <motion.div 

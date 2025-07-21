@@ -4,7 +4,6 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcrypt";
-import axios from "axios";
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
@@ -108,20 +107,27 @@ export const authOptions = {
         });
       }
 
-      // Subscribe Google sign-in users to ConvertKit newsletter
+      // Subscribe Google sign-in users to newsletter
       if (account.provider === "google") {
         try {
-          await axios.post(
-            `https://api.convertkit.com/v3/forms/${process.env.CONVERTKIT_FORM_ID}/subscribe`,
-            {
-              api_key: process.env.CONVERTKIT_API_KEY,
+          const newsletterResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/newsletter/subscribe`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+            body: JSON.stringify({
               email: user.email,
-            },
-            { headers: { "Content-Type": "application/json; charset=utf-8" } }
-          );
-          console.log("✅ User subscribed to ConvertKit newsletter");
+              name: user.name,
+              source: 'google_auth'
+            })
+          });
+
+          if (newsletterResponse.ok) {
+            console.log("✅ User subscribed to newsletter");
+          } else {
+            const errorData = await newsletterResponse.json();
+            console.error("❌ Newsletter subscription error:", errorData.error);
+          }
         } catch (error) {
-          console.error("❌ ConvertKit subscription error:", error);
+          console.error("❌ Newsletter subscription error:", error);
         }
       }
     },
