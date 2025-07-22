@@ -38,24 +38,26 @@ export async function POST(request) {
     await resend.emails.send({
       from: 'Studio Boaz Online <info@studioboazonline.com>',
       to: [email],
-      subject: 'שלום ${name}, ברוך הבא לסטודיו 🙏',
+      subject: 'ברוך הבא לסטודיו',
       html: `
         <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; max-width: 500px; margin: 0 auto; background: #F7F3EB; padding: 20px; border-radius: 12px;">
           <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h2 style="color: #2D3142; margin-top: 0; font-size: 20px;">שלום ${name} 🙏</h2>
+            <h2 style="color: #2D3142; margin-top: 0; font-size: 20px;">שלום ${name}</h2>
             
             <p style="color: #3D3D3D; line-height: 1.7; font-size: 16px; margin-bottom: 20px;">
-              תודה שנרשמת לסטודיו שלי. יצרת חשבון ראשוני והוא מחכה לך.
+              תודה שנרשמת לסטודיו שלי. גם ההתרגשות נרשמת, בשבילך!
             </p>
             
             <p style="color: #3D3D3D; line-height: 1.7; font-size: 16px; margin-bottom: 20px;">
-              כדי לגשת לתכנים ולהתחיל את המסע שלך של תנועה ונשימה, 
-              תצטרך להירשם למנוי שיפתח לך את כל האוצרות שמחכים כאן.
+              אמנם יצרתם חשבון ראשוני (וודאו שגם נרשמתם לניוזלטר) והוא ישמר באתר אך כדי להגיע לתכנים העשירים ולהכשרות הרבות, עלייך להרשם כמנוי שיפתח לך את שלל האוצרות והידע שמחכה לך בסטודיו וללא הגבלה.
+            </p>
+            
+            <p style="color: #3D3D3D; line-height: 1.7; font-size: 16px; margin-bottom: 20px;">
+              אני מאמיןן שדרך תנועה אנו גוברים על אתגרי החיים ואם נלמד לטפח את הזרימה בגוף, נשוט ביתר קלות בנהר חיינו.
             </p>
             
             <p style="color: #3D3D3D; line-height: 1.7; font-size: 16px; margin-bottom: 25px;">
-              אני מאמין שדרך התנועה אנו גוברים על אתגרי החיים, 
-              ואם נלמד לטפח את הזרימה בגוף, נשוט ביתר קלות בנהר חיינו.
+              חיבוק גדול ומסע משובח, בועז.
             </p>
             
             <div style="text-align: center; margin: 25px 0;">

@@ -222,8 +222,8 @@ const DashboardPage = () => {
 
   // Function to handle WhatsApp group join
   const handleWhatsAppJoin = () => {
-    // Replace with the actual WhatsApp group invite link
-    window.open('https://chat.whatsapp.com/your-group-invite-link', '_blank');
+    // WhatsApp group invite link
+    window.open('https://chat.whatsapp.com/Id0a5w2JBj7IPM4JWRchjP?mode=r_c', '_blank');
   };
 
   return (

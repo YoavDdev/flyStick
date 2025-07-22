@@ -42,7 +42,7 @@ const PreviewOverlay = ({ onClose, onReplay }: PreviewOverlayProps) => {
         
 
         <p className="text-[#3D3D3D] mb-6">
-          לצפייה בהמשך השיעור ושפע תכנים נוספים, אנו מזמינים אותך להירשם כמנוי הכולל גישה בלתי מוגבלת לכל הסרטונים באתר
+          לצפייה בהמשך השיעור ושפע תכנים נוספים, אנו מזמינים אותך להירשם כמנוי הכולל גישה בלתי מוגבלת לכל הסרטונים באתר.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

@@ -412,8 +412,14 @@ export default function AdminUserTable({
                     <option value="">ללא מנוי</option>
                     <option value="free">גישה חופשית</option>
                     <option value="trial_30">תקופת ניסיון (30 יום)</option>
-                    {user.subscriptionId?.startsWith("I-") && (
-                      <option value={user.subscriptionId}>מנוי PayPal נוכחי</option>
+                    {/* Show PayPal subscription option if user has PayPal data */}
+                    {user.paypalId && (
+                      <option value={user.paypalId}>
+                        {user.subscriptionId === user.paypalId 
+                          ? `מנוי PayPal נוכחי (${user.paypalId.substring(0, 15)}...)` 
+                          : `שחזר מנוי PayPal (${user.paypalId.substring(0, 15)}...)`
+                        }
+                      </option>
                     )}
                   </select>
                 ) : (
@@ -537,16 +543,29 @@ export default function AdminUserTable({
                     </>
                   )}
                   
-                  {user.subscriptionId?.startsWith("I-") && (
+                  {(user.paypalId || user.paypalStatus) && (
                     <div className="mt-1">
-                      <div className="flex justify-between items-center">
-                        <span>מזהה PayPal:</span>
-                        <span className="font-mono text-xs">{user.paypalId}</span>
-                      </div>
+                      {/* Add warning if PayPal data exists but user is not on PayPal subscription */}
+                      {user.paypalId && !user.subscriptionId?.startsWith("I-") && (
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-orange-600 text-xs font-medium">⚠️ יש נתוני PayPal אך המשתמש לא במנוי PayPal</span>
+                        </div>
+                      )}
+                      {user.paypalId && (
+                        <div className="flex justify-between items-center">
+                          <span>מזהה PayPal:</span>
+                          <span className="font-mono text-xs">{user.paypalId}</span>
+                        </div>
+                      )}
                       {user.paypalStatus && (
                         <div className="flex justify-between items-center">
                           <span>סטטוס PayPal:</span>
-                          <span>{user.paypalStatus}</span>
+                          <span className={`${
+                            user.paypalStatus === 'ACTIVE' ? 'text-green-600' :
+                            user.paypalStatus === 'CANCELLED' ? 'text-red-600' :
+                            user.paypalStatus === 'EXPIRED' ? 'text-gray-600' :
+                            'text-gray-800'
+                          }`}>{user.paypalStatus}</span>
                         </div>
                       )}
                       {user.paypalCancellationDate && (
