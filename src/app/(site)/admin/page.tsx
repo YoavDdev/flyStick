@@ -320,30 +320,64 @@ export default function AdminPage() {
                 try {
                   if (!session?.user?.email) return;
                   
-                  toast.loading('🔄 מעדכן נתוני תשלומים...');
-                  const response = await fetch("/api/admin/sync-paypal", {
-                    method: 'POST',
-                    headers: {
-                      "Authorization": `Bearer ${session.user.email}`
-                    },
-                    cache: 'no-store'
-                  });
+                  let page = 1;
+                  let hasMore = true;
+                  let totalSuccess = 0;
+                  let totalErrors = 0;
                   
-                  if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || "שגיאה בעדכון נתוני התשלומים");
+                  // Show loading toast with progress
+                  const toastId = toast.loading('🔄 מעדכן נתוני תשלומים... (דף 1)');
+                  
+                  // Process all pages
+                  while (hasMore) {
+                    const response = await fetch(`/api/admin/sync-paypal?page=${page}`, {
+                      method: 'POST',
+                      headers: {
+                        "Authorization": `Bearer ${session.user.email}`
+                      },
+                      cache: 'no-store'
+                    });
+                    
+                    if (!response.ok) {
+                      const errorData = await response.json().catch(() => ({}));
+                      throw new Error(errorData.error || "שגיאה בעדכון נתוני התשלומים");
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // Update progress
+                    totalSuccess += data.successCount || 0;
+                    totalErrors += data.errorCount || 0;
+                    hasMore = data.hasMore || false;
+                    
+                    if (hasMore) {
+                      page++;
+                      toast.loading(
+                        `🔄 מעדכן נתוני תשלומים... (דף ${page}, ${totalSuccess} עודכנו)`,
+                        { id: toastId }
+                      );
+                      
+                      // Small delay between pages to prevent rate limiting
+                      await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
                   }
                   
-                  const data = await response.json();
-                  toast.dismiss();
-                  toast.success(`✨ נתוני התשלומים עודכנו בהצלחה! עודכנו ${data.successCount} משתמשים`);
+                  // Show success message
+                  toast.success(
+                    `✨ נתוני התשלומים עודכנו בהצלחה!\n${totalSuccess} משתמשים עודכנו, ${totalErrors} שגיאות`,
+                    { id: toastId, duration: 5000 }
+                  );
                   
                   // Refresh user list to show updated PayPal data
                   fetchUsers();
-                } catch (error) {
+                } catch (error: unknown) {
                   console.error("Error syncing PayPal:", error);
                   toast.dismiss();
-                  toast.error("❌ אירעה שגיאה בעדכון נתוני התשלומים");
+                  const errorMessage = error instanceof Error ? error.message : 'שגיאה לא ידועה';
+                  toast.error(
+                    `❌ אירעה שגיאה בעדכון נתוני התשלומים: ${errorMessage}`,
+                    { duration: 5000 }
+                  );
                 }
               }}
               className="bg-[#D4AF37] hover:bg-[#B8941F] text-white py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/30 text-sm sm:text-base"

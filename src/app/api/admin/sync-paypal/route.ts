@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 import axios from "axios";
 
+// Increase the API route timeout to 60 seconds (Vercel Pro limit)
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   try {
     // Get the authorization header
@@ -100,11 +103,20 @@ export async function POST(request: Request) {
     };
 
     // Process users in smaller batches to avoid overwhelming PayPal API
-    const BATCH_SIZE = 3;
+    const BATCH_SIZE = 2; // Reduced batch size for better reliability
     
-    for (let i = 0; i < paypalUsers.length; i += BATCH_SIZE) {
-      const batch = paypalUsers.slice(i, i + BATCH_SIZE);
-      
+    // Get the page number from query parameters (for pagination)
+    const url = new URL(request.url);
+    const page = parseInt(url.searchParams.get('page') || '1');
+    const perPage = 20; // Process 20 users at a time (10 batches of 2)
+    const startIdx = (page - 1) * perPage;
+    const endIdx = Math.min(startIdx + perPage, paypalUsers.length);
+    const paginatedUsers = paypalUsers.slice(startIdx, endIdx);
+    
+    console.log(`Processing page ${page} (users ${startIdx + 1}-${endIdx} of ${paypalUsers.length})`);
+    
+    for (let i = 0; i < paginatedUsers.length; i += BATCH_SIZE) {
+      const batch = paginatedUsers.slice(i, i + BATCH_SIZE);
       // Process batch in parallel
       await Promise.all(
         batch.map(async (user: typeof paypalUsers[0]) => {
@@ -161,11 +173,17 @@ export async function POST(request: Request) {
       }
     }
 
+    const hasMore = endIdx < paypalUsers.length;
+    const nextPage = hasMore ? page + 1 : null;
+    
     const result = {
-      message: `PayPal sync completed. Success: ${successCount}, Errors: ${errorCount}`,
+      message: `PayPal sync completed for page ${page}. Success: ${successCount}, Errors: ${errorCount}`,
       totalUsers: paypalUsers.length,
+      processedInThisBatch: paginatedUsers.length,
       successCount,
       errorCount,
+      hasMore,
+      nextPage,
       errors: errors.slice(0, 10) // Limit error messages to prevent large responses
     };
 
