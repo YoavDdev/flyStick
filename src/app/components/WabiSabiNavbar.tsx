@@ -522,34 +522,44 @@ const WabiSabiNavbar = () => {
                           e.preventDefault();
                           // Close mobile menu first
                           closeMobileMenu();
-                          // Then scroll to pricing section
-                          setTimeout(() => {
-                            // Try to find the pricing section - there might be duplicate IDs
-                            const pricingElements = document.querySelectorAll('[id="Pricing"]');
-                            const pricingElement = pricingElements[0]; // Use the first one (main page wrapper)
-                            if (pricingElement) {
-                              pricingElement.scrollIntoView({ 
-                                behavior: 'smooth',
-                                block: 'start'
-                              });
-                            }
-                          }, 100);
+                          
+                          // If we're on the home page, scroll to pricing section
+                          if (pathname === '/') {
+                            setTimeout(() => {
+                              const pricingElement = document.getElementById('Pricing');
+                              if (pricingElement) {
+                                pricingElement.scrollIntoView({ 
+                                  behavior: 'smooth',
+                                  block: 'start'
+                                });
+                              }
+                            }, 100);
+                          } else {
+                            // If we're on another page, navigate to home page with pricing anchor
+                            window.location.href = '/#Pricing';
+                          }
                         }
                         // Handle contact navigation specially
                         else if (link.label === "צור קשר") {
                           e.preventDefault();
                           // Close mobile menu first
                           closeMobileMenu();
-                          // Then scroll to contact section
-                          setTimeout(() => {
-                            const contactElement = document.getElementById('Contact');
-                            if (contactElement) {
-                              contactElement.scrollIntoView({ 
-                                behavior: 'smooth',
-                                block: 'start'
-                              });
-                            }
-                          }, 100);
+                          
+                          // If we're on the home page, scroll to contact section
+                          if (pathname === '/') {
+                            setTimeout(() => {
+                              const contactElement = document.getElementById('Contact');
+                              if (contactElement) {
+                                contactElement.scrollIntoView({ 
+                                  behavior: 'smooth',
+                                  block: 'start'
+                                });
+                              }
+                            }, 100);
+                          } else {
+                            // If we're on another page, navigate to home page with contact anchor
+                            window.location.href = '/#Contact';
+                          }
                         } else {
                           closeMobileMenu();
                         }

@@ -27,6 +27,21 @@ const VideoCard = ({
   const [isHovered, setIsHovered] = useState(false);
   const [copied, setCopied] = useState(false);
   
+  // Helper function to format duration from seconds to H:MM:SS or MM:SS
+  const formatDuration = (seconds: number): string => {
+    if (!seconds || seconds <= 0) return "--:--";
+    
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    } else {
+      return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+  };
+  
   const copyVideoId = async () => {
     const videoId = video.uri.split('/').pop();
     try {
@@ -63,6 +78,13 @@ const VideoCard = ({
           alt={video.name || 'Video'}
           className="w-full h-48 object-cover"
         />
+        
+        {/* Video Duration Badge */}
+        {video.duration && (
+          <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-md font-medium">
+            {formatDuration(video.duration)}
+          </div>
+        )}
         {/* Admin Copy Icon */}
         {isAdmin && (
           <button
