@@ -19,19 +19,8 @@ const WabiSabiVideoCarousel = () => {
               textShadow: '0 2px 8px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(0, 0, 0, 0.3)'
             }}
           >
-            פלייסטיק סרום
-          </h1>
-          
-          <p 
-            className="text-xl md:text-2xl font-light leading-relaxed max-w-3xl mx-auto mb-6"
-            style={{ 
-              color: '#F5F1EB',
-              textShadow: '0 1px 4px rgba(0, 0, 0, 0.6)',
-              opacity: 0.95
-            }}
-          >
             קחו מקל ובואו נצלול לרגע להעיר את הנמר
-          </p>
+          </h1>
           
           <div 
             className="inline-block px-6 py-3 rounded-full text-base font-medium backdrop-blur-md border mb-8"
