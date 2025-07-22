@@ -61,19 +61,51 @@ const Page: FC<pageProps> = ({ params }) => {
     }
   };
 
-  const openVideo = (embedHtml: string, videoUri: string) => {
-    // Find if this video has been watched before and has a resumeTime
-    const watchedVideo = watchedVideos.find(v => {
-      // Extract video ID from both URIs for comparison
-      const watchedVideoId = v.uri.split('/').pop();
-      const currentVideoId = videoUri.split('/').pop();
-      return watchedVideoId === currentVideoId;
-    });
-    
-    if (watchedVideo && watchedVideo.resumeTime) {
-      setResumeTime(watchedVideo.resumeTime);
+  const openVideo = async (embedHtml: string, videoUri: string) => {
+    // Always fetch the latest watched videos data before opening a video
+    // This ensures we have the most up-to-date progress information
+    if (session?.user) {
+      try {
+        const res = await axios.post("/api/get-watched-videos", {
+          userEmail: session.user.email,
+        });
+        if (res.status === 200) {
+          // Update the watchedVideos state with fresh data from the backend
+          setWatchedVideos(res.data.watchedVideos);
+          
+          // Find if this video has been watched before and has a resumeTime
+          // Use the fresh data from the API response
+          const freshWatchedVideo = res.data.watchedVideos.find((v: { uri: string; progress: number; resumeTime?: number }) => {
+            // Extract video ID from both URIs for comparison
+            const watchedVideoId = v.uri.split('/').pop();
+            const currentVideoId = videoUri.split('/').pop();
+            return watchedVideoId === currentVideoId;
+          });
+          
+          if (freshWatchedVideo && freshWatchedVideo.resumeTime) {
+            setResumeTime(freshWatchedVideo.resumeTime);
+          } else {
+            setResumeTime(0); // Reset resume time if no previous watch history
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch latest watched videos", err);
+        // Fallback to using the existing watchedVideos state
+        const watchedVideo = watchedVideos.find((v: { uri: string; progress: number; resumeTime?: number }) => {
+          const watchedVideoId = v.uri.split('/').pop();
+          const currentVideoId = videoUri.split('/').pop();
+          return watchedVideoId === currentVideoId;
+        });
+        
+        if (watchedVideo && watchedVideo.resumeTime) {
+          setResumeTime(watchedVideo.resumeTime);
+        } else {
+          setResumeTime(0);
+        }
+      }
     } else {
-      setResumeTime(0); // Reset resume time if no previous watch history
+      // No session, just reset resume time
+      setResumeTime(0);
     }
     
     setSelectedVideo(embedHtml);

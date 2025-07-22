@@ -104,6 +104,8 @@ const Page = () => {
   const [totalVideos, setTotalVideos] = useState(0);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const [player, setPlayer] = useState<Player | null>(null);
+  const [resumeTime, setResumeTime] = useState<number>(0);
+  const [selectedVideoUri, setSelectedVideoUri] = useState<string | null>(null);
 
   type WatchedVideo = {
     uri: string;
@@ -111,6 +113,60 @@ const Page = () => {
     resumeTime?: number; // ✅ זה השדה החסר
   };
   const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);
+
+  // Function to open a video with fresh watched data
+  const openVideo = async (embedHtml: string) => {
+    // Extract video URI from embed HTML
+    const videoId = embedHtml.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
+    const videoUri = videoId ? `/videos/${videoId}` : null;
+    
+    if (videoUri && session?.user) {
+      try {
+        // Fetch fresh watched videos data from backend
+        const res = await axios.post("/api/get-watched-videos", {
+          userEmail: session.user.email,
+        });
+        
+        if (res.status === 200) {
+          // Update the watchedVideos state with fresh data
+          setWatchedVideos(prev => {
+            // Merge new data with existing data that's not in the current page
+            const existingNotInResponse = prev.filter(v => 
+              !res.data.watchedVideos.some((nv: WatchedVideo) => nv.uri === v.uri)
+            );
+            return [...existingNotInResponse, ...res.data.watchedVideos];
+          });
+          
+          // Find this video in the fresh data
+          const freshWatchedVideo = res.data.watchedVideos.find(
+            (v: { uri: string; progress: number; resumeTime?: number }) => v.uri === videoUri
+          );
+          
+          // Set resume time based on fresh data
+          if (freshWatchedVideo && freshWatchedVideo.resumeTime) {
+            setResumeTime(freshWatchedVideo.resumeTime);
+          } else {
+            setResumeTime(0);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch latest watched videos", err);
+        // Fallback to existing data
+        const watchedVideo = watchedVideos.find(v => v.uri === videoUri);
+        if (watchedVideo && watchedVideo.resumeTime) {
+          setResumeTime(watchedVideo.resumeTime);
+        } else {
+          setResumeTime(0);
+        }
+      }
+    } else {
+      setResumeTime(0);
+    }
+    
+    // Set selected video and URI
+    setSelectedVideo(embedHtml);
+    setSelectedVideoUri(videoUri);
+  };
 
   const fetchWatchedVideos = async (pageNum = 1, append = false) => {
     if (!session?.user?.email) {
@@ -731,7 +787,7 @@ const Page = () => {
                       <motion.button
                         title="נגן"
                         className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-4 py-2 rounded-full flex items-center gap-2 text-sm font-medium transition-all duration-300 shadow-sm relative overflow-hidden"
-                        onClick={() => setSelectedVideo(video.embedHtml)}
+                        onClick={() => openVideo(video.embedHtml)}
                         whileHover={{ opacity: 0.9 }}
                         whileTap={{ scale: 0.98 }}
                       >
@@ -761,10 +817,13 @@ const Page = () => {
       {/* Video player using shared VideoPlayer component */}
       {selectedVideo && (
         <VideoPlayer
-          videoUri={selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1] ? `/videos/${selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1]}` : null}
+          videoUri={selectedVideoUri}
           embedHtml={selectedVideo}
-          onClose={() => setSelectedVideo(null)}
-          initialResumeTime={watchedVideos.find(v => v.uri === `/videos/${selectedVideo.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1]}`)?.resumeTime || 0}
+          onClose={() => {
+            setSelectedVideo(null);
+            setSelectedVideoUri(null);
+          }}
+          initialResumeTime={resumeTime}
           isSubscriber={true} // Assuming watched videos are for subscribers
           isAdmin={(session?.user as any)?.isAdmin}
         />
