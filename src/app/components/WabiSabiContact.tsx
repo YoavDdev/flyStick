@@ -59,18 +59,9 @@ const WabiSabiContact = () => {
     }
   };
 
-  const whatsappMessage = `אל תהססו לפנות בשאלות, בקשות מיוחדות או סתם להגיד שלום.
-
-אני כאן כדי לדייק ולעזור עם כל מידע שאתם צריכים.
-
-בין אם זה שאלות שעלו מהשיעורים, או שיתוף פעולה והגעה אליכם. שלחו אלי הודעת וואטצאפ ואעשה את כל המאמצים לשוב אליכם בהקדם.
-
-המשוב והתקשורת ביננו חשובים לי מאד. בואו נהיה בקשר!`;
-
   const handleWhatsAppClick = () => {
     const phoneNumber = '972527061212'; // Actual WhatsApp number
-    const encodedMessage = encodeURIComponent(whatsappMessage);
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/${phoneNumber}`; // No pre-filled message
     window.open(whatsappUrl, '_blank');
   };
 
@@ -119,21 +110,7 @@ const WabiSabiContact = () => {
                 בואו נהיה בקשר
               </h3>
               
-              <div className="space-y-4 mb-8 text-right">
-                {whatsappMessage.split('\n\n').map((paragraph, index) => (
-                  <motion.p
-                    key={index}
-                    className="text-base leading-relaxed"
-                    style={{ color: '#F5F1EB', textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)', opacity: '0.9' }}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    {paragraph}
-                  </motion.p>
-                ))}
-              </div>
+
               
               <motion.button
                 onClick={handleWhatsAppClick}
