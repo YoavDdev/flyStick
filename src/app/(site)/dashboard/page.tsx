@@ -16,6 +16,7 @@ import { BiSolidBadgeCheck } from "react-icons/bi";
 import UserMessageNotification from "../../components/UserMessageNotification";
 import AdminMessageComposer from "../../components/AdminMessageComposer";
 import AdminNewsletterComposer from "../../components/AdminNewsletterComposer";
+import WelcomePopup from "../../components/WelcomePopup";
 
 const DashboardPage = () => {
   const { data: session } = useSession();
@@ -230,12 +231,16 @@ const DashboardPage = () => {
     <div className="min-h-screen relative pt-14">
       <div className="container mx-auto px-3 sm:px-6 py-6 sm:py-12">
         {session ? (
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-            className="flex flex-col gap-5 sm:gap-8"
-          >
+          <>
+            {/* Welcome Popup for new users */}
+            <WelcomePopup />
+            
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={containerVariants}
+              className="flex flex-col gap-5 sm:gap-8"
+            >
             {/* Header with decorative element */}
             <div className="relative overflow-hidden rounded-xl bg-[#D5C4B7]/20 p-5 sm:p-8 border border-[#D5C4B7]/30">              
               <motion.div variants={itemVariants} className="relative z-10">
@@ -577,6 +582,7 @@ const DashboardPage = () => {
               </div>
             </motion.div>
           </motion.div>
+          </>
         ) : (
           <div className="flex flex-col items-center justify-center min-h-[60vh]">
             <motion.div

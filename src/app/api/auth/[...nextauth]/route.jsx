@@ -83,55 +83,10 @@ export const authOptions = {
         }
       });
 
-      // Check if user hasn't received welcome message yet (regardless of when they were created)
-      // We check both the messageReads and the hasSeenWelcomeMessage flag
-      const hasNotReceivedWelcomeMessage = userData && userData.messageReads.length === 0 && !userData.hasSeenWelcomeMessage;
-
-      // Send welcome message only if they haven't received it before
-      if (hasNotReceivedWelcomeMessage) {
-        try {
-          // Create the welcome message
-          await prisma.message.create({
-            data: {
-              title: "ברוכים הבאים לסטודיו שלי!",
-              content: `זהו, אתם מנויים ואני מאד שמח בשבילכם, כי הסטודיו הוא סיכום הדרך הייחודית שבניתי מהחוויה האישית שלי, ומשלל עצום של תובנות שקיבלתי וממשיכות להגיע. ארזתי הכל לשיטות חדשניות הנגישות לכל אדם הרוצה להכיר את גופו ותודעתו.
-
-הצעד הזה מסמן התחלה של מסע - תנועתי, גופני, אישי, רגשי ותודעתי. מסע שבו תלמדו להכיר את הגוף לעומק, לפתח מודעות סומאטית תחושתית, לנשום בתלת מימד, ולנוע מתוך הקשבה. כל זאת בשפה פשוטה ונגישה שנוצרה מעבודת השטח לאורך השנים, כשאני פוגש מאות אנשים בשבוע.
-
-אני מאמין שכל אדם - בכל גיל ובכל שלב - יכול לגלות את העוצמה, הריפוי, והחיוניות שטמונים בגופו ורוחו.
-
-הסטודיו הזה הוא פרוייקט חיים, והוא משלב אינספור רעיונות ותובנות שיעזרו לכם לצלול למרחבים בהם ביקרתי. הסטודיו מציע לכם מסלולים שונים של הכשרה, שיעורים במבנים שונים, טכניקות רבות, ועוד.
-
-קחו את הזמן. אל תמהרו. תתחילו בקטן ותמשיכו. תהיו בהקשבה. זה לא מרתון. הגוף הוא חליפה גלקטית שמביעה את הלך רוחנו, ולכן כל תנועה תביא סיפור ששווה לראות ולהרגיש.
-
-זה כמו ריקוד, סימכו על הגוף ותנו לו גם להוביל, בלב פתוח וכוונה מדויקת.
-
-אני מאחל לכם לא פחות מהתאהבות.
-
-לא בי, אלא בהיותכם, בקיומכם, ושתתרגשו כל יום מחווית החיים דרך הסטודיו המופלא הזה שכולו אהבה וריפוי. ממש כמו הגוף.
-
-אני מאחל לכם התחלה נעימה, שהות מסקרנת ופליאה, הרבה פליאה פנימית.
-
-שימו לב כי בתחתית האתר תמצאו את המדריך השימושי לאתר, בו תוכלו לקבל הסברים כיצד להשתמש באתר ולהבין כיצד הוא בנוי.
-
-שלכם,
-בועז.`,
-              link: "https://www.studioboazonline.com/explore",
-              linkText: "התחילו את המסע שלכם כאן",
-              isActive: true
-            }
-          });
-          
-          // Also set a flag on the user to indicate they've seen the welcome message
-          // This ensures they won't see it again even if the message is deleted
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { hasSeenWelcomeMessage: true }
-          });
-          console.log(`✅ Welcome message sent to user: ${user.email}`);
-        } catch (error) {
-          console.error(`❌ Error sending welcome message to ${user.email}:`, error);
-        }
+      // Note: hasSeenWelcomeMessage flag will be set to true when user dismisses the welcome popup
+      // This ensures the popup shows for new users on their first dashboard visit
+      if (userData && !userData.hasSeenWelcomeMessage) {
+        console.log(`🎯 New user detected, welcome popup will be shown: ${user.email}`);
       }
 
       // Create "favorites" folder if not exists
