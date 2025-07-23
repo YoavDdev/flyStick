@@ -66,13 +66,10 @@ export async function POST(request: NextRequest) {
             <p style="color: #3D3D3D; line-height: 1.8; margin-bottom: 25px; text-align: right;">${name} יקר/ה,</p>
             
             <p style="color: #3D3D3D; line-height: 1.8; margin-bottom: 25px; text-align: right;">
-              שמח שפנית אלי ויצרת קשר. כמו שמים זורמים ומחברים בינינו, כך גם המשיח שלך הגיע אלי ונקלט בלב פתוח.
+              שמח שפנית אלי ויצרת קשר.
             </p>
             
-            <div style="background-color: #F7F3EB; padding: 20px; border-radius: 10px; margin: 25px 0; direction: rtl;">
-              <p style="color: #2D3142; margin: 0; text-align: right; font-weight: bold;">המשיח שלך:</p>
-              <p style="color: #3D3D3D; margin: 15px 0 0 0; white-space: pre-wrap; text-align: right; line-height: 1.6;">${message}</p>
-            </div>
+
             
             <p style="color: #3D3D3D; line-height: 1.8; margin-bottom: 25px; text-align: right;">
               אחזור אליך בהקדם האפשרי. בינתיים, אני מזמין אותך להתחיל את המסע שלך בסטודיו - לגלות את הכח המרפא והגדול שטמון בגופך.
