@@ -426,6 +426,41 @@ export default function AdminPage() {
             >
               רענן נתונים
             </button>
+            
+            {/* Email Testing Buttons - DEBUG: These should be visible */}
+            <button
+              onClick={async () => {
+                console.log('Monthly Summary Button Clicked!');
+                try {
+                  toast.loading('📧 שולח דוח מנויים חודשי...');
+                  const response = await fetch('/api/admin/monthly-summary', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                  });
+                  
+                  if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'שגיאה בשליחת הדוח');
+                  }
+                  
+                  const data = await response.json();
+                  toast.dismiss();
+                  toast.success('📊 דוח מנויים חודשי נשלח בהצלחה!');
+                  console.log('Monthly Summary Data:', data.data);
+                } catch (error) {
+                  console.error('Error sending monthly summary:', error);
+                  toast.dismiss();
+                  toast.error('❌ שגיאה בשליחת הדוח החודשי');
+                }
+              }}
+              className="bg-[#D9713C] hover:bg-[#C5631F] text-white py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#D9713C]/30 text-sm sm:text-base"
+              style={{ minWidth: '150px' }}
+            >
+              📊 שלח דוח חודשי
+            </button>
+
           </div>
           
           <div className="mb-6">

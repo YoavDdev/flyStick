@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 const Register = () => {
   const session = useSession();
@@ -12,8 +13,11 @@ const Register = () => {
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
     subscribeToNewsletter: true,
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (session?.status === "authenticated") {
@@ -26,6 +30,11 @@ const Register = () => {
 
     if (data.password.length < 6) {
       toast.error("❌ אירעה שגיאה ברישום - הסיסמה חייבת להיות באורך של 6 תווים לפחות.");
+      return;
+    }
+
+    if (data.password !== data.confirmPassword) {
+      toast.error("❌ הסיסמאות אינן תואמות. אנא ודא שהסיסמאות זהות.");
       return;
     }
 
@@ -115,21 +124,67 @@ const Register = () => {
                   סיסמה
                 </label>
               </div>
-              <div className="mt-2">
+              <div className="mt-2 relative">
                 <input
                   id="password"
                   name="password"
-                  type="password"
-                  autoComplete="current-password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="new-password"
                   required
                   value={data.password}
                   onChange={(e) => setData({ ...data, password: e.target.value })}
-                  className="block w-full rounded-lg border-0 py-3 px-4 text-[#2D3142] bg-white/90 shadow-sm ring-1 ring-inset ring-[#D5C4B7] placeholder:text-[#B8A99C] focus:ring-2 focus:ring-inset focus:ring-[#B8A99C] focus:outline-none sm:text-sm sm:leading-6 transition-all duration-200"
+                  className="block w-full rounded-lg border-0 py-3 px-4 pr-12 text-[#2D3142] bg-white/90 shadow-sm ring-1 ring-inset ring-[#D5C4B7] placeholder:text-[#B8A99C] focus:ring-2 focus:ring-inset focus:ring-[#B8A99C] focus:outline-none sm:text-sm sm:leading-6 transition-all duration-200"
                   placeholder="הכנס את הסיסמה שלך"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#B8A99C] hover:text-[#2D3142] transition-colors duration-200"
+                >
+                  {showPassword ? (
+                    <EyeSlashIcon className="h-5 w-5" />
+                  ) : (
+                    <EyeIcon className="h-5 w-5" />
+                  )}
+                </button>
               </div>
               <div className="text-xs text-[#2D3142]/70 mt-1 text-right">
                 הסיסמה חייבת להיות לפחות 6 תווים
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between">
+                <label htmlFor="confirmPassword" className="block text-base font-medium leading-6 text-[#2D3142]">
+                  אימות סיסמה
+                </label>
+              </div>
+              <div className="mt-2 relative">
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  required
+                  value={data.confirmPassword}
+                  onChange={(e) => setData({ ...data, confirmPassword: e.target.value })}
+                  className="block w-full rounded-lg border-0 py-3 px-4 pr-12 text-[#2D3142] bg-white/90 shadow-sm ring-1 ring-inset ring-[#D5C4B7] placeholder:text-[#B8A99C] focus:ring-2 focus:ring-inset focus:ring-[#B8A99C] focus:outline-none sm:text-sm sm:leading-6 transition-all duration-200"
+                  placeholder="הכנס שוב את הסיסמה שלך"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#B8A99C] hover:text-[#2D3142] transition-colors duration-200"
+                >
+                  {showConfirmPassword ? (
+                    <EyeSlashIcon className="h-5 w-5" />
+                  ) : (
+                    <EyeIcon className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
+              <div className="text-xs text-[#2D3142]/70 mt-1 text-right">
+                הכנס שוב את הסיסמה לאימות
               </div>
             </div>
 
