@@ -1,35 +1,44 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prismadb from "@/app/libs/prismadb";
+import { verifyAdminAccess } from "@/app/libs/adminAuth";
+import { rateLimit, rateLimitConfigs } from "@/app/libs/rateLimit";
+import { validateRequestBody, adminSchemas } from "@/app/libs/validation";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    // Get the email from the request headers
-    const authHeader = req.headers.get('authorization');
-    if (!authHeader) {
+    // Apply rate limiting for admin actions
+    const rateLimitResult = rateLimit(rateLimitConfigs.adminActions)(req);
+    if (rateLimitResult) {
+      return rateLimitResult;
+    }
+    
+    // Verify admin access using new standardized method
+    const authResult = await verifyAdminAccess(req);
+    
+    if (!authResult.isAuthenticated) {
       return NextResponse.json(
-        { error: "אינך מחובר למערכת" },
+        { error: authResult.error || "אינך מחובר למערכת" },
         { status: 401 }
       );
     }
     
-    const email = authHeader.split(' ')[1];
-    
-    // Check if user is an admin
-    const currentUser = await prismadb.user.findUnique({
-      where: { email },
-    });
-    
-    if (!currentUser || currentUser.subscriptionId !== "Admin") {
+    if (!authResult.isAdmin) {
       return NextResponse.json(
-        { error: "אין לך הרשאות מנהל" },
+        { error: authResult.error || "אין לך הרשאות מנהל" },
         { status: 403 }
       );
     }
     
-    // Get request body
-    const body = await req.json();
-    console.log("API DEBUG - Full request body:", JSON.stringify(body));
-    const { userId, subscriptionId, name, userEmail, trialStartDate, cancellationDate } = body;
+    // Validate request body
+    const validation = await validateRequestBody(req, adminSchemas.updateUser);
+    if (!validation.success) {
+      return validation.error;
+    }
+    
+    const { userId, subscriptionId, name, userEmail, trialStartDate, cancellationDate } = validation.data;
+    
+    // Request body already validated and extracted above
+    console.log("API DEBUG - Validated request data:", { userId, subscriptionId, name, userEmail, trialStartDate, cancellationDate });
     
     console.log("API DEBUG - Extracted fields:", { 
       userId, 

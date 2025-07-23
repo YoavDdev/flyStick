@@ -1,33 +1,33 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 import axios from "axios";
+import { verifyAdminAccess } from "@/app/libs/adminAuth";
+import { rateLimit, rateLimitConfigs } from "@/app/libs/rateLimit";
 
 // Increase the API route timeout to 60 seconds (Vercel Pro limit)
 export const maxDuration = 60;
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    // Get the authorization header
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    // Apply rate limiting for PayPal operations
+    const rateLimitResult = rateLimit(rateLimitConfigs.paypal)(request);
+    if (rateLimitResult) {
+      return rateLimitResult;
+    }
+    
+    // Verify admin access using new standardized method
+    const authResult = await verifyAdminAccess(request);
+    
+    if (!authResult.isAuthenticated) {
       return NextResponse.json(
-        { error: "אין הרשאות מתאימות" },
+        { error: authResult.error || "אין הרשאות מתאימות" },
         { status: 401 }
       );
     }
-
-    // Extract the email from the token
-    const email = authHeader.split(" ")[1];
-
-    // Check if the user is an admin
-    const adminUser = await prisma.user.findUnique({
-      where: { email },
-      select: { subscriptionId: true },
-    });
-
-    if (!adminUser || adminUser.subscriptionId !== "Admin") {
+    
+    if (!authResult.isAdmin) {
       return NextResponse.json(
-        { error: "אין הרשאות מתאימות" },
+        { error: authResult.error || "אין הרשאות מנהל" },
         { status: 403 }
       );
     }
