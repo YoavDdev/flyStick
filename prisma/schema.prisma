@@ -30,6 +30,7 @@ model User {
   favorites         Folder[]  @relation("UserToFolder")
   favoritesIds      String[]  @db.ObjectId
   hashedPassword    String?
+  hasSeenWelcomeMessage Boolean  @default(false)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
