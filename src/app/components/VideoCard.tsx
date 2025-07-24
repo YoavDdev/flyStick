@@ -12,6 +12,7 @@ interface VideoCardProps {
   onToggleDescription: () => void;
   onPlayVideo: (embedHtml: string) => void;
   onAddToFavorites: (videoUri: string) => void;
+  onHashtagClick?: (hashtag: string) => void;
   isAdmin?: boolean;
 }
 
@@ -22,6 +23,7 @@ const VideoCard = ({
   onToggleDescription,
   onPlayVideo,
   onAddToFavorites,
+  onHashtagClick,
   isAdmin = false
 }: VideoCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -52,6 +54,32 @@ const VideoCard = ({
     } catch (error) {
       toast.error('שגיאה בהעתקת מזהה הסרטון');
     }
+  };
+  
+  // Function to render description with clickable hashtags
+  const renderDescriptionWithHashtags = (description: string) => {
+    if (!description || !onHashtagClick) {
+      return description;
+    }
+    
+    // Split by hashtags and create clickable elements
+    const parts = description.split(/(#[\u0590-\u05FF\w]+)/g);
+    
+    return parts.map((part, index) => {
+      if (part.startsWith('#')) {
+        const hashtag = part.substring(1); // Remove the # symbol
+        return (
+          <button
+            key={index}
+            onClick={() => onHashtagClick(hashtag)}
+            className="text-[#4F5D75] hover:text-[#2D3142] hover:underline cursor-pointer font-medium"
+          >
+            {part}
+          </button>
+        );
+      }
+      return part;
+    });
   };
   
   // Debug the video prop
@@ -138,7 +166,7 @@ const VideoCard = ({
               isExpanded ? "" : "line-clamp-2"
             }`}
           >
-            {video.description}
+            {renderDescriptionWithHashtags(video.description)}
           </p>
           {video.description && video.description.length > 100 && (
             <button

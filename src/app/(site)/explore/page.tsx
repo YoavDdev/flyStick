@@ -204,13 +204,16 @@ const Page = () => {
   };
   //console.log("VIMEO_ACCESS_TOKEN:", process.env.VIMEO_TOKEN);
 
-  const fetchVideos = async (page: number) => {
+  const fetchVideos = async (page: number, searchTerm?: string) => {
     try {
+      // Use searchTerm parameter if provided, otherwise fall back to descriptionQuery state
+      const queryToUse = searchTerm !== undefined ? searchTerm : descriptionQuery;
+      
       const response: AxiosResponse = await axios.get(apiUrl, {
         headers,
         params: {
           page,
-          query: descriptionQuery,
+          query: queryToUse,
           fields: "uri,embed.html,name,description,pictures,duration",
         },
       });
@@ -309,31 +312,27 @@ const Page = () => {
   ];
 
   const handleHashtagClick = (hashtag: string) => {
-    setSearchQuery((prevQuery) => {
-      // Check if the selected hashtag is already in the search query
-      if (prevQuery.includes(hashtag)) {
-        // If it's already in the query, remove it
-        return prevQuery
-          .replace(new RegExp(`\\s*${hashtag}\\s*`, "g"), " ")
-          .trim();
-      } else {
-        // If it's not in the query, add it
-        return prevQuery ? `${prevQuery} ${hashtag}` : hashtag;
-      }
-    });
-    // Close the dropdown after clicking
+    const hashtagQuery = `# ${hashtag}`;
+    setSearchQuery(hashtagQuery);
+    setCurrentPage(1);
+    setVideos([]); // Clear existing videos
+    setNoResults(false);
+    setDescriptionQuery(hashtagQuery);
+    fetchVideos(1, hashtagQuery);
+    closeHashtagDropdown();
   };
   const toggleHashtagDropdown = () => {
     setShowHashtagDropdown(!showHashtagDropdown);
   };
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent, queryToSearch?: string) => {
     e.preventDefault();
+    const searchTerm = queryToSearch || searchQuery;
     setNoResults(false);
-
-    // You might also want to return early or handle this case differently
-    // Set the search query
-    setDescriptionQuery(searchQuery);
+    setCurrentPage(1);
+    setVideos([]); // Clear existing videos
+    setDescriptionQuery(searchTerm);
+    fetchVideos(1, searchTerm);
   };
 
   const closeHashtagDropdown = () => {
@@ -666,12 +665,13 @@ useEffect(() => {
            <SearchBar 
               onSearch={(query) => {
                 setSearchQuery(query);
-                handleSearch({ preventDefault: () => {} } as React.FormEvent);
+                handleSearch({ preventDefault: () => {} } as React.FormEvent, query);
               }}
               hashtags={hashtagOptions}
               onHashtagClick={(hashtag) => {
-                setSearchQuery(`# ${hashtag}`);
-                handleSearch({ preventDefault: () => {} } as React.FormEvent);
+                const hashtagQuery = `# ${hashtag}`;
+                setSearchQuery(hashtagQuery);
+                handleSearch({ preventDefault: () => {} } as React.FormEvent, hashtagQuery);
               }}
             />
           {/* The old search form has been removed and replaced with the SearchBar component above */}
@@ -702,6 +702,7 @@ useEffect(() => {
                         openModal();
                         theUserId();
                       }}
+                      onHashtagClick={handleHashtagClick}
                       isAdmin={subscriptionId === "Admin"}
                     />
                   </div>

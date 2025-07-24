@@ -98,11 +98,12 @@ const ExploreVideos = ({
   ];
 
   // Define these functions before they're used in useEffect
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent, queryToSearch?: string) => {
     e.preventDefault();
+    const searchTerm = queryToSearch || searchQuery;
     setCurrentPage(1);
     setNoMoreVideos(false);
-    fetchVideos(1);
+    fetchVideos(1, searchTerm);
   };
 
   const fetchWatchedVideos = async () => {
@@ -265,18 +266,21 @@ const ExploreVideos = ({
     }
   };
 
-  const fetchVideos = async (page: number) => {
+  const fetchVideos = async (page: number, searchTerm?: string) => {
     try {
       // Use our server-side API proxy to securely call the Vimeo API
       const apiUrl = "/api/videos";
       
+      // Use searchTerm parameter if provided, otherwise fall back to searchQuery state
+      const queryToUse = searchTerm !== undefined ? searchTerm : searchQuery;
+      
       // Use the same query parameters structure
       let query = "";
-      if (searchQuery.startsWith("# ")) {
+      if (queryToUse.startsWith("# ")) {
         // Handle hashtag search by looking for videos with the hashtag in description
-        query = searchQuery.substring(2);
-      } else if (searchQuery) {
-        query = searchQuery;
+        query = queryToUse.substring(2);
+      } else if (queryToUse) {
+        query = queryToUse;
       }
 
       const response = await axios.get(apiUrl, {
@@ -330,10 +334,11 @@ const ExploreVideos = ({
   };
 
   const handleHashtagClick = (hashtag: string) => {
-    setSearchQuery(`# ${hashtag}`);
+    const hashtagQuery = `# ${hashtag}`;
+    setSearchQuery(hashtagQuery);
     setCurrentPage(1);
     setNoMoreVideos(false);
-    fetchVideos(1);
+    fetchVideos(1, hashtagQuery);
     closeHashtagDropdown();
   };
 
@@ -518,12 +523,13 @@ const ExploreVideos = ({
           <SearchBar 
             onSearch={(query) => {
               setSearchQuery(query);
-              handleSearch({ preventDefault: () => {} } as React.FormEvent);
+              handleSearch({ preventDefault: () => {} } as React.FormEvent, query);
             }}
             hashtags={hashtagOptions}
             onHashtagClick={(hashtag) => {
-              setSearchQuery(`# ${hashtag}`);
-              handleSearch({ preventDefault: () => {} } as React.FormEvent);
+              const hashtagQuery = `# ${hashtag}`;
+              setSearchQuery(hashtagQuery);
+              handleSearch({ preventDefault: () => {} } as React.FormEvent, hashtagQuery);
             }}
           />
         </motion.div>
@@ -593,6 +599,7 @@ const ExploreVideos = ({
                         onToggleDescription={() => toggleDescription(index)()}
                         onPlayVideo={(embedHtml) => openVideo(embedHtml || video.embedHtml, video.uri)}
                         onAddToFavorites={() => {}}
+                        onHashtagClick={handleHashtagClick}
                       />
                     </motion.div>
                   ))}
