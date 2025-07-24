@@ -558,7 +558,14 @@ const ExploreVideos = ({
           </div>
           
           {/* Scrollable content area */}
-          <div className="h-[800px] overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-[#D5C4B7] scrollbar-track-transparent relative">
+          <div 
+            className="h-[800px] overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-[#D5C4B7] scrollbar-track-transparent relative"
+            style={{
+              WebkitOverflowScrolling: 'touch',
+              touchAction: 'pan-y',
+              overscrollBehavior: 'contain'
+            }}
+          >
             {noResults ? (
               <motion.div 
                 className="text-center py-10 px-6 bg-[#F0E9DF] rounded-xl shadow-sm border border-[#D5C4B7] mt-8 relative overflow-hidden"
