@@ -97,9 +97,10 @@ const VideoCard = ({
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 flex flex-col h-full">
       <div
-        className="relative"
+        className="relative cursor-pointer"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={() => onPlayVideo(video.embed?.html || `<iframe src="https://player.vimeo.com/video/${video.uri?.split('/').pop()}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`)}
       >
         <img
           src={video.thumbnailUri || video.pictures?.sizes?.[5]?.link || video.pictures?.sizes?.[4]?.link || '/placeholder-image.svg'}
@@ -116,7 +117,10 @@ const VideoCard = ({
         {/* Admin Copy Icon */}
         {isAdmin && (
           <button
-            onClick={copyVideoId}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent triggering video play
+              copyVideoId();
+            }}
             className="absolute top-2 left-2 bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] p-2 rounded-full transition-all duration-200 z-20 shadow-md hover:shadow-lg"
             title="העתק מזהה סרטון להודעה"
           >
@@ -136,16 +140,13 @@ const VideoCard = ({
           />
         )}
         <div
-          className={`absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center transition-opacity duration-300 ${
             isHovered ? "opacity-100" : "opacity-0"
           }`}
         >
-          <button
-            onClick={() => onPlayVideo(video.embed?.html || `<iframe src="https://player.vimeo.com/video/${video.uri?.split('/').pop()}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`)}
-            className="bg-[#EF8354] hover:bg-[#D9713C] text-white p-3 rounded-full transition-all duration-300 transform hover:opacity-90"
-          >
+          <div className="bg-[#EF8354] hover:bg-[#D9713C] text-white p-3 rounded-full transition-all duration-300 transform hover:opacity-90 pointer-events-none">
             <FaPlay />
-          </button>
+          </div>
         </div>
       </div>
       <div className="p-4 flex-grow">
