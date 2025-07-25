@@ -68,6 +68,14 @@ export async function POST(request: NextRequest) {
   try {
     const { folderName, metadata } = await request.json();
 
+    // Debug logging
+    console.log('📝 Saving folder metadata:', {
+      folderName,
+      image: metadata.image,
+      hasImage: !!metadata.image,
+      imageLength: metadata.image?.length || 0
+    });
+
     if (!folderName || !metadata) {
       return NextResponse.json({ 
         success: false, 
@@ -102,7 +110,7 @@ export async function POST(request: NextRequest) {
         : ['all'];
 
     // Update or create folder metadata in database
-    await prisma.folderMetadata.upsert({
+    const result = await prisma.folderMetadata.upsert({
       where: { folderName },
       update: {
         description: metadata.description,
@@ -130,6 +138,13 @@ export async function POST(request: NextRequest) {
         isVisible: metadata.isVisible,
         image: metadata.image || null,
       },
+    });
+
+    // Debug logging after save
+    console.log('✅ Database save result:', {
+      folderName: result.folderName,
+      savedImage: result.image,
+      hasImageSaved: !!result.image
     });
 
     return NextResponse.json({ 
