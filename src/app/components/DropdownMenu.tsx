@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { AiOutlineLogout, AiOutlineUser, AiOutlineBook, AiOutlineCompass, AiOutlineExperiment } from "react-icons/ai";
+import { AiOutlineLogout, AiOutlineUser, AiOutlineBook, AiOutlineCompass, AiOutlineExperiment, AiOutlineSearch } from "react-icons/ai";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 // Removed framer-motion imports

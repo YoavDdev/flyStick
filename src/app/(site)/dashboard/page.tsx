@@ -16,6 +16,8 @@ import { BiSolidBadgeCheck } from "react-icons/bi";
 import UserMessageNotification from "../../components/UserMessageNotification";
 import AdminMessageComposer from "../../components/AdminMessageComposer";
 import AdminNewsletterComposer from "../../components/AdminNewsletterComposer";
+import AdminFolderMetadataManager from "../../components/AdminFolderMetadataManager";
+
 import WelcomePopup from "../../components/WelcomePopup";
 
 const DashboardPage = () => {
@@ -268,14 +270,26 @@ const DashboardPage = () => {
 
             {/* Admin Components - Only visible to admin users */}
             {isAdmin && (
-              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1">
-                  <AdminMessageComposer />
-                </div>
-                <div className="flex-1">
-                  <AdminNewsletterComposer />
-                </div>
-              </motion.div>
+              <>
+                <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex-1">
+                    <AdminMessageComposer />
+                  </div>
+                  <div className="flex-1">
+                    <AdminNewsletterComposer />
+                  </div>
+                </motion.div>
+                
+                {/* Folder Metadata Manager */}
+                <motion.div variants={itemVariants}>
+                  <AdminFolderMetadataManager />
+                </motion.div>
+
+                {/* Category Manager */}
+                <motion.div variants={itemVariants}>
+
+                </motion.div>
+              </>
             )}
 
             {/* WhatsApp Group Join Section */}

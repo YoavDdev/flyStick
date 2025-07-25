@@ -121,9 +121,6 @@ const SearchBar = ({ onSearch, hashtags, onHashtagClick }: SearchBarProps) => {
                     setSearchQuery(newQuery);
                     setShowHashtagSuggestions(false);
                     inputRef.current?.focus();
-                    
-                    // Trigger the search immediately
-                    onHashtagClick(hashtag);
                   }}
                   dir="rtl"
                 >

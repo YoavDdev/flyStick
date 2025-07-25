@@ -17,7 +17,7 @@ interface pageProps {
 }
 
 const Page: FC<pageProps> = ({ params }) => {
-  const value = params.name; // Extract the value
+  const folderNameFromUrl = decodeURIComponent(params.name); // Extract the folder name from URL
 
    type WatchedVideo = {
       uri: string;
@@ -30,6 +30,7 @@ const Page: FC<pageProps> = ({ params }) => {
   const [resumeTime, setResumeTime] = useState<number>(0);
 
   const [folderName, setFolderName] = useState<string>(""); // Initialize folderName state
+  const [folderUri, setFolderUri] = useState<string>(""); // Store folder URI for API calls
   const [videos, setVideos] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [descriptionQuery, setDescriptionQuery] = useState<string>("");
@@ -129,43 +130,41 @@ const Page: FC<pageProps> = ({ params }) => {
   }, []); // No dependencies needed here
 
   useEffect(() => {
-    // Fetch folder name based on folder ID (value)
-
-    const fetchFolderName = async () => {
+    // Fetch folder name and details from our API
+    const fetchFolderData = async () => {
       try {
-        const accessToken = process.env.VIMEO_TOKEN;
-        const headers = {
-          Authorization: `Bearer ${accessToken}`,
-        };
-
-        const folderDetailsResponse: AxiosResponse = await axios.get(
-          `https://api.vimeo.com/me/projects/${value}`,
-          {
-            headers,
-          },
-        );
-
-        const folderDetails = folderDetailsResponse.data;
-        const name = folderDetails.name; // Extract the folder name
-        setFolderName(name); // Update folderName state with the folder name
+        // Fetch all folders first to find the one matching our name
+        const foldersResponse = await fetch('/api/admin/folder-metadata');
+        const foldersData = await foldersResponse.json();
+        
+        if (foldersData.success && foldersData.folders) {
+          const targetFolder = foldersData.folders.find((f: any) => f.name === folderNameFromUrl);
+          
+          if (targetFolder) {
+            setFolderName(targetFolder.name);
+            setFolderUri(targetFolder.uri);
+          }
+        }
       } catch (error) {
         console.error("Error fetching folder details:", error);
       }
     };
 
-    // Call the fetchFolderName function when the component mounts
-    fetchFolderName();
-  }, [value]); // Include value as a dependency to re-fetch when it changes
+    // Call the fetchFolderData function when the component mounts
+    fetchFolderData();
+  }, [folderNameFromUrl]); // Include folderNameFromUrl as a dependency to re-fetch when it changes
 
   useEffect(() => {
-    // Reset the videos and currentPage when a new search is performed
+    // Reset the videos and currentPage when a new search is performed or when folderUri changes
+    if (folderUri) {
+      setVideos([]);
+      setCurrentPage(1);
+      setNoMoreVideos(false);
+      setNoResults(false);
 
-    setVideos([]);
-    setCurrentPage(1);
-    setNoMoreVideos(false);
-
-    fetchVideos(currentPage);
-  }, [descriptionQuery]); // Include descriptionQuery as a dependency
+      fetchVideos(1);
+    }
+  }, [descriptionQuery, folderUri]); // Include both descriptionQuery and folderUri as dependencies
 
   const theUserId = async () => {
     try {
@@ -185,11 +184,8 @@ const Page: FC<pageProps> = ({ params }) => {
     }
   };
 
-  const accessToken = process.env.VIMEO_TOKEN;
-  const apiUrl = `https://api.vimeo.com/me/projects/${value}/videos`;
-  const headers = {
-    Authorization: `Bearer ${accessToken}`,
-  };
+  // Use our server-side API endpoint instead of direct Vimeo calls
+  // We'll construct the URL dynamically when we have the folderUri
 
   /*   const fetchVideos = async (page: number): Promise<boolean> => {
     try {
@@ -251,41 +247,54 @@ const Page: FC<pageProps> = ({ params }) => {
 
   const fetchVideos = async (page: number): Promise<boolean> => {
     try {
-      const response: AxiosResponse = await axios.get(apiUrl, {
-        headers,
-        params: {
-          page,
-          query: descriptionQuery,
-          per_page: 50, // Max per request
-          fields: "uri,embed.html,name,description,pictures,duration",
-        },
-      });
+      // Don't fetch videos if we don't have the folder URI yet
+      if (!folderUri) {
+        return false;
+      }
+
+      const apiUrl = `/api/vimeo/folders/${encodeURIComponent(folderUri)}/videos`;
+      const response = await fetch(apiUrl);
+      const data = await response.json();
   
-      const data = response.data;
-      const videosData = data.data;
-  
-      if (!videosData.length) {
+      if (!data.success || !data.videos?.length) {
+        if (page === 1) {
+          setNoResults(true);
+        }
         return false; // No more videos to fetch
       }
   
-      const newVideos = videosData.map((video: any) => {
+      // Filter videos based on search query if provided
+      let filteredVideos = data.videos;
+      if (descriptionQuery) {
+        filteredVideos = data.videos.filter((video: any) => 
+          video.name.toLowerCase().includes(descriptionQuery.toLowerCase()) ||
+          video.description.toLowerCase().includes(descriptionQuery.toLowerCase())
+        );
+      }
+  
+      const newVideos = filteredVideos.map((video: any) => {
         const watched = watchedVideos.find((v) => v.uri === video.uri);
         return {
           uri: video.uri,
-          embedHtml: video.embed.html,
+          embedHtml: video.embed?.html || '',
           name: video.name,
           description: video.description,
-          thumbnailUri: video.pictures.sizes[5].link,
+          thumbnailUri: video.pictures?.sizes?.[5]?.link || video.pictures?.sizes?.[0]?.link || '',
           progress: watched?.progress || 0,
           resumeTime: watched?.resumeTime || 0,
           duration: video.duration,
         };
       });
   
-      setVideos((prevVideos) => [...prevVideos, ...newVideos]);
+      if (page === 1) {
+        setVideos(newVideos);
+      } else {
+        setVideos((prevVideos) => [...prevVideos, ...newVideos]);
+      }
   
-      // Return true if there's another page
-      return !!data.paging?.next;
+      // For now, we'll assume all videos are loaded in one request
+      // since the Vimeo API endpoint loads all videos at once
+      return false;
     } catch (error) {
       console.error("Error fetching videos:", error);
       return false;
@@ -617,25 +626,56 @@ const Page: FC<pageProps> = ({ params }) => {
             {folderName}
           </h1>
 
-          <div className="bg-[#F0E9DF] rounded-xl shadow-sm border border-[#D5C4B7] p-6 mb-8">
-            <p className="text-lg text-[#2D3142] text-center">
-              {isExpanded
-                ? description
-                : `${truncatedDescription}${
-                    description.length > 200 ? "..." : ""
-                  }`}
-
-              {/* Only show the button if the description is longer than 200 characters */}
-              {description.length > 200 && (
-                <button
-                  className="text-[#EF8354] hover:text-[#D5C4B7] focus:outline-none ml-2 transition-colors duration-300"
-                  onClick={toggleReadMore}
-                >
-                  {isExpanded ? "קרא פחות" : "קרא עוד"}
-                </button>
-              )}
-            </p>
-          </div>
+          {/* About this Technique - Collapsible Section */}
+          {description && description !== "אין תיאור זמין" && (
+            <div className="mb-8">
+              <button
+                onClick={toggleReadMore}
+                className="w-full bg-[#F0E9DF] hover:bg-[#E8DDD4] rounded-xl shadow-sm border border-[#D5C4B7] p-4 transition-all duration-300 group"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#D5C4B7] rounded-full flex items-center justify-center group-hover:bg-[#B8A99C] transition-colors duration-300">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="text-right">
+                      <h3 className="text-lg font-semibold text-[#2D3142] group-hover:text-[#B56B4A] transition-colors duration-300">
+                        מה זה {folderName}?
+                      </h3>
+                      <p className="text-sm text-[#5D5D5D] mt-1">
+                        {isExpanded ? "לחץ כדי להסתיר" : "לחץ כדי ללמוד עוד על הטכניקה"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className={`transform transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#5D5D5D]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </button>
+              
+              {/* Expandable Content */}
+              <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                isExpanded ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'
+              }`}>
+                <div className="bg-white rounded-xl shadow-sm border border-[#D5C4B7] p-6">
+                  <div className="prose prose-lg max-w-none text-right">
+                    <p className="text-[#2D3142] leading-relaxed text-lg">
+                      {description}
+                    </p>
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-[#D5C4B7]/30">
+                    <p className="text-sm text-[#5D5D5D] text-center">
+                      💡 טיפ: השתמש בחיפוש למטה כדי למצוא סרטונים ספציפיים בטכניקה זו
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div
             style={{ direction: "ltr" }}
@@ -648,7 +688,7 @@ const Page: FC<pageProps> = ({ params }) => {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
-              <span>חזרה לסגנונות</span>
+              <span>חזרה לטכניקות</span>
             </Link>
           </div>
           {/* Search Bar with Wabi-Sabi styling */}

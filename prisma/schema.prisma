@@ -124,3 +124,47 @@ model NewsletterSubscriber {
   unsubscribedAt DateTime?
   unsubscribeToken String? @unique // For unsubscribe links
 }
+
+model FolderMetadata {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  folderName   String   @unique // Vimeo folder name as unique identifier
+  description  String   @db.String // Using String type for longer text
+  level        String?  // Single level (for backwards compatibility)
+  levels       String[] // Multiple levels support
+  levelHebrew  String
+  category     String
+  subCategory  String?
+  order        Int
+  isNew        Boolean  @default(false)
+  isVisible    Boolean  @default(true)
+  image        String?  // Custom folder image URL
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Category {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  key          String   @unique // "technique", "equipment", etc.
+  hebrew       String   // "טכניקה", "אביזרים", etc.
+  emoji        String?  // Optional emoji for UI
+  order        Int      @default(0) // Display order
+  isActive     Boolean  @default(true) // For soft delete
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  subcategories Subcategory[]
+}
+
+model Subcategory {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  key          String   // "basics", "advanced", etc.
+  hebrew       String   // "יסודות", "מתקדמים", etc.
+  order        Int      @default(0) // Display order within category
+  isActive     Boolean  @default(true) // For soft delete
+  categoryId   String   @db.ObjectId
+  category     Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@unique([categoryId, key]) // Unique subcategory key within each category
+}
