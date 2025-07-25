@@ -151,7 +151,8 @@ const AdminFolderMetadataManager: React.FC = () => {
           category: formData.category,
           subCategory: formData.subCategory,
           order: formData.order,
-          isVisible: formData.isVisible
+          isVisible: formData.isVisible,
+          image: formData.image
         }
       });
 
