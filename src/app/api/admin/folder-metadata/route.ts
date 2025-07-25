@@ -36,16 +36,30 @@ export async function GET(request: NextRequest) {
       return acc;
     }, {} as Record<string, any>);
     
-    // Add current metadata to each folder
+    // Add current metadata to each folder and fetch video counts
     const foldersWithMetadata = await Promise.all(vimeoFolders.map(async (folder: any) => {
       const metadata = folderMetadataMap[folder.name] || getStaticFolderMetadata(folder.name);
+      
+      // Fetch video count for this folder
+      let videoCount = 0;
+      try {
+        const videosResponse = await axios.get(`https://api.vimeo.com${folder.uri}/videos`, { 
+          headers,
+          params: { per_page: 1 } // Only need count, not actual videos
+        });
+        videoCount = videosResponse.data.total || 0;
+      } catch (error) {
+        console.error(`Error fetching video count for folder ${folder.name}:`, error);
+      }
+      
       return {
         uri: folder.uri,
         name: folder.name,
         created_time: folder.created_time,
         modified_time: folder.modified_time,
         metadata,
-        hasCustomMetadata: !!folderMetadataMap[folder.name]
+        hasCustomMetadata: !!folderMetadataMap[folder.name],
+        videoCount
       };
     }));
 

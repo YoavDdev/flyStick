@@ -149,7 +149,7 @@ const StylesPage = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <Link href={`/styles/${encodeURIComponent(folder.name)}`}>
-                <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer h-full">
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer h-[400px] relative">
                   {/* Image */}
                   <div className="relative h-48 bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C]">
                     {folder.metadata.image ? (
@@ -180,17 +180,18 @@ const StylesPage = () => {
                       {folder.name}
                     </h3>
                     
-                    {folder.metadata.description && (
-                      <p className="text-[#5D5D5D] text-right mb-4 leading-relaxed">
-                        {getShortenedDescription(folder.metadata.description)}
-                      </p>
-                    )}
-
-                    {/* Footer */}
-                    <div className="flex justify-between items-center text-sm text-[#7D7D7D]">
-                      <span>קטגוריה: טכניקה</span>
-                      <span>{folder.stats?.videos || 0} סרטונים</span>
+                    <div>
+                      {folder.metadata.description && (
+                        <p className="text-[#5D5D5D] text-right mb-4 leading-relaxed line-clamp-4">
+                          {getShortenedDescription(folder.metadata.description)}
+                        </p>
+                      )}
                     </div>
+                  </div>
+                  
+                  {/* Footer - Fixed position at bottom left */}
+                  <div className="absolute bottom-6 left-6 text-sm text-[#7D7D7D]">
+                    <span>{folder.videoCount || 0} סרטונים</span>
                   </div>
                 </div>
               </Link>
