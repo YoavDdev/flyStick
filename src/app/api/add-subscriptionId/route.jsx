@@ -122,12 +122,8 @@ export async function POST(request) {
               
               <div style="text-align: center; margin: 25px 0;">
                 <a href="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/admin" 
-                   style="background: #D5C4B7; color: #2D3142; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; margin-left: 10px;">
+                   style="background: #D5C4B7; color: #2D3142; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
                   כניסה לפאנל ניהול
-                </a>
-                <a href="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/dashboard" 
-                   style="background: #B8A99C; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
-                  צפייה בסטודיו
                 </a>
               </div>
               
