@@ -1,7 +1,4 @@
-"use client";
-
-import { useEffect } from "react";
-import { usePathname, useSearchParams } from 'next/navigation';
+import { Suspense } from "react";
 import {
   WabiSabiHero,
   WabiSabiFeature,
@@ -35,32 +32,7 @@ export const metadata: Metadata = {
   }
 };
 
-// Custom hook to handle hash-based scrolling
-function useHashScroll() {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    // Check if we're on the home page and there's a hash in the URL
-    if (pathname === '/' && window.location.hash) {
-      const hash = window.location.hash;
-      
-      // Small delay to ensure the page has fully rendered
-      const timer = setTimeout(() => {
-        const element = document.getElementById(hash.substring(1));
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [pathname, searchParams]);
-}
-
 export default function HomePage() {
-  // Use the hash scroll hook
-  useHashScroll();
   
   return (
     <main className="relative min-h-screen overflow-hidden">

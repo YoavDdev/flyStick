@@ -53,20 +53,18 @@ const WabiSabiVideoCarousel = () => {
               }}
             >
               {/* Video frame with modern styling */}
-              <div className="p-4">
+              <div className="p-2 md:p-4">
                 <div className="relative overflow-hidden rounded-2xl">
-
-                  
-                  <iframe
-                    id="ytplayer"
-                    width="100%"
-                    height="450"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    src="https://www.youtube.com/embed/G2QMpNsnUxk?start=4&autoplay=0&mute=0"
-                    className="w-full h-full object-cover rounded-2xl"
-                    style={{ aspectRatio: "16/9" }}
-                    loading="lazy"
-                  ></iframe>
+                  {/* Responsive video container */}
+                  <div className="relative w-full" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
+                    <iframe
+                      id="ytplayer"
+                      className="absolute top-0 left-0 w-full h-full rounded-2xl"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      src="https://www.youtube.com/embed/G2QMpNsnUxk?start=4&autoplay=0&mute=0"
+                      loading="lazy"
+                    ></iframe>
+                  </div>
                 </div>
               </div>
               
