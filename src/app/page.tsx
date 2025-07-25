@@ -13,6 +13,27 @@ import ExploreVideos from "./components/ExploreVideos";
 import Image from "next/image";
 import desertImage from "../../public/contacMe2.jpeg";
 import { motion } from "framer-motion";
+import type { Metadata } from "next";
+
+// SEO metadata specifically for homepage to rank better for "בועז סטודיו"
+export const metadata: Metadata = {
+  title: "בועז סטודיו - סטודיו בועז אונליין | אימונים אישיים ותנועה מרפאה",
+  description: "ברוכים הבאים לבועז סטודיו - סטודיו בועז אונליין. בועז נחייסי מציע אימונים אישיים, פלייסטיק ותנועה מרפאה. שיעורי וידאו מקצועיים לחיבור גוף ונפש.",
+  keywords: [
+    "בועז סטודיו", "סטודיו בועז", "בועז נחייסי", "סטודיו בועז אונליין",
+    "אימונים אישיים", "פלייסטיק", "תנועה מרפאה", "יוגה", "פילאטיס",
+    "אימון אונליין", "שיעורי וידאו", "כושר", "בריאות", "חיבור גוף נפש"
+  ],
+  openGraph: {
+    title: "בועז סטודיו - סטודיו בועז אונליין",
+    description: "ברוכים הבאים לבועז סטודיו - המקום שלכם לאימונים אישיים ותנועה מרפאה עם בועז נחייסי",
+    url: "https://www.studioboazonline.com/",
+    type: "website"
+  },
+  alternates: {
+    canonical: "https://www.studioboazonline.com/"
+  }
+};
 
 // Custom hook to handle hash-based scrolling
 function useHashScroll() {
