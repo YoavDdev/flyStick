@@ -626,56 +626,25 @@ const Page: FC<pageProps> = ({ params }) => {
             {folderName}
           </h1>
 
-          {/* About this Technique - Collapsible Section */}
-          {description && description !== "אין תיאור זמין" && (
-            <div className="mb-8">
-              <button
-                onClick={toggleReadMore}
-                className="w-full bg-[#F0E9DF] hover:bg-[#E8DDD4] rounded-xl shadow-sm border border-[#D5C4B7] p-4 transition-all duration-300 group"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#D5C4B7] rounded-full flex items-center justify-center group-hover:bg-[#B8A99C] transition-colors duration-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div className="text-right">
-                      <h3 className="text-lg font-semibold text-[#2D3142] group-hover:text-[#B56B4A] transition-colors duration-300">
-                        מה זה {folderName}?
-                      </h3>
-                      <p className="text-sm text-[#5D5D5D] mt-1">
-                        {isExpanded ? "לחץ כדי להסתיר" : "לחץ כדי ללמוד עוד על הטכניקה"}
-                      </p>
-                    </div>
-                  </div>
-                  <div className={`transform transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#5D5D5D]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                </div>
-              </button>
-              
-              {/* Expandable Content */}
-              <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                isExpanded ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'
-              }`}>
-                <div className="bg-white rounded-xl shadow-sm border border-[#D5C4B7] p-6">
-                  <div className="prose prose-lg max-w-none text-right">
-                    <p className="text-[#2D3142] leading-relaxed text-lg">
-                      {description}
-                    </p>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-[#D5C4B7]/30">
-                    <p className="text-sm text-[#5D5D5D] text-center">
-                      💡 טיפ: השתמש בחיפוש למטה כדי למצוא סרטונים ספציפיים בטכניקה זו
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          <div className="bg-[#F0E9DF] rounded-xl shadow-sm border border-[#D5C4B7] p-6 mb-8">
+            <p className="text-lg text-[#2D3142] text-center">
+              {isExpanded
+                ? description
+                : `${truncatedDescription}${
+                    description.length > 200 ? "..." : ""
+                  }`}
+
+              {/* Only show the button if the description is longer than 200 characters */}
+              {description.length > 200 && (
+                <button
+                  className="text-[#EF8354] hover:text-[#D5C4B7] focus:outline-none ml-2 transition-colors duration-300"
+                  onClick={toggleReadMore}
+                >
+                  {isExpanded ? "קרא פחות" : "קרא עוד"}
+                </button>
+              )}
+            </p>
+          </div>
 
           <div
             style={{ direction: "ltr" }}
