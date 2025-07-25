@@ -31,6 +31,7 @@ interface FolderMetadataForm {
   order: number;
   isVisible: boolean;
   image: string; // URL to custom folder image
+  icon: string; // Custom icon (emoji or icon name)
 }
 
 const AdminFolderMetadataManager: React.FC = () => {
@@ -46,9 +47,230 @@ const AdminFolderMetadataManager: React.FC = () => {
     subCategory: '',
     order: 1,
     isVisible: true,
-    image: ''
+    image: '',
+    icon: ''
   });
   const [saving, setSaving] = useState(false);
+  const [showIconPicker, setShowIconPicker] = useState(false);
+
+  // Predefined SVG icon options matching CategoryIcon styles
+  const iconOptions = [
+    {
+      id: 'contrology',
+      name: 'קונטרולוגיה',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M12,2c-0.5,0-1,0.2-1.4,0.6C10.2,3,10,3.5,10,4c0,1.1,0.9,2,2,2s2-0.9,2-2c0-0.5-0.2-1-0.6-1.4C13,2.2,12.5,2,12,2z" fill="#2D3142" opacity="0.9" />
+          <path d="M12,6v12M8,10h8M8,14h8" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      )
+    },
+    {
+      id: 'equipment',
+      name: 'אביזרים',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <circle cx="12" cy="12" r="8" fill="none" stroke="#2D3142" strokeWidth="1.5" strokeDasharray="6,2" opacity="0.9" />
+          <path d="M12,4V20M4,12H20" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      )
+    },
+    {
+      id: 'flystick',
+      name: 'פלייסטיק',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M12,2v20" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M7,6c0,0,5-2,10,0" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M7,12c0,0,5-2,10,0" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M7,18c0,0,5-2,10,0" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      )
+    },
+    {
+      id: 'quick',
+      name: 'מהיר',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,6v6l4,4" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      )
+    },
+    {
+      id: 'pilates',
+      name: 'פילאטיס',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <circle cx="12" cy="12" r="3" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,2v7M12,15v7M2,12h7M15,12h7" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      )
+    },
+    {
+      id: 'pregnancy',
+      name: 'הריון',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <circle cx="12" cy="7" r="4" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M8,14c0,4,4,8,4,8s4-4,4-8s-8-4-8,0Z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      )
+    },
+    {
+      id: 'education',
+      name: 'לימוד',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M12,2L2,8l10,6l10-6L12,2z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M4,11v6l8,5l8-5v-6" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      )
+    },
+    {
+      id: 'therapy',
+      name: 'טיפול',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M6,12h12v4c0,1.1-0.9,2-2,2H8c-1.1,0-2-0.9-2-2V12z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M8,12V8c0-2.2,1.8-4,4-4s4,1.8,4,4v4" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,8v4M10,10h4" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      )
+    },
+    {
+      id: 'stretching',
+      name: 'מתיחות',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M8,4c0,0,4,2,8,0" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M6,8c0,0,6,4,12,0" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M4,12c0,0,8,6,16,0" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M6,16c0,0,6,4,12,0" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M8,20c0,0,4,2,8,0" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      )
+    },
+    {
+      id: 'balance',
+      name: 'איזון',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M12,2v20" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M6,8h12" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <circle cx="8" cy="8" r="2" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <circle cx="16" cy="8" r="2" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      )
+    },
+    {
+      id: 'strength',
+      name: 'כוח',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <rect x="4" y="10" width="16" height="4" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <circle cx="4" cy="12" r="2" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <circle cx="20" cy="12" r="2" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M8,8v8M16,8v8" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      )
+    },
+    {
+      id: 'breathing',
+      name: 'נשימה',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <circle cx="12" cy="12" r="8" fill="none" stroke="#2D3142" strokeWidth="1.5" strokeDasharray="4,2" opacity="0.9" />
+          <circle cx="12" cy="12" r="4" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,8v8M8,12h8" stroke="#2D3142" strokeWidth="1.5" opacity="0.6" />
+        </svg>
+      )
+    },
+    {
+      id: 'flexibility',
+      name: 'גמישות',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M4,12c0,0,8-8,16,0c0,0-8,8-16,0Z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M8,12c0,0,4-4,8,0c0,0-4,4-8,0Z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.6" />
+        </svg>
+      )
+    },
+    {
+      id: 'core',
+      name: 'מרכז',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <ellipse cx="12" cy="12" rx="6" ry="8" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,6v12" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M8,10h8M8,14h8" stroke="#2D3142" strokeWidth="1.5" opacity="0.6" />
+        </svg>
+      )
+    },
+    {
+      id: 'cardio',
+      name: 'כושר לב',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M20.84,4.61a5.5,5.5,0,0,0-7.78,0L12,5.67,10.94,4.61a5.5,5.5,0,0,0-7.78,7.78l1.06,1.06L12,21.23l7.78-7.78,1.06-1.06A5.5,5.5,0,0,0,20.84,4.61Z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,8v6M9,11h6" stroke="#2D3142" strokeWidth="1.5" opacity="0.6" />
+        </svg>
+      )
+    },
+    {
+      id: 'posture',
+      name: 'יושר',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M12,2c-1,0-2,1-2,2s1,2,2,2s2-1,2-2S13,2,12,2z" fill="#2D3142" opacity="0.9" />
+          <path d="M12,6v16" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M8,10h8M10,14h4M9,18h6" stroke="#2D3142" strokeWidth="1.5" opacity="0.6" />
+        </svg>
+      )
+    },
+    {
+      id: 'meditation',
+      name: 'מדיטציה',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <circle cx="12" cy="8" r="3" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,11c0,0-4,2-4,6s4,4,4,4s4,0,4-4S12,11,12,11z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M8,6c0,0,2-2,4-2s4,2,4,2" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.6" />
+        </svg>
+      )
+    },
+    {
+      id: 'mobility',
+      name: 'ניידות',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="#2D3142" strokeWidth="1.5" strokeDasharray="8,4" opacity="0.9" />
+          <path d="M12,4v16M4,12h16" stroke="#2D3142" strokeWidth="1.5" opacity="0.6" />
+          <circle cx="12" cy="12" r="2" fill="#2D3142" opacity="0.9" />
+        </svg>
+      )
+    },
+    {
+      id: 'recovery',
+      name: 'החלמה',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <path d="M12,2c0,0-8,4-8,10s8,10,8,10s8-4,8-10S12,2,12,2z" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,6v12M8,10h8M8,14h8" stroke="#2D3142" strokeWidth="1.5" opacity="0.6" />
+        </svg>
+      )
+    },
+    {
+      id: 'default',
+      name: 'ברירת מחדל',
+      svg: (
+        <svg viewBox="0 0 24 24" className="w-full h-full">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+          <path d="M12,8v8M8,12h8" stroke="#2D3142" strokeWidth="1.5" opacity="0.9" />
+        </svg>
+      )
+    }
+  ];
 
 
   const levels = folderMetadataDb.getAllLevels();
@@ -91,7 +313,8 @@ const AdminFolderMetadataManager: React.FC = () => {
       subCategory: (folder.metadata as any).subCategory || '',
       order: folder.metadata.order,
       isVisible: (folder.metadata as any).isVisible || true,
-      image: (folder.metadata as any).image || ''
+      image: (folder.metadata as any).image || '',
+      icon: (folder.metadata as any).icon || ''
     });
   };
 
@@ -105,7 +328,8 @@ const AdminFolderMetadataManager: React.FC = () => {
       subCategory: '',
       order: 1,
       isVisible: true,
-      image: ''
+      image: '',
+      icon: ''
     });
   };
 
@@ -152,7 +376,8 @@ const AdminFolderMetadataManager: React.FC = () => {
           subCategory: formData.subCategory,
           order: formData.order,
           isVisible: formData.isVisible,
-          image: formData.image
+          image: formData.image,
+          icon: formData.icon
         }
       });
 
@@ -327,6 +552,99 @@ const AdminFolderMetadataManager: React.FC = () => {
                           />
                         </div>
                       )}
+                    </div>
+
+                    {/* Icon Management */}
+                    <div>
+                      <label className="block text-sm font-medium text-[#2D3142] mb-2">
+                        אייקון מותאם אישית
+                      </label>
+                      <div className="space-y-3">
+                        {/* Current Icon Display */}
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 flex items-center justify-center bg-[#D5C4B7] rounded-full p-2">
+                            {formData.icon ? (
+                              iconOptions.find(opt => opt.id === formData.icon)?.svg || iconOptions.find(opt => opt.id === 'default')?.svg
+                            ) : (
+                              iconOptions.find(opt => opt.id === 'default')?.svg
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <select
+                              value={formData.icon}
+                              onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D5C4B7] focus:border-transparent"
+                            >
+                              <option value="">ברירת מחדל (אוטומטי)</option>
+                              {iconOptions.map(option => (
+                                <option key={option.id} value={option.id}>
+                                  {option.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setShowIconPicker(!showIconPicker)}
+                            className="px-3 py-2 bg-[#D5C4B7] text-white rounded-lg hover:bg-[#B8A99C] transition-colors"
+                          >
+                            בחר אייקון
+                          </button>
+                        </div>
+                        
+                        {/* Icon Picker */}
+                        {showIconPicker && (
+                          <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                            <div className="grid grid-cols-3 gap-3 mb-3">
+                              {iconOptions.map((iconOption) => (
+                                <button
+                                  key={iconOption.id}
+                                  type="button"
+                                  onClick={() => {
+                                    setFormData({ ...formData, icon: iconOption.id });
+                                    setShowIconPicker(false);
+                                  }}
+                                  className={`p-3 flex flex-col items-center justify-center hover:bg-white rounded-lg transition-colors border-2 ${
+                                    formData.icon === iconOption.id 
+                                      ? 'border-[#D5C4B7] bg-white' 
+                                      : 'border-transparent hover:border-[#D5C4B7]'
+                                  }`}
+                                >
+                                  <div className="w-8 h-8 mb-2">
+                                    {iconOption.svg}
+                                  </div>
+                                  <span className="text-xs text-center text-[#2D3142]">
+                                    {iconOption.name}
+                                  </span>
+                                </button>
+                              ))}
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setFormData({ ...formData, icon: '' });
+                                  setShowIconPicker(false);
+                                }}
+                                className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+                              >
+                                הסר אייקון
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setShowIconPicker(false)}
+                                className="px-3 py-1 text-sm bg-[#D5C4B7] text-white rounded hover:bg-[#B8A99C] transition-colors"
+                              >
+                                סגור
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                        
+                        <div className="text-xs text-[#7D7D7D]">
+                          האייקון יוצג בכרטיס התיקייה בעמוד הסגנונות
+                        </div>
+                      </div>
                     </div>
 
                     <div>

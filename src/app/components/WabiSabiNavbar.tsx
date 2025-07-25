@@ -113,7 +113,7 @@ const WabiSabiNavbar = () => {
   // Page title mapping for header display
   const pageTitles: Record<string, string> = {
     "/explore": "חיפוש אישי",
-    "/styles": "חיפוש מותאם",
+    "/styles": "טכניקות",
     "/dashboard": "איזור אישי",
     "/user": "הספרייה שלי",
   };
@@ -439,7 +439,7 @@ const WabiSabiNavbar = () => {
                       whileHover={{ x: -5, transition: { duration: 0.2 } }}
                     >
                       <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300 text-right w-full">
-                        חיפוש מותאם
+                        טכניקות
                       </span>
                       <div className="mr-2 p-1.5 rounded-full bg-[#8E9A7C]/5">
                         <svg className="h-4 w-4 text-[#8E9A7C]" fill="currentColor" viewBox="0 0 24 24">

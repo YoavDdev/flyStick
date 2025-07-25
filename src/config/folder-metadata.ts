@@ -9,6 +9,7 @@ export interface FolderMetadata {
   isNew?: boolean;
   isVisible: boolean;
   image?: string; // URL to custom folder image
+  icon?: string; // Custom icon (emoji or icon name)
 }
 
 export const folderMetadata: Record<string, FolderMetadata> = {

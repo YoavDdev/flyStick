@@ -39,7 +39,7 @@ const Page: FC<pageProps> = ({ params }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showHashtagDropdown, setShowHashtagDropdown] = useState(false);
   const { data: session } = useSession();
-  const [subscriptionStatus, setSubscriptionStatus] = useState(null);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [subscriptionId, setSubscriptionId] = useState(null);
   const [hasContentAccess, setHasContentAccess] = useState(false);
@@ -246,23 +246,23 @@ const Page: FC<pageProps> = ({ params }) => {
   }, [session]);
 
   const fetchVideos = async (page: number): Promise<boolean> => {
-    try {
-      // Don't fetch videos if we don't have the folder URI yet
-      if (!folderUri) {
-        return false;
-      }
+  try {
+    // Don't fetch videos if we don't have the folder URI yet
+    if (!folderUri) {
+      return false;
+    }
 
-      const apiUrl = `/api/vimeo/folders/${encodeURIComponent(folderUri)}/videos`;
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-  
-      if (!data.success || !data.videos?.length) {
-        if (page === 1) {
-          setNoResults(true);
-        }
-        return false; // No more videos to fetch
+    const apiUrl = `/api/vimeo/folders/${encodeURIComponent(folderUri)}/videos`;
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    if (!data.success || !data.videos?.length) {
+      if (page === 1) {
+        setNoResults(true);
       }
-  
+      return false; // No more videos to fetch
+    }
+
       // Filter videos based on search query if provided
       let filteredVideos = data.videos;
       if (descriptionQuery) {
@@ -566,22 +566,33 @@ const Page: FC<pageProps> = ({ params }) => {
           // Set content access based on response
           setHasContentAccess(adminCheckResponse.data.hasContentAccess);
 
-          // Fetch subscription details using the retrieved subscriptionId
-          const clientId = process.env.PAYPAL_CLIENT_ID;
-          const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+          // Skip PayPal API call for admin users to prevent 400 errors
+          if (subscriptionId === "Admin") {
+            setSubscriptionStatus("ACTIVE"); // Admin always has active status
+            return; // Exit early for admin users
+          }
 
-          const auth = {
-            username: clientId!,
-            password: clientSecret!,
-          };
+          // Only fetch PayPal subscription details for non-admin users with valid subscription IDs
+          if (subscriptionId && subscriptionId !== "trial_30" && subscriptionId !== "free") {
+            const clientId = process.env.PAYPAL_CLIENT_ID;
+            const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
-          const subscriptionResponse = await axios.get(
-            `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}`,
-            { auth },
-          );
+            const auth = {
+              username: clientId!,
+              password: clientSecret!,
+            };
 
-          const status = subscriptionResponse.data.status;
-          setSubscriptionStatus(status);
+            const subscriptionResponse = await axios.get(
+              `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}`,
+              { auth },
+            );
+
+            const status = subscriptionResponse.data.status;
+            setSubscriptionStatus(status);
+          } else {
+            // For trial or free users, set appropriate status
+            setSubscriptionStatus(subscriptionId === "trial_30" ? "TRIAL" : "FREE");
+          }
 
           // Update your database with the updated subscription status if needed
         }

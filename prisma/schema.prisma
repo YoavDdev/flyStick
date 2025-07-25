@@ -138,6 +138,7 @@ model FolderMetadata {
   isNew        Boolean  @default(false)
   isVisible    Boolean  @default(true)
   image        String?  // Custom folder image URL
+  icon         String?  // Custom folder icon (SVG icon ID)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

@@ -31,7 +31,8 @@ export async function GET(request: NextRequest) {
         order: item.order,
         isNew: item.isNew,
         isVisible: item.isVisible,
-        image: item.image
+        image: item.image,
+        icon: item.icon
       };
       return acc;
     }, {} as Record<string, any>);
@@ -87,7 +88,9 @@ export async function POST(request: NextRequest) {
       folderName,
       image: metadata.image,
       hasImage: !!metadata.image,
-      imageLength: metadata.image?.length || 0
+      imageLength: metadata.image?.length || 0,
+      icon: metadata.icon,
+      hasIcon: !!metadata.icon
     });
 
     if (!folderName || !metadata) {
@@ -137,6 +140,7 @@ export async function POST(request: NextRequest) {
         isNew: metadata.isNew || false,
         isVisible: metadata.isVisible,
         image: metadata.image || null,
+        icon: metadata.icon || null,
         updatedAt: new Date(),
       },
       create: {
@@ -151,6 +155,7 @@ export async function POST(request: NextRequest) {
         isNew: metadata.isNew || false,
         isVisible: metadata.isVisible,
         image: metadata.image || null,
+        icon: metadata.icon || null,
       },
     });
 
@@ -158,7 +163,9 @@ export async function POST(request: NextRequest) {
     console.log('✅ Database save result:', {
       folderName: result.folderName,
       savedImage: result.image,
-      hasImageSaved: !!result.image
+      hasImageSaved: !!result.image,
+      savedIcon: result.icon,
+      hasIconSaved: !!result.icon
     });
 
     return NextResponse.json({ 
