@@ -53,6 +53,9 @@ const Page: FC<pageProps> = ({ params }) => {
   );
   const [noResults, setNoResults] = useState(false);
   const [noMoreVideos, setNoMoreVideos] = useState<boolean>(false); // State to track if there are no more videos to load
+  const [videosLoading, setVideosLoading] = useState(false); // Loading state for videos
+  const [initialLoading, setInitialLoading] = useState(true); // Initial page loading state
+  const [loadingMore, setLoadingMore] = useState(false); // Loading more videos state
   const isVideoOpenRef = useRef<boolean>(false);
 
   const handleBackButton = (event: PopStateEvent) => {
@@ -162,7 +165,9 @@ const Page: FC<pageProps> = ({ params }) => {
       setNoMoreVideos(false);
       setNoResults(false);
 
-      fetchVideos(1);
+      fetchVideos(1).finally(() => {
+        setInitialLoading(false);
+      });
     }
   }, [descriptionQuery, folderUri]); // Include both descriptionQuery and folderUri as dependencies
 
@@ -246,22 +251,34 @@ const Page: FC<pageProps> = ({ params }) => {
   }, [session]);
 
   const fetchVideos = async (page: number): Promise<boolean> => {
-  try {
-    // Don't fetch videos if we don't have the folder URI yet
-    if (!folderUri) {
-      return false;
-    }
-
-    const apiUrl = `/api/vimeo/folders/${encodeURIComponent(folderUri)}/videos`;
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-
-    if (!data.success || !data.videos?.length) {
+    try {
+      // Set loading states
       if (page === 1) {
-        setNoResults(true);
+        setVideosLoading(true);
+        setNoResults(false);
+      } else {
+        setLoadingMore(true);
       }
-      return false; // No more videos to fetch
-    }
+
+      // Don't fetch videos if we don't have the folder URI yet
+      if (!folderUri) {
+        setVideosLoading(false);
+        setLoadingMore(false);
+        return false;
+      }
+
+      const apiUrl = `/api/vimeo/folders/${encodeURIComponent(folderUri)}/videos`;
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      if (!data.success || !data.videos?.length) {
+        if (page === 1) {
+          setNoResults(true);
+        }
+        setVideosLoading(false);
+        setLoadingMore(false);
+        return false; // No more videos to fetch
+      }
 
       // Filter videos based on search query if provided
       let filteredVideos = data.videos;
@@ -271,8 +288,14 @@ const Page: FC<pageProps> = ({ params }) => {
           video.description.toLowerCase().includes(descriptionQuery.toLowerCase())
         );
       }
-  
-      const newVideos = filteredVideos.map((video: any) => {
+
+      // Implement pagination by slicing the videos
+      const videosPerPage = 12; // Load 12 videos at a time
+      const startIndex = (page - 1) * videosPerPage;
+      const endIndex = startIndex + videosPerPage;
+      const paginatedVideos = filteredVideos.slice(startIndex, endIndex);
+
+      const newVideos = paginatedVideos.map((video: any) => {
         const watched = watchedVideos.find((v) => v.uri === video.uri);
         return {
           uri: video.uri,
@@ -285,18 +308,24 @@ const Page: FC<pageProps> = ({ params }) => {
           duration: video.duration,
         };
       });
-  
+
       if (page === 1) {
         setVideos(newVideos);
       } else {
         setVideos((prevVideos) => [...prevVideos, ...newVideos]);
       }
-  
-      // For now, we'll assume all videos are loaded in one request
-      // since the Vimeo API endpoint loads all videos at once
-      return false;
+
+      // Check if there are more videos to load
+      const hasMoreVideos = endIndex < filteredVideos.length;
+      setNoMoreVideos(!hasMoreVideos);
+
+      setVideosLoading(false);
+      setLoadingMore(false);
+      return hasMoreVideos;
     } catch (error) {
       console.error("Error fetching videos:", error);
+      setVideosLoading(false);
+      setLoadingMore(false);
       return false;
     }
   };
@@ -441,6 +470,8 @@ const Page: FC<pageProps> = ({ params }) => {
   }; */
 
   const loadMore = () => {
+    if (loadingMore) return; // Prevent multiple simultaneous requests
+    
     const nextPage = currentPage + 1;
 
     fetchVideos(nextPage).then((hasMoreVideos) => {
@@ -684,8 +715,13 @@ const Page: FC<pageProps> = ({ params }) => {
             }}
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {noResults ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {initialLoading || videosLoading ? (
+              <div className="col-span-full flex flex-col items-center justify-center py-20">
+                <div className="w-16 h-16 border-4 border-[#D5C4B7] border-t-[#B8A99C] rounded-full animate-spin"></div>
+                <p className="mt-4 text-[#2D3142] font-medium text-lg">טוען סרטונים...</p>
+              </div>
+            ) : noResults ? (
               <div className="col-span-full text-center py-10 px-6 bg-[#F0E9DF] rounded-xl shadow-sm border border-[#D5C4B7] mt-8">
                 <p className="text-[#2D3142] text-lg">
                   <span className="font-bold text-[#EF8354]">אופס!</span> 🤷‍♂️ לא
@@ -727,15 +763,22 @@ const Page: FC<pageProps> = ({ params }) => {
             )}
           </div>
           <div className="mt-10 flex justify-center">
-            {noMoreVideos && (
+            {noMoreVideos && !loadingMore && (
               <p className="text-center text-[#2D3142] py-4 px-8 bg-[#F0E9DF] rounded-lg shadow-sm border border-[#D5C4B7]">
                 אין עוד סרטונים לטעון.
               </p>
             )}
-            {!noMoreVideos && (
+            {loadingMore && (
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 border-4 border-[#D5C4B7] border-t-[#B8A99C] rounded-full animate-spin"></div>
+                <p className="mt-2 text-[#2D3142] font-medium">טוען עוד סרטונים...</p>
+              </div>
+            )}
+            {!noMoreVideos && !loadingMore && (
               <button
-                className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-8 py-4 rounded-lg focus:outline-none shadow-md transition-all duration-300 hover:shadow-lg font-medium"
+                className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-8 py-4 rounded-lg focus:outline-none shadow-md transition-all duration-300 hover:shadow-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={loadMore}
+                disabled={loadingMore}
               >
                 טען עוד
               </button>
