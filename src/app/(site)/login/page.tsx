@@ -5,6 +5,20 @@ import { signIn, useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/dist/client/link";
+import type { Metadata } from "next";
+
+// Prevent this page from appearing in search results
+export const metadata: Metadata = {
+  title: "התחברות - סטודיו בועז אונליין",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
+};
 
 const Page = () => {
   const session = useSession();

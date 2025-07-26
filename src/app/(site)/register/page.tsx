@@ -5,6 +5,20 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import type { Metadata } from "next";
+
+// Prevent this page from appearing in search results
+export const metadata: Metadata = {
+  title: "הרשמה - סטודיו בועז אונליין",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
+};
 
 const Register = () => {
   const session = useSession();

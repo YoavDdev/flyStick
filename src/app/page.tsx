@@ -7,35 +7,50 @@ import {
   WabiSabiContact,
 } from "./components";
 import ExploreVideos from "./components/ExploreVideos";
+import StructuredDataHome from "./components/StructuredDataHome";
 import Image from "next/image";
 import desertImage from "../../public/contacMe2.jpeg";
 import { motion } from "framer-motion";
 import type { Metadata } from "next";
 
-// SEO metadata specifically for homepage to rank better for "בועז סטודיו"
+// SEO metadata specifically optimized for "Studio Boaz Online" and "בועז און לין" searches
 export const metadata: Metadata = {
-  title: "בועז סטודיו - סטודיו בועז אונליין | אימונים אישיים ותנועה מרפאה",
-  description: "ברוכים הבאים לבועז סטודיו - סטודיו בועז אונליין. בועז נחייסי מציע אימונים אישיים, פלייסטיק ותנועה מרפאה. שיעורי וידאו מקצועיים לחיבור גוף ונפש.",
+  title: "Studio Boaz Online - בועז סטודיו און לין | סטודיו בועז אונליין",
+  description: "Studio Boaz Online - בועז סטודיו און לין. בועז נחייסי מציע אימונים אישיים, פלייסטיק ותנועה מרפאה. סטודיו בועז אונליין עם שיעורי וידאו מקצועיים לחיבור גוף ונפש.",
   keywords: [
-    "בועז סטודיו", "סטודיו בועז", "בועז נחייסי", "סטודיו בועז אונליין",
+    "Studio Boaz Online", "בועז און לין", "בועז סטודיו", "studio boaz", "boaz studio",
+    "סטודיו בועז", "בועז נחייסי", "סטודיו בועז אונליין", "boaz nahaissi",
     "אימונים אישיים", "פלייסטיק", "תנועה מרפאה", "יוגה", "פילאטיס",
-    "אימון אונליין", "שיעורי וידאו", "כושר", "בריאות", "חיבור גוף נפש"
+    "אימון אונליין", "שיעורי וידאו", "כושר", "בריאות", "חיבור גוף נפש",
+    "online fitness", "movement therapy", "personal training", "flyastic"
   ],
   openGraph: {
-    title: "בועז סטודיו - סטודיו בועז אונליין",
-    description: "ברוכים הבאים לבועז סטודיו - המקום שלכם לאימונים אישיים ותנועה מרפאה עם בועז נחייסי",
+    title: "Studio Boaz Online - בועז סטודיו און לין",
+    description: "Studio Boaz Online - בועז סטודיו און לין. המקום שלכם לאימונים אישיים ותנועה מרפאה עם בועז נחייסי",
     url: "https://www.studioboazonline.com/",
-    type: "website"
+    type: "website",
+    siteName: "Studio Boaz Online",
+    locale: "he_IL"
   },
   alternates: {
     canonical: "https://www.studioboazonline.com/"
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
   }
 };
 
 export default function HomePage() {
   
   return (
-    <main className="relative min-h-screen overflow-hidden">
+    <>
+      <StructuredDataHome />
+      <main className="relative min-h-screen overflow-hidden">
       {/* Desert landscape background for entire page - optimized for performance */}
       <div className="fixed inset-0 z-0">
         <Image 
@@ -85,5 +100,6 @@ export default function HomePage() {
         </section>
       </div>
     </main>
+    </>
   );
 }
