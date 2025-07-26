@@ -397,12 +397,12 @@ const StylesPage = () => {
                   className="transition-transform duration-300 hover:-translate-y-1"
                 >
                   <Link href={`/styles/${encodeURIComponent(folder.name)}`}>
-                    <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 h-full border border-[#E6DEDA]">
+                    <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-[#E6DEDA] flex flex-col h-full">
                       {/* Card header with icon and background image */}
                       <div className="relative bg-[#F7F3EB] p-6 flex items-center border-b border-[#E6DEDA] overflow-hidden">
                         {/* Background image */}
                         {folder.metadata.image && (
-                          <div className="absolute inset-0 bg-cover bg-center opacity-20" style={{backgroundImage: `url(${folder.metadata.image})`}}></div>
+                          <div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage: `url(${folder.metadata.image})`}}></div>
                         )}
                         
                         {/* Content overlay */}
@@ -410,25 +410,25 @@ const StylesPage = () => {
                           <div className="w-12 h-12 flex items-center justify-center bg-[#D5C4B7] rounded-full p-2.5 overflow-hidden">
                             <CategoryIcon name={folder.name} customIcon={folder.metadata.icon} />
                           </div>
-                          <h3 className="text-xl font-semibold text-[#3D3D3D] mr-4">
+                          <h3 className="text-xl font-semibold text-white mr-4" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.5)'}}>
                             {folder.name}
                           </h3>
                         </div>
                       </div>
                       
                       {/* Card body */}
-                      <div className="p-6">
-                        <p className="text-[#5D5D5D] mb-6 text-right">
+                      <div className="p-6 flex flex-col flex-grow">
+                        <p className="text-[#5D5D5D] mb-6 text-right flex-grow">
                           {getShortenedDescription(folder.description)}
                         </p>
                         
-                        <div className="flex justify-end">
-                          <span className="inline-flex items-center text-[#B56B4A] hover:text-[#D9845E] transition-colors duration-300">
-                            <span className="ml-1">לצפייה בשיעורים</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transform rotate-180" viewBox="0 0 20 20" fill="currentColor">
+                        <div className="flex justify-center">
+                          <div className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-white px-6 py-2 rounded-full font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center group cursor-pointer">
+                            <span className="ml-2">בואו נתחיל</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transform rotate-180 group-hover:translate-x-1 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor">
                               <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                             </svg>
-                          </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -451,3 +451,4 @@ const StylesPage = () => {
 };
 
 export default StylesPage;
+
