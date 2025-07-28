@@ -37,6 +37,7 @@ const ExploreVideos = ({
   const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);
 
   const videoContainerRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [player, setPlayer] = useState<Player | null>(null);
   const [resumeTime, setResumeTime] = useState<number>(0);
 
@@ -118,6 +119,44 @@ const ExploreVideos = ({
       console.error("Error fetching watched videos:", error);
     }
   };
+
+  // Handle scroll chaining - allow parent scroll when reaching top or bottom
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const container = e.currentTarget;
+    const { scrollTop, scrollHeight, clientHeight } = container;
+    const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1;
+    const isAtTop = scrollTop === 0;
+    
+    // If at top or bottom, allow parent scrolling by removing overscroll behavior
+    if (isAtTop || isAtBottom) {
+      container.style.overscrollBehavior = 'auto';
+    } else {
+      container.style.overscrollBehavior = 'contain';
+    }
+  }, []);
+
+  // Handle wheel events for better scroll chaining
+  const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    const container = e.currentTarget;
+    const { scrollTop, scrollHeight, clientHeight } = container;
+    const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1;
+    const isAtTop = scrollTop === 0;
+    
+    // If scrolling down at bottom or scrolling up at top, allow parent scroll
+    if ((isAtBottom && e.deltaY > 0) || (isAtTop && e.deltaY < 0)) {
+      // Prevent the event from being handled by this container
+      e.preventDefault();
+      // Manually trigger scroll on the parent
+      const parentElement = container.parentElement;
+      if (parentElement) {
+        parentElement.scrollBy({
+          top: e.deltaY,
+          behavior: 'auto'
+        });
+      }
+      return;
+    }
+  }, []);
 
   const fetchUserData = async () => {
     if (!session?.user?.email) return;
@@ -559,7 +598,10 @@ const ExploreVideos = ({
           
           {/* Scrollable content area */}
           <div 
+            ref={scrollContainerRef}
             className="h-[800px] overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-[#D5C4B7] scrollbar-track-transparent relative"
+            onScroll={handleScroll}
+            onWheel={handleWheel}
             style={{
               WebkitOverflowScrolling: 'touch',
               touchAction: 'pan-y',
@@ -610,6 +652,23 @@ const ExploreVideos = ({
                       />
                     </motion.div>
                   ))}
+              </motion.div>
+            )}
+            
+            {/* Load More Button */}
+            {!noMoreVideos && videos.length > 0 && (
+              <motion.div 
+                className="text-center py-6 px-4 mt-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
+                <button
+                  onClick={loadMore}
+                  className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] hover:from-[#B8A99C] hover:to-[#A89B8E] text-[#2D3142] font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 font-heebo text-lg"
+                >
+                  טען עוד סרטונים
+                </button>
               </motion.div>
             )}
             

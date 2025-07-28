@@ -17,22 +17,10 @@ import UserMessageNotification from "../../components/UserMessageNotification";
 import AdminMessageComposer from "../../components/AdminMessageComposer";
 import AdminNewsletterComposer from "../../components/AdminNewsletterComposer";
 import AdminFolderMetadataManager from "../../components/AdminFolderMetadataManager";
-import type { Metadata } from "next";
-
 import WelcomePopup from "../../components/WelcomePopup";
 
-// Prevent this page from appearing in search results
-export const metadata: Metadata = {
-  title: "לוח בקרה - סטודיו בועז אונליין",
-  robots: {
-    index: false,
-    follow: false,
-    googleBot: {
-      index: false,
-      follow: false,
-    },
-  },
-};
+// Note: Metadata cannot be exported from client components
+// SEO protection should be handled at the layout level
 
 const DashboardPage = () => {
   const { data: session } = useSession();
