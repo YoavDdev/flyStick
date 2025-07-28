@@ -5,20 +5,9 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
-import type { Metadata } from "next";
 
-// Prevent this page from appearing in search results
-export const metadata: Metadata = {
-  title: "איפוס סיסמה - סטודיו בועז אונליין",
-  robots: {
-    index: false,
-    follow: false,
-    googleBot: {
-      index: false,
-      follow: false,
-    },
-  },
-};
+// Note: Metadata cannot be exported from client components
+// SEO protection should be handled at the layout level
 
 const ResetPasswordPage = () => {
   const router = useRouter();
