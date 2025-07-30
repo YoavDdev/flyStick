@@ -328,51 +328,28 @@ export default function AdminPage() {
                   if (!session?.user?.email) return;
                   
 
-                  let page = 1;
-                  let hasMore = true;
-                  let totalSuccess = 0;
-                  let totalErrors = 0;
+                  // Show loading toast
+                  const toastId = toast.loading('🚀 מתחיל סנכרון PayPal ברקע...');
                   
-                  // Show loading toast with progress
-                  const toastId = toast.loading('🔄 מעדכן נתוני תשלומים... (דף 1)');
+                  // Start background sync job
+                  const response = await fetch(`/api/admin/paypal-sync-job`, {
+                    method: 'POST',
+                    headers: {
+                      "Authorization": `Bearer ${session.user.email}`
+                    },
+                    cache: 'no-store'
+                  });
                   
-                  // Process all pages
-                  while (hasMore) {
-                    const response = await fetch(`/api/admin/sync-paypal?page=${page}`, {
-                      method: 'POST',
-                      headers: {
-                        "Authorization": `Bearer ${session.user.email}`
-                      },
-                      cache: 'no-store'
-                    });
-                    
-                    if (!response.ok) {
-                      const errorData = await response.json().catch(() => ({}));
-                      throw new Error(errorData.error || "שגיאה בעדכון נתוני התשלומים");
-                    }
-                    
-                    const data = await response.json();
-                    
-                    // Update progress
-                    totalSuccess += data.successCount || 0;
-                    totalErrors += data.errorCount || 0;
-                    hasMore = data.hasMore || false;
-                    
-                    if (hasMore) {
-                      page++;
-                      toast.loading(
-                        `🔄 מעדכן נתוני תשלומים... (דף ${page}, ${totalSuccess} עודכנו)`,
-                        { id: toastId }
-                      );
-                      
-                      // Small delay between pages to prevent rate limiting
-                      await new Promise(resolve => setTimeout(resolve, 1000));
-                    }
+                  if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || "שגיאה בהתחלת סנכרון PayPal");
                   }
                   
-                  // Show success message
+                  const data = await response.json();
+                  
+                  // Show success message with sync results
                   toast.success(
-                    `✨ נתוני התשלומים עודכנו בהצלחה!\n${totalSuccess} משתמשים עודכנו, ${totalErrors} שגיאות`,
+                    `✨ סנכרון PayPal הושלם בהצלחה!\n${data.successfulSyncs || 0} משתמשים עודכנו, ${data.errorSyncs || 0} שגיאות`,
                     { id: toastId, duration: 5000 }
                   );
                   
