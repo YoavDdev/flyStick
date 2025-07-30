@@ -43,7 +43,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       jobId,
-      message: "סנכרון PayPal התחיל ברקע. תוכל לבדוק את הסטטוס בעמוד הניהול."
+      message: "סנכרון PayPal התחיל ברקע. תוכל לבדוק את הסטטוס בעמוד הניהול.",
+      syncDetails: [] // Initialize syncDetails array
     });
     
   } catch (error) {
@@ -77,6 +78,7 @@ async function processPayPalSyncInBackground(auth: any, jobId: string) {
 
     let successCount = 0;
     let errorCount = 0;
+    const syncDetails: any[] = [];
     const startTime = Date.now();
 
     console.log(`📊 Processing ${paypalUsers.length} PayPal users`);
@@ -118,6 +120,14 @@ async function processPayPalSyncInBackground(auth: any, jobId: string) {
         successCount++;
         console.log(`✅ [${i+1}/${paypalUsers.length}] Synced ${user.email}: ${subscriptionData.status}`);
         
+        // Add detailed sync information
+        syncDetails.push({
+          email: user.email,
+          status: subscriptionData.status,
+          paypalId: user.subscriptionId,
+          cancellationDate: cancellationDate
+        });
+        
       } catch (error: any) {
         errorCount++;
         console.error(`❌ [${i+1}/${paypalUsers.length}] Failed to sync ${user.email}:`, error.message);
@@ -131,6 +141,15 @@ async function processPayPalSyncInBackground(auth: any, jobId: string) {
               paypalId: user.subscriptionId,
               paypalLastSyncAt: new Date()
             }
+          });
+          
+          // Add error details
+          syncDetails.push({
+            email: user.email,
+            status: "SYNC_ERROR",
+            paypalId: user.subscriptionId,
+            cancellationDate: null,
+            error: error.message
           });
         } catch (dbError) {
           console.error(`Failed to update error status for ${user.email}:`, dbError);
@@ -154,17 +173,20 @@ async function processPayPalSyncInBackground(auth: any, jobId: string) {
     console.log(`🎉 PayPal sync job ${jobId} completed in ${totalTime}s`);
     console.log(`📊 Results: ${successCount} success, ${errorCount} errors`);
     
-    // Store job results for admin to check
-    await prisma.user.updateMany({
-      where: { subscriptionId: "Admin" },
-      data: {
-        // Store sync results in a way admin can check
-        // This is a simple approach - in production you'd use a proper job queue
-      }
-    });
+    // Return sync results with details
+    return {
+      successCount,
+      errorCount,
+      details: syncDetails
+    };
     
   } catch (error) {
     console.error(`💥 PayPal sync job ${jobId} failed:`, error);
+    return {
+      successCount: 0,
+      errorCount: 0,
+      details: []
+    };
   }
 }
 

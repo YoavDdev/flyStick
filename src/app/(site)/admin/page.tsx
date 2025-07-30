@@ -348,10 +348,37 @@ export default function AdminPage() {
                   const data = await response.json();
                   
                   // Show success message with sync results
+                  const successCount = data.successfulSyncs || 0;
+                  const errorCount = data.errorSyncs || 0;
+                  const totalProcessed = successCount + errorCount;
+                  
                   toast.success(
-                    `✨ סנכרון PayPal הושלם בהצלחה!\n${data.successfulSyncs || 0} משתמשים עודכנו, ${data.errorSyncs || 0} שגיאות`,
-                    { id: toastId, duration: 5000 }
+                    `✨ סנכרון PayPal הושלם!\nעודכנו: ${successCount} משתמשים\nשגיאות: ${errorCount}\nסה"כ עובד: ${totalProcessed}`,
+                    { id: toastId, duration: 8000 }
                   );
+                  
+                  // Show detailed status information if available
+                  if (data.syncDetails && data.syncDetails.length > 0) {
+                    console.log('📊 PayPal Sync Details:', data.syncDetails);
+                    
+                    // Show some example statuses
+                    const activeUsers = data.syncDetails.filter((user: any) => user.status === 'ACTIVE');
+                    const cancelledUsers = data.syncDetails.filter((user: any) => user.status === 'CANCELLED');
+                    
+                    if (activeUsers.length > 0) {
+                      toast.success(
+                        `🟢 מנויים פעילים: ${activeUsers.length}\nלדוגמה: ${activeUsers[0].email} - ${activeUsers[0].paypalId}`,
+                        { duration: 6000 }
+                      );
+                    }
+                    
+                    if (cancelledUsers.length > 0) {
+                      toast.error(
+                        `🔴 מנויים מבוטלים: ${cancelledUsers.length}\nלדוגמה: ${cancelledUsers[0].email} - ${cancelledUsers[0].status}`,
+                        { duration: 6000 }
+                      );
+                    }
+                  }
                   
                   // Refresh user list to show updated PayPal data
                   fetchUsers();
