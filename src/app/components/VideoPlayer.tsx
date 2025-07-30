@@ -50,12 +50,24 @@ const VideoPlayer = ({
         ? videoUri 
         : `/videos/${videoUri.split('/').pop()}`;
       
-      await axios.post('/api/mark-watched', {
+      // Save to both database and localStorage for immediate persistence
+      const progressData = {
         userEmail: session.user.email,
         videoUri: uri,
         progress: percent,
         resumeTime: currentTime,
-      });
+      };
+      
+      // Save to localStorage immediately for mobile interruption recovery
+      const storageKey = `video_progress_${session.user.email}_${uri.replace(/[^a-zA-Z0-9]/g, '_')}`;
+      localStorage.setItem(storageKey, JSON.stringify({
+        resumeTime: currentTime,
+        progress: percent,
+        timestamp: Date.now()
+      }));
+      
+      // Save to database
+      await axios.post('/api/mark-watched', progressData);
     } catch (err) {
       console.error("❌ Failed to save video progress:", err);
     }
@@ -86,6 +98,98 @@ const VideoPlayer = ({
     setIsVideoOpen(true);
     return () => setIsVideoOpen(false);
   }, [setIsVideoOpen]);
+
+  // Handle mobile app interruptions (phone calls, app switching)
+  useEffect(() => {
+    if (!player || !session?.user || !videoUri) return;
+
+    const handleVisibilityChange = async () => {
+      if (document.hidden) {
+        // App is being backgrounded - save progress immediately
+        await saveProgress();
+        console.log('📱 Saved progress before mobile interruption');
+      } else {
+        // App is coming back to foreground - check if we need to restore position
+        console.log('📱 Returned from mobile interruption - checking for saved position');
+        
+        // Small delay to ensure player is ready
+        setTimeout(async () => {
+          try {
+            const uri = videoUri.startsWith('/videos/') 
+              ? videoUri 
+              : `/videos/${videoUri.split('/').pop()}`;
+            const storageKey = `video_progress_${session.user?.email}_${uri.replace(/[^a-zA-Z0-9]/g, '_')}`;
+            const storedProgress = localStorage.getItem(storageKey);
+            
+            if (storedProgress) {
+              const progressData = JSON.parse(storedProgress);
+              const currentTime = await player.getCurrentTime();
+              
+              // If we're at the beginning but have saved progress, restore it
+              if (currentTime < 5 && progressData.resumeTime > 5) {
+                await player.setCurrentTime(progressData.resumeTime);
+                console.log('🔄 Restored video position to:', Math.floor(progressData.resumeTime), 'seconds');
+              }
+            }
+          } catch (e) {
+            console.warn('Failed to restore video position:', e);
+          }
+        }, 1000);
+      }
+    };
+
+    const handlePageHide = async () => {
+      // Page is being unloaded - save progress immediately
+      await saveProgress();
+      console.log('📱 Saved progress on page hide');
+    };
+
+    const handleBeforeUnload = () => {
+      // Browser is closing/refreshing - save progress immediately (sync)
+      if (player && session?.user && videoUri) {
+        try {
+          // Use synchronous methods for beforeunload to ensure immediate save
+          player.getCurrentTime().then(currentTime => {
+            player.getDuration().then(duration => {
+              const uri = videoUri.startsWith('/videos/') 
+                ? videoUri 
+                : `/videos/${videoUri.split('/').pop()}`;
+              const storageKey = `video_progress_${session.user?.email}_${uri.replace(/[^a-zA-Z0-9]/g, '_')}`;
+              
+              // Synchronous save to localStorage for immediate persistence
+              localStorage.setItem(storageKey, JSON.stringify({
+                resumeTime: currentTime,
+                progress: Math.floor((currentTime / duration) * 100),
+                timestamp: Date.now()
+              }));
+              console.log('📱 Emergency save on beforeunload');
+            });
+          });
+        } catch (e) {
+          console.warn('Failed emergency save:', e);
+        }
+      }
+    };
+
+    // Add event listeners for mobile interruption scenarios
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('pagehide', handlePageHide);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Save progress more frequently on mobile (every 5 seconds)
+    const progressInterval = setInterval(async () => {
+      if (player && !document.hidden) {
+        await saveProgress();
+      }
+    }, 5000);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('pagehide', handlePageHide);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      clearInterval(progressInterval);
+    };
+  }, [player, saveProgress, session, videoUri]);
 
   useEffect(() => {
     if (!videoContainerRef.current || !embedHtml) return;
@@ -230,9 +334,39 @@ const VideoPlayer = ({
         });
       }
     } else {
-      // For subscribers, set the resume time normally
-      if (initialResumeTime > 0) {
-        newPlayer.setCurrentTime(initialResumeTime);
+      // For subscribers, check for stored progress from mobile interruptions first
+      if (videoUri) {
+        const uri = videoUri.startsWith('/videos/') 
+          ? videoUri 
+          : `/videos/${videoUri.split('/').pop()}`;
+        const storageKey = `video_progress_${session?.user?.email}_${uri.replace(/[^a-zA-Z0-9]/g, '_')}`;
+        const storedProgress = localStorage.getItem(storageKey);
+      
+        let resumeFromTime = initialResumeTime;
+        
+        if (storedProgress) {
+          try {
+            const progressData = JSON.parse(storedProgress);
+            // Use stored progress if it's more recent (within last 24 hours) and further than initialResumeTime
+            const isRecent = Date.now() - progressData.timestamp < 24 * 60 * 60 * 1000;
+            if (isRecent && progressData.resumeTime > initialResumeTime) {
+              resumeFromTime = progressData.resumeTime;
+              console.log(' Resuming from mobile interruption at:', Math.floor(resumeFromTime), 'seconds');
+            }
+          } catch (e) {
+            console.warn('Failed to parse stored video progress:', e);
+          }
+        }
+        
+        // Set the resume time
+        if (resumeFromTime > 0) {
+          newPlayer.setCurrentTime(resumeFromTime);
+        }
+      } else {
+        // Fallback to initialResumeTime if videoUri is null
+        if (initialResumeTime > 0) {
+          newPlayer.setCurrentTime(initialResumeTime);
+        }
       }
     }
     
@@ -278,7 +412,7 @@ const VideoPlayer = ({
       newPlayer.destroy();
       window.removeEventListener("beforeunload", saveProgress);
     };
-  }, [embedHtml, initialResumeTime, isSubscriber, session, videoUri]);
+  }, [embedHtml, videoUri]); // Only recreate player when video actually changes
 
   const handleClose = useCallback(async () => {
     if (player && videoUri && session?.user) {
