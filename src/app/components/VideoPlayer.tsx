@@ -157,12 +157,13 @@ const VideoPlayer = ({
               const storageKey = `video_progress_${session.user?.email}_${uri.replace(/[^a-zA-Z0-9]/g, '_')}`;
               
               // Synchronous save to localStorage for immediate persistence
-              localStorage.setItem(storageKey, JSON.stringify({
-                resumeTime: currentTime,
-                progress: Math.floor((currentTime / duration) * 100),
-                timestamp: Date.now()
-              }));
-              console.log('📱 Emergency save on beforeunload');
+              player.getDuration().then(duration => {
+                localStorage.setItem(storageKey, JSON.stringify({
+                  resumeTime: currentTime,
+                  progress: Math.floor((currentTime / duration) * 100),
+                  timestamp: Date.now()
+                }));
+              });
             });
           });
         } catch (e) {
