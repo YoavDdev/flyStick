@@ -124,7 +124,7 @@ export default function ImprovedPayPalSync() {
             <div className="text-2xl font-bold text-blue-600">
               {syncStatus.totalPayPalUsers}
             </div>
-            <div className="text-sm text-gray-600">סה"כ משתמשי PayPal</div>
+            <div className="text-sm text-gray-600">סה&quot;כ משתמשי PayPal</div>
           </div>
           
           <div className="bg-green-50 p-3 rounded-lg text-center">
