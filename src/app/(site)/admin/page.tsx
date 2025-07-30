@@ -390,7 +390,7 @@ export default function AdminPage() {
               }}
               className="bg-[#D4AF37] hover:bg-[#B8941F] text-white py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/30 text-sm sm:text-base"
             >
-              סנכרן נתוני PayPal
+              סנכרן PayPal
             </button>
             
             <button
