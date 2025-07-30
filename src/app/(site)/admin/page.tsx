@@ -3,11 +3,15 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import AdminUserTable from "../../components/AdminUserTable";
+import AdminUserTable from "@/app/components/AdminUserTable";
 import AdminDashboardSummary from "../../components/AdminDashboardSummary";
 import AdminUserActivityMetrics from "../../components/AdminUserActivityMetrics";
-import AdminMessageComposer from "../../components/AdminMessageComposer";
-import AdminNewsletterComposer from "../../components/AdminNewsletterComposer";
+import AdminMessageComposer from "@/app/components/AdminMessageComposer";
+import AdminNewsletterComposer from "@/app/components/AdminNewsletterComposer";
+import AdminFolderMetadataManager from "@/app/components/AdminFolderMetadataManager";
+import CategoryManager from "@/app/components/CategoryManager";
+import AdminMonthlySummaryTrigger from "@/app/components/AdminMonthlySummaryTrigger";
+import PayPalSyncProgress from "@/app/components/PayPalSyncProgress";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 
@@ -18,8 +22,9 @@ export default function AdminPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortField, setSortField] = useState<keyof User>("createdAt");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
@@ -60,7 +65,7 @@ export default function AdminPage() {
         toast.error("אירעה שגיאה בבדיקת הרשאות");
         router.push("/");
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
@@ -73,7 +78,7 @@ export default function AdminPage() {
     try {
       if (!session?.user?.email) return;
       
-      setIsLoading(true);
+      setLoading(true);
       const response = await fetch("/api/admin/get-all-users", {
         headers: {
           "Authorization": `Bearer ${session.user.email}`
@@ -105,7 +110,7 @@ export default function AdminPage() {
       
       toast.error("אירעה שגיאה בטעינת המשתמשים");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -265,7 +270,7 @@ export default function AdminPage() {
     return 0;
   });
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-[#F7F3EB]">
         <div className="text-center">
@@ -313,6 +318,8 @@ export default function AdminPage() {
           {/* Newsletter Composer */}
           <AdminNewsletterComposer />
           
+          {/* PayPal Sync Progress */}
+          <PayPalSyncProgress />
 
           <div className="mb-6 flex flex-wrap justify-center gap-3">
             <button
@@ -320,6 +327,7 @@ export default function AdminPage() {
                 try {
                   if (!session?.user?.email) return;
                   
+
                   let page = 1;
                   let hasMore = true;
                   let totalSuccess = 0;
