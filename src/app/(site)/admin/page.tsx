@@ -347,37 +347,27 @@ export default function AdminPage() {
                   
                   const data = await response.json();
                   
-                  // Show success message with sync results
-                  const successCount = data.successfulSyncs || 0;
-                  const errorCount = data.errorSyncs || 0;
-                  const totalProcessed = successCount + errorCount;
-                  
-                  toast.success(
-                    `✨ סנכרון PayPal הושלם!\nעודכנו: ${successCount} משתמשים\nשגיאות: ${errorCount}\nסה"כ עובד: ${totalProcessed}`,
-                    { id: toastId, duration: 8000 }
-                  );
-                  
-                  // Show detailed status information if available
-                  if (data.syncDetails && data.syncDetails.length > 0) {
-                    console.log('📊 PayPal Sync Details:', data.syncDetails);
+                  // Show that sync started
+                  if (data.status === "started") {
+                    toast.success(
+                      `✨ סנכרון PayPal התחיל ברקע!\nהסנכרון רץ כעת ברקע.\nהנתונים יעודכנו בקרוב.`,
+                      { id: toastId, duration: 6000 }
+                    );
                     
-                    // Show some example statuses
-                    const activeUsers = data.syncDetails.filter((user: any) => user.status === 'ACTIVE');
-                    const cancelledUsers = data.syncDetails.filter((user: any) => user.status === 'CANCELLED');
+                    // Auto-refresh the page after a delay to show updated data
+                    setTimeout(() => {
+                      fetchUsers();
+                      toast.success('🔄 נתונים עודכנו מהסנכרון', { duration: 3000 });
+                    }, 10000); // Wait 10 seconds for sync to complete
+                  } else {
+                    // Fallback for immediate results (if any)
+                    const successCount = data.successfulSyncs || 0;
+                    const errorCount = data.errorSyncs || 0;
                     
-                    if (activeUsers.length > 0) {
-                      toast.success(
-                        `🟢 מנויים פעילים: ${activeUsers.length}\nלדוגמה: ${activeUsers[0].email} - ${activeUsers[0].paypalId}`,
-                        { duration: 6000 }
-                      );
-                    }
-                    
-                    if (cancelledUsers.length > 0) {
-                      toast.error(
-                        `🔴 מנויים מבוטלים: ${cancelledUsers.length}\nלדוגמה: ${cancelledUsers[0].email} - ${cancelledUsers[0].status}`,
-                        { duration: 6000 }
-                      );
-                    }
+                    toast.success(
+                      `✨ סנכרון PayPal הושלם!\nעודכנו: ${successCount} משתמשים\nשגיאות: ${errorCount}`,
+                      { id: toastId, duration: 5000 }
+                    );
                   }
                   
                   // Refresh user list to show updated PayPal data

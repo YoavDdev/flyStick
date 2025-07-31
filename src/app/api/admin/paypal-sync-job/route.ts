@@ -43,8 +43,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       jobId,
-      message: "סנכרון PayPal התחיל ברקע. תוכל לבדוק את הסטטוס בעמוד הניהול.",
-      syncDetails: [] // Initialize syncDetails array
+      status: "started",
+      message: "סנכרון PayPal התחיל ברקע. תוכל לבדוק את הסטטוס בעמוד הניהול."
     });
     
   } catch (error) {
@@ -57,8 +57,14 @@ export async function POST(request: NextRequest) {
 }
 
 async function processPayPalSyncInBackground(auth: any, jobId: string) {
+  // Import the status tracking functions
+  const { updateSyncStatus } = await import('../paypal-sync-status/route');
+  
   try {
     console.log(`🚀 Starting PayPal background sync job: ${jobId}`);
+    
+    // Mark job as running
+    updateSyncStatus(jobId, 'running', { startTime: Date.now() });
     
     // Get all users with PayPal subscriptions
     const paypalUsers = await prisma.user.findMany({
