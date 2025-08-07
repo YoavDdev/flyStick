@@ -8,21 +8,39 @@ export const maxDuration = 300; // 5 minutes max
 
 export async function POST(request: NextRequest) {
   try {
+    console.log("🚀 [PAYPAL_SYNC] Starting PayPal sync request");
+    
     // Verify admin access
     const authResult = await verifyAdminAccess(request);
     
     if (!authResult.isAuthenticated || !authResult.isAdmin) {
+      console.log("❌ [PAYPAL_SYNC] Admin access denied", { 
+        isAuthenticated: authResult.isAuthenticated, 
+        isAdmin: authResult.isAdmin 
+      });
       return NextResponse.json(
         { error: "אין הרשאות מתאימות" },
         { status: 401 }
       );
     }
 
+    console.log("✅ [PAYPAL_SYNC] Admin access verified");
+
     // Get PayPal credentials
     const clientId = process.env.PAYPAL_CLIENT_ID;
     const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
     
+    console.log("🔑 [PAYPAL_SYNC] Checking PayPal credentials", {
+      hasClientId: !!clientId,
+      hasClientSecret: !!clientSecret,
+      clientIdLength: clientId?.length || 0
+    });
+    
     if (!clientId || !clientSecret) {
+      console.error("❌ [PAYPAL_SYNC] PayPal credentials missing", {
+        PAYPAL_CLIENT_ID: !!clientId,
+        PAYPAL_CLIENT_SECRET: !!clientSecret
+      });
       return NextResponse.json(
         { error: "PayPal credentials not configured" },
         { status: 500 }
@@ -48,7 +66,11 @@ export async function POST(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error("[PAYPAL_SYNC_JOB_ERROR]", error);
+    console.error("❌ [PAYPAL_SYNC_JOB_ERROR] Critical error in PayPal sync:", {
+      error: error instanceof Error ? error.message : error,
+      stack: error instanceof Error ? error.stack : undefined,
+      timestamp: new Date().toISOString()
+    });
     return NextResponse.json(
       { error: "שגיאת שרת פנימית" },
       { status: 500 }

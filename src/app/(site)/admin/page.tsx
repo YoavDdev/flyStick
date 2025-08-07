@@ -325,23 +325,44 @@ export default function AdminPage() {
             <button
               onClick={async () => {
                 try {
-                  if (!session?.user?.email) return;
+                  console.log('🚀 [ADMIN] Starting PayPal sync button click');
                   
+                  if (!session?.user?.email) {
+                    console.error('❌ [ADMIN] No session email available');
+                    toast.error('❌ שגיאה: לא נמצא מייל משתמש');
+                    return;
+                  }
+                  
+                  console.log('✅ [ADMIN] Session email found:', session.user.email);
 
                   // Show loading toast
                   const toastId = toast.loading('🚀 מתחיל סנכרון PayPal ברקע...');
+                  
+                  console.log('📡 [ADMIN] Sending POST request to /api/admin/paypal-sync-job');
                   
                   // Start background sync job
                   const response = await fetch(`/api/admin/paypal-sync-job`, {
                     method: 'POST',
                     headers: {
-                      "Authorization": `Bearer ${session.user.email}`
+                      "Authorization": `Bearer ${session.user.email}`,
+                      "Content-Type": "application/json"
                     },
                     cache: 'no-store'
                   });
                   
+                  console.log('📡 [ADMIN] Response received:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    ok: response.ok
+                  });
+                  
                   if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
+                    const errorData = await response.json().catch((parseError) => {
+                      console.error('❌ [ADMIN] Failed to parse error response:', parseError);
+                      return { error: `HTTP ${response.status}: ${response.statusText}` };
+                    });
+                    
+                    console.error('❌ [ADMIN] PayPal sync failed:', errorData);
                     throw new Error(errorData.error || "שגיאה בהתחלת סנכרון PayPal");
                   }
                   
@@ -373,18 +394,79 @@ export default function AdminPage() {
                   // Refresh user list to show updated PayPal data
                   fetchUsers();
                 } catch (error: unknown) {
-                  console.error("Error syncing PayPal:", error);
+                  console.error('❌ [ADMIN] PayPal sync error details:', {
+                    error: error instanceof Error ? error.message : error,
+                    stack: error instanceof Error ? error.stack : undefined,
+                    timestamp: new Date().toISOString(),
+                    userEmail: session?.user?.email
+                  });
+                  
                   toast.dismiss();
                   const errorMessage = error instanceof Error ? error.message : 'שגיאה לא ידועה';
+                  
+                  // Show detailed error for debugging
                   toast.error(
-                    `❌ אירעה שגיאה בעדכון נתוני התשלומים: ${errorMessage}`,
-                    { duration: 5000 }
+                    `❌ שגיאה בסנכרון PayPal: ${errorMessage}\n\nבדוק את הקונסול לפרטים נוספים`,
+                    { duration: 8000 }
                   );
                 }
               }}
               className="bg-[#D4AF37] hover:bg-[#B8941F] text-white py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/30 text-sm sm:text-base"
             >
               סנכרן PayPal
+            </button>
+            
+            <button
+              onClick={async () => {
+                try {
+                  console.log('🔍 [ADMIN] Running PayPal diagnostic...');
+                  
+                  if (!session?.user?.email) {
+                    toast.error('❌ שגיאה: לא נמצא מייל משתמש');
+                    return;
+                  }
+                  
+                  const toastId = toast.loading('🔍 בודק הגדרות PayPal...');
+                  
+                  const response = await fetch('/api/admin/paypal-debug', {
+                    method: 'GET',
+                    headers: {
+                      "Authorization": `Bearer ${session.user.email}`
+                    },
+                    cache: 'no-store'
+                  });
+                  
+                  if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || 'שגיאה בבדיקת האבחון');
+                  }
+                  
+                  const diagnosticData = await response.json();
+                  
+                  console.log('🔍 [ADMIN] Diagnostic results:', diagnosticData);
+                  
+                  toast.success(
+                    `🔍 אבחון הושלם!\n` +
+                    `PayPal Credentials: ${diagnosticData.environment.hasPayPalClientId && diagnosticData.environment.hasPayPalClientSecret ? '✅' : '❌'}\n` +
+                    `Database: ${diagnosticData.database.connectionOk ? '✅' : '❌'}\n` +
+                    `PayPal Users: ${diagnosticData.database.paypalUserCount}\n` +
+                    `בדוק את הקונסול לפרטים מלאים`,
+                    { id: toastId, duration: 10000 }
+                  );
+                  
+                } catch (error) {
+                  console.error('❌ [ADMIN] Diagnostic error:', error);
+                  toast.dismiss();
+                  const errorMessage = error instanceof Error ? error.message : 'שגיאה לא ידועה';
+                  toast.error(
+                    `❌ שגיאה באבחון: ${errorMessage}`,
+                    { duration: 5000 }
+                  );
+                }
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600/30 text-sm sm:text-base"
+            >
+              🔍 אבחון PayPal
             </button>
             
             <button
