@@ -15,6 +15,7 @@ interface VideoPlayerProps {
   initialResumeTime?: number;
   isSubscriber?: boolean;
   isAdmin?: boolean;
+  videoName?: string;
 }
 
 const VideoPlayer = ({ 
@@ -23,10 +24,14 @@ const VideoPlayer = ({
   onClose, 
   initialResumeTime = 0,
   isSubscriber = true,
-  isAdmin = false
+  isAdmin = false,
+  videoName
 }: VideoPlayerProps) => {
   // Use the video player context to manage global state
   const { setIsVideoOpen } = useVideoPlayer();
+  
+  // Debug logging
+  console.log('VideoPlayer received videoName:', videoName);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const [player, setPlayer] = useState<Player | null>(null);
@@ -35,6 +40,10 @@ const VideoPlayer = ({
   const [previewTimeRemaining, setPreviewTimeRemaining] = useState(120);
   // Updated ref type to handle both interval and animation frame
   const previewTimerRef = useRef<NodeJS.Timeout | { clear: () => void } | null>(null);
+  
+  // Disclaimer overlay state
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
+  const [disclaimerFadingOut, setDisclaimerFadingOut] = useState(false);
 
   // Function to save video progress - moved outside useEffect for reuse
   const saveProgress = useCallback(async () => {
@@ -371,6 +380,14 @@ const VideoPlayer = ({
       }
     }
     
+    // Handle disclaimer overlay - show for 5 seconds then fade out
+    const disclaimerTimer = setTimeout(() => {
+      setDisclaimerFadingOut(true);
+      setTimeout(() => {
+        setShowDisclaimer(false);
+      }, 1000); // Wait for fade out animation
+    }, 5000); // Show disclaimer for 5 seconds
+    
     // Progress tracking with throttling
     let lastSaved = 0;
     
@@ -396,6 +413,9 @@ const VideoPlayer = ({
 
     // Clean up when component unmounts
     return () => {
+      // Clear the disclaimer timer
+      clearTimeout(disclaimerTimer);
+      
       // Clear the progress interval
       clearInterval(progressInterval);
       
@@ -575,6 +595,70 @@ const VideoPlayer = ({
           onClose={handleCloseButton} 
           onReplay={handleReplay}
         />
+      )}
+      
+      {/* Professional Disclaimer Overlay */}
+      {showDisclaimer && (
+        <motion.div
+          className="absolute inset-0 bg-black bg-opacity-90 flex items-center justify-center z-20"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: disclaimerFadingOut ? 0 : 1 }}
+          transition={{ duration: disclaimerFadingOut ? 1 : 0.5 }}
+        >
+          <motion.div
+            className="bg-white rounded-lg p-8 max-w-2xl mx-4 text-center shadow-2xl"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ 
+              scale: disclaimerFadingOut ? 0.95 : 1, 
+              opacity: disclaimerFadingOut ? 0 : 1 
+            }}
+            transition={{ duration: disclaimerFadingOut ? 1 : 0.6, delay: disclaimerFadingOut ? 0 : 0.2 }}
+          >
+            {/* Video Name */}
+            {videoName && videoName.trim() && (
+              <div className="mb-6 text-center">
+                <h3 className="text-lg font-semibold text-[#2D3142]">{videoName}</h3>
+                <div className="w-12 h-0.5 bg-[#D5C4B7] mx-auto mt-2 rounded-full"></div>
+              </div>
+            )}
+            
+            {/* Disclaimer Text */}
+            <div className="text-right text-[#3D3D3D] leading-relaxed space-y-3 text-sm">
+              <p className="font-semibold text-base mb-4">הודעה חשובה לפני התחלת התרגול</p>
+              
+              <p>התרגול בסרטון זה הוא כללי ואינו מותאם אישית.</p>
+              
+              <p>ההשתתפות בתרגול היא באחריות המלאה של המתרגל/ת בלבד.</p>
+              
+              <p>לפני התחלת כל פעילות גופנית חדשה מומלץ להתייעץ עם רופא/ת משפחה או איש מקצוע מוסמך.</p>
+              
+              <p className="font-semibold">היוצר/ת של הסרטון לא יישא/תישא באחריות לכל פציעה, נזק או תוצאה שתיגרם בעקבות התרגול.</p>
+            </div>
+            
+            {/* Continue Button */}
+            <motion.button
+              onClick={() => {
+                setDisclaimerFadingOut(true);
+                setTimeout(() => setShowDisclaimer(false), 1000);
+              }}
+              className="mt-6 bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] font-semibold py-3 px-8 rounded-full transition-colors duration-300 shadow-lg"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              המשך לסרטון
+            </motion.button>
+            
+            {/* Auto-continue timer */}
+            <motion.div 
+              className="mt-4 text-xs text-gray-500"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2 }}
+            >
+              הסרטון יתחיל אוטומטית בעוד {Math.max(0, 5 - Math.floor((Date.now() - (Date.now() % 1000)) / 1000))} שניות
+            </motion.div>
+          </motion.div>
+        </motion.div>
       )}
     </div>
   );

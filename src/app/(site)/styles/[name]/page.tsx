@@ -36,6 +36,7 @@ const Page: FC<pageProps> = ({ params }) => {
   const [descriptionQuery, setDescriptionQuery] = useState<string>("");
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null); // Track the selected video URI
   const [selectedVideoData, setSelectedVideoData] = useState<any | null>(null); // Track the selected video data
+  const [selectedVideoName, setSelectedVideoName] = useState<string | null>(null); // Track the selected video name
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showHashtagDropdown, setShowHashtagDropdown] = useState(false);
   const { data: session } = useSession();
@@ -65,7 +66,7 @@ const Page: FC<pageProps> = ({ params }) => {
     }
   };
 
-  const openVideo = async (embedHtml: string, videoUri: string) => {
+  const openVideo = async (embedHtml: string, videoUri: string, videoData?: any) => {
     // Always fetch the latest watched videos data before opening a video
     // This ensures we have the most up-to-date progress information
     if (session?.user) {
@@ -114,12 +115,16 @@ const Page: FC<pageProps> = ({ params }) => {
     
     setSelectedVideo(embedHtml);
     setSelectedVideoUri(videoUri);
+    setSelectedVideoData(videoData || null);
+    setSelectedVideoName(videoData?.name || null);
     isVideoOpenRef.current = true; // Set video open state
     window.history.pushState({}, "Video", ""); // Push new state when opening video
   };
 
   const closeVideo = () => {
     setSelectedVideo(null);
+    setSelectedVideoData(null);
+    setSelectedVideoName(null);
     isVideoOpenRef.current = false;
     window.history.pushState({}, "");
   };
@@ -740,7 +745,7 @@ const Page: FC<pageProps> = ({ params }) => {
                       watchedVideos={watchedVideos}
                       isExpanded={expandedDescriptions[index]}
                       onToggleDescription={() => toggleDescription(index)()}
-                      onPlayVideo={(embedHtml) => openVideo(embedHtml, video.uri)}
+                      onPlayVideo={(embedHtml) => openVideo(embedHtml, video.uri, video)}
                       onAddToFavorites={(videoUri) => {
                         setSelectedVideoUri(videoUri);
                         openModal();
@@ -793,6 +798,7 @@ const Page: FC<pageProps> = ({ params }) => {
             initialResumeTime={resumeTime}
             isSubscriber={hasContentAccess || (session?.user as any)?.activeSubscription}
             isAdmin={(session?.user as any)?.isAdmin}
+            videoName={selectedVideoName || undefined}
           />
         )}
       </div>

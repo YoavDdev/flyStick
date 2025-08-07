@@ -44,8 +44,8 @@ const ExploreVideos = ({
   const [videos, setVideos] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
-  const [selectedVideoUri, setSelectedVideoUri] = useState<string>("");
-  const [selectedVideoData, setSelectedVideoData] = useState<any | null>(null);
+  const [selectedVideoUri, setSelectedVideoUri] = useState<string | null>(null);
+  const [selectedVideoName, setSelectedVideoName] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>(initialSearchQuery);
   const [showHashtagDropdown, setShowHashtagDropdown] = useState(false);
   const { data: session } = useSession();
@@ -254,7 +254,7 @@ const ExploreVideos = ({
 
   const { setIsVideoOpen } = useVideoPlayer();
 
-  const openVideo = useCallback((embedHtml: string, videoUri: string) => {
+  const openVideo = useCallback((embedHtml: string, videoUri: string, videoName?: string) => {
     // Find if this video has been watched before
     const watchedVideo = watchedVideos.find((v) => v.uri === videoUri);
     
@@ -268,6 +268,7 @@ const ExploreVideos = ({
     // Set the selected video
     setSelectedVideo(embedHtml);
     setSelectedVideoUri(videoUri);
+    setSelectedVideoName(videoName || null);
     
     // Push state to handle back button
     window.history.pushState({ videoOpen: true }, "");
@@ -275,9 +276,11 @@ const ExploreVideos = ({
     setIsVideoOpen(true);
   }, [watchedVideos, setIsVideoOpen]);
 
-  const closeVideo = useCallback(async () => {
-    isVideoOpenRef.current = false;
+  const closeVideo = useCallback(() => {
     setSelectedVideo(null);
+    setSelectedVideoUri(null);
+    setSelectedVideoName(null);
+    setIsVideoOpen(false);
     window.history.replaceState({}, "", window.location.pathname);
     setIsVideoOpen(false);
   }, [setIsVideoOpen]);
@@ -646,7 +649,7 @@ const ExploreVideos = ({
                         watchedVideos={watchedVideos}
                         isExpanded={expandedDescriptions[index]}
                         onToggleDescription={() => toggleDescription(index)()}
-                        onPlayVideo={(embedHtml) => openVideo(embedHtml || video.embedHtml, video.uri)}
+                        onPlayVideo={(embedHtml) => openVideo(embedHtml || video.embedHtml, video.uri, video.name)}
                         onAddToFavorites={() => {}}
                         onHashtagClick={handleHashtagClick}
                       />
@@ -688,7 +691,7 @@ const ExploreVideos = ({
           </div>
         </motion.div>
         
-        {showModal && (
+        {showModal && selectedVideoUri && (
           <PlaylistModal
             isOpen={showModal}
             onClose={closeModal}
@@ -699,7 +702,7 @@ const ExploreVideos = ({
           />
         )}
       </div>
-      {selectedVideo && (
+      {selectedVideo && selectedVideoUri && (
         <VideoPlayer
           videoUri={selectedVideoUri}
           embedHtml={selectedVideo}
@@ -707,6 +710,7 @@ const ExploreVideos = ({
           initialResumeTime={resumeTime}
           isSubscriber={isSubscriber}
           isAdmin={(session?.user as any)?.isAdmin}
+          videoName={selectedVideoName || undefined}
         />
       )}
     </div>
