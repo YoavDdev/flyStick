@@ -26,10 +26,13 @@ export function calculateDaysRemaining(
 /**
  * Format an ISO date string in he-IL locale (DD/MM/YYYY by default).
  */
-export function formatDate(dateStr: string | null | undefined, locale = 'he-IL'): string {
+export function formatDate(
+  dateInput: string | number | Date | null | undefined,
+  locale = 'he-IL'
+): string {
   try {
-    if (!dateStr) return '';
-    const d = new Date(dateStr);
+    if (dateInput === null || dateInput === undefined) return '';
+    const d = dateInput instanceof Date ? dateInput : new Date(dateInput);
     if (isNaN(d.getTime())) return '';
     return d.toLocaleDateString(locale);
   } catch {
