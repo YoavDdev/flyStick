@@ -341,10 +341,7 @@ const DashboardPage = () => {
                     title="פאנל ניהול"
                     icon={<FaUserCog className="text-3xl text-[#2D3142]" />}
                     description="ניהול משתמשים ותוכן"
-                    linkText="פתח פאנל ניהול"
-                    linkHref="/admin"
-                    bgColor="bg-gradient-to-br from-[#F7F3EB] to-[#EFE8DD]"
-                    borderColor="border-[#D5C4B7]"
+                    link="/admin"
                   />
                 </motion.div>
               )}
@@ -356,10 +353,7 @@ const DashboardPage = () => {
                     title="סרטונים"
                     icon={<FaVideo className="text-3xl text-[#2D3142]" />}
                     description="צפו בסרטונים שלנו"
-                    linkText="לצפייה בסרטונים"
-                    linkHref="/videos"
-                    bgColor="bg-gradient-to-br from-[#F7F3EB] to-[#EFE8DD]"
-                    borderColor="border-[#D5C4B7]"
+                    link="/videos"
                   />
                 </motion.div>
               )}
@@ -371,10 +365,7 @@ const DashboardPage = () => {
                     title="סרטונים שנצפו"
                     icon={<FaCalendarAlt className="text-3xl text-[#2D3142]" />}
                     description="הסרטונים שכבר צפיתם בהם"
-                    linkText="סרטונים שנצפו"
-                    linkHref="/user/watched"
-                    bgColor="bg-gradient-to-br from-[#F7F3EB] to-[#EFE8DD]"
-                    borderColor="border-[#D5C4B7]"
+                    link="/user/watched"
                   />
                 </motion.div>
               )}
@@ -386,10 +377,7 @@ const DashboardPage = () => {
                     title="המועדפים שלי"
                     icon={<FaRegHeart className="text-3xl text-[#2D3142]" />}
                     description="הסרטונים המועדפים עליכם"
-                    linkText="המועדפים שלי"
-                    linkHref="/user/favorites"
-                    bgColor="bg-gradient-to-br from-[#F7F3EB] to-[#EFE8DD]"
-                    borderColor="border-[#D5C4B7]"
+                    link="/user/favorites"
                   />
                 </motion.div>
               )}
@@ -401,10 +389,7 @@ const DashboardPage = () => {
                     title="ניהול המנוי"
                     icon={<MdOutlineSubscriptions className="text-3xl text-[#2D3142]" />}
                     description="נהלו את המנוי שלכם"
-                    linkText="ביטול מנוי"
-                    onClick={cancelSubscription}
-                    bgColor="bg-gradient-to-br from-[#F7F3EB] to-[#EFE8DD]"
-                    borderColor="border-[#D5C4B7]"
+                    link="/user"
                   />
                 </motion.div>
               )}
@@ -415,10 +400,7 @@ const DashboardPage = () => {
                   title="קבוצת וואטסאפ"
                   icon={<FaWhatsapp className="text-3xl text-[#2D3142]" />}
                   description="הצטרפו לקהילה שלנו בוואטסאפ"
-                  linkText="הצטרפו לקבוצה"
-                  onClick={handleWhatsAppJoin}
-                  bgColor="bg-gradient-to-br from-[#F7F3EB] to-[#EFE8DD]"
-                  borderColor="border-[#D5C4B7]"
+                  link="https://chat.whatsapp.com/JLBVoMQBrsN0XpC2Ll8j8d"
                 />
               </motion.div>
             </motion.div>
