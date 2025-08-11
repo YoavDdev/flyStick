@@ -170,7 +170,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="הסרטונים שלי"
           description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
-          href="/user/watched"
+          link="/user/watched"
           icon={<FaVideo size={24} />}
         />
       </motion.div>
@@ -179,7 +179,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="חיפוש אישי"
           description="חפש סרטונים לפי נושאים שמעניינים אותך"
-          href="/explore"
+          link="/explore"
           icon={<AiOutlineCompass size={24} />}
         />
       </motion.div>
@@ -188,7 +188,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="המועדפים שלי"
           description="גישה מהירה לסרטונים שסימנת כמועדפים"
-          href="/user"
+          link="/user"
           icon={<FaRegHeart size={24} />}
         />
       </motion.div>
@@ -197,7 +197,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="טכניקות"
           description="למד טכניקות חדשות ושפר את המיומנויות שלך"
-          href="/techniques"
+          link="/techniques"
           icon={<AiOutlineExperiment size={24} />}
         />
       </motion.div>
@@ -233,7 +233,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="הסרטונים שלי"
           description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
-          href="/user/watched"
+          link="/user/watched"
           icon={<FaVideo size={24} />}
         />
       </motion.div>
@@ -242,7 +242,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="חיפוש אישי"
           description="חפש סרטונים לפי נושאים שמעניינים אותך"
-          href="/explore"
+          link="/explore"
           icon={<AiOutlineCompass size={24} />}
         />
       </motion.div>
@@ -251,7 +251,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="המועדפים שלי"
           description="גישה מהירה לסרטונים שסימנת כמועדפים"
-          href="/user"
+          link="/user"
           icon={<FaRegHeart size={24} />}
         />
       </motion.div>
@@ -260,7 +260,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="טכניקות"
           description="למד טכניקות חדשות ושפר את המיומנויות שלך"
-          href="/techniques"
+          link="/techniques"
           icon={<AiOutlineExperiment size={24} />}
         />
       </motion.div>
@@ -298,7 +298,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="הסרטונים שלי"
           description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
-          href="/user/watched"
+          link="/user/watched"
           icon={<FaVideo size={24} />}
         />
       </motion.div>
@@ -307,7 +307,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="חיפוש אישי"
           description="חפש סרטונים לפי נושאים שמעניינים אותך"
-          href="/explore"
+          link="/explore"
           icon={<AiOutlineCompass size={24} />}
         />
       </motion.div>
@@ -356,7 +356,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="הסרטונים שלי"
           description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
-          href="/user/watched"
+          link="/user/watched"
           icon={<FaVideo size={24} />}
         />
       </motion.div>
@@ -365,7 +365,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="חיפוש אישי"
           description="חפש סרטונים לפי נושאים שמעניינים אותך"
-          href="/explore"
+          link="/explore"
           icon={<AiOutlineCompass size={24} />}
         />
       </motion.div>
@@ -374,7 +374,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="המועדפים שלי"
           description="גישה מהירה לסרטונים שסימנת כמועדפים"
-          href="/user"
+          link="/user"
           icon={<FaRegHeart size={24} />}
         />
       </motion.div>
@@ -383,7 +383,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="טכניקות"
           description="למד טכניקות חדשות ושפר את המיומנויות שלך"
-          href="/techniques"
+          link="/techniques"
           icon={<AiOutlineExperiment size={24} />}
         />
       </motion.div>
@@ -421,7 +421,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="תכנים חינמיים"
           description="צפה בתכנים הזמינים בגישה חופשית"
-          href="/free-content"
+          link="/free-content"
           icon={<FaVideo size={24} />}
         />
       </motion.div>
@@ -430,7 +430,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="חיפוש אישי"
           description="חפש סרטונים לפי נושאים שמעניינים אותך"
-          href="/explore"
+          link="/explore"
           icon={<AiOutlineCompass size={24} />}
         />
       </motion.div>
@@ -468,7 +468,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="תכנים חינמיים"
           description="צפה בתכנים הזמינים בגישה חופשית"
-          href="/free-content"
+          link="/free-content"
           icon={<FaVideo size={24} />}
         />
       </motion.div>
@@ -477,7 +477,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="חיפוש אישי"
           description="חפש סרטונים לפי נושאים שמעניינים אותך"
-          href="/explore"
+          link="/explore"
           icon={<AiOutlineCompass size={24} />}
         />
       </motion.div>
@@ -513,7 +513,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="הסרטונים שלי"
           description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
-          href="/user/watched"
+          link="/user/watched"
           icon={<FaVideo size={24} />}
         />
       </motion.div>
@@ -522,7 +522,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="חיפוש אישי"
           description="חפש סרטונים לפי נושאים שמעניינים אותך"
-          href="/explore"
+          link="/explore"
           icon={<AiOutlineCompass size={24} />}
         />
       </motion.div>
@@ -531,7 +531,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="המועדפים שלי"
           description="גישה מהירה לסרטונים שסימנת כמועדפים"
-          href="/user"
+          link="/user"
           icon={<FaRegHeart size={24} />}
         />
       </motion.div>
@@ -540,7 +540,7 @@ const UserDashboardPage = () => {
         <DashboardCard
           title="טכניקות"
           description="למד טכניקות חדשות ושפר את המיומנויות שלך"
-          href="/techniques"
+          link="/techniques"
           icon={<AiOutlineExperiment size={24} />}
         />
       </motion.div>
