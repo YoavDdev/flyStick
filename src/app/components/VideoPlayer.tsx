@@ -655,7 +655,7 @@ const VideoPlayer = ({
               animate={{ opacity: 1 }}
               transition={{ delay: 2 }}
             >
-              הסרטון יתחיל אוטומטית בעוד {Math.max(0, 5 - Math.floor((Date.now() - (Date.now() % 1000)) / 1000))} שניות
+              הסרטון יתחיל אוטומטית בעוד {Math.max(0, 7 - Math.floor((Date.now() - (Date.now() % 1000)) / 1000))} שניות
             </motion.div>
           </motion.div>
         </motion.div>

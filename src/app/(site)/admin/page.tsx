@@ -334,64 +334,57 @@ export default function AdminPage() {
                   }
                   
                   console.log('✅ [ADMIN] Session email found:', session.user.email);
+                  // Run paginated sync in the foreground (serverless-safe)
+                  let page = 1;
+                  let totalUsers = 0;
+                  let processed = 0;
+                  let successCount = 0;
+                  let errorCount = 0;
 
-                  // Show loading toast
-                  const toastId = toast.loading('🚀 מתחיל סנכרון PayPal ברקע...');
-                  
-                  console.log('📡 [ADMIN] Sending POST request to /api/admin/paypal-sync-job');
-                  
-                  // Start background sync job
-                  const response = await fetch(`/api/admin/paypal-sync-job`, {
-                    method: 'POST',
-                    headers: {
-                      "Authorization": `Bearer ${session.user.email}`,
-                      "Content-Type": "application/json"
-                    },
-                    cache: 'no-store'
-                  });
-                  
-                  console.log('📡 [ADMIN] Response received:', {
-                    status: response.status,
-                    statusText: response.statusText,
-                    ok: response.ok
-                  });
-                  
-                  if (!response.ok) {
-                    const errorData = await response.json().catch((parseError) => {
-                      console.error('❌ [ADMIN] Failed to parse error response:', parseError);
-                      return { error: `HTTP ${response.status}: ${response.statusText}` };
+                  const toastId = toast.loading('🚀 מפעיל סנכרון PayPal...');
+
+                  while (true) {
+                    console.log(`📡 [ADMIN] Sending POST to /api/admin/sync-paypal?page=${page}`);
+                    const res = await fetch(`/api/admin/sync-paypal?page=${page}`, {
+                      method: 'POST',
+                      headers: {
+                        "Authorization": `Bearer ${session.user.email}`,
+                        "Content-Type": "application/json"
+                      },
+                      cache: 'no-store'
                     });
-                    
-                    console.error('❌ [ADMIN] PayPal sync failed:', errorData);
-                    throw new Error(errorData.error || "שגיאה בהתחלת סנכרון PayPal");
-                  }
-                  
-                  const data = await response.json();
-                  
-                  // Show that sync started
-                  if (data.status === "started") {
-                    toast.success(
-                      `✨ סנכרון PayPal התחיל ברקע!\nהסנכרון רץ כעת ברקע.\nהנתונים יעודכנו בקרוב.`,
-                      { id: toastId, duration: 6000 }
+
+                    if (!res.ok) {
+                      const err = await res.json().catch(() => ({} as any));
+                      console.error('❌ [ADMIN] PayPal sync batch failed:', err);
+                      throw new Error(err.error || `שגיאה בעיבוד עמוד ${page}`);
+                    }
+
+                    const batch = await res.json();
+                    // batch fields: totalUsers, processedInThisBatch, successCount, errorCount, hasMore, nextPage
+                    totalUsers = batch.totalUsers ?? totalUsers;
+                    processed += batch.processedInThisBatch ?? 0;
+                    successCount += batch.successCount ?? 0;
+                    errorCount += batch.errorCount ?? 0;
+
+                    // Update progress toast
+                    toast.loading(
+                      `🔄 מסנכרן PayPal...\nהושלמו: ${processed}/${totalUsers} | הצלחות: ${successCount} | שגיאות: ${errorCount}`,
+                      { id: toastId }
                     );
-                    
-                    // Auto-refresh the page after a delay to show updated data
-                    setTimeout(() => {
-                      fetchUsers();
-                      toast.success('🔄 נתונים עודכנו מהסנכרון', { duration: 3000 });
-                    }, 10000); // Wait 10 seconds for sync to complete
-                  } else {
-                    // Fallback for immediate results (if any)
-                    const successCount = data.successfulSyncs || 0;
-                    const errorCount = data.errorSyncs || 0;
-                    
-                    toast.success(
-                      `✨ סנכרון PayPal הושלם!\nעודכנו: ${successCount} משתמשים\nשגיאות: ${errorCount}`,
-                      { id: toastId, duration: 5000 }
-                    );
+
+                    if (!batch.hasMore) break;
+                    page = batch.nextPage ?? page + 1;
+                    // small delay to avoid rate limiting
+                    await new Promise(r => setTimeout(r, 800));
                   }
-                  
-                  // Refresh user list to show updated PayPal data
+
+                  toast.success(
+                    `✨ סנכרון PayPal הושלם!\nעודכנו: ${successCount} משתמשים\nשגיאות: ${errorCount}`,
+                    { id: toastId, duration: 6000 }
+                  );
+
+                  // Refresh user list after completion
                   fetchUsers();
                 } catch (error: unknown) {
                   console.error('❌ [ADMIN] PayPal sync error details:', {

@@ -1,0 +1,343 @@
+"use client";
+
+import { useSession } from "next-auth/react";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import axios from "axios";
+import { AnimatePresence, motion, Variants } from 'framer-motion';
+import { FaWhatsapp, FaVideo, FaRegHeart } from "react-icons/fa";
+import { AiOutlineExperiment, AiOutlineCompass } from "react-icons/ai";
+import { MdOutlineSubscriptions } from "react-icons/md";
+import DashboardCard from "../../components/DashboardCard";
+import Image from "next/image";
+import Dashboardpic from "../../../../public/Dashboardpic.png";
+import ConvertkitEmailForm from "../../components/NewsletterSignUpForm";
+
+// Animation variants for consistent animations throughout the component
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 20,
+    },
+  },
+};
+
+// Decorative blob SVG paths for Wabi-Sabi aesthetic
+const decorativeBlobPaths = [
+  "M45.7,-58.2C58.9,-48.3,69.2,-33.5,73.2,-16.9C77.2,-0.3,74.9,18.1,66.4,32.6C57.9,47.1,43.2,57.7,27.1,64.9C11,72.1,-6.5,75.9,-22.6,71.3C-38.7,66.7,-53.4,53.7,-62.3,37.8C-71.2,21.9,-74.3,3.1,-70.9,-14.1C-67.5,-31.3,-57.6,-46.9,-44.1,-56.8C-30.6,-66.7,-13.6,-70.8,1.5,-72.7C16.6,-74.6,32.5,-68.2,45.7,-58.2Z",
+  "M47.7,-57.2C59.2,-46.3,64.2,-29.2,67.2,-11.7C70.1,5.8,71,23.8,63.4,37.1C55.8,50.4,39.7,59,22.4,65.1C5.1,71.2,-13.4,74.8,-30.3,69.7C-47.3,64.6,-62.7,50.8,-70.1,33.5C-77.4,16.1,-76.7,-4.8,-69.9,-22.9C-63.1,-41,-50.2,-56.3,-35,-63.9C-19.8,-71.5,-2.3,-71.4,13.9,-67C30.1,-62.6,36.2,-68.1,47.7,-57.2Z",
+  "M52.9,-61.8C68.6,-52.1,81.2,-34.6,85.1,-15.2C89,4.2,84.2,25.4,72.6,40.9C61,56.3,42.6,66,23.2,72.2C3.8,78.5,-16.5,81.3,-33.1,74.8C-49.7,68.3,-62.5,52.5,-70.4,34.8C-78.3,17.1,-81.3,-2.5,-76.2,-19.8C-71.1,-37.1,-57.9,-52.1,-42.5,-61.9C-27.1,-71.7,-9.5,-76.3,6.1,-83.5C21.7,-90.7,37.2,-71.5,52.9,-61.8Z"
+];
+
+/**
+ * Main dashboard page component that displays different content based on user subscription status
+ */
+const UserDashboardPage = () => {
+  // State management
+  const { data: session } = useSession();
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
+  const [showWhatsAppTooltip, setShowWhatsAppTooltip] = useState(false);
+  const [trialDaysLeft, setTrialDaysLeft] = useState<number | null>(null);
+  const [cancellingSubscription, setCancellingSubscription] = useState(false);
+  
+  /**
+   * Opens WhatsApp group invite link in a new tab
+   */
+  const handleWhatsAppJoin = () => {
+    window.open("https://chat.whatsapp.com/invite/studioboazonline", "_blank");
+    setShowWhatsAppTooltip(false);
+  };
+  
+  /**
+   * Handles the cancellation of a user's subscription
+   * Calls PayPal API to cancel the active subscription
+   */
+  const cancelSubscription = async () => {
+    try {
+      if (!session?.user?.email) return;
+      
+      const confirmed = window.confirm(
+        "האם אתה בטוח שברצונך לבטל את המנוי שלך?"
+      );
+
+      if (!confirmed) return;
+      
+      setCancellingSubscription(true);
+      
+      // Get the subscription ID from the API
+      const response = await axios.post("/api/get-user-subsciptionId", {
+        userEmail: session.user.email,
+      });
+
+      const userData = response.data;
+      const subId = userData.subscriptionId;
+      
+      // Don't proceed for admin users or missing subscription IDs
+      if (!subId || subId === "Admin") {
+        setCancellingSubscription(false);
+        return;
+      }
+      
+      // Get PayPal credentials
+      const clientId = process.env.PAYPAL_CLIENT_ID;
+      const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+
+      const auth = {
+        username: clientId!,
+        password: clientSecret!,
+      };
+
+      // Call PayPal API to cancel subscription
+      const cancellationResponse = await axios.post(
+        `https://api.paypal.com/v1/billing/subscriptions/${subId}/cancel`,
+        {},
+        { auth },
+      );
+
+      if (cancellationResponse.status === 204) {
+        setSubscriptionStatus("CANCELLED");
+        alert("המנוי בוטל בהצלחה");
+      } else {
+        alert("אירעה שגיאה בביטול המנוי, אנא נסה שוב מאוחר יותר");
+      }
+    } catch (error) {
+      console.error("Error canceling subscription:", error);
+      alert("אירעה שגיאה בביטול המנוי, אנא נסה שוב מאוחר יותר");
+    } finally {
+      setCancellingSubscription(false);
+    }
+  };
+
+  /**
+   * Fetches user subscription data and status on component mount
+   */
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        if (!session?.user?.email) {
+          setLoading(false);
+          return;
+        }
+        
+        // Fetch user data including subscriptionId
+        const response = await axios.post("/api/get-user-subsciptionId", {
+          userEmail: session.user.email,
+        });
+
+        const userData = response.data;
+        const subId = userData.subscriptionId;
+        setSubscriptionId(subId);
+
+        // Calculate days left for trial subscriptions
+        if (subId === "trial_30" && userData.trialStartDate) {
+          const startDate = new Date(userData.trialStartDate);
+          const endDate = new Date(startDate);
+          endDate.setDate(endDate.getDate() + 30);
+          const today = new Date();
+          const daysLeft = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+          setTrialDaysLeft(Math.max(0, daysLeft));
+        }
+
+        // Fetch PayPal subscription status if applicable
+        if (subId && subId.startsWith("I-")) {
+          await fetchPayPalSubscriptionStatus(subId);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    /**
+     * Fetches subscription status from PayPal API
+     * @param subscriptionId - The PayPal subscription ID
+     */
+    const fetchPayPalSubscriptionStatus = async (subscriptionId: string) => {
+      try {
+        const clientId = process.env.PAYPAL_CLIENT_ID;
+        const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+
+        const auth = {
+          username: clientId!,
+          password: clientSecret!,
+        };
+
+        const subscriptionResponse = await axios.get(
+          `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}`,
+          { auth },
+        );
+
+        const status = subscriptionResponse.data.status;
+        setSubscriptionStatus(status);
+      } catch (error) {
+        console.error("Error fetching PayPal subscription:", error);
+        setSubscriptionStatus("ERROR");
+      }
+    };
+
+    fetchUserData();
+  }, [session]);
+
+  /**
+   * WhatsApp community join section component
+   * @returns JSX for the WhatsApp join section
+   */
+  const WhatsAppJoinSection = () => (
+    <motion.div 
+      variants={itemVariants}
+      className="bg-[#F7F3EB] rounded-xl p-6 border border-[#D5C4B7]/30 shadow-md relative overflow-hidden mb-8"
+    >
+      <div className="absolute top-0 left-0 w-32 h-32 opacity-10 -mt-10 -ml-10">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <path
+            fill="#25D366"
+            d="M45.7,-58.2C58.9,-48.3,69.2,-33.5,73.2,-16.9C77.2,-0.3,74.9,18.1,66.4,32.6C57.9,47.1,43.2,57.7,27.1,64.9C11,72.1,-6.5,75.9,-22.6,71.3C-38.7,66.7,-53.4,53.7,-62.3,37.8C-71.2,21.9,-74.3,3.1,-70.9,-14.1C-67.5,-31.3,-57.6,-46.9,-44.1,-56.8C-30.6,-66.7,-13.6,-70.8,1.5,-72.7C16.6,-74.6,32.5,-68.2,45.7,-58.2Z"
+          />
+        </svg>
+      </div>
+      
+      <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-6 relative z-10">
+        <div className="w-full md:w-1/4 flex justify-center mb-4 md:mb-0">
+          <div className="bg-white p-4 rounded-full shadow-lg relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#25D366]/10 to-transparent rounded-full blur-md"></div>
+            <FaWhatsapp size={60} className="text-[#25D366] relative z-10" />
+          </div>
+        </div>
+        
+        <div className="w-full md:w-3/4">
+          <h3 className="text-xl font-bold text-[#2D3142] mb-2">
+            הצטרף לקהילה שלנו בוואטסאפ
+          </h3>
+          <p className="text-[#3D3D3D] text-sm sm:text-base mb-4">
+            הצטרף לקבוצת הוואטסאפ שלנו כדי לקבל עדכונים, טיפים, ולהיות בקשר ישיר עם בועז והצוות. 
+            כאן תוכלו לשאול שאלות, לקבל תמיכה מהקהילה ולהתחבר עם מתאמנים אחרים.
+          </p>
+          
+          <motion.button
+            onClick={handleWhatsAppJoin}
+            className="bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white py-2 sm:py-3 px-4 sm:px-6 rounded-md flex items-center gap-2 transition-all duration-300 shadow-sm text-sm sm:text-base w-full md:w-auto justify-center"
+            whileHover={{ scale: 1.03, y: -2, boxShadow: "0 4px 12px rgba(37, 211, 102, 0.3)" }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <FaWhatsapp size={20} />
+            <span>הצטרף לקבוצה עכשיו</span>
+          </motion.button>
+        </div>
+      </div>
+    </motion.div>
+  );
+
+  /**
+   * Determines which dashboard to render based on subscription type and status
+   * @returns The appropriate dashboard component
+   */
+  const renderDashboardContent = () => {
+    if (!subscriptionId) {
+      return renderNoSubscriptionDashboard();
+    }
+
+    // Handle different subscription types
+    switch (subscriptionId) {
+      case "Admin":
+        return renderAdminDashboard();
+      case "free":
+        return renderFreeDashboard();
+      case "trial_30":
+        return renderTrialDashboard();
+      default:
+        // PayPal subscription handling
+        if (subscriptionId.startsWith("I-")) {
+          if (subscriptionStatus === "ACTIVE") {
+            return renderActivePaidDashboard();
+          } else if (subscriptionStatus === "CANCELLED") {
+            return renderCancelledDashboard();
+          }
+        }
+        // Default fallback
+        return renderDefaultPaidDashboard();
+    }
+  };
+
+  // Dashboard variants
+  const renderAdminDashboard = () => (
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"
+    >
+      <motion.div variants={itemVariants} className="col-span-1 md:col-span-2 bg-[#F7F3EB] rounded-xl p-6 border border-[#D5C4B7]/30 shadow-md">
+        <h2 className="text-xl sm:text-2xl font-bold text-[#2D3142] mb-4 flex items-center gap-2">
+          <span className="inline-block w-2 h-8 bg-[#B8A99C] rounded-full mr-2"></span>
+          {session?.user?.name ? `שלום ${session.user.name}, מנהל!` : 'ברוך הבא, מנהל!'}
+        </h2>
+        <p className="text-[#3D3D3D] text-sm sm:text-base mb-4">יש לך גישה מלאה לכל התכנים והכלים הניהוליים.</p>
+        <div className="flex flex-wrap gap-3 sm:gap-4 mt-4">
+          <Link href="/admin">
+            <motion.span 
+              className="inline-block bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] hover:from-[#B8A99C] hover:to-[#D5C4B7] text-[#2D3142] py-2 px-4 sm:px-6 rounded-md transition duration-300 ease-in-out shadow-sm text-sm sm:text-base"
+              whileHover={{ y: -2, boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}
+              whileTap={{ y: 0 }}
+            >
+              לוח בקרה למנהל
+            </motion.span>
+          </Link>
+        </div>
+      </motion.div>
+
+      <motion.div variants={itemVariants}>
+        <DashboardCard
+          title="הסרטונים שלי"
+          description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
+          href="/user/watched"
+          icon={<FaVideo size={24} />}
+        />
+      </motion.div>
+
+      <motion.div variants={itemVariants}>
+        <DashboardCard
+          title="חיפוש אישי"
+          description="חפש סרטונים לפי נושאים שמעניינים אותך"
+          href="/explore"
+          icon={<AiOutlineCompass size={24} />}
+        />
+      </motion.div>
+
+      <motion.div variants={itemVariants}>
+        <DashboardCard
+          title="המועדפים שלי"
+          description="גישה מהירה לסרטונים שסימנת כמועדפים"
+          href="/user"
+          icon={<FaRegHeart size={24} />}
+        />
+      </motion.div>
+
+      <motion.div variants={itemVariants}>
+        <DashboardCard
+          title="טכניקות"
+          description="למד טכניקות חדשות ושפר את המיומנויות שלך"
+          href="/techniques"
+          icon={<AiOutlineExperiment size={24} />}
+        />
+      </motion.div>
+    </motion.div>
+  );

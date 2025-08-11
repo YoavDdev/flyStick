@@ -1,0 +1,677 @@
+"use client";
+
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { toast } from "react-hot-toast";
+import Player from "@vimeo/player";
+import { FaPlay, FaEye, FaEyeSlash, FaPlus, FaSearch } from "react-icons/fa";
+import { motion, AnimatePresence, Variants } from "framer-motion";
+import VideoProgressBadge from "@/app/components/VideoProgressBadge";
+import VideoPlayer from "@/app/components/VideoPlayer";
+import PlaylistModal from "@/app/components/PlaylistModal";
+import VideoCard from "@/app/components/VideoCard";
+import SearchBar from "@/app/components/SearchBar";
+import Image from "next/image";
+import { useVideoPlayer } from "../context/VideoPlayerContext";
+
+interface ExploreVideosProps {
+  title?: string;
+  subtitle?: string;
+  initialSearchQuery?: string;
+  initialHashtag?: string;
+  className?: string;
+}
+
+const ExploreVideos = ({
+  title = "",
+  subtitle = "",
+  initialSearchQuery = "",
+  initialHashtag = "",
+  className = "",
+}: ExploreVideosProps) => {
+  type WatchedVideo = {
+    uri: string;
+    progress: number;
+    resumeTime?: number;
+  };
+  const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);
+
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const [player, setPlayer] = useState<Player | null>(null);
+  const [resumeTime, setResumeTime] = useState<number>(0);
+
+  const [videos, setVideos] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [selectedVideoUri, setSelectedVideoUri] = useState<string>("");
+  const [selectedVideoData, setSelectedVideoData] = useState<any | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>(initialSearchQuery);
+  const [showHashtagDropdown, setShowHashtagDropdown] = useState(false);
+  const { data: session } = useSession();
+  const [showModal, setShowModal] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [playlistName, setPlaylistName] = useState("");
+  const [folderNames, setFolderNames] = useState<string[]>([]);
+  const [expandedDescriptions, setExpandedDescriptions] = useState<boolean[]>([]);
+  const [noResults, setNoResults] = useState(false);
+  const [noMoreVideos, setNoMoreVideos] = useState<boolean>(false);
+  const isVideoOpenRef = useRef<boolean>(false);
+  const [isSubscriber, setIsSubscriber] = useState<boolean>(false);
+  const hashtagOptions = [
+    "הריון לידה",
+    "רצפת אגן",
+    "עריסת אגן",
+    "בריאות האשה",
+    "עמוד שדרה",
+    "סנכרון",
+    "זרימה",
+    "ליבה",
+    "רקמות",
+    "פאשיה",
+    "משטחים",
+    "פושאנפול",
+    "נשימה",
+    "קול",
+    "יציבה",
+    "סקרבינג",
+    "שיעור  פתיחה",
+    "שכמות",
+    "חגורת כתפיים",
+    "כתפיים",
+    "פלג גוף עליון",
+    "שורשים",
+    "שורש כף יד",
+    "ניעורים",
+    "ניעורי גוף",
+    "צוואר",
+    "Flystick",
+    "אקסטנשיין",
+    "פלקשיין",
+    "גב",
+    "רגליים",
+    "ברכיים",
+    "פלג גוף תחתון",
+    "אגן",
+    "גב תחתון",
+    "בטן",
+    "אלכסונים",
+  ];
+
+  // Define these functions before they're used in useEffect
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCurrentPage(1);
+    setNoMoreVideos(false);
+    fetchVideos(1);
+  };
+
+  const fetchWatchedVideos = async () => {
+    if (!session?.user?.email) return;
+
+    try {
+      const response = await axios.get("/api/watched-videos", {
+        params: { email: session.user.email },
+      });
+      setWatchedVideos(response.data);
+    } catch (error) {
+      console.error("Error fetching watched videos:", error);
+    }
+  };
+
+  const fetchUserData = async () => {
+    if (!session?.user?.email) return;
+
+    try {
+      const response = await axios.get("/api/user", {
+        params: { email: session.user.email },
+      });
+
+      if (response.data) {
+        // Check if the user is a subscriber
+        const userData = response.data;
+        setIsSubscriber(userData.isSubscriber || false);
+
+        // Get folder names for the user
+        if (userData.folders) {
+          setFolderNames(userData.folders.map((folder: any) => folder.name));
+        } else {
+          // Fetch folders separately if not included in user data
+          const foldersResponse = await axios.get("/api/folders", {
+            params: { email: session.user.email },
+          });
+
+          if (foldersResponse.data && foldersResponse.data.length > 0) {
+            const names = foldersResponse.data.map(
+              (folder: any) => folder.name
+            );
+            setFolderNames(names);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      // Set default values in case of error
+      setIsSubscriber(false);
+      setFolderNames([]);
+    }
+  };
+
+  useEffect(() => {
+    // Initialize with any initial hashtag if provided
+    if (initialHashtag) {
+      setSearchQuery(`# ${initialHashtag}`);
+      handleSearch({ preventDefault: () => {} } as React.FormEvent);
+    } else {
+      fetchVideos(1);
+    }
+    
+    // Only fetch watched videos and user data if there's a session
+    if (session) {
+      fetchWatchedVideos();
+      fetchUserData();
+    } else {
+      // Set default values for non-logged in users
+      setIsSubscriber(false);
+      setWatchedVideos([]);
+      setFolderNames([]);
+    }
+  }, [initialHashtag, session]);
+
+  useEffect(() => {
+    function preventDefault(e: Event) {
+      e.preventDefault();
+    }
+
+    // Add event listener to prevent scrolling when modal is open
+    if (selectedVideo) {
+      document.body.style.overflow = "hidden";
+      document.addEventListener("wheel", preventDefault, { passive: false });
+    } else {
+      document.body.style.overflow = "";
+      document.removeEventListener("wheel", preventDefault);
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("wheel", preventDefault);
+    };
+  }, [selectedVideo]);
+
+  useEffect(() => {
+    // Handle back button for video player
+    const handleBackButton = (event: PopStateEvent) => {
+      if (isVideoOpenRef.current) {
+        closeVideo();
+        isVideoOpenRef.current = false;
+      }
+    };
+
+    window.addEventListener("popstate", handleBackButton);
+
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    setNoMoreVideos(false);
+    fetchVideos(1);
+  }, [initialSearchQuery, initialHashtag]);
+
+  const { setIsVideoOpen } = useVideoPlayer();
+
+  const openVideo = useCallback((embedHtml: string, videoUri: string) => {
+    // Find if this video has been watched before
+    const watchedVideo = watchedVideos.find((v) => v.uri === videoUri);
+    
+    // Set resume time if available
+    if (watchedVideo && watchedVideo.resumeTime) {
+      setResumeTime(watchedVideo.resumeTime);
+    } else {
+      setResumeTime(0);
+    }
+    
+    // Set the selected video
+    setSelectedVideo(embedHtml);
+    setSelectedVideoUri(videoUri);
+    
+    // Push state to handle back button
+    window.history.pushState({ videoOpen: true }, "");
+    isVideoOpenRef.current = true;
+    setIsVideoOpen(true);
+  }, [watchedVideos, setIsVideoOpen]);
+
+  const closeVideo = useCallback(async () => {
+    isVideoOpenRef.current = false;
+    setSelectedVideo(null);
+    window.history.replaceState({}, "", window.location.pathname);
+    setIsVideoOpen(false);
+  }, [setIsVideoOpen]);
+
+  const theUserId = async () => {
+    if (!session?.user?.email) {
+      toast.error("יש להתחבר כדי להוסיף לרשימות");
+      return;
+    }
+
+    try {
+      const response = await axios.get("/api/user", {
+        params: { email: session.user.email },
+      });
+
+      if (response.data && response.data.folders) {
+        setFolderNames(response.data.folders.map((folder: any) => folder.name));
+      }
+      
+      return session.user.email;
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      toast.error("שגיאה בטעינת נתוני משתמש");
+      return null;
+    }
+  };
+
+  const fetchVideos = async (page: number) => {
+    try {
+      // Use our server-side API proxy to securely call the Vimeo API
+      const apiUrl = "/api/videos";
+      
+      // Use the same query parameters structure
+      let query = "";
+      if (searchQuery.startsWith("# ")) {
+        // Handle hashtag search by looking for videos with the hashtag in description
+        query = searchQuery.substring(2);
+      } else if (searchQuery) {
+        query = searchQuery;
+      }
+
+      const response = await axios.get(apiUrl, {
+        params: {
+          page,
+          query,
+        },
+      });
+
+      const data = response.data;
+      const videosData = data.data;
+
+      if (videosData.length === 0 && page === 1) {
+        // No results found for the search query
+        setNoResults(true);
+        setVideos([]);
+        return false; // No more videos to load
+      } else {
+        setNoResults(false);
+      }
+
+      // If this is the first page, replace the videos array
+      // Otherwise, append the new videos to the existing array
+      if (page === 1) {
+        setVideos(videosData);
+      } else {
+        setVideos((prevVideos) => [...prevVideos, ...videosData]);
+      }
+
+      // If we received fewer videos than expected, there are no more to load
+      if (videosData.length < 20) {
+        setNoMoreVideos(true);
+      }
+
+      // Initialize expanded descriptions state for the new videos
+      if (page === 1) {
+        setExpandedDescriptions(new Array(videosData.length).fill(false));
+      } else {
+        setExpandedDescriptions((prev) => [
+          ...prev,
+          ...new Array(videosData.length).fill(false),
+        ]);
+      }
+      
+      return videosData.length > 0; // Indicate if more videos are available
+    } catch (error) {
+      console.error("Error fetching videos:", error);
+      toast.error("שגיאה בטעינת סרטונים");
+      return false; // Indicate that no more videos are available due to error
+    }
+  };
+
+  const handleHashtagClick = (hashtag: string) => {
+    setSearchQuery(`# ${hashtag}`);
+    setCurrentPage(1);
+    setNoMoreVideos(false);
+    fetchVideos(1);
+    closeHashtagDropdown();
+  };
+
+  const toggleHashtagDropdown = () => {
+    setShowHashtagDropdown(!showHashtagDropdown);
+  };
+
+  const closeHashtagDropdown = () => {
+    setShowHashtagDropdown(false);
+  };
+
+  const loadMore = () => {
+    const nextPage = currentPage + 1;
+    setCurrentPage(nextPage);
+    fetchVideos(nextPage);
+  };
+
+  const toggleDescription = (index: number) => () => {
+    const newExpandedDescriptions = [...expandedDescriptions];
+    newExpandedDescriptions[index] = !newExpandedDescriptions[index];
+    setExpandedDescriptions(newExpandedDescriptions);
+  };
+
+  const addToFavorites = async (videoUri: string, folderName: string) => {
+    if (!session?.user?.email) {
+      toast.error("יש להתחבר כדי להוסיף לרשימות");
+      return;
+    }
+
+    try {
+      const response = await axios.post("/api/add-to-favorites", {
+        userEmail: session.user.email,
+        videoUri,
+        folderName,
+      });
+
+      if (response.status === 200) {
+        toast.success("הסרטון נוסף בהצלחה");
+        closeModal();
+      }
+    } catch (error) {
+      console.error("Error adding to favorites:", error);
+      toast.error("שגיאה בהוספה למועדפים");
+    }
+  };
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setShowForm(false);
+  };
+
+  const openForm = () => {
+    setShowForm(true);
+  };
+
+  const handlePlaylistNameChange = (event: any) => {
+    setPlaylistName(event.target.value);
+  };
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    createPlaylist(playlistName);
+    setPlaylistName("");
+    setShowForm(false);
+  };
+
+  // Create playlist function for the PlaylistModal component
+  const createPlaylist = async (playlistName: string) => {
+    try {
+      const response = await axios.post("/api/folders", {
+        name: playlistName,
+        email: session?.user?.email,
+      });
+      if (response.status === 200) {
+        setFolderNames([...folderNames, playlistName]);
+        toast.success("הרשימה נוצרה בהצלחה");
+      }
+    } catch (error) {
+      console.error("Error creating playlist:", error);
+      toast.error("שגיאה ביצירת רשימה");
+    }
+  };
+  
+  // Memoize animation variants to prevent recreating on each render
+  const containerVariants = useMemo<Variants>(() => ({
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05, // Reduced from 0.1 for better performance
+        when: "beforeChildren"
+      }
+    }
+  }), []);
+
+  const itemVariants = useMemo<Variants>(() => ({
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 80, // Reduced from 100 for better performance
+        damping: 12
+      }
+    }
+  }), []);
+
+  return (
+    <div className={`w-full relative ${className}`}>
+
+
+
+      <div className="container mx-auto px-4 py-8 relative z-10">
+        {/* Premium Video Banner - Simplified for better performance */}
+        <motion.div 
+          className="relative mb-10 overflow-hidden bg-[#F7F3EB] rounded-2xl shadow-md border border-[#D5C4B7]/30"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+        >
+          {/* Removed complex SVG shape and replaced with simpler div */}
+          <div className="absolute -top-16 -right-16 w-64 h-64 opacity-10 transform rotate-12 rounded-full bg-[#D5C4B7]"></div>
+          
+          <div className="relative z-10 text-center md:text-right max-w-3xl mx-auto py-6 px-6 md:px-8">
+            {/* Removed paper texture background which can be CPU intensive */}
+            
+            <div className="relative flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="text-right md:w-2/3">
+                <motion.div 
+                  className="inline-flex items-center px-3 py-1 rounded-full bg-[#EF8354] bg-opacity-20 border border-[#EF8354] border-opacity-30 mb-2"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                >
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#EF8354] text-white text-xs font-bold ml-2">2</span>
+                  <span className="text-[#2D3142] text-sm font-medium">דקות צפייה חינמית מכל סרטון</span>
+                </motion.div>
+                
+                <motion.h2 
+                  className="text-xl font-bold text-[#2D3142] mb-1"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1, duration: 0.5 }}
+                >
+                  חפש וצפה בכל הסרטונים שלנו
+                </motion.h2>
+                
+                <motion.p 
+                  className="text-[#3D3D3D] text-sm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                >
+                  כל הסרטונים זמינים לצפייה מקדימה - הירשם למנוי מלא לצפייה ללא הגבלה
+                </motion.p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Search Bar with Autocomplete - Simplified for better performance */}
+        <div className="mb-10">
+          <SearchBar 
+            onSearch={(query) => {
+              setSearchQuery(query);
+              handleSearch({ preventDefault: () => {} } as React.FormEvent);
+            }}
+            hashtags={hashtagOptions}
+            onHashtagClick={(hashtag) => {
+              setSearchQuery(`# ${hashtag}`);
+              handleSearch({ preventDefault: () => {} } as React.FormEvent);
+            }}
+          />
+        </div>
+
+        <motion.div 
+          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden border border-[#D5C4B7]/30 mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          {/* Container header with subtle gradient */}
+          <div className="sticky top-0 z-10 bg-gradient-to-b from-[#F7F3EB] to-transparent py-3 px-5 flex justify-between items-center border-b border-[#D5C4B7] border-opacity-30 overflow-hidden">
+            <h3 className="text-[#2D3142] font-medium font-heebo relative z-10">סרטונים זמינים</h3>
+  
+// Memoize animation variants to prevent recreating on each render
+const containerVariants = useMemo(() => ({
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05, // Reduced from 0.1 for better performance
+      when: "beforeChildren"
+    }
+  }
+}), []);
+
+const itemVariants = useMemo(() => ({
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 80, // Reduced from 100 for better performance
+      damping: 12
+    }
+  }
+}), []);
+
+return (
+  <div className={`w-full relative ${className}`}>
+
+    <div className="container mx-auto px-4 py-8 relative z-10">
+      {/* Premium Video Banner - Simplified for better performance */}
+      <motion.div 
+        className="relative mb-10 overflow-hidden bg-[#F7F3EB] rounded-2xl shadow-md border border-[#D5C4B7]/30"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 1 }}
+      >
+        {/* Removed complex SVG shape and replaced with simpler div */}
+        <div className="absolute -top-16 -right-16 w-64 h-64 opacity-10 transform rotate-12 rounded-full bg-[#D5C4B7]"></div>
+        
+        <div className="relative z-10 text-center md:text-right max-w-3xl mx-auto py-6 px-6 md:px-8">
+          {/* Removed paper texture background which can be CPU intensive */}
+            <h3 className="text-[#2D3142] font-medium font-heebo relative z-10">סרטונים זמינים</h3>
+            {!noMoreVideos && (
+              <motion.button
+                className="bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-4 py-1.5 text-sm rounded-full focus:outline-none shadow-sm transition-all duration-300 hover:shadow-md font-medium relative overflow-hidden"
+                onClick={loadMore}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                טען עוד
+              </motion.button>
+            )}
+          </div>
+          
+          {/* Scrollable content area */}
+          <div className="h-[600px] overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-[#D5C4B7] scrollbar-track-transparent relative">
+            {noResults ? (
+              <motion.div 
+                className="text-center py-10 px-6 bg-[#F0E9DF] rounded-xl shadow-sm border border-[#D5C4B7] mt-8 relative overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <p className="text-[#2D3142] text-lg font-heebo">
+                  <span className="font-bold text-[#EF8354]">אופס!</span> 🤷‍♂️ לא
+                  נמצאו סרטונים עבור הנושא{" "}
+                  <span className="font-bold">&quot;{searchQuery}&quot;</span> .
+                  נסה להשתמש בכמות קטנה יותר של נושאים לתוצאות טובות יותר!{" "}
+                </p>
+              </motion.div>
+            ) : (
+              <motion.div 
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                {/* Only render videos that are likely to be visible in the viewport */}
+                {videos
+                  .filter((video) => !video.name.startsWith("[PRV]"))
+                  .slice(0, 12) /* Limit initial render to improve performance */
+                  .map((video, index) => (
+                    <motion.div 
+                      key={video.uri} 
+                      className="transform hover:scale-105 transition-transform duration-300 hover:shadow-lg"
+                      variants={itemVariants}
+                      /* Reduce motion complexity */
+                      transition={{ duration: 0.2 }}
+                      whileHover={{ scale: 1.03 }} /* Less intense hover effect */
+                    >
+                      <VideoCard
+                        video={video}
+                        watchedVideos={watchedVideos}
+                        isExpanded={expandedDescriptions[index]}
+                        onToggleDescription={() => toggleDescription(index)()}
+                        onPlayVideo={(embedHtml) => openVideo(embedHtml || video.embedHtml, video.uri)}
+                        onAddToFavorites={() => {}}
+                      />
+                    </motion.div>
+                  ))}
+              </motion.div>
+            )}
+            
+            {/* Status message at the bottom of scrollable area */}
+            {noMoreVideos && videos.length > 0 && (
+              <motion.div 
+                className="text-center py-3 px-4 mt-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
+                <p className="text-[#2D3142] text-sm bg-[#F0E9DF] inline-block py-2 px-6 rounded-full shadow-sm border border-[#D5C4B7] relative overflow-hidden">
+                  <span className="relative z-10 font-heebo">אין עוד סרטונים לטעון</span>
+                </p>
+              </motion.div>
+            )}
+          </div>
+        </motion.div>
+        
+        {showModal && (
+          <PlaylistModal
+            isOpen={showModal}
+            onClose={closeModal}
+            folderNames={folderNames}
+            selectedVideoUri={selectedVideoUri}
+            onAddToFavorites={addToFavorites}
+            onCreatePlaylist={createPlaylist}
+          />
+        )}
+      </div>
+      {selectedVideo && (
+        <VideoPlayer
+          videoUri={selectedVideoUri}
+          embedHtml={selectedVideo}
+          onClose={closeVideo}
+          initialResumeTime={resumeTime}
+          isSubscriber={isSubscriber}
+          isAdmin={(session?.user as any)?.isAdmin}
+        />
+      )}
+    </div>
+  );
+};
+
+export default ExploreVideos;
