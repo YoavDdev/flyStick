@@ -5,10 +5,10 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
-import VideoCard from "@/components/VideoCard";
-import VideoPlayer from "@/components/VideoPlayer";
-import SearchBar from "@/components/SearchBar";
-import PlaylistModal from "@/components/PlaylistModal";
+import VideoCard from "@/app/components/VideoCard";
+import VideoPlayer from "@/app/components/VideoPlayer";
+import SearchBar from "@/app/components/SearchBar";
+import PlaylistModal from "@/app/components/PlaylistModal";
 
 interface WatchedVideo {
   uri: string;
