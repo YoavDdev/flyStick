@@ -31,6 +31,7 @@ const Page: FC<pageProps> = ({ params }) => {
 
   const [folderName, setFolderName] = useState<string>(""); // Initialize folderName state
   const [folderUri, setFolderUri] = useState<string>(""); // Store folder URI for API calls
+  const [folderMetadata, setFolderMetadata] = useState<any>(null); // Store folder metadata
   const [videos, setVideos] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [descriptionQuery, setDescriptionQuery] = useState<string>("");
@@ -154,7 +155,9 @@ const Page: FC<pageProps> = ({ params }) => {
           if (targetFolder) {
             setFolderName(targetFolder.name);
             setFolderUri(targetFolder.uri);
+            setFolderMetadata(targetFolder.metadata);
             console.log('✅ Found folder URI:', targetFolder.uri);
+            console.log('📝 Found folder metadata:', targetFolder.metadata);
           } else {
             console.error(`❌ Folder not found: "${folderNameFromUrl}"`);
           }
@@ -429,7 +432,7 @@ const Page: FC<pageProps> = ({ params }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   // This gets the description for the folder or shows a default message.
-  const description =
+  const description = folderMetadata?.description || 
     folderDescriptions[folderName as keyof typeof folderDescriptions] ||
     "אין תיאור זמין";
 

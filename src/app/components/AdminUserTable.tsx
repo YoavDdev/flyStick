@@ -621,6 +621,48 @@ export default function AdminUserTable({
                         <span>מועדפים:</span>
                         <span>{user._count.favorites}</span>
                       </div>
+                      <div className="flex justify-between items-center">
+                        <span>סדרות שנרכשו:</span>
+                        <span className={user._count.purchases > 0 ? "text-green-600 font-medium" : ""}>
+                          {user._count.purchases}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {user.purchases && user.purchases.length > 0 && (
+                    <div className="mt-2 pt-1 border-t border-[#E5E7EB]">
+                      <div className="text-xs font-medium text-[#B56B4A] mb-1">רכישות סדרות:</div>
+                      {user.purchases.map((purchase, index) => (
+                        <div key={purchase.id} className="mb-2 p-2 bg-green-50 rounded border border-green-200">
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium text-green-800">{purchase.series.title}</span>
+                            <span className="text-green-600 font-medium">₪{purchase.amount}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-xs text-green-700">
+                            <span>תאריך רכישה:</span>
+                            <span>{formatShortDate(purchase.purchaseDate)}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-xs text-green-700">
+                            <span>מזהה PayPal:</span>
+                            <span className="font-mono">{purchase.paypalOrderId}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-xs">
+                            <span>סטטוס:</span>
+                            <span className={`font-medium ${
+                              purchase.status === 'COMPLETED' ? 'text-green-600' :
+                              purchase.status === 'PENDING' ? 'text-amber-600' :
+                              purchase.status === 'REFUNDED' ? 'text-red-600' :
+                              'text-gray-600'
+                            }`}>
+                              {purchase.status === 'COMPLETED' ? 'הושלם' :
+                               purchase.status === 'PENDING' ? 'ממתין' :
+                               purchase.status === 'REFUNDED' ? 'הוחזר' :
+                               purchase.status}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>

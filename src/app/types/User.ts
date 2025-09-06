@@ -19,5 +19,19 @@ export type User = {
     watchedVideos: number;
     favorites: number;
     accounts: number;
+    purchases: number;
   };
+  purchases?: {
+    id: string;
+    amount: number;
+    currency: string;
+    status: string;
+    purchaseDate: string;
+    paypalOrderId: string;
+    series: {
+      id: string;
+      title: string;
+      price: number;
+    };
+  }[];
 };

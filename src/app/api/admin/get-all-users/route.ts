@@ -45,6 +45,27 @@ export async function GET(request: NextRequest) {
             watchedVideos: true,
             favorites: true,
             accounts: true,
+            purchases: true,
+          }
+        },
+        purchases: {
+          select: {
+            id: true,
+            amount: true,
+            currency: true,
+            status: true,
+            purchaseDate: true,
+            paypalOrderId: true,
+            series: {
+              select: {
+                id: true,
+                title: true,
+                price: true
+              }
+            }
+          },
+          orderBy: {
+            purchaseDate: 'desc'
           }
         }
       },
