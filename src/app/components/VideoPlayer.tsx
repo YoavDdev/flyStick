@@ -44,6 +44,10 @@ const VideoPlayer = ({
   // Disclaimer overlay state
   const [showDisclaimer, setShowDisclaimer] = useState(true);
   const [disclaimerFadingOut, setDisclaimerFadingOut] = useState(false);
+  
+  // Mobile orientation and fullscreen state
+  const [isMobileLandscape, setIsMobileLandscape] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Function to save video progress - moved outside useEffect for reuse
   const saveProgress = useCallback(async () => {
@@ -107,6 +111,34 @@ const VideoPlayer = ({
     setIsVideoOpen(true);
     return () => setIsVideoOpen(false);
   }, [setIsVideoOpen]);
+
+  // Handle mobile orientation and fullscreen detection
+  useEffect(() => {
+    const checkOrientation = () => {
+      const isMobile = window.innerWidth <= 768;
+      const isLandscape = window.innerWidth > window.innerHeight;
+      setIsMobileLandscape(isMobile && isLandscape);
+    };
+
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    // Initial check
+    checkOrientation();
+
+    // Add event listeners
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', checkOrientation);
+      window.removeEventListener('orientationchange', checkOrientation);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
 
   // Handle mobile app interruptions (phone calls, app switching)
   useEffect(() => {
@@ -211,10 +243,13 @@ const VideoPlayer = ({
     const videoId = videoIdMatch[1];
     const PREVIEW_LIMIT = 120; // 2 minutes in seconds
     
-    // Create a new player instance
+    // Create a new player instance with responsive and fullscreen options
     const newPlayer = new Player(videoContainerRef.current, {
       id: parseInt(videoId, 10), // Convert string to number
       autoplay: true,
+      responsive: true,
+      controls: true,
+      playsinline: false, // Allow fullscreen on mobile
     });
 
     setPlayer(newPlayer);
@@ -543,18 +578,28 @@ const VideoPlayer = ({
 
   return (
     <div 
-      className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-[9999] flex items-center justify-center"
+      className={`fixed top-0 left-0 w-full h-full bg-black z-[9999] flex items-center justify-center ${
+        isMobileLandscape || isFullscreen ? 'bg-opacity-100' : 'bg-opacity-70'
+      }`}
       onClick={handleBackdropClick}
       ref={modalRef}
     >
       <div
-        className="video-container w-full max-w-4xl aspect-video relative"
+        className={`video-container relative ${
+          isMobileLandscape || isFullscreen 
+            ? 'w-full h-full' 
+            : 'w-full max-w-4xl aspect-video'
+        }`}
         ref={videoContainerRef}
       />
 
       {/* More gentle close button positioned to avoid navbar overlap */}
       <motion.button
-        className="absolute top-16 right-6 text-white text-sm cursor-pointer bg-black bg-opacity-50 hover:bg-opacity-70 p-2 rounded-full shadow-md z-10 flex items-center justify-center border border-white/30"
+        className={`absolute text-white text-sm cursor-pointer bg-black bg-opacity-50 hover:bg-opacity-70 p-2 rounded-full shadow-md z-10 flex items-center justify-center border border-white/30 ${
+          isMobileLandscape || isFullscreen 
+            ? 'top-4 right-4' 
+            : 'top-16 right-6'
+        }`}
         onClick={handleCloseButton}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -581,14 +626,16 @@ const VideoPlayer = ({
       </motion.button>
       
       {/* Subtle hint text - positioned to avoid navbar overlap */}
-      <motion.div
-        className="absolute bottom-6 left-6 bg-black bg-opacity-30 text-white text-xs px-2.5 py-1 rounded-full"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.7 }}
-        transition={{ delay: 2, duration: 0.8 }}
-      >
-        לחץ מחוץ לוידאו לסגירה
-      </motion.div>
+      {!isMobileLandscape && !isFullscreen && (
+        <motion.div
+          className="absolute bottom-6 left-6 bg-black bg-opacity-30 text-white text-xs px-2.5 py-1 rounded-full"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.7 }}
+          transition={{ delay: 2, duration: 0.8 }}
+        >
+          לחץ מחוץ לוידאו לסגירה
+        </motion.div>
+      )}
 
       {showPreviewOverlay && (
         <PreviewOverlay 
