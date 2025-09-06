@@ -9,7 +9,7 @@ import Image from "next/image";
 import Dashboardpic from "../../../../public/Dashboardpic.png";
 import ConvertkitEmailForm from "../../components/NewsletterSignUpForm";
 import { motion } from "framer-motion";
-import { FaWhatsapp, FaVideo, FaRegHeart, FaClock, FaCalendarAlt, FaUserPlus } from "react-icons/fa";
+import { FaVideo, FaRegHeart, FaClock, FaPlay, FaCheck, FaWhatsapp, FaUserPlus, FaCalendarAlt } from "react-icons/fa";
 import { AiOutlineExperiment, AiOutlineCompass, AiOutlineTrophy } from "react-icons/ai";
 import { MdOutlineSubscriptions, MdOutlineAdminPanelSettings } from "react-icons/md";
 import { BiSolidBadgeCheck } from "react-icons/bi";
@@ -17,6 +17,7 @@ import UserMessageNotification from "../../components/UserMessageNotification";
 import AdminMessageComposer from "../../components/AdminMessageComposer";
 import AdminNewsletterComposer from "../../components/AdminNewsletterComposer";
 import AdminFolderMetadataManager from "../../components/AdminFolderMetadataManager";
+import AdminVideoSeriesManager from "../../components/AdminVideoSeriesManager";
 import WelcomePopup from "../../components/WelcomePopup";
 
 // Note: Metadata cannot be exported from client components
@@ -39,6 +40,9 @@ const DashboardPage = () => {
     newSubscriptions: 0,
     recentCancellations: 0
   });
+  const [purchasedSeries, setPurchasedSeries] = useState<any[]>([]);
+  const [isSeriesOnlyUser, setIsSeriesOnlyUser] = useState(false);
+  const [userDataLoading, setUserDataLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -135,20 +139,55 @@ const DashboardPage = () => {
           } else if (subscriptionId === "free") {
             setSubscriptionStatus("FREE");
           } else {
-            setSubscriptionStatus(null);
+            setSubscriptionStatus("UNKNOWN");
           }
+
+          setIsAdmin(userData.isAdmin || userData.subscriptionId === "Admin");
+          
+          // Fetch purchased series for non-admin users
+          if (!userData.isAdmin && userData.subscriptionId !== "Admin") {
+            const purchases = await fetchPurchasedSeries();
+            
+            // Determine if user is series-only (has purchased series but no active subscription)
+            const hasNoActiveSubscription = !subscriptionId || 
+              (!subscriptionId.startsWith("I-") && 
+               subscriptionId !== "trial_30" && 
+               subscriptionId !== "free" && 
+               subscriptionId !== "Admin");
+            
+            if (hasNoActiveSubscription && purchases.length > 0) {
+              setIsSeriesOnlyUser(true);
+            }
+          }
+          
+          setLoading(false);
+          setUserDataLoading(false);
         }
       } catch (error) {
-        console.error(
-          "Error fetching user data or subscription details:",
-          error,
-        );
-      } finally {
+        console.error("Error fetching user data:", error);
         setLoading(false);
+        setUserDataLoading(false);
       }
     };
 
-    fetchUserData();
+    const fetchPurchasedSeries = async () => {
+      try {
+        const response = await fetch("/api/series/purchase");
+        if (response.ok) {
+          const purchases = await response.json();
+          setPurchasedSeries(purchases);
+          return purchases;
+        }
+        return [];
+      } catch (error) {
+        console.error("Error fetching purchased series:", error);
+        return [];
+      }
+    };
+
+    if (session?.user) {
+      fetchUserData();
+    }
   }, [session]);
 
   const cancelSubscription = async () => {
@@ -231,6 +270,18 @@ const DashboardPage = () => {
     window.open('https://chat.whatsapp.com/Id0a5w2JBj7IPM4JWRchjP?mode=r_c', '_blank');
   };
 
+  // Show loading spinner while user data is being fetched
+  if (userDataLoading) {
+    return (
+      <div className="min-h-screen relative pt-14 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#D5C4B7]"></div>
+          <p className="mt-4 text-[#2D3142]">טוען נתוני משתמש...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen relative pt-14">
       <div className="container mx-auto px-3 sm:px-6 py-6 sm:py-12">
@@ -257,6 +308,8 @@ const DashboardPage = () => {
                 <p className="text-base sm:text-lg text-[#3D3D3D] text-center">
                   {subscriptionId === "Admin" ? 
                     'ברוך הבא לדשבורד האישי שלך, מנהל יקר!' :
+                  isSeriesOnlyUser ?
+                    'ברוך הבא לאיזור הסדרות שלך! כאן תוכל לגשת לכל הסדרות שרכשת' :
                   subscriptionId === "trial_30" ? 
                     `ברוך הבא לדשבורד האישי שלך! נותרו לך ${userStats.daysLeft} ימים בתקופת הניסיון` :
                   subscriptionId === "free" ? 
@@ -267,6 +320,7 @@ const DashboardPage = () => {
                     'ברוך הבא לדשבורד האישי שלך בסטודיו בועז אונליין' :
                     'ברוך הבא לדשבורד האישי שלך בסטודיו בועז אונליין'}
                 </p>
+                
               </motion.div>
             </div>
 
@@ -285,6 +339,11 @@ const DashboardPage = () => {
                 {/* Folder Metadata Manager */}
                 <motion.div variants={itemVariants}>
                   <AdminFolderMetadataManager />
+                </motion.div>
+
+                {/* Video Series Manager */}
+                <motion.div variants={itemVariants}>
+                  <AdminVideoSeriesManager />
                 </motion.div>
 
                 {/* Category Manager */}
@@ -338,12 +397,33 @@ const DashboardPage = () => {
                 <div className="bg-[#D5C4B7] p-3 rounded-full">
                   <AiOutlineTrophy size={24} className="text-[#2D3142]" />
                 </div>
-                <h3 className="text-xl font-bold text-[#2D3142]">סטטוס מנוי</h3>
+                <h3 className="text-xl font-bold text-[#2D3142]">
+                  {isSeriesOnlyUser ? 'סטטוס רכישות' : 'סטטוס מנוי'}
+                </h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                 {/* Dynamic stats based on subscription type */}
-                {subscriptionId === "trial_30" && (
+                {isSeriesOnlyUser && (
+                  <>
+                    <div className="bg-purple-50 p-4 rounded-lg flex items-center gap-3">
+                      <FaPlay className="text-purple-500 text-xl" />
+                      <div>
+                        <h4 className="font-semibold text-[#2D3142]">סטטוס</h4>
+                        <p className="text-lg font-bold">רוכש סדרות</p>
+                      </div>
+                    </div>
+                    <div className="bg-blue-50 p-4 rounded-lg flex items-center gap-3">
+                      <FaVideo className="text-blue-500 text-xl" />
+                      <div>
+                        <h4 className="font-semibold text-[#2D3142]">סדרות שנרכשו</h4>
+                        <p className="text-lg font-bold">{purchasedSeries.length} סדרות</p>
+                      </div>
+                    </div>
+                  </>
+                )}
+                
+                {!isSeriesOnlyUser && subscriptionId === "trial_30" && (
                   <div className="bg-blue-50 p-4 rounded-lg flex items-center gap-3">
                     <FaClock className="text-blue-500 text-xl" />
                     <div>
@@ -353,7 +433,7 @@ const DashboardPage = () => {
                   </div>
                 )}
 
-                {userStats.cancellationDate && (
+                {!isSeriesOnlyUser && userStats.cancellationDate && (
                   <div className="bg-amber-50 p-4 rounded-lg flex items-center gap-3">
                     <FaClock className="text-amber-500 text-xl" />
                     <div>
@@ -363,7 +443,7 @@ const DashboardPage = () => {
                   </div>
                 )}
 
-                {subscriptionId === "free" && (
+                {!isSeriesOnlyUser && subscriptionId === "free" && (
                   <div className="bg-green-50 p-4 rounded-lg flex items-center gap-3">
                     <BiSolidBadgeCheck className="text-green-500 text-xl" />
                     <div>
@@ -442,47 +522,149 @@ const DashboardPage = () => {
               </div>
             </motion.div>
 
-            {/* Dashboard Cards Grid */}
-            <motion.div 
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8"
-            >
-              <DashboardCard
-                title="הסרטונים שלי"
-                description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
-                link="/user/watched"
-                icon={<FaVideo size={24} />}
-              />
-              <DashboardCard
-                title="חיפוש אישי"
-                description="חפש סרטונים לפי נושאים שמעניינים אותך"
-                link="/explore"
-                icon={<AiOutlineCompass size={24} />}
-              />
-              <DashboardCard
-                title="המועדפים שלי"
-                description="גישה מהירה לסרטונים שסימנת כמועדפים"
-                link="/user/favorites"
-                icon={<FaRegHeart size={24} />}
-              />
-              <DashboardCard
-                title="טכניקות"
-                description="למד טכניקות חדשות ושפר את המיומנויות שלך"
-                link="/styles"
-                icon={<AiOutlineExperiment size={24} />}
-              />
-            </motion.div>
+            {/* Dashboard Cards Grid - Only for regular users, not series-only users */}
+            {!isSeriesOnlyUser && (
+              <motion.div 
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8"
+              >
+                <DashboardCard
+                  title="הסרטונים שלי"
+                  description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
+                  link="/user/watched"
+                  icon={<FaVideo size={24} />}
+                />
+                <DashboardCard
+                  title="חיפוש אישי"
+                  description="חפש סרטונים לפי נושאים שמעניינים אותך"
+                  link="/explore"
+                  icon={<AiOutlineCompass size={24} />}
+                />
+                <DashboardCard
+                  title="המועדפים שלי"
+                  description="גישה מהירה לסרטונים שסימנת כמועדפים"
+                  link="/user/favorites"
+                  icon={<FaRegHeart size={24} />}
+                />
+                <DashboardCard
+                  title="טכניקות"
+                  description="למד טכניקות חדשות ושפר את המיומנויות שלך"
+                  link="/styles"
+                  icon={<AiOutlineExperiment size={24} />}
+                />
+                <DashboardCard
+                  title="קורסים"
+                  description="גלה סדרות וקורסים מובנים לרכישה"
+                  link="/series"
+                  icon={<FaPlay size={24} />}
+                />
+              </motion.div>
+            )}
 
-            {/* Subscription Status Section */}
-            <motion.div variants={itemVariants} className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="bg-[#D5C4B7] p-3 rounded-full">
-                  <MdOutlineSubscriptions size={24} className="text-[#2D3142]" />
+            {/* Purchased Series Section - Only for non-admin users */}
+            {!isAdmin && purchasedSeries.length > 0 && (
+              <motion.div variants={itemVariants} className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="bg-[#D5C4B7] p-3 rounded-full">
+                    <FaVideo size={24} className="text-[#2D3142]" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#2D3142]">הסדרות שרכשתי</h3>
                 </div>
-                <h3 className="text-xl font-bold text-[#2D3142]">ניהול מנוי</h3>
-              </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {purchasedSeries.map((purchase, index) => (
+                    <motion.div
+                      key={purchase.series.id}
+                      className="group cursor-pointer"
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ y: -4 }}
+                    >
+                      <Link href={`/series/${purchase.series.id}`}>
+                        <div className="relative bg-[#F0E9DF] rounded-2xl border border-[#D5C4B7] p-6 shadow-md hover:shadow-lg transition-all duration-500 h-full">
+                          {/* Series Thumbnail */}
+                          <div className="relative aspect-video bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] rounded-xl overflow-hidden mb-6">
+                            {purchase.series.thumbnailUrl ? (
+                              <img
+                                src={purchase.series.thumbnailUrl}
+                                alt={purchase.series.title}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C]">
+                                <FaVideo className="text-5xl text-[#2D3142]/60" />
+                              </div>
+                            )}
+                            
+                            {/* Overlay with Play Button */}
+                            <div className="absolute inset-0 bg-[#2D3142]/0 group-hover:bg-[#2D3142]/40 transition-all duration-300 flex items-center justify-center">
+                              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <motion.button
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
+                                  className="bg-white text-[#2D3142] p-4 rounded-full shadow-xl"
+                                >
+                                  <FaPlay className="text-xl ml-1" />
+                                </motion.button>
+                              </div>
+                            </div>
+
+                            {/* Access Status Badge */}
+                            <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-3 py-1 rounded-full text-sm font-bold shadow-md">
+                              <FaCheck className="inline mr-1" />
+                              נרכש
+                            </div>
+                          </div>
+
+                          {/* Series Info */}
+                          <div className="space-y-4 flex-1">
+                            <h3 className="text-xl font-bold text-[#2D3142] group-hover:text-[#D9713C] transition-colors duration-300">
+                              {purchase.series.title}
+                            </h3>
+                            <p className="text-[#2D3142]/70 text-sm leading-relaxed line-clamp-3">
+                              {purchase.series.description}
+                            </p>
+                            
+                            <div className="flex items-center justify-between pt-4">
+                              <div className="flex items-center gap-2 text-sm text-[#2D3142]/60">
+                                <FaVideo className="text-[#D9713C]" />
+                                <span>{purchase.series.videoCount} פרקים</span>
+                              </div>
+                              <div className="text-xs text-[#2D3142]/50">
+                                נרכש ב-{new Date(purchase.purchaseDate).toLocaleDateString('he-IL')}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+                <div className="mt-4 text-center">
+                  <Link href="/series">
+                    <motion.button
+                      className="bg-[#B8A99C] text-white px-6 py-2 rounded-lg hover:bg-[#D5C4B7] transition-colors"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      עיין בעוד סדרות
+                    </motion.button>
+                  </Link>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Subscription Status Section - Hidden for Series-Only Users */}
+            {!isSeriesOnlyUser && (
+              <motion.div variants={itemVariants} className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="bg-[#D5C4B7] p-3 rounded-full">
+                    <MdOutlineSubscriptions size={24} className="text-[#2D3142]" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#2D3142]">ניהול מנוי</h3>
+                </div>
 
               {loading ? (
                 <p className="text-center py-4">טוען...</p>
@@ -577,7 +759,8 @@ const DashboardPage = () => {
                   )}
                 </div>
               )}
-            </motion.div>
+              </motion.div>
+            )}
 
             {/* Newsletter Section */}
             <motion.div 

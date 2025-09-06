@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
   const body = await request.json();
-  const { name, email, password, subscribeToNewsletter } = body;
+  const { name, email, password, subscribeToNewsletter, userType, registrationSource } = body;
 
   if (!name || !email || !password) {
     return new NextResponse("Missing Fields", { status: 400 });
@@ -17,7 +17,10 @@ export async function POST(request) {
   });
 
   if (exist) {
-    throw new Error("Email already exists");
+    return new NextResponse(JSON.stringify({ error: "Email already exists" }), { 
+      status: 400,
+      headers: { "Content-Type": "application/json" }
+    });
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -27,6 +30,8 @@ export async function POST(request) {
       name,
       email,
       hashedPassword,
+      userType: userType || "subscription",
+      registrationSource: registrationSource || "main_app",
     },
   });
 
@@ -114,5 +119,5 @@ export async function POST(request) {
     },
   });
 
-  return NextResponse.json(user);
+  return NextResponse.json({ success: true, user });
 }

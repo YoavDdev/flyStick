@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { AiOutlineLogout, AiOutlineUser, AiOutlineBook, AiOutlineCompass, AiOutlineExperiment, AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineLogout, AiOutlineUser, AiOutlineBook, AiOutlineCompass, AiOutlineExperiment, AiOutlineSearch, AiOutlinePlayCircle } from "react-icons/ai";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 // Removed framer-motion imports
@@ -13,6 +13,7 @@ const DropdownMenu = ({ onClose }: { onClose: () => void }) => {
     { href: "/dashboard", label: "איזור אישי", icon: AiOutlineUser },
     { href: "/user", label: "הספרייה שלי", icon: AiOutlineBook },
     { href: "/styles", label: "טכניקות", icon: AiOutlineExperiment },
+    { href: "/series", label: "קורסים", icon: AiOutlinePlayCircle },
     { href: "/explore", label: "חיפוש אישי", icon: AiOutlineCompass },
   ];
 
@@ -23,9 +24,12 @@ const DropdownMenu = ({ onClose }: { onClose: () => void }) => {
       {menuItems.map((item, i) => (
         <div key={item.href}>
           <Link href={item.href} onClick={onClose}>
-            <div className="flex items-center gap-2 px-4 py-3 hover:bg-[#E5DFD0] text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
+            <div className="relative flex items-center gap-2 px-4 py-3 hover:bg-[#E5DFD0] text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
               <item.icon className="ml-2" size={18} />
               <span>{item.label}</span>
+              {item.label === "קורסים" && (
+                <span className="w-2 h-2 bg-green-500 rounded-full ml-1 flex-shrink-0"></span>
+              )}
             </div>
           </Link>
         </div>

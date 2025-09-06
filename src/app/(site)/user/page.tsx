@@ -6,7 +6,7 @@ import axios from "axios";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
-import { FaFolder, FaFolderOpen, FaPlus, FaTrash } from "react-icons/fa";
+import { FaFolder, FaFolderOpen, FaPlus, FaTrash, FaPlay, FaVideo } from "react-icons/fa";
 import { MdFavorite, MdHistory } from "react-icons/md";
 
 const Page = () => {
@@ -71,6 +71,7 @@ const Page = () => {
       console.error("Error checking grace period status:", error);
     }
   };
+
 
   const fetchFolderNames = async () => {
     try {
@@ -224,6 +225,7 @@ const Page = () => {
                 </div>
               </motion.div>
             )}
+
 
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
               {folderNames.map((folderName: string) => (

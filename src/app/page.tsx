@@ -7,6 +7,7 @@ import {
   WabiSabiContact,
 } from "./components";
 import ExploreVideos from "./components/ExploreVideos";
+import SeriesPromotion from "./components/SeriesPromotion";
 import StructuredDataHome from "./components/StructuredDataHome";
 import Image from "next/image";
 import desertImage from "../../public/contacMe2.jpeg";
@@ -87,6 +88,11 @@ export default function HomePage() {
           <div className="container mx-auto px-6">
             <ExploreVideos />
           </div>
+        </section>
+        
+        {/* Series Promotion */}
+        <section id="series-promotion">
+          <SeriesPromotion />
         </section>
         
         {/* Pricing section */}

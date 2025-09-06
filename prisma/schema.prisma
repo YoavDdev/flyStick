@@ -19,6 +19,10 @@ model User {
   subscriptionStartDate DateTime? // Track when paid subscription started
   cancellationDate    DateTime? // Track when subscription was cancelled for grace period
   
+  // User type tracking for series vs subscription users
+  userType          String?   @default("subscription") // "subscription", "series_only", "trial"
+  registrationSource String?  @default("main_app") // "main_app", "series_purchase", "landing_page"
+  
   // PayPal cached data fields
   paypalStatus      String?   // ACTIVE, CANCELLED, EXPIRED, etc.
   paypalId          String?   // PayPal subscription ID
@@ -39,6 +43,7 @@ model User {
 
   watchedVideos  WatchedVideo[]
   messageReads   MessageRead[]
+  purchases      Purchase[]
 }
 
 model Folder {
@@ -168,4 +173,43 @@ model Subcategory {
   updatedAt    DateTime @updatedAt
   
   @@unique([categoryId, key]) // Unique subcategory key within each category
+}
+
+model VideoSeries {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  title           String   // "עבודה גב 6 שיעורים"
+  description     String   // Series description
+  price           Float    // Price in shekels (e.g., 69.0)
+  vimeoFolderId   String   // Vimeo folder/project ID containing the videos
+  vimeoFolderName String   // Vimeo folder name for reference
+  paypalProductId String   // PayPal product ID (e.g., "2S9ZM9VEBS3J4")
+  thumbnailUrl    String?  // Optional thumbnail image URL
+  videoCount      Int      @default(0) // Number of videos in series
+  isActive        Boolean  @default(true) // Can be purchased/viewed
+  isFeatured      Boolean  @default(false) // Featured on marketplace
+  order           Int      @default(0) // Display order on marketplace
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  purchases       Purchase[]
+}
+
+model Purchase {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String      @db.ObjectId
+  seriesId        String      @db.ObjectId
+  paypalOrderId   String      // PayPal order/transaction ID
+  paypalPayerId   String?     // PayPal payer ID
+  amount          Float       // Amount paid in shekels
+  currency        String      @default("ILS") // Currency code
+  status          String      @default("COMPLETED") // PENDING, COMPLETED, CANCELLED, REFUNDED
+  purchaseDate    DateTime    @default(now())
+  expiresAt       DateTime?   // Optional expiration date
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  series          VideoSeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, seriesId]) // User can only purchase each series once
 }

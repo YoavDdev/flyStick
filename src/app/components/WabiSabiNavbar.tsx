@@ -85,7 +85,7 @@ const WabiSabiNavbar = () => {
   // Navigation links with icons for improved UX
   const navigationLinks: NavigationLink[] = [
     { href: "/", label: "בית", icon: AiOutlineHome },
-    { href: "/styles", label: "טכניקות", icon: AiOutlineInfoCircle },
+    { href: "/series", label: "קורסים", icon: AiOutlineInfoCircle },
     { href: "/about", label: "אודות", icon: AiOutlineInfoCircle },
     { href: "/#Contact", label: "צור קשר", icon: AiOutlinePhone },
     { href: "/#Pricing", label: "מחיר", icon: AiOutlineDollar }
@@ -113,7 +113,7 @@ const WabiSabiNavbar = () => {
   // Page title mapping for header display
   const pageTitles: Record<string, string> = {
     "/explore": "חיפוש אישי",
-    "/styles": "טכניקות",
+    "/series": "קורסים",
     "/dashboard": "איזור אישי",
     "/user": "הספרייה שלי",
   };
@@ -265,7 +265,7 @@ const WabiSabiNavbar = () => {
                     }
                   }}
                 >
-                  <div className="flex items-center">
+                  <div className="relative flex items-center">
                     <span className={`text-lg ${
                       isActiveLink(link.href)
                         ? "text-[#B56B4A] border-b border-[#B56B4A]"
@@ -274,6 +274,11 @@ const WabiSabiNavbar = () => {
                     >
                       {link.label}
                     </span>
+                    {link.label === "קורסים" && (
+                      <span className="mr-1 bg-green-500 text-white text-xs px-2 py-0.5 rounded-md font-medium">
+                        חדש
+                      </span>
+                    )}
                   </div>
                 </Link>
               </motion.li>
@@ -433,14 +438,19 @@ const WabiSabiNavbar = () => {
                       </div>
                     </motion.div>
                   </Link>
-                  <Link href="/styles" onClick={closeMobileMenu}>
+                  <Link href="/series" onClick={closeMobileMenu}>
                     <motion.div 
                       className="flex items-center justify-end py-2 border-b border-[#D0C8B0]/20"
                       whileHover={{ x: -5, transition: { duration: 0.2 } }}
                     >
-                      <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300 text-right w-full">
-                        טכניקות
-                      </span>
+                      <div className="relative flex items-center justify-end w-full">
+                        <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
+                          קורסים
+                        </span>
+                        <span className="mr-1 bg-green-500 text-white text-xs px-2 py-0.5 rounded-md font-medium">
+                          חדש
+                        </span>
+                      </div>
                       <div className="mr-2 p-1.5 rounded-full bg-[#8E9A7C]/5">
                         <svg className="h-4 w-4 text-[#8E9A7C]" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2V9h-2V7h4v10z" />
@@ -568,13 +578,20 @@ const WabiSabiNavbar = () => {
                       }}
                     >
                       <div className="flex items-center justify-end py-1.5 sm:py-2"> 
-                        <span className={`text-base sm:text-lg ${
-                          isActiveLink(link.href)
-                            ? "text-[#B56B4A] font-medium"
-                            : "text-[#5D5D5D] hover:text-[#B56B4A]"
-                        } transition-colors duration-300 text-right w-full`}>
-                          {link.label}
-                        </span>
+                        <div className="relative flex items-center justify-end w-full">
+                          <span className={`text-base sm:text-lg ${
+                            isActiveLink(link.href)
+                              ? "text-[#B56B4A] font-medium"
+                              : "text-[#5D5D5D] hover:text-[#B56B4A]"
+                          } transition-colors duration-300`}>
+                            {link.label}
+                          </span>
+                          {link.label === "קורסים" && (
+                            <span className="mr-1 bg-green-500 text-white text-xs px-2 py-0.5 rounded-md font-medium">
+                              חדש
+                            </span>
+                          )}
+                        </div>
                         <div className={`mr-2 p-1.5 rounded-full ${isActiveLink(link.href) ? 'bg-[#B56B4A]/10' : 'bg-[#8E9A7C]/5'}`}>
                           <link.icon className={isActiveLink(link.href) ? 'text-[#B56B4A]' : 'text-[#8E9A7C]'} size={18} />
                         </div>

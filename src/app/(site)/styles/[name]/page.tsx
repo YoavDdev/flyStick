@@ -146,11 +146,17 @@ const Page: FC<pageProps> = ({ params }) => {
         const foldersData = await foldersResponse.json();
         
         if (foldersData.success && foldersData.folders) {
+          console.log('🔍 Looking for folder:', folderNameFromUrl);
+          console.log('📁 Available folders:', foldersData.folders.map((f: any) => f.name));
+          
           const targetFolder = foldersData.folders.find((f: any) => f.name === folderNameFromUrl);
           
           if (targetFolder) {
             setFolderName(targetFolder.name);
             setFolderUri(targetFolder.uri);
+            console.log('✅ Found folder URI:', targetFolder.uri);
+          } else {
+            console.error(`❌ Folder not found: "${folderNameFromUrl}"`);
           }
         }
       } catch (error) {
@@ -273,10 +279,20 @@ const Page: FC<pageProps> = ({ params }) => {
       }
 
       const apiUrl = `/api/vimeo/folders/${encodeURIComponent(folderUri)}/videos`;
+      console.log('🎬 Fetching videos from:', apiUrl);
       const response = await fetch(apiUrl);
       const data = await response.json();
+      
+      console.log('📺 API Response:', data);
+      console.log('🔍 Response details:', {
+        success: data.success,
+        videosLength: data.videos?.length,
+        error: data.error,
+        fullResponse: data
+      });
 
       if (!data.success || !data.videos?.length) {
+        console.log('❌ No videos found or API error:', data);
         if (page === 1) {
           setNoResults(true);
         }
