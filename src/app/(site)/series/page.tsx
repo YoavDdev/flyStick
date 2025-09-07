@@ -124,7 +124,7 @@ const SeriesMarketplace = () => {
             <p className="text-xl text-[#2D3142]/80 max-w-3xl mx-auto mb-8 leading-relaxed">
               גלו עולם של ידע מקצועי עם סדרות וידאו איכותיות שיקחו אתכם לשלב הבא.
               <br />
-              <span className="text-[#D9713C] font-semibold">למידה מותאמת אישית, תוצאות מוכחות</span>
+              <span className="text-[#D9713C] font-semibold">למידה מותאמת אישית, תוצאות מוכחות.</span>
             </p>
             
             {seriesData?.userInfo.hasActiveSubscription ? (
@@ -190,7 +190,20 @@ const SeriesMarketplace = () => {
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -8 }}
               >
-                <div className="relative bg-[#F0E9DF] rounded-2xl border border-[#D5C4B7] p-6 shadow-md hover:shadow-lg transition-all duration-500 h-full">
+                <div 
+                  className="relative bg-[#F0E9DF] rounded-2xl border border-[#D5C4B7] p-6 shadow-md hover:shadow-lg transition-all duration-500 h-full"
+                  onClick={() => {
+                    if (series.hasAccess) {
+                      router.push(`/series/${series.id}`);
+                    } else {
+                      if (!session) {
+                        router.push(`/series/register?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+                        return;
+                      }
+                      setPurchasingSeriesId(series.id);
+                    }
+                  }}
+                >
                     {/* Series Thumbnail */}
                     <div className="relative aspect-video bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] rounded-xl overflow-hidden mb-6">
                       {series.thumbnailUrl ? (
@@ -275,7 +288,8 @@ const SeriesMarketplace = () => {
                         
                         {!series.hasAccess && !seriesData?.userInfo.hasActiveSubscription && (
                           <motion.button
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               if (!session) {
                                 router.push(`/series/register?returnUrl=${encodeURIComponent(window.location.pathname)}`);
                                 return;

@@ -578,7 +578,7 @@ const VideoPlayer = ({
 
   return (
     <div 
-      className={`fixed top-0 left-0 w-full h-full bg-black z-[9999] flex items-center justify-center ${
+      className={`fixed top-0 left-0 w-full h-full bg-black z-[9999] ${
         isMobileLandscape || isFullscreen ? 'bg-opacity-100' : 'bg-opacity-70'
       }`}
       onClick={handleBackdropClick}
@@ -591,6 +591,11 @@ const VideoPlayer = ({
             : 'w-full max-w-4xl aspect-video'
         }`}
         ref={videoContainerRef}
+        style={{ 
+          marginTop: 'max(15vh, min(25vh, calc(100vh * 0.25)))',
+          marginLeft: 'auto',
+          marginRight: 'auto'
+        }}
       />
 
       {/* More gentle close button positioned to avoid navbar overlap */}

@@ -86,6 +86,7 @@ const WabiSabiNavbar = () => {
   const navigationLinks: NavigationLink[] = [
     { href: "/", label: "בית", icon: AiOutlineHome },
     { href: "/series", label: "קורסים", icon: AiOutlineInfoCircle },
+    { href: "/styles", label: "טכניקות", icon: AiOutlineInfoCircle },
     { href: "/about", label: "אודות", icon: AiOutlineInfoCircle },
     { href: "/#Contact", label: "צור קשר", icon: AiOutlinePhone },
     { href: "/#Pricing", label: "מחיר", icon: AiOutlineDollar }
@@ -410,81 +411,108 @@ const WabiSabiNavbar = () => {
                 <motion.div className="space-y-4">
                   <Link href="/dashboard" onClick={closeMobileMenu}>
                     <motion.div 
-                      className="flex items-center justify-end py-2 border-b border-[#D0C8B0]/20"
+                      className="flex items-center justify-between py-2 border-b border-[#D0C8B0]/20"
                       whileHover={{ x: -5, transition: { duration: 0.2 } }}
                     >
-                      <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300 text-right w-full">
-                        איזור אישי
-                      </span>
-                      <div className="mr-2 p-1.5 rounded-full bg-[#8E9A7C]/5">
-                        <svg className="h-4 w-4 text-[#8E9A7C]" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-                        </svg>
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
+                          איזור אישי
+                        </span>
+                        <div className="ml-3 p-1.5 rounded-full bg-[#8E9A7C]/5">
+                          <svg className="h-4 w-4 text-[#8E9A7C]" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                          </svg>
+                        </div>
                       </div>
                     </motion.div>
                   </Link>
                   <Link href="/user" onClick={closeMobileMenu}>
                     <motion.div 
-                      className="flex items-center justify-end py-2 border-b border-[#D0C8B0]/20"
+                      className="flex items-center justify-between py-2 border-b border-[#D0C8B0]/20"
                       whileHover={{ x: -5, transition: { duration: 0.2 } }}
                     >
-                      <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300 text-right w-full">
-                        הספרייה שלי
-                      </span>
-                      <div className="mr-2 p-1.5 rounded-full bg-[#8E9A7C]/5">
-                        <svg className="h-4 w-4 text-[#8E9A7C]" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z" />
-                        </svg>
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
+                          הספרייה שלי
+                        </span>
+                        <div className="ml-3 p-1.5 rounded-full bg-[#8E9A7C]/5">
+                          <svg className="h-4 w-4 text-[#8E9A7C]" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z" />
+                          </svg>
+                        </div>
                       </div>
                     </motion.div>
                   </Link>
                   <Link href="/series" onClick={closeMobileMenu}>
                     <motion.div 
-                      className="flex items-center justify-end py-2 border-b border-[#D0C8B0]/20"
+                      className="flex items-center justify-between py-2 border-b border-[#D0C8B0]/20"
                       whileHover={{ x: -5, transition: { duration: 0.2 } }}
                     >
-                      <div className="relative flex items-center justify-end w-full">
-                        <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
-                          קורסים
-                        </span>
-                        <span className="mr-1 bg-green-500 text-white text-xs px-2 py-0.5 rounded-md font-medium">
-                          חדש
-                        </span>
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center">
+                          <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
+                            קורסים
+                          </span>
+                          <span className="mr-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-md font-medium">
+                            חדש
+                          </span>
+                        </div>
+                        <div className="ml-3 p-1.5 rounded-full bg-[#8E9A7C]/5">
+                          <svg className="h-4 w-4 text-[#8E9A7C]" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2V9h-2V7h4v10z" />
+                          </svg>
+                        </div>
                       </div>
-                      <div className="mr-2 p-1.5 rounded-full bg-[#8E9A7C]/5">
-                        <svg className="h-4 w-4 text-[#8E9A7C]" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2V9h-2V7h4v10z" />
-                        </svg>
+                    </motion.div>
+                  </Link>
+                  <Link href="/styles" onClick={closeMobileMenu}>
+                    <motion.div 
+                      className="flex items-center justify-between py-2 border-b border-[#D0C8B0]/20"
+                      whileHover={{ x: -5, transition: { duration: 0.2 } }}
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
+                          טכניקות
+                        </span>
+                        <div className="ml-3 p-1.5 rounded-full bg-[#8E9A7C]/5">
+                          <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 1024 1024" className="h-4 w-4 text-[#8E9A7C]" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M512 472a40 40 0 1 0 80 0 40 40 0 1 0-80 0zm367 352.9L696.3 352V178H768v-68H256v68h71.7v174L145 824.9c-2.8 7.4-4.3 15.2-4.3 23.1 0 35.3 28.7 64 64 64h614.6c7.9 0 15.7-1.5 23.1-4.3 33-12.7 49.4-49.8 36.6-82.8zM395.7 364.7V180h232.6v184.7L719.2 600c-20.7-5.3-42.1-8-63.9-8-61.2 0-119.2 21.5-165.3 60a188.78 188.78 0 0 1-121.3 43.9c-32.7 0-64.1-8.3-91.8-23.7l118.8-307.5zM210.5 844l41.7-107.8c35.7 18.1 75.4 27.8 116.6 27.8 61.2 0 119.2-21.5 165.3-60 33.9-28.2 76.3-43.9 121.3-43.9 35 0 68.4 9.5 97.6 27.1L813.5 844h-603z"></path>
+                          </svg>
+                        </div>
                       </div>
                     </motion.div>
                   </Link>
                   <Link href="/explore" onClick={closeMobileMenu}>
                     <motion.div 
-                      className="flex items-center justify-end py-2 border-b border-[#D0C8B0]/20"
+                      className="flex items-center justify-between py-2 border-b border-[#D0C8B0]/20"
                       whileHover={{ x: -5, transition: { duration: 0.2 } }}
                     >
-                      <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300 text-right w-full">
-                        חיפוש אישי
-                      </span>
-                      <div className="mr-2 p-1.5 rounded-full bg-[#8E9A7C]/5">
-                        <svg className="h-4 w-4 text-[#8E9A7C]" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-                        </svg>
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
+                          חיפוש אישי
+                        </span>
+                        <div className="ml-3 p-1.5 rounded-full bg-[#8E9A7C]/5">
+                          <svg className="h-4 w-4 text-[#8E9A7C]" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                          </svg>
+                        </div>
                       </div>
                     </motion.div>
                   </Link>
                   <button onClick={() => signOut()}>
                     <motion.div 
-                      className="flex items-center justify-end py-2 border-b border-[#D0C8B0]/20"
+                      className="flex items-center justify-between py-2 border-b border-[#D0C8B0]/20 w-full"
                       whileHover={{ x: -5, transition: { duration: 0.2 } }}
                     >
-                      <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300 text-right w-full">
-                        החלף משתמש
-                      </span>
-                      <div className="mr-2 p-1.5 rounded-full bg-[#B56B4A]/10">
-                        <svg className="h-4 w-4 text-[#B56B4A]" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
-                        </svg>
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
+                          החלף משתמש
+                        </span>
+                        <div className="ml-3 p-1.5 rounded-full bg-[#B56B4A]/10">
+                          <svg className="h-4 w-4 text-[#B56B4A]" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+                          </svg>
+                        </div>
                       </div>
                     </motion.div>
                   </button>
@@ -517,7 +545,13 @@ const WabiSabiNavbar = () => {
             <div className="flex-col mb-8">
               <h3 className="text-[#8E9A7C] font-medium mb-3 sm:mb-4 pr-1 text-base sm:text-lg">תפריט ראשי</h3>
               <ul className="text-lg sm:text-xl space-y-3 sm:space-y-4">
-                {navigationLinks.map((link, index) => (
+                {navigationLinks.filter(link => {
+                  // Hide "קורסים" and "טכניקות" when user is logged in
+                  if (session?.user && (link.label === "קורסים" || link.label === "טכניקות")) {
+                    return false;
+                  }
+                  return true;
+                }).map((link, index) => (
                   <motion.li 
                     key={link.href}
                     initial={{ opacity: 0, x: -20 }} 
@@ -577,23 +611,25 @@ const WabiSabiNavbar = () => {
                         }
                       }}
                     >
-                      <div className="flex items-center justify-end py-1.5 sm:py-2"> 
-                        <div className="relative flex items-center justify-end w-full">
-                          <span className={`text-base sm:text-lg ${
-                            isActiveLink(link.href)
-                              ? "text-[#B56B4A] font-medium"
-                              : "text-[#5D5D5D] hover:text-[#B56B4A]"
-                          } transition-colors duration-300`}>
-                            {link.label}
-                          </span>
-                          {link.label === "קורסים" && (
-                            <span className="mr-1 bg-green-500 text-white text-xs px-2 py-0.5 rounded-md font-medium">
-                              חדש
+                      <div className="flex items-center justify-between py-1.5 sm:py-2"> 
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex items-center">
+                            <span className={`text-base sm:text-lg ${
+                              isActiveLink(link.href)
+                                ? "text-[#B56B4A] font-medium"
+                                : "text-[#5D5D5D] hover:text-[#B56B4A]"
+                            } transition-colors duration-300`}>
+                              {link.label}
                             </span>
-                          )}
-                        </div>
-                        <div className={`mr-2 p-1.5 rounded-full ${isActiveLink(link.href) ? 'bg-[#B56B4A]/10' : 'bg-[#8E9A7C]/5'}`}>
-                          <link.icon className={isActiveLink(link.href) ? 'text-[#B56B4A]' : 'text-[#8E9A7C]'} size={18} />
+                            {link.label === "קורסים" && (
+                              <span className="mr-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-md font-medium">
+                                חדש
+                              </span>
+                            )}
+                          </div>
+                          <div className={`ml-3 p-1.5 rounded-full ${isActiveLink(link.href) ? 'bg-[#B56B4A]/10' : 'bg-[#8E9A7C]/5'}`}>
+                            <link.icon className={isActiveLink(link.href) ? 'text-[#B56B4A]' : 'text-[#8E9A7C]'} size={18} />
+                          </div>
                         </div>
                       </div>
                     </Link>

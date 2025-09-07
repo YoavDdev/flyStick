@@ -57,7 +57,10 @@ const ExploreVideos = ({
   const [noResults, setNoResults] = useState(false);
   const [noMoreVideos, setNoMoreVideos] = useState<boolean>(false);
   const isVideoOpenRef = useRef<boolean>(false);
-  const [isSubscriber, setIsSubscriber] = useState<boolean>(false);
+  const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
+  const [hasContentAccess, setHasContentAccess] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const hashtagOptions = [
     "הריון לידה",
     "רצפת אגן",
@@ -159,40 +162,67 @@ const ExploreVideos = ({
   }, []);
 
   const fetchUserData = async () => {
-    if (!session?.user?.email) return;
+    if (!session?.user?.email) {
+      setLoading(false);
+      return;
+    }
 
     try {
-      const response = await axios.get("/api/user", {
+      // Fetch user data including subscriptionId from the API route
+      const response = await axios.post("/api/get-user-subsciptionId", {
+        userEmail: session.user.email,
+      });
+
+      const userData = response.data;
+      const subscriptionId = userData.subscriptionId;
+      setSubscriptionId(subscriptionId);
+      
+      // Check if user has admin access or is free/trial user
+      const adminCheckResponse = await axios.post("/api/check-admin", {
+        email: session.user.email,
+      });
+      
+      setHasContentAccess(adminCheckResponse.data.hasContentAccess);
+
+      // Get folder names for the user
+      const foldersResponse = await axios.get("/api/folders", {
         params: { email: session.user.email },
       });
 
-      if (response.data) {
-        // Check if the user is a subscriber
-        const userData = response.data;
-        setIsSubscriber(userData.isSubscriber || false);
+      if (foldersResponse.data && foldersResponse.data.length > 0) {
+        const names = foldersResponse.data.map(
+          (folder: any) => folder.name
+        );
+        setFolderNames(names);
+      }
 
-        // Get folder names for the user
-        if (userData.folders) {
-          setFolderNames(userData.folders.map((folder: any) => folder.name));
-        } else {
-          // Fetch folders separately if not included in user data
-          const foldersResponse = await axios.get("/api/folders", {
-            params: { email: session.user.email },
-          });
+      // If user has a PayPal subscription, check its status
+      if (subscriptionId && subscriptionId.startsWith("I-") && subscriptionId !== "Admin") {
+        const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+        const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
-          if (foldersResponse.data && foldersResponse.data.length > 0) {
-            const names = foldersResponse.data.map(
-              (folder: any) => folder.name
-            );
-            setFolderNames(names);
-          }
-        }
+        const auth = {
+          username: clientId!,
+          password: clientSecret!,
+        };
+
+        const subscriptionResponse = await axios.get(
+          `https://api.paypal.com/v1/billing/subscriptions/${subscriptionId}`,
+          { auth },
+        );
+
+        const status = subscriptionResponse.data.status;
+        setSubscriptionStatus(status);
       }
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      console.error("Error fetching user data or subscription details:", error);
       // Set default values in case of error
-      setIsSubscriber(false);
+      setSubscriptionId(null);
+      setSubscriptionStatus(null);
+      setHasContentAccess(false);
       setFolderNames([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -211,9 +241,12 @@ const ExploreVideos = ({
       fetchUserData();
     } else {
       // Set default values for non-logged in users
-      setIsSubscriber(false);
+      setSubscriptionId(null);
+      setSubscriptionStatus(null);
+      setHasContentAccess(false);
       setWatchedVideos([]);
       setFolderNames([]);
+      setLoading(false);
     }
   }, [initialHashtag, session]);
 
@@ -292,12 +325,13 @@ const ExploreVideos = ({
     }
 
     try {
-      const response = await axios.get("/api/user", {
+      const response = await axios.get("/api/folders", {
         params: { email: session.user.email },
       });
 
-      if (response.data && response.data.folders) {
-        setFolderNames(response.data.folders.map((folder: any) => folder.name));
+      if (response.data && response.data.length > 0) {
+        const names = response.data.map((folder: any) => folder.name);
+        setFolderNames(names);
       }
       
       return session.user.email;
@@ -708,7 +742,10 @@ const ExploreVideos = ({
           embedHtml={selectedVideo}
           onClose={closeVideo}
           initialResumeTime={resumeTime}
-          isSubscriber={isSubscriber}
+          isSubscriber={hasContentAccess ||
+            subscriptionId === "Admin" ||
+            subscriptionStatus === "ACTIVE" ||
+            subscriptionStatus === "PENDING_CANCELLATION"}
           isAdmin={(session?.user as any)?.isAdmin}
           videoName={selectedVideoName || undefined}
         />

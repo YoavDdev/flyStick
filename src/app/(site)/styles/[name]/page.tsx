@@ -319,7 +319,26 @@ const Page: FC<pageProps> = ({ params }) => {
       const endIndex = startIndex + videosPerPage;
       const paginatedVideos = filteredVideos.slice(startIndex, endIndex);
 
-      const newVideos = paginatedVideos.map((video: any) => {
+      // Sort videos by lesson order before mapping
+      const sortedVideos = paginatedVideos.sort((a: any, b: any) => {
+        const getLessonOrder = (name: string): number => {
+          if (name.includes('פתיחה')) return 1;
+          if (name.includes('שני')) return 2;
+          if (name.includes('שלישי')) return 3;
+          if (name.includes('רביעי')) return 4;
+          if (name.includes('חמישי')) return 5;
+          if (name.includes('שישי')) return 6;
+          if (name.includes('שביעי')) return 7;
+          if (name.includes('שמיני')) return 8;
+          if (name.includes('תשיעי')) return 9;
+          if (name.includes('עשירי')) return 10;
+          return 999; // Put unrecognized lessons at the end
+        };
+        
+        return getLessonOrder(a.name) - getLessonOrder(b.name);
+      });
+
+      const newVideos = sortedVideos.map((video: any) => {
         const watched = watchedVideos.find((v) => v.uri === video.uri);
         return {
           uri: video.uri,

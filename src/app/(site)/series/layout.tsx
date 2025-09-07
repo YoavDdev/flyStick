@@ -91,7 +91,7 @@ export default function SeriesLayout({
                 </h2>
                 <p className="text-xl text-white/90 mb-8 leading-relaxed">
                   הסדרות הן רק התחלה! גלו את האתר המלא שלנו עם מגוון רחב של שיעורים, טכניקות מתקדמות, 
-                  תכנים מקצועיים ותמיכה אישית שתלווה אתכם בכל שלב במסע
+                  תכנים מקצועיים ותמיכה אישית שתלווה אתכם בכל שלב במסע.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
