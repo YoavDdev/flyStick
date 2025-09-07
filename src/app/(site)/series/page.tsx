@@ -205,18 +205,12 @@ const SeriesMarketplace = () => {
                   }}
                 >
                     {/* Series Thumbnail */}
-                    <div className="relative aspect-video bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] rounded-xl overflow-hidden mb-6">
-                      {series.thumbnailUrl ? (
-                        <img
-                          src={series.thumbnailUrl}
-                          alt={series.title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C]">
-                          <FaVideo className="text-5xl text-[#2D3142]/60" />
-                        </div>
-                      )}
+                    <div className="relative aspect-[2/3] bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] rounded-xl overflow-hidden mb-6">
+                      <img
+                        src="/uploads/series/1757277122800__________.jpg"
+                        alt={series.title}
+                        className="w-full h-full object-cover object-center"
+                      />
                       
                       {/* Overlay with Play Button */}
                       <div className="absolute inset-0 bg-[#2D3142]/0 group-hover:bg-[#2D3142]/40 transition-all duration-300 flex items-center justify-center">
