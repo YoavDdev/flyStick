@@ -592,7 +592,6 @@ const VideoPlayer = ({
         }`}
         ref={videoContainerRef}
         style={{ 
-          marginTop: 'max(15vh, min(25vh, calc(100vh * 0.25)))',
           marginLeft: 'auto',
           marginRight: 'auto'
         }}
