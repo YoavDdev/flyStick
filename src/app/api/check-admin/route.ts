@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     
     // Users with free or trial access should have content access like subscribers
     // Also include users in the 30-day grace period after cancellation
-    const hasContentAccess = isAdmin || isFreeOrTrial || user.subscriptionId?.startsWith("I-") || isInGracePeriod;
+    const hasContentAccess = isAdmin || isFreeOrTrial || (user.subscriptionId?.startsWith("I-") && user.paypalStatus === "ACTIVE") || isInGracePeriod;
     
     // Return both admin status and subscription type
     return NextResponse.json({ 

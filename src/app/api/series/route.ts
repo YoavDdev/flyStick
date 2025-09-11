@@ -51,8 +51,7 @@ export async function GET(request: NextRequest) {
           user.subscriptionId === "Admin" ||
           user.subscriptionId === "free" ||
           user.subscriptionId === "trial_30" ||
-          (user.subscriptionId && user.subscriptionId.startsWith("I-")) ||
-          (user.subscriptionId && user.subscriptionId !== "none" && user.subscriptionId !== null)
+          (user.subscriptionId && user.subscriptionId.startsWith("I-") && user.paypalStatus === "ACTIVE")
         );
 
         // Get list of purchased series IDs

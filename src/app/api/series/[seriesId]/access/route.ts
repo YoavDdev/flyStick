@@ -74,7 +74,7 @@ export async function GET(
       accessType = "admin";
     }
     // 2. Active PayPal subscribers - free access to all series
-    else if (user.subscriptionId && user.subscriptionId.startsWith("I-")) {
+    else if (user.subscriptionId && user.subscriptionId.startsWith("I-") && user.paypalStatus === "ACTIVE") {
       hasAccess = true;
       accessType = "subscription";
     }
