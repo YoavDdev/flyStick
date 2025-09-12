@@ -7,12 +7,15 @@ import { motion } from "framer-motion";
 import { FaHome, FaArrowLeft } from "react-icons/fa";
 import Image from "next/image";
 import Logo from "../../../../public/Flystick_logo.svg";
+import { usePathname } from "next/navigation";
 
 export default function SeriesLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  
   // Hide main app navbar and footer with CSS
   const hideMainAppElements = `
     nav:not(.series-nav),
@@ -55,17 +58,19 @@ export default function SeriesLayout({
 
               {/* Navigation to Main Site */}
               <div className="flex items-center gap-2 sm:gap-4">
-                <Link href="/series">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-1 sm:gap-2 bg-[#B8A99C] text-white px-3 sm:px-6 py-2 rounded-lg hover:bg-[#D5C4B7] hover:text-[#2D3142] transition-colors font-medium text-sm sm:text-base"
-                  >
-                    <FaArrowLeft className="text-xs sm:text-sm" />
-                    <span className="hidden sm:inline">לכל הסדרות</span>
-                    <span className="sm:hidden">סדרות</span>
-                  </motion.button>
-                </Link>
+                {pathname !== '/series' && (
+                  <Link href="/series">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex items-center gap-1 sm:gap-2 bg-[#B8A99C] text-white px-3 sm:px-6 py-2 rounded-lg hover:bg-[#D5C4B7] hover:text-[#2D3142] transition-colors font-medium text-sm sm:text-base"
+                    >
+                      <FaArrowLeft className="text-xs sm:text-sm" />
+                      <span className="hidden sm:inline">לכל הסדרות</span>
+                      <span className="sm:hidden">סדרות</span>
+                    </motion.button>
+                  </Link>
+                )}
                 <Link href="/">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
