@@ -94,7 +94,7 @@ const SeriesMarketplace = () => {
       <div className="container mx-auto px-6 py-24">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#D5C4B7]"></div>
-          <p className="mt-4 text-[#2D3142]">טוען סדרות וידאו...</p>
+          <p className="mt-4 text-[#2D3142]">טוען סדרות...</p>
         </div>
       </div>
     );
@@ -115,16 +115,16 @@ const SeriesMarketplace = () => {
             
             <h1 className="text-5xl md:text-6xl font-bold text-[#2D3142] mb-6 leading-tight">
               <span className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] bg-clip-text text-transparent">
-                סדרות הווידאו
+                סדרות שיקום
               </span>
               <br />
-              <span className="text-[#2D3142]">המקצועיות ביותר</span>
+              <span className="text-[#2D3142]">וטיפוח הגוף</span>
             </h1>
             
             <p className="text-xl text-[#2D3142]/80 max-w-3xl mx-auto mb-8 leading-relaxed">
-              גלו עולם של ידע מקצועי עם סדרות וידאו איכותיות שיקחו אתכם לשלב הבא.
+              סדרות מקצועיות לשיקום וחיזוק הגוף בצורה בטוחה ויעילה.
               <br />
-              <span className="text-[#D9713C] font-semibold">למידה מותאמת אישית, תוצאות מוכחות.</span>
+              <span className="text-[#D9713C] font-semibold">תרגילים מותאמים, תוצאות מוכחות.</span>
             </p>
             
             {seriesData?.userInfo.hasActiveSubscription ? (

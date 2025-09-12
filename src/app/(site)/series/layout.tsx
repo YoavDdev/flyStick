@@ -55,6 +55,16 @@ export default function SeriesLayout({
 
               {/* Navigation to Main Site */}
               <div className="flex items-center gap-4">
+                <Link href="/series">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-2 bg-[#B8A99C] text-white px-6 py-2 rounded-lg hover:bg-[#D5C4B7] hover:text-[#2D3142] transition-colors font-medium"
+                  >
+                    <FaArrowLeft className="text-sm" />
+                    <span>לכל הסדרות</span>
+                  </motion.button>
+                </Link>
                 <Link href="/">
                   <motion.button
                     whileHover={{ scale: 1.05 }}

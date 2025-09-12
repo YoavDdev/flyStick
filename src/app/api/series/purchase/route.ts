@@ -106,124 +106,90 @@ export async function POST(request: NextRequest) {
 
     // Send admin notification email about the series purchase
     try {
-      const adminEmails = ['yoavddev@gmail.com', 'zzaaoobb@gmail.com'];
-      
-      const emailSubject = `🎬 רכישת סדרה חדשה - ${purchase.series.title}`;
-      const emailHtml = `
-        <!DOCTYPE html>
-        <html dir="rtl" lang="he">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>רכישת סדרה חדשה</title>
-        </head>
-        <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #F7F3EB; margin: 0; padding: 20px; direction: rtl;">
-          <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;">
-            
-            <!-- Header -->
-            <div style="background: linear-gradient(135deg, #D5C4B7 0%, #B8A99C 100%); padding: 30px; text-align: center;">
-              <h1 style="color: white; margin: 0; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-                🎬 רכישת סדרה חדשה!
-              </h1>
-              <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 16px;">
-                Studio Boaz Online
-              </p>
-            </div>
-            
-            <!-- Content -->
-            <div style="padding: 30px;">
-              <div style="background: #E8F5E8; border: 2px solid #4CAF50; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
-                <h2 style="color: #2E7D32; margin: 0 0 15px 0; font-size: 22px;">
-                  פרטי הרכישה
-                </h2>
-                <div style="color: #1B5E20; font-size: 16px; line-height: 1.6;">
-                  <p><strong>סדרה:</strong> ${purchase.series.title}</p>
-                  <p><strong>סכום:</strong> ₪${purchase.amount} ${purchase.currency}</p>
-                  <p><strong>מזהה PayPal:</strong> ${purchase.paypalOrderId}</p>
-                  <p><strong>תאריך רכישה:</strong> ${new Date(purchase.purchaseDate).toLocaleDateString('he-IL', {
+      const { Resend } = await import('resend');
+      const resend = new Resend(process.env.RESEND_API_KEY);
+
+      await resend.emails.send({
+        from: 'Studio Boaz Online <info@studioboazonline.com>',
+        to: ['yoavddev@gmail.com', 'zzaaoobb@gmail.com'],
+        subject: `🎬 רכישת סדרה חדשה - ${purchase.series.title}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; max-width: 600px; margin: 0 auto; background: #F7F3EB; padding: 20px; border-radius: 12px;">
+            <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+              <h2 style="color: #2D3142; margin-top: 0; font-size: 22px; text-align: center;">🎬 רכישת סדרה חדשה!</h2>
+              
+              <div style="background: #E8F5E8; border: 2px solid #4CAF50; border-radius: 8px; padding: 20px; margin: 20px 0;">
+                <h3 style="color: #2E7D32; margin-top: 0; font-size: 18px;">פרטי הרכישה:</h3>
+                
+                <p style="color: #1B5E20; line-height: 1.6; font-size: 16px; margin: 10px 0;">
+                  <strong>סדרה:</strong> ${purchase.series.title}
+                </p>
+                
+                <p style="color: #1B5E20; line-height: 1.6; font-size: 16px; margin: 10px 0;">
+                  <strong>סכום:</strong> ₪${purchase.amount} ${purchase.currency}
+                </p>
+                
+                <p style="color: #1B5E20; line-height: 1.6; font-size: 16px; margin: 10px 0;">
+                  <strong>מזהה PayPal:</strong> ${purchase.paypalOrderId}
+                </p>
+                
+                <p style="color: #1B5E20; line-height: 1.6; font-size: 16px; margin: 10px 0;">
+                  <strong>תאריך רכישה:</strong> ${new Date(purchase.purchaseDate).toLocaleDateString('he-IL', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit'
-                  })}</p>
-                </div>
+                  })}
+                </p>
               </div>
               
-              <div style="background: #F5F5F5; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
-                <h3 style="color: #2D3142; margin: 0 0 15px 0; font-size: 18px;">
-                  👤 פרטי הלקוח
-                </h3>
-                <div style="color: #5D5D5D; font-size: 15px; line-height: 1.6;">
-                  <p><strong>שם:</strong> ${purchase.user.name || 'לא צוין'}</p>
-                  <p><strong>אימייל:</strong> ${purchase.user.email}</p>
-                  <p><strong>תאריך הרשמה:</strong> ${new Date(purchase.user.createdAt).toLocaleDateString('he-IL', {
+              <div style="background: #F7F3EB; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="color: #D9713C; margin-top: 0; font-size: 18px;">👤 פרטי הלקוח:</h3>
+                
+                <p style="color: #3D3D3D; line-height: 1.6; font-size: 16px; margin: 10px 0;">
+                  <strong>שם:</strong> ${purchase.user.name || 'לא צוין'}
+                </p>
+                
+                <p style="color: #3D3D3D; line-height: 1.6; font-size: 16px; margin: 10px 0;">
+                  <strong>אימייל:</strong> ${purchase.user.email}
+                </p>
+                
+                <p style="color: #3D3D3D; line-height: 1.6; font-size: 16px; margin: 10px 0;">
+                  <strong>תאריך הרשמה:</strong> ${new Date(purchase.user.createdAt).toLocaleDateString('he-IL', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
-                  })}</p>
-                </div>
+                  })}
+                </p>
               </div>
               
-              <!-- Action Buttons -->
-              <div style="text-align: center; margin: 30px 0;">
-                <a href="http://localhost:3000/admin" 
-                   style="display: inline-block; background: #B56B4A; color: white; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 0 10px;">
+              <p style="color: #3D3D3D; line-height: 1.8; font-size: 16px; margin-bottom: 20px;">
+                הלקוח רכש את הסדרה בהצלחה ויכול כעת לגשת לכל הסרטונים בסדרה.
+              </p>
+              
+              <div style="text-align: center; margin: 25px 0;">
+                <a href="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/admin" 
+                   style="background: #D5C4B7; color: #2D3142; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; margin: 0 10px;">
                   🔧 פאנל ניהול
                 </a>
-                <a href="http://localhost:3000/dashboard" 
-                   style="display: inline-block; background: #8E9A7C; color: white; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 0 10px;">
+                <a href="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/dashboard" 
+                   style="background: #B8A99C; color: #2D3142; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; margin: 0 10px;">
                   📊 דשבורד סטודיו
                 </a>
               </div>
-            </div>
-            
-            <!-- Footer -->
-            <div style="background: #2D3142; color: white; padding: 20px; text-align: center;">
-              <p style="margin: 0; font-size: 14px; opacity: 0.8;">
-                Studio Boaz Online - מערכת ניהול אוטומטית
-              </p>
-              <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.6;">
-                ${new Date().toLocaleDateString('he-IL', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })}
+              
+              <p style="color: #B8A99C; font-size: 14px; text-align: center; margin-top: 30px;">
+                הודעה אוטומטית ממערכת Studio Boaz Online
               </p>
             </div>
           </div>
-        </body>
-        </html>
-      `;
+        `
+      });
 
-      // Send emails to both admin addresses
-      for (const adminEmail of adminEmails) {
-        try {
-          const emailResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/send-email`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              to: adminEmail,
-              subject: emailSubject,
-              html: emailHtml,
-            }),
-          });
-
-          if (!emailResponse.ok) {
-            console.error(`Failed to send admin notification to ${adminEmail}`);
-          } else {
-            console.log(`✅ Series purchase notification sent to ${adminEmail}`);
-          }
-        } catch (emailError) {
-          console.error(`Error sending email to ${adminEmail}:`, emailError);
-        }
-      }
+      console.log("🎬 Series purchase notification email sent successfully to admins");
     } catch (notificationError) {
-      console.error('Error sending admin notifications:', notificationError);
+      console.error('❌ Error sending series purchase notification:', notificationError);
       // Don't fail the purchase if email fails
     }
 

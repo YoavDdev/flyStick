@@ -271,17 +271,6 @@ const SeriesViewPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="flex items-center gap-4 mb-8">
-              <motion.button
-                onClick={() => router.back()}
-                className="flex items-center gap-2 text-[#2D3142] hover:text-[#B8A99C] transition-colors bg-white/80 px-4 py-2 rounded-xl backdrop-blur-sm border border-[#D5C4B7]/30 shadow-lg hover:shadow-xl"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <FaArrowLeft />
-                <span>חזור לסדרות</span>
-              </motion.button>
-            </div>
 
             <div className="bg-white/90 backdrop-blur-xl rounded-3xl border border-[#D5C4B7]/30 p-8 shadow-2xl hover:shadow-3xl transition-all duration-500">
               <div className="flex flex-col lg:flex-row items-start justify-between gap-6">

@@ -85,7 +85,7 @@ const WabiSabiNavbar = () => {
   // Navigation links with icons for improved UX
   const navigationLinks: NavigationLink[] = [
     { href: "/", label: "בית", icon: AiOutlineHome },
-    { href: "/series", label: "קורסים", icon: AiOutlineInfoCircle },
+    { href: "/series", label: "סדרות", icon: AiOutlineInfoCircle },
     { href: "/styles", label: "טכניקות", icon: AiOutlineInfoCircle },
     { href: "/about", label: "אודות", icon: AiOutlineInfoCircle },
     { href: "/#Contact", label: "צור קשר", icon: AiOutlinePhone },
@@ -114,7 +114,7 @@ const WabiSabiNavbar = () => {
   // Page title mapping for header display
   const pageTitles: Record<string, string> = {
     "/explore": "חיפוש אישי",
-    "/series": "קורסים",
+    "/series": "סדרות",
     "/dashboard": "איזור אישי",
     "/user": "הספרייה שלי",
   };
@@ -275,7 +275,7 @@ const WabiSabiNavbar = () => {
                     >
                       {link.label}
                     </span>
-                    {link.label === "קורסים" && (
+                    {link.label === "סדרות" && (
                       <span className="mr-1 bg-green-500 text-white text-xs px-2 py-0.5 rounded-md font-medium">
                         חדש
                       </span>
@@ -451,7 +451,7 @@ const WabiSabiNavbar = () => {
                       <div className="flex items-center justify-between w-full">
                         <div className="flex items-center">
                           <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
-                            קורסים
+                            סדרות
                           </span>
                           <span className="mr-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-md font-medium">
                             חדש
@@ -547,7 +547,7 @@ const WabiSabiNavbar = () => {
               <ul className="text-lg sm:text-xl space-y-3 sm:space-y-4">
                 {navigationLinks.filter(link => {
                   // Hide "קורסים" and "טכניקות" when user is logged in
-                  if (session?.user && (link.label === "קורסים" || link.label === "טכניקות")) {
+                  if (session?.user && (link.label === "סדרות" || link.label === "טכניקות")) {
                     return false;
                   }
                   return true;
@@ -621,7 +621,7 @@ const WabiSabiNavbar = () => {
                             } transition-colors duration-300`}>
                               {link.label}
                             </span>
-                            {link.label === "קורסים" && (
+                            {link.label === "סדרות" && (
                               <span className="mr-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-md font-medium">
                                 חדש
                               </span>
