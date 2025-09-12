@@ -115,16 +115,16 @@ const SeriesMarketplace = () => {
             
             <h1 className="text-5xl md:text-6xl font-bold text-[#2D3142] mb-6 leading-tight">
               <span className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] bg-clip-text text-transparent">
-                סדרות שיקום
+                סדרות הווידאו
               </span>
               <br />
-              <span className="text-[#2D3142]">וטיפוח הגוף</span>
+              <span className="text-[#2D3142]">המקצועיות ביותר</span>
             </h1>
-            
+
             <p className="text-xl text-[#2D3142]/80 max-w-3xl mx-auto mb-8 leading-relaxed">
-              סדרות מקצועיות לשיקום וחיזוק הגוף בצורה בטוחה ויעילה.
+              גלו עולם של ידע מקצועי עם סדרות וידאו איכותיות שיקחו אתכם לשלב הבא.
               <br />
-              <span className="text-[#D9713C] font-semibold">תרגילים מותאמים, תוצאות מוכחות.</span>
+              <span className="text-[#D9713C] font-semibold">למידה מותאמת אישית, תוצאות מוכחות.</span>
             </p>
             
             {seriesData?.userInfo.hasActiveSubscription ? (
@@ -246,9 +246,9 @@ const SeriesMarketplace = () => {
 
                       {/* Access Status Badge */}
                       {series.hasAccess ? (
-                        <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-3 py-1 rounded-full text-sm font-bold shadow-md">
-                          <FaCheck className="inline mr-1" />
-                          {series.accessType === 'subscription' ? 'מנוי' : 'נרכש'}
+                        <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-3 py-1 rounded-full text-sm font-bold shadow-md flex items-center gap-1">
+                          <FaCheck className="text-xs" />
+                          <span>{series.accessType === 'subscription' ? 'מנוי' : 'נרכש'}</span>
                         </div>
                       ) : (
                         <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D9713C] to-[#D9713C]/80 text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">

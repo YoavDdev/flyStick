@@ -47,9 +47,9 @@ export default function SeriesLayout({
                   className="object-contain sm:w-10 sm:h-10"
                   style={{ width: 'auto', height: '32px' }}
                 />
-                <div className="hidden sm:block">
-                  <h1 className="text-lg sm:text-xl font-bold text-[#2D3142]">Studio Boaz</h1>
-                  <p className="text-xs sm:text-sm text-[#5D5D5D]">סדרות אימונים מקצועיות</p>
+                <div>
+                  <h1 className="text-base sm:text-lg md:text-xl font-bold text-[#2D3142]">Studio Boaz</h1>
+                  <p className="text-xs text-[#5D5D5D]">סדרות טיפולים</p>
                 </div>
               </div>
 
@@ -98,20 +98,20 @@ export default function SeriesLayout({
                 viewport={{ once: true }}
                 className="text-center max-w-4xl mx-auto"
               >
-                <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">
                   מוכנים לחקור עוד?
                 </h2>
-                <p className="text-xl text-white/90 mb-8 leading-relaxed">
+                <p className="text-base md:text-lg text-white/90 mb-6 leading-relaxed">
                   הסדרות הן רק התחלה! גלו את האתר המלא שלנו עם מגוון רחב של שיעורים, טכניקות מתקדמות, 
                   תכנים מקצועיים ותמיכה אישית שתלווה אתכם בכל שלב במסע.
                 </p>
                 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <Link href="/">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="bg-[#D5C4B7] text-[#2D3142] px-10 py-4 rounded-xl font-bold hover:bg-white transition-colors text-lg shadow-lg"
+                      className="bg-[#D5C4B7] text-[#2D3142] px-6 py-3 rounded-xl font-bold hover:bg-white transition-colors text-base shadow-lg"
                     >
                       🏠 כנסו לאתר המלא
                     </motion.button>
@@ -120,7 +120,7 @@ export default function SeriesLayout({
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="border-2 border-white text-white px-10 py-4 rounded-xl font-medium hover:bg-white/10 transition-colors text-lg"
+                      className="border-2 border-white text-white px-6 py-3 rounded-xl font-medium hover:bg-white/10 transition-colors text-base"
                     >
                       💎 הפעילו מנוי
                     </motion.button>
