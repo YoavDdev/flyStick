@@ -33,9 +33,15 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: ["/favicon2.ico?v=4"],
-    apple: ["/apple-touch-icon.png?v=4"],
-    shortcut: ["/apple-touch-icon.png"],
+    icon: [
+      { url: "/favicon-new.svg", type: "image/svg+xml" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" }
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }
+    ],
+    shortcut: ["/favicon-new.svg"],
   },
   alternates: {
     canonical: "/",
@@ -52,10 +58,10 @@ export const metadata: Metadata = {
     description: "בואו לצלול לשפע עצום של שיעורים ותרגילים שפותחו כדי להעשיר ולפתח את החיבור בין הגוף לנפש שלכם. בועז נחייסי מלמד פלייסטיק, תנועה מרפאה ואימונים אישיים.",
     images: [
       {
-        url: "/android-chrome-144x144.png",
-        width: 144,
-        height: 144,
-        alt: "סטודיו בועז אונליין לוגו",
+        url: "/og-image-sharp.png",
+        width: 1200,
+        height: 630,
+        alt: "Studio Boaz Online - סטודיו בועז אונליין",
       },
     ],
     siteName: "סטודיו בועז אונליין",
@@ -64,7 +70,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "סטודיו בועז אונליין - אימונים אישיים ותנועה מרפאה",
     description: "בואו לצלול לשפע עצום של שיעורים ותרגילים שפותחו כדי להעשיר ולפתח את החיבור בין הגוף לנפש שלכם.",
-    images: ["/android-chrome-144x144.png"],
+    images: ["/og-image-sharp.png"],
   },
   robots: {
     index: true,
