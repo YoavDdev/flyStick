@@ -53,7 +53,7 @@ class ConvertkitEmailForm extends Component {
           email: "",
         });
       } else {
-        toast.error(json_res.error || '❌ אירעה שגיאה ברישום לניוזלטר - אנא נסה שוב', {
+        toast.error(json_res.error || '❌ אירעה שגיאה ברישום לנייוזלטר - אנא נסה שוב', {
           duration: 4000,
           position: 'top-center',
           style: {
