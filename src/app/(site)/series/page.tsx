@@ -94,7 +94,7 @@ const SeriesMarketplace = () => {
       <div className="container mx-auto px-6 py-24">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#D5C4B7]"></div>
-          <p className="mt-4 text-[#2D3142]">טוען סדרות...</p>
+          <p className="mt-4 text-[#2D3142]">טוען סדרות וידאו...</p>
         </div>
       </div>
     );
@@ -120,7 +120,7 @@ const SeriesMarketplace = () => {
               <br />
               <span className="text-[#2D3142]">המקצועיות ביותר</span>
             </h1>
-
+            
             <p className="text-xl text-[#2D3142]/80 max-w-3xl mx-auto mb-8 leading-relaxed">
               גלו עולם של ידע מקצועי עם סדרות וידאו איכותיות שיקחו אתכם לשלב הבא.
               <br />
@@ -246,9 +246,9 @@ const SeriesMarketplace = () => {
 
                       {/* Access Status Badge */}
                       {series.hasAccess ? (
-                        <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-3 py-1 rounded-full text-sm font-bold shadow-md flex items-center gap-1">
-                          <FaCheck className="text-xs" />
-                          <span>{series.accessType === 'subscription' ? 'מנוי' : 'נרכש'}</span>
+                        <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-3 py-1 rounded-full text-sm font-bold shadow-md">
+                          <FaCheck className="inline mr-1" />
+                          {series.accessType === 'subscription' ? 'מנוי' : 'נרכש'}
                         </div>
                       ) : (
                         <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D9713C] to-[#D9713C]/80 text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">

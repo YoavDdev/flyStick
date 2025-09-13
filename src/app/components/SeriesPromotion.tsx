@@ -77,20 +77,21 @@ const SeriesPromotion = () => {
           </p>
         </motion.div>
 
-        {/* Series Cards Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-          {series.map((seriesItem, index) => (
-            <motion.div
-              key={seriesItem.id}
-              className="group cursor-pointer"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ y: -8 }}
-            >
-              <div className="relative bg-[#F0E9DF] rounded-2xl border border-[#D5C4B7] p-4 shadow-md hover:shadow-lg transition-all duration-500 h-full">
-                {/* Series Thumbnail */}
-                <div className="relative aspect-[2/3] bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] rounded-xl overflow-hidden mb-4">
+        {/* Netflix-Style Horizontal Scroll */}
+        <div className="relative">
+          <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            {series.map((seriesItem, index) => (
+              <motion.div
+                key={seriesItem.id}
+                className="flex-shrink-0 w-80 group cursor-pointer"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
+              >
+                <div className="relative bg-white/80 backdrop-blur-sm rounded-xl border border-[#D5C4B7]/30 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                  {/* Series Thumbnail */}
+                  <div className="relative aspect-video bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] rounded-lg overflow-hidden mb-4">
                     {seriesItem.thumbnailUrl ? (
                       <img
                         src={seriesItem.thumbnailUrl}
@@ -135,149 +136,155 @@ const SeriesPromotion = () => {
                       </div>
                     </div>
 
-                  {/* Access Status Badge */}
-                  {seriesItem.hasAccess ? (
-                    <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-3 py-1 rounded-full text-sm font-bold shadow-md">
-                      <FaCheck className="inline mr-1" />
-                      {seriesItem.accessType === 'subscription' ? 'מנוי' : 'נרכש'}
-                    </div>
-                  ) : (
-                    <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D9713C] to-[#D9713C]/80 text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">
-                      ₪{seriesItem.price}
-                    </div>
-                  )}
+                    {/* Access Status Badge */}
+                    {seriesItem.hasAccess ? (
+                      <div className="absolute top-3 right-3 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                        <FaCheck className="inline mr-1" />
+                        {seriesItem.accessType === 'subscription' ? 'מנוי' : 'נרכש'}
+                      </div>
+                    ) : (
+                      <div className="absolute top-3 right-3 bg-[#B8A99C] text-white px-2 py-1 rounded-full text-xs font-medium">
+                        ₪{seriesItem.price}
+                      </div>
+                    )}
 
-                  {/* Featured Badge */}
-                  {seriesItem.isFeatured && (
-                    <div className="absolute top-4 left-4 bg-gradient-to-r from-[#D9713C] to-[#D9713C]/80 text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">
-                      <FaStar className="inline mr-1" />
-                      מומלץ
-                    </div>
-                  )}
-                </div>
-
-                {/* Series Info */}
-                <div className="space-y-4 flex-1">
-                  <h3 className="text-lg font-bold text-[#2D3142] group-hover:text-[#D9713C] transition-colors duration-300">
-                    {seriesItem.title}
-                  </h3>
-                  <p className="text-[#2D3142]/70 text-xs leading-relaxed line-clamp-3">
-                    {seriesItem.description}
-                  </p>
-                  
-                  <div className="flex items-center justify-between pt-2">
-                    <div className="flex items-center gap-2 text-xs text-[#2D3142]/60">
-                      <FaVideo className="text-[#D9713C]" />
-                      <span>{seriesItem.videoCount} פרקים</span>
-                    </div>
-                    
-                    {!seriesItem.hasAccess && (
-                      <motion.button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (!session) {
-                            router.push(`/series/register?returnUrl=${encodeURIComponent(window.location.pathname)}`);
-                            return;
-                          }
-                          setPurchasingSeriesId(seriesItem.id);
-                        }}
-                        className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-3 py-1 rounded-lg hover:from-[#B8A99C] hover:to-[#D5C4B7] transition-all duration-300 text-xs font-bold shadow-md"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        רכישה
-                      </motion.button>
+                    {/* Featured Badge */}
+                    {seriesItem.isFeatured && (
+                      <div className="absolute top-3 left-3 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                        <FaStar className="inline mr-1" />
+                        מומלץ
+                      </div>
                     )}
                   </div>
-                </div>
 
-                {/* Inline PayPal for purchasing */}
-                {purchasingSeriesId === seriesItem.id && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    className="mt-4 pt-4 border-t border-[#D5C4B7]/30"
-                  >
-                    <p className="text-sm text-[#2D3142] mb-3 text-center">בחר אמצעי תשלום:</p>
-                    <PayPalScriptProvider
-                      options={{
-                        clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
-                        components: "buttons",
-                        intent: "capture",
-                        currency: "ILS"
-                      }}
-                    >
-                      <PayPalButtons
-                        style={{
-                          color: "blue",
-                          shape: "pill",
-                          height: 35,
-                          label: "pay"
-                        }}
-                        createOrder={(data, actions) => {
-                          return actions.order.create({
-                            purchase_units: [{
-                              amount: {
-                                value: seriesItem.price.toString(),
-                                currency_code: "ILS"
-                              },
-                              description: seriesItem.title
-                            }],
-                            intent: "CAPTURE"
-                          });
-                        }}
-                        onApprove={(data, actions) => {
-                          return actions.order!.capture().then(async (details) => {
-                            try {
-                              const response = await fetch('/api/series/purchase', {
-                                method: 'POST',
-                                headers: {
-                                  'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                  seriesId: seriesItem.id,
-                                  paypalOrderId: details.id,
-                                  paypalDetails: details
-                                }),
-                              });
-
-                              if (response.ok) {
-                                toast.success('הרכישה בוצעה בהצלחה! 🎉');
-                                setPurchasingSeriesId(null);
-                                // Refresh series data
-                                const updatedResponse = await fetch('/api/series');
-                                const updatedData = await updatedResponse.json();
-                                const promotionSeries = updatedData.series
-                                  .filter((s: VideoSeries) => s.isFeatured || updatedData.series.indexOf(s) < 6)
-                                  .slice(0, 6);
-                                setSeries(promotionSeries);
-                              } else {
-                                const error = await response.json();
-                                toast.error(error.error || 'שגיאה בעיבוד הרכישה');
-                              }
-                            } catch (error) {
-                              console.error('Error processing purchase:', error);
-                              toast.error('שגיאה בעיבוד הרכישה');
+                  {/* Series Info */}
+                  <div className="space-y-3">
+                    <h3 className="text-xl font-bold text-[#2D3142] line-clamp-1">{seriesItem.title}</h3>
+                    <p className="text-[#5D5D5D] text-sm line-clamp-2">{seriesItem.description}</p>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1 text-sm text-[#5D5D5D]">
+                        <FaVideo className="text-[#B8A99C]" />
+                        <span>{seriesItem.videoCount} פרקים</span>
+                      </div>
+                      
+                      {seriesItem.hasAccess ? (
+                        <Link href={`/series/${seriesItem.id}`}>
+                          <motion.button
+                            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                          >
+                            צפה עכשיו
+                          </motion.button>
+                        </Link>
+                      ) : (
+                        <motion.button
+                          onClick={() => {
+                            if (!session) {
+                              router.push(`/series/register?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+                              return;
                             }
-                          });
-                        }}
-                        onError={(err) => {
-                          console.error('PayPal Error:', err);
-                          toast.error('שגיאה בתשלום');
-                        }}
-                      />
-                    </PayPalScriptProvider>
-                    <button
-                      onClick={() => setPurchasingSeriesId(null)}
-                      className="mt-2 text-sm text-[#5D5D5D] hover:text-[#2D3142] transition-colors w-full text-center"
+                            setPurchasingSeriesId(seriesItem.id);
+                          }}
+                          className="bg-[#B8A99C] text-white px-4 py-2 rounded-lg hover:bg-[#D5C4B7] transition-colors text-sm font-medium"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          רכישה
+                        </motion.button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Inline PayPal for purchasing */}
+                  {purchasingSeriesId === seriesItem.id && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="mt-4 pt-4 border-t border-[#D5C4B7]/30"
                     >
-                      ביטול
-                    </button>
-                  </motion.div>
-                )}
-              </div>
-            </motion.div>
-          ))}
+                      <p className="text-sm text-[#2D3142] mb-3 text-center">בחר אמצעי תשלום:</p>
+                      <PayPalScriptProvider
+                        options={{
+                          clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
+                          components: "buttons",
+                          intent: "capture",
+                          currency: "ILS"
+                        }}
+                      >
+                        <PayPalButtons
+                          style={{
+                            color: "blue",
+                            shape: "pill",
+                            height: 35,
+                            label: "pay"
+                          }}
+                          createOrder={(data, actions) => {
+                            return actions.order.create({
+                              purchase_units: [{
+                                amount: {
+                                  value: seriesItem.price.toString(),
+                                  currency_code: "ILS"
+                                },
+                                description: seriesItem.title
+                              }],
+                              intent: "CAPTURE"
+                            });
+                          }}
+                          onApprove={(data, actions) => {
+                            return actions.order!.capture().then(async (details) => {
+                              try {
+                                const response = await fetch('/api/series/purchase', {
+                                  method: 'POST',
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                  },
+                                  body: JSON.stringify({
+                                    seriesId: seriesItem.id,
+                                    paypalOrderId: details.id,
+                                    paypalDetails: details
+                                  }),
+                                });
+
+                                if (response.ok) {
+                                  toast.success('הרכישה בוצעה בהצלחה! 🎉');
+                                  setPurchasingSeriesId(null);
+                                  // Refresh series data
+                                  const updatedResponse = await fetch('/api/series');
+                                  const updatedData = await updatedResponse.json();
+                                  const promotionSeries = updatedData.series
+                                    .filter((s: VideoSeries) => s.isFeatured || updatedData.series.indexOf(s) < 6)
+                                    .slice(0, 6);
+                                  setSeries(promotionSeries);
+                                } else {
+                                  const error = await response.json();
+                                  toast.error(error.error || 'שגיאה בעיבוד הרכישה');
+                                }
+                              } catch (error) {
+                                console.error('Error processing purchase:', error);
+                                toast.error('שגיאה בעיבוד הרכישה');
+                              }
+                            });
+                          }}
+                          onError={(err) => {
+                            console.error('PayPal Error:', err);
+                            toast.error('שגיאה בתשלום');
+                          }}
+                        />
+                      </PayPalScriptProvider>
+                      <button
+                        onClick={() => setPurchasingSeriesId(null)}
+                        className="mt-2 text-sm text-[#5D5D5D] hover:text-[#2D3142] transition-colors w-full text-center"
+                      >
+                        ביטול
+                      </button>
+                    </motion.div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* Call to Action */}

@@ -13,7 +13,7 @@ const DropdownMenu = ({ onClose }: { onClose: () => void }) => {
     { href: "/dashboard", label: "איזור אישי", icon: AiOutlineUser },
     { href: "/user", label: "הספרייה שלי", icon: AiOutlineBook },
     { href: "/styles", label: "טכניקות", icon: AiOutlineExperiment },
-    { href: "/series", label: "סדרות", icon: AiOutlinePlayCircle },
+    { href: "/series", label: "קורסים", icon: AiOutlinePlayCircle },
     { href: "/explore", label: "חיפוש אישי", icon: AiOutlineCompass },
   ];
 
@@ -27,7 +27,7 @@ const DropdownMenu = ({ onClose }: { onClose: () => void }) => {
             <div className="relative flex items-center gap-2 px-4 py-3 hover:bg-[#E5DFD0] text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
               <item.icon className="ml-2" size={18} />
               <span>{item.label}</span>
-              {item.label === "סדרות" && (
+              {item.label === "קורסים" && (
                 <span className="w-2 h-2 bg-green-500 rounded-full ml-1 flex-shrink-0"></span>
               )}
             </div>

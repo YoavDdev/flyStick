@@ -12,13 +12,13 @@ const rubik = Rubik({ subsets: ["latin", "hebrew"] });
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.studioboazonline.com/"),
   title: {
-    default: "סטודיו בועז אונליין",
+    default: "סטודיו בועז אונליין - אימונים אישיים ותנועה מרפאה",
     template: "%s | סטודיו בועז אונליין"
   },
   description:
-    "פלטפורמת אימונים אונליין מתקדמת עם אוסף נבחר של שיעורי תנועה, פלייסטיק ואימון פונקציונלי. צפו בסדרות וידאו מקצועיות, עקבו אחר ההתקדמות שלכם ובנו פלייליסטים אישיים. בועז נחייסי מלווה אתכם במסע לחיזוק הקשר בין גוף לנפש דרך תנועה מרפאה וטכניקות אימון מותאמות אישית.",
+    "בואו לצלול לשפע עצום של שיעורים ותרגילים שפותחו כדי להעשיר ולפתח את החיבור בין הגוף לנפש שלכם ולשדרג את מצבו התפקודי עם אימונים וטכניקות ברמות קושי מגוונות. בועז נחייסי מלמד פלייסטיק, תנועה מרפאה ואימונים אישיים.",
   keywords: [
-    "בועז סטודיו אונליין", "בועז נחייסי", "פלייסטיק", "אימונים אישיים", 
+    "סטודיו בועז אונליין", "בועז נחייסי", "פלייסטיק", "אימונים אישיים", 
     "תנועה מרפאה", "יוגה", "פילאטיס", "אימון גופני", "כושר", "בריאות",
     "תנועה ונשימה", "חיבור גוף נפש", "אימון אונליין", "שיעורי וידאו",
     "studio boaz online", "boaz nahaissi", "flyastic", "movement therapy",
@@ -33,15 +33,9 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: [
-      { url: "/favicon-new.svg", type: "image/svg+xml" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" }
-    ],
-    apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }
-    ],
-    shortcut: ["/favicon-new.svg"],
+    icon: ["/favicon2.ico?v=4"],
+    apple: ["/apple-touch-icon.png?v=4"],
+    shortcut: ["/apple-touch-icon.png"],
   },
   alternates: {
     canonical: "/",
@@ -51,27 +45,26 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "סטודיו בועז אונליין",
-    description:
-      "פלטפורמת אימונים אונליין מתקדמת עם אוסף נבחר של שיעורי תנועה, פלייסטיק ואימון פונקציונלי. צפו בסדרות וידאו מקצועיות, עקבו אחר ההתקדמות שלכם ובנו פלייליסטים אישיים. בועז נחייסי מלווה אתכם במסע לחיזוק הקשר בין גוף לנפש דרך תנועה מרפאה.",
+    type: "website",
+    locale: "he_IL",
     url: "https://www.studioboazonline.com/",
-    siteName: "סטודיו בועז אונליין",
+    title: "סטודיו בועז אונליין - אימונים אישיים ותנועה מרפאה",
+    description: "בואו לצלול לשפע עצום של שיעורים ותרגילים שפותחו כדי להעשיר ולפתח את החיבור בין הגוף לנפש שלכם. בועז נחייסי מלמד פלייסטיק, תנועה מרפאה ואימונים אישיים.",
     images: [
       {
-        url: "/social-media/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "סטודיו בועז אונליין - פלטפורמת אימונים אונליין עם שיעורי תנועה, פלייסטיק ואימון פונקציונלי",
+        url: "/android-chrome-144x144.png",
+        width: 144,
+        height: 144,
+        alt: "סטודיו בועז אונליין לוגו",
       },
     ],
-    locale: "he_IL",
-    type: "website",
+    siteName: "סטודיו בועז אונליין",
   },
   twitter: {
     card: "summary_large_image",
-    title: "סטודיו בועז אונליין",
-    description: "פלטפורמת אימונים אונליין מתקדמת עם שיעורי תנועה, פלייסטיק ואימון פונקציונלי. צפו בסדרות וידאו, עקבו אחר התקדמות ובנו פלייליסטים אישיים עם בועז נחייסי.",
-    images: ["/social-media/og-image.jpg"],
+    title: "סטודיו בועז אונליין - אימונים אישיים ותנועה מרפאה",
+    description: "בואו לצלול לשפע עצום של שיעורים ותרגילים שפותחו כדי להעשיר ולפתח את החיבור בין הגוף לנפש שלכם.",
+    images: ["/android-chrome-144x144.png"],
   },
   robots: {
     index: true,
