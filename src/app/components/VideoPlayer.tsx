@@ -51,6 +51,50 @@ const VideoPlayer = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMobilePortrait, setIsMobilePortrait] = useState(false);
 
+  // Function to exit fullscreen safely on all devices including mobile
+  const exitFullscreenSafely = useCallback(async () => {
+    try {
+      // Check for standard fullscreen API
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+        return;
+      }
+      
+      // Check for webkit fullscreen (Safari/iOS)
+      if ((document as any).webkitFullscreenElement) {
+        (document as any).webkitExitFullscreen();
+        return;
+      }
+      
+      // Check for moz fullscreen (Firefox)
+      if ((document as any).mozFullScreenElement) {
+        (document as any).mozCancelFullScreen();
+        return;
+      }
+      
+      // Check for ms fullscreen (IE/Edge)
+      if ((document as any).msFullscreenElement) {
+        (document as any).msExitFullscreen();
+        return;
+      }
+      
+      // For Vimeo player specific fullscreen
+      if (player) {
+        try {
+          const isPlayerFullscreen = await player.getFullscreen();
+          if (isPlayerFullscreen) {
+            await player.exitFullscreen();
+          }
+        } catch (error) {
+          console.warn('Failed to exit Vimeo player fullscreen:', error);
+        }
+      }
+      
+    } catch (error) {
+      console.warn('Failed to exit fullscreen:', error);
+    }
+  }, [player]);
+
   // Function to save video progress - moved outside useEffect for reuse
   const saveProgress = useCallback(async () => {
     if (!session?.user || !videoUri || !player) return;
@@ -349,14 +393,8 @@ const VideoPlayer = ({
         
         // If user tries to seek beyond the preview limit, show overlay
         if (currentTime > PREVIEW_LIMIT) {
-          // Exit fullscreen if active before showing overlay
-          if (document.fullscreenElement) {
-            try {
-              document.exitFullscreen();
-            } catch (error) {
-              console.warn('Failed to exit fullscreen:', error);
-            }
-          }
+          // Exit fullscreen with mobile-specific handling
+          await exitFullscreenSafely();
           
           newPlayer.setCurrentTime(PREVIEW_LIMIT);
           setShowPreviewOverlay(true);
@@ -370,14 +408,8 @@ const VideoPlayer = ({
         
         // If video plays beyond the preview limit, show overlay and pause
         if (currentTime > PREVIEW_LIMIT) {
-          // Exit fullscreen if active before showing overlay
-          if (document.fullscreenElement) {
-            try {
-              await document.exitFullscreen();
-            } catch (error) {
-              console.warn('Failed to exit fullscreen:', error);
-            }
-          }
+          // Exit fullscreen with mobile-specific handling
+          await exitFullscreenSafely();
           
           newPlayer.pause();
           setShowPreviewOverlay(true);
@@ -472,14 +504,8 @@ const VideoPlayer = ({
           if (!isSubscriber && !isAdmin) {
             const currentTime = await newPlayer.getCurrentTime();
             if (currentTime > PREVIEW_LIMIT) {
-              // Exit fullscreen if active before showing overlay
-              if (document.fullscreenElement) {
-                try {
-                  document.exitFullscreen();
-                } catch (error) {
-                  console.warn('Failed to exit fullscreen:', error);
-                }
-              }
+              // Exit fullscreen with mobile-specific handling
+              await exitFullscreenSafely();
               
               newPlayer.setCurrentTime(PREVIEW_LIMIT);
               setShowPreviewOverlay(true);
