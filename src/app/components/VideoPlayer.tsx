@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState, useCallback, memo } from 'react';
 import Player from '@vimeo/player';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
-import { motion } from 'framer-motion';
 import PreviewOverlay from './PreviewOverlay';
 import { useVideoPlayer } from '../context/VideoPlayerContext';
 
@@ -41,7 +40,8 @@ const VideoPlayer = ({
   // Updated ref type to handle both interval and animation frame
   const previewTimerRef = useRef<NodeJS.Timeout | { clear: () => void } | null>(null);
   
-  // Disclaimer overlay state
+  // Loading and disclaimer state
+  const [isLoading, setIsLoading] = useState(true);
   const [showDisclaimer, setShowDisclaimer] = useState(true);
   const [disclaimerFadingOut, setDisclaimerFadingOut] = useState(false);
   
@@ -301,31 +301,31 @@ const VideoPlayer = ({
 
     setPlayer(newPlayer);
     
-    // Handle autoplay issues - force play after player is ready
-    newPlayer.ready().then(() => {
-      console.log('🎬 Vimeo player ready, attempting to start playback');
+    // Handle player ready and loading
+    newPlayer.ready().then(async () => {
+      console.log('🎬 Vimeo player ready');
+      setIsLoading(false); // Hide loading screen
       
-      // Small delay to ensure player is fully initialized
-      setTimeout(async () => {
-        try {
-          await newPlayer.play();
-          console.log('✅ Video started playing successfully');
-        } catch (error) {
-          console.warn('⚠️ Autoplay failed, user interaction may be required:', error);
-          
-          // Try again with a longer delay
-          setTimeout(async () => {
-            try {
-              await newPlayer.play();
-              console.log('✅ Video started playing on retry');
-            } catch (retryError) {
-              console.warn('❌ Retry autoplay also failed:', retryError);
-            }
-          }, 1000);
+      try {
+        // Set resume time first if available
+        if (initialResumeTime > 0) {
+          await newPlayer.setCurrentTime(initialResumeTime);
         }
-      }, 500);
+        
+        // Start playing immediately
+        await newPlayer.play();
+        console.log('✅ Video playing');
+      } catch (error) {
+        console.warn('⚠️ Autoplay blocked:', error);
+      }
     }).catch(error => {
-      console.error('❌ Player ready failed:', error);
+      console.error('❌ Player initialization failed:', error);
+      setIsLoading(false);
+    });
+
+    // Also listen for loaded event to ensure loading screen disappears
+    newPlayer.on('loaded', () => {
+      setIsLoading(false);
     });
     
     // Add seek restriction for non-subscribers
@@ -683,19 +683,14 @@ const VideoPlayer = ({
         }}
       />
 
-      {/* More gentle close button positioned to avoid navbar overlap */}
-      <motion.button
-        className={`absolute text-white text-sm cursor-pointer bg-black bg-opacity-50 hover:bg-opacity-70 p-2 rounded-full shadow-md z-10 flex items-center justify-center border border-white/30 ${
+      {/* Close button */}
+      <button
+        className={`absolute text-white text-sm cursor-pointer bg-black bg-opacity-50 hover:bg-opacity-70 p-2 rounded-full shadow-md z-10 flex items-center justify-center border border-white/30 transition-all duration-200 ${
           isMobileLandscape || isFullscreen 
             ? 'top-4 right-4' 
             : isMobilePortrait ? 'top-4 right-4' : 'top-16 right-6'
         }`}
         onClick={handleCloseButton}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ opacity: 0.9 }}
-        whileTap={{ scale: 0.95 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
         aria-label="Close video"
         title="Close video"
       >
@@ -713,18 +708,13 @@ const VideoPlayer = ({
             d="M6 18L18 6M6 6l12 12"
           />
         </svg>
-      </motion.button>
+      </button>
       
-      {/* Subtle hint text - positioned to avoid navbar overlap */}
+      {/* Hint text */}
       {!isMobileLandscape && !isFullscreen && (
-        <motion.div
-          className="absolute bottom-6 left-6 bg-black bg-opacity-30 text-white text-xs px-2.5 py-1 rounded-full"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.7 }}
-          transition={{ delay: 2, duration: 0.8 }}
-        >
+        <div className="absolute bottom-6 left-6 bg-black bg-opacity-30 text-white text-xs px-2.5 py-1 rounded-full opacity-70">
           לחץ מחוץ לוידאו לסגירה
-        </motion.div>
+        </div>
       )}
 
       {showPreviewOverlay && (
@@ -734,22 +724,27 @@ const VideoPlayer = ({
         />
       )}
       
-      {/* Professional Disclaimer Overlay */}
-      {showDisclaimer && (
-        <motion.div
-          className="absolute inset-0 bg-black bg-opacity-90 flex items-center justify-center z-20"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: disclaimerFadingOut ? 0 : 1 }}
-          transition={{ duration: disclaimerFadingOut ? 1 : 0.5 }}
+      {/* Loading Screen */}
+      {isLoading && (
+        <div className="absolute inset-0 bg-black bg-opacity-90 flex items-center justify-center z-30">
+          <div className="text-white text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+            <p>טוען סרטון...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Disclaimer Overlay */}
+      {showDisclaimer && !isLoading && (
+        <div
+          className={`absolute inset-0 bg-black bg-opacity-90 flex items-center justify-center z-20 transition-opacity duration-500 ${
+            disclaimerFadingOut ? 'opacity-0' : 'opacity-100'
+          }`}
         >
-          <motion.div
-            className="bg-white rounded-lg p-8 max-w-2xl mx-4 text-center shadow-2xl"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ 
-              scale: disclaimerFadingOut ? 0.95 : 1, 
-              opacity: disclaimerFadingOut ? 0 : 1 
-            }}
-            transition={{ duration: disclaimerFadingOut ? 1 : 0.6, delay: disclaimerFadingOut ? 0 : 0.2 }}
+          <div
+            className={`bg-white rounded-lg p-8 max-w-2xl mx-4 text-center shadow-2xl transition-all duration-500 ${
+              disclaimerFadingOut ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
+            }`}
           >
             {/* Video Name */}
             {videoName && videoName.trim() && (
@@ -773,29 +768,18 @@ const VideoPlayer = ({
             </div>
             
             {/* Continue Button */}
-            <motion.button
+            <button
               onClick={() => {
                 setDisclaimerFadingOut(true);
-                setTimeout(() => setShowDisclaimer(false), 1000);
+                setTimeout(() => setShowDisclaimer(false), 500);
               }}
-              className="mt-6 bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] font-semibold py-3 px-8 rounded-full transition-colors duration-300 shadow-lg"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="mt-6 bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] font-semibold py-3 px-8 rounded-full transition-all duration-300 shadow-lg hover:scale-105 active:scale-95"
             >
               המשך לסרטון
-            </motion.button>
+            </button>
             
-            {/* Auto-continue timer */}
-            <motion.div 
-              className="mt-4 text-xs text-gray-500"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 2 }}
-            >
-              הסרטון יתחיל אוטומטית בעוד {Math.max(0, 7 - Math.floor((Date.now() - (Date.now() % 1000)) / 1000))} שניות
-            </motion.div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       )}
     </div>
   );
