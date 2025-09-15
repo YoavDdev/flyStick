@@ -44,6 +44,7 @@ const VideoPlayer = ({
   const [isLoading, setIsLoading] = useState(true);
   const [showDisclaimer, setShowDisclaimer] = useState(true);
   const [disclaimerFadingOut, setDisclaimerFadingOut] = useState(false);
+  const [needsUserInteraction, setNeedsUserInteraction] = useState(false);
   
   // Mobile orientation and fullscreen state
   const [isMobileLandscape, setIsMobileLandscape] = useState(false);
@@ -304,7 +305,6 @@ const VideoPlayer = ({
     // Handle player ready and loading
     newPlayer.ready().then(async () => {
       console.log('🎬 Vimeo player ready');
-      setIsLoading(false); // Hide loading screen
       
       try {
         // Set resume time first if available
@@ -312,20 +312,30 @@ const VideoPlayer = ({
           await newPlayer.setCurrentTime(initialResumeTime);
         }
         
-        // Start playing immediately
+        // Try to start playing
         await newPlayer.play();
-        console.log('✅ Video playing');
+        console.log('✅ Video playing automatically');
+        setIsLoading(false); // Hide loading screen only if autoplay works
       } catch (error) {
-        console.warn('⚠️ Autoplay blocked:', error);
+        console.warn('⚠️ Autoplay blocked, waiting for user interaction:', error);
+        setIsLoading(false); // Hide loading screen
+        setNeedsUserInteraction(true); // Show play button overlay
       }
     }).catch(error => {
       console.error('❌ Player initialization failed:', error);
       setIsLoading(false);
     });
 
-    // Also listen for loaded event to ensure loading screen disappears
+    // Listen for play event to hide user interaction overlay
+    newPlayer.on('play', () => {
+      setNeedsUserInteraction(false);
+    });
+
+    // Also listen for loaded event as backup
     newPlayer.on('loaded', () => {
-      setIsLoading(false);
+      if (!needsUserInteraction) {
+        setIsLoading(false);
+      }
     });
     
     // Add seek restriction for non-subscribers
@@ -731,6 +741,34 @@ const VideoPlayer = ({
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
             <p>טוען סרטון...</p>
           </div>
+        </div>
+      )}
+
+      {/* Mobile Play Button Overlay */}
+      {needsUserInteraction && !isLoading && (
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-25">
+          <button
+            onClick={async () => {
+              if (player) {
+                try {
+                  await player.play();
+                  setNeedsUserInteraction(false);
+                } catch (error) {
+                  console.error('Failed to play video:', error);
+                }
+              }
+            }}
+            className="bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full p-6 transition-all duration-200 shadow-lg"
+            aria-label="Play video"
+          >
+            <svg
+              className="w-12 h-12 text-gray-800 ml-1"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </button>
         </div>
       )}
 
