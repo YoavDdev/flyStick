@@ -347,10 +347,20 @@ const VideoPlayer = ({
       newPlayer.on('seeked', async () => {
         const currentTime = await newPlayer.getCurrentTime();
         
-        // If user tries to seek beyond the preview limit, reset to beginning
+        // If user tries to seek beyond the preview limit, show overlay
         if (currentTime > PREVIEW_LIMIT) {
-          newPlayer.setCurrentTime(0);
-          showPreviewRestrictionToast();
+          // Exit fullscreen if active before showing overlay
+          if (document.fullscreenElement) {
+            try {
+              document.exitFullscreen();
+            } catch (error) {
+              console.warn('Failed to exit fullscreen:', error);
+            }
+          }
+          
+          newPlayer.setCurrentTime(PREVIEW_LIMIT);
+          setShowPreviewOverlay(true);
+          newPlayer.pause();
         }
       });
       
@@ -360,15 +370,26 @@ const VideoPlayer = ({
         
         // If video plays beyond the preview limit, show overlay and pause
         if (currentTime > PREVIEW_LIMIT) {
+          // Exit fullscreen if active before showing overlay
+          if (document.fullscreenElement) {
+            try {
+              await document.exitFullscreen();
+            } catch (error) {
+              console.warn('Failed to exit fullscreen:', error);
+            }
+          }
+          
           newPlayer.pause();
           setShowPreviewOverlay(true);
           
-          // Mark this video as watched in localStorage
-          const videoIdMatch = embedHtml?.match(/player\.vimeo\.com\/video\/(\d+)/);
-          if (videoIdMatch) {
-            const videoId = videoIdMatch[1];
-            const videoKey = `preview_${videoId}_${session?.user?.email || 'guest'}`;
-            localStorage.setItem(videoKey, 'watched');
+          // Clear the timer to prevent memory leaks
+          if (previewTimerRef.current) {
+            if ('clear' in previewTimerRef.current) {
+              previewTimerRef.current.clear();
+            } else {
+              clearInterval(previewTimerRef.current);
+            }
+            previewTimerRef.current = null;
           }
         }
       });
@@ -451,6 +472,15 @@ const VideoPlayer = ({
           if (!isSubscriber && !isAdmin) {
             const currentTime = await newPlayer.getCurrentTime();
             if (currentTime > PREVIEW_LIMIT) {
+              // Exit fullscreen if active before showing overlay
+              if (document.fullscreenElement) {
+                try {
+                  document.exitFullscreen();
+                } catch (error) {
+                  console.warn('Failed to exit fullscreen:', error);
+                }
+              }
+              
               newPlayer.setCurrentTime(PREVIEW_LIMIT);
               setShowPreviewOverlay(true);
               newPlayer.pause();
