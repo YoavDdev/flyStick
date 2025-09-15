@@ -8,14 +8,15 @@ interface VideoSeries {
   id: string;
   title: string;
   description: string;
-  price: number;
-  vimeoFolderId: string;
-  vimeoFolderName: string;
-  paypalProductId: string;
+  price?: number;
+  vimeoFolderId?: string;
+  vimeoFolderName?: string;
+  paypalProductId?: string;
   thumbnailUrl?: string;
   videoCount: number;
   isActive: boolean;
   isFeatured: boolean;
+  isComingSoon: boolean;
   order: number;
   createdAt: string;
   _count: {
@@ -34,6 +35,7 @@ interface SeriesFormData {
   videoCount: string;
   isActive: boolean;
   isFeatured: boolean;
+  isComingSoon: boolean;
   order: string;
 }
 
@@ -53,6 +55,7 @@ const AdminVideoSeriesManager = () => {
     videoCount: "",
     isActive: true,
     isFeatured: false,
+    isComingSoon: false,
     order: "0"
   });
 
@@ -89,6 +92,7 @@ const AdminVideoSeriesManager = () => {
       videoCount: "",
       isActive: true,
       isFeatured: false,
+      isComingSoon: false,
       order: "0"
     });
   };
@@ -97,14 +101,15 @@ const AdminVideoSeriesManager = () => {
     setFormData({
       title: seriesItem.title,
       description: seriesItem.description,
-      price: seriesItem.price.toString(),
-      vimeoFolderId: seriesItem.vimeoFolderId,
-      vimeoFolderName: seriesItem.vimeoFolderName,
-      paypalProductId: seriesItem.paypalProductId,
+      price: seriesItem.price?.toString() || "",
+      vimeoFolderId: seriesItem.vimeoFolderId || "",
+      vimeoFolderName: seriesItem.vimeoFolderName || "",
+      paypalProductId: seriesItem.paypalProductId || "",
       thumbnailUrl: seriesItem.thumbnailUrl || "",
       videoCount: seriesItem.videoCount.toString(),
       isActive: seriesItem.isActive,
       isFeatured: seriesItem.isFeatured,
+      isComingSoon: seriesItem.isComingSoon,
       order: seriesItem.order.toString()
     });
     setEditingId(seriesItem.id);
@@ -199,6 +204,22 @@ const AdminVideoSeriesManager = () => {
             {editingId ? "עריכת סדרה" : "יצירת סדרה חדשה"}
           </h4>
           
+          {/* Coming Soon Toggle */}
+          <div className="mb-4">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData.isComingSoon}
+                onChange={(e) => setFormData({...formData, isComingSoon: e.target.checked})}
+                className="mr-2"
+              />
+              <span className="text-sm font-medium text-[#2D3142]">בקרוב - סדרה כמקום שמירה</span>
+            </label>
+            <p className="text-xs text-gray-600 mt-1">
+              אם מסומן, הסדרה תוצג כ"בקרוב" ותדרוש רק כותרת, תיאור ותמונה
+            </p>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-[#2D3142] mb-1">
@@ -209,119 +230,137 @@ const AdminVideoSeriesManager = () => {
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
                 className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50"
-                placeholder="עבודה גב 6 שיעורים"
+                required
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-[#2D3142] mb-1">
-                מחיר (₪) *
-              </label>
-              <input
-                type="number"
-                value={formData.price}
-                onChange={(e) => setFormData({...formData, price: e.target.value})}
-                className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50"
-                placeholder="69"
-              />
-            </div>
+            {!formData.isComingSoon && (
+              <div>
+                <label className="block text-sm font-medium text-[#2D3142] mb-1">
+                  מחיר (₪) *
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.price}
+                  onChange={(e) => setFormData({...formData, price: e.target.value})}
+                  className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50"
+                  required
+                />
+              </div>
+            )}
 
-            <div>
-              <label className="block text-sm font-medium text-[#2D3142] mb-1">
-                Vimeo Folder ID *
-              </label>
-              <input
-                type="text"
-                value={formData.vimeoFolderId}
-                onChange={(e) => setFormData({...formData, vimeoFolderId: e.target.value})}
-                className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50"
-                placeholder="1234567"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-[#2D3142] mb-1">
-                PayPal Product ID *
-              </label>
-              <input
-                type="text"
-                value={formData.paypalProductId}
-                onChange={(e) => setFormData({...formData, paypalProductId: e.target.value})}
-                className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50"
-                placeholder="2S9ZM9VEBS3J4"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-[#2D3142] mb-1">
-                מספר סרטונים
-              </label>
-              <input
-                type="number"
-                value={formData.videoCount}
-                onChange={(e) => setFormData({...formData, videoCount: e.target.value})}
-                className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50"
-                placeholder="6"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-[#2D3142] mb-1">
-                סדר תצוגה
-              </label>
-              <input
-                type="number"
-                value={formData.order}
-                onChange={(e) => setFormData({...formData, order: e.target.value})}
-                className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50"
-                placeholder="0"
-              />
-            </div>
-
-            <div className="md:col-span-2">
+            <div className={formData.isComingSoon ? "" : "md:col-span-2"}>
               <label className="block text-sm font-medium text-[#2D3142] mb-1">
                 תיאור הסדרה *
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50"
-                rows={3}
-                placeholder="תיאור מפורט של הסדרה..."
+                className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50 h-24"
+                required
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-[#2D3142] mb-1">
+            {!formData.isComingSoon && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-[#2D3142] mb-1">
+                    Vimeo Folder ID *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.vimeoFolderId}
+                    onChange={(e) => setFormData({...formData, vimeoFolderId: e.target.value})}
+                    className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2D3142] mb-1">
+                    PayPal Product ID *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.paypalProductId}
+                    onChange={(e) => setFormData({...formData, paypalProductId: e.target.value})}
+                    className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2D3142] mb-1">
+                    Vimeo Folder Name
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.vimeoFolderName}
+                    onChange={(e) => setFormData({...formData, vimeoFolderName: e.target.value})}
+                    className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2D3142] mb-1">
+                    מספר סרטונים
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.videoCount}
+                    onChange={(e) => setFormData({...formData, videoCount: e.target.value})}
+                    className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2D3142] mb-1">
+                    סדר תצוגה
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.order}
+                    onChange={(e) => setFormData({...formData, order: e.target.value})}
+                    className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/50"
+                  />
+                </div>
+              </>
+            )}
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-[#2D3142] mb-2">
                 תמונת הסדרה
               </label>
               <ImageUpload
+                onImageChange={(url) => setFormData({...formData, thumbnailUrl: url || ""})}
                 currentImage={formData.thumbnailUrl}
-                onImageChange={(imageUrl) => setFormData({...formData, thumbnailUrl: imageUrl || ""})}
               />
             </div>
 
-            <div className="flex items-center space-x-4 rtl:space-x-reverse">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData({...formData, isActive: e.target.checked})}
-                  className="mr-2"
-                />
-                <span className="text-sm text-[#2D3142]">פעיל</span>
-              </label>
-              
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={formData.isFeatured}
-                  onChange={(e) => setFormData({...formData, isFeatured: e.target.checked})}
-                  className="mr-2"
-                />
-                <span className="text-sm text-[#2D3142]">מומלץ</span>
-              </label>
-            </div>
+            {!formData.isComingSoon && (
+              <div className="md:col-span-2 flex space-x-4 rtl:space-x-reverse">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={formData.isActive}
+                    onChange={(e) => setFormData({...formData, isActive: e.target.checked})}
+                    className="mr-2"
+                  />
+                  <span className="text-sm text-[#2D3142]">פעיל</span>
+                </label>
+                
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={formData.isFeatured}
+                    onChange={(e) => setFormData({...formData, isFeatured: e.target.checked})}
+                    className="mr-2"
+                  />
+                  <span className="text-sm text-[#2D3142]">מומלץ</span>
+                </label>
+              </div>
+            )}
           </div>
 
           <div className="flex justify-end space-x-2 rtl:space-x-reverse mt-4">
@@ -359,6 +398,11 @@ const AdminVideoSeriesManager = () => {
                     <h4 className="text-lg font-medium text-[#2D3142]">
                       {seriesItem.title}
                     </h4>
+                    {seriesItem.isComingSoon && (
+                      <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                        בקרוב
+                      </span>
+                    )}
                     {seriesItem.isFeatured && (
                       <span className="bg-yellow-500 text-white text-xs px-2 py-1 rounded">
                         מומלץ
@@ -370,16 +414,20 @@ const AdminVideoSeriesManager = () => {
                       </span>
                     )}
                   </div>
-                  
-                  <p className="text-[#2D3142] text-sm mb-2">
-                    {seriesItem.description}
-                  </p>
-                  
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-[#5D5D5D]">
-                    <div>מחיר: ₪{seriesItem.price}</div>
-                    <div>סרטונים: {seriesItem.videoCount}</div>
-                    <div>רכישות: {seriesItem._count.purchases}</div>
-                    <div>PayPal ID: {seriesItem.paypalProductId}</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-[#5D5D5D]">
+                    {!seriesItem.isComingSoon && (
+                      <>
+                        <div>מחיר: ₪{seriesItem.price}</div>
+                        <div>סרטונים: {seriesItem.videoCount}</div>
+                        <div>רכישות: {seriesItem._count.purchases}</div>
+                        <div>PayPal ID: {seriesItem.paypalProductId}</div>
+                      </>
+                    )}
+                    {seriesItem.isComingSoon && (
+                      <div className="md:col-span-2 text-blue-600 font-medium">
+                        סדרה במקום שמירה - בקרוב
+                      </div>
+                    )}
                   </div>
                 </div>
                 

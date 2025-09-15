@@ -20,6 +20,7 @@ interface VideoSeries {
   hasAccess: boolean;
   accessType?: string;
   paypalProductId: string;
+  isComingSoon?: boolean;
 }
 
 const SeriesPromotion = () => {
@@ -34,10 +35,10 @@ const SeriesPromotion = () => {
       try {
         const response = await fetch('/api/series');
         const data = await response.json();
-        // Show only featured series or top 6 series for promotion
+        // Show only the last 3 series
         const promotionSeries = data.series
-          .filter((s: VideoSeries) => s.isFeatured || data.series.indexOf(s) < 6)
-          .slice(0, 6);
+          .slice(-3)
+          .reverse(); // Show newest first
         setSeries(promotionSeries);
       } catch (error) {
         console.error('Error fetching series:', error);
@@ -77,26 +78,39 @@ const SeriesPromotion = () => {
           </p>
         </motion.div>
 
-        {/* Netflix-Style Horizontal Scroll */}
+        {/* Responsive Grid */}
         <div className="relative">
-          <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {series.map((seriesItem, index) => (
               <motion.div
                 key={seriesItem.id}
-                className="flex-shrink-0 w-80 group cursor-pointer"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
+                className="group cursor-pointer"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ y: -8 }}
               >
-                <div className="relative bg-white/80 backdrop-blur-sm rounded-xl border border-[#D5C4B7]/30 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-                  {/* Series Thumbnail */}
-                  <div className="relative aspect-video bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] rounded-lg overflow-hidden mb-4">
+                <div className="relative bg-white/80 backdrop-blur-sm rounded-xl border border-[#D5C4B7]/30 p-6 shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+                  {/* Series Thumbnail - Clickable */}
+                  <div 
+                    className="relative w-full h-64 bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] rounded-lg overflow-hidden mb-4 cursor-pointer"
+                    onClick={() => {
+                      if (seriesItem.hasAccess) {
+                        router.push(`/series/${seriesItem.id}`);
+                      } else {
+                        if (!session) {
+                          router.push(`/series/register?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+                          return;
+                        }
+                        setPurchasingSeriesId(seriesItem.id);
+                      }
+                    }}
+                  >
                     {seriesItem.thumbnailUrl ? (
                       <img
                         src={seriesItem.thumbnailUrl}
                         alt={seriesItem.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover object-center"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
@@ -148,8 +162,40 @@ const SeriesPromotion = () => {
                       </div>
                     )}
 
+                    {/* Coming Soon Tag - Oval Style */}
+                    {(seriesItem.isComingSoon || seriesItem.title.includes('בקרוב')) && (
+                      <motion.div 
+                        className="absolute top-1 left-1 z-10"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                      >
+                        <div className="relative">
+                          {/* Oval tag with red border */}
+                          <div className="bg-white/95 backdrop-blur-sm text-red-500 px-4 py-2 rounded-full border-2 border-red-500 shadow-md transform -rotate-12">
+                            {/* Tag text */}
+                            <motion.span 
+                              className="relative text-sm font-bold tracking-wide"
+                              animate={{ opacity: [0.9, 1, 0.9] }}
+                              transition={{ 
+                                duration: 2.5, 
+                                repeat: Infinity, 
+                                repeatType: "reverse",
+                                ease: "easeInOut"
+                              }}
+                            >
+                              בקרוב!
+                            </motion.span>
+                          </div>
+                          
+                          {/* Soft shadow */}
+                          <div className="absolute -bottom-1 left-1 right-1 h-2 bg-red-500/15 blur-md rounded-full transform rotate-12"></div>
+                        </div>
+                      </motion.div>
+                    )}
+
                     {/* Featured Badge */}
-                    {seriesItem.isFeatured && (
+                    {seriesItem.isFeatured && !(seriesItem.isComingSoon || seriesItem.title.includes('בקרוב')) && (
                       <div className="absolute top-3 left-3 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
                         <FaStar className="inline mr-1" />
                         מומלץ
@@ -157,9 +203,24 @@ const SeriesPromotion = () => {
                     )}
                   </div>
 
-                  {/* Series Info */}
+                  {/* Series Info - Clickable Title */}
                   <div className="space-y-3">
-                    <h3 className="text-xl font-bold text-[#2D3142] line-clamp-1">{seriesItem.title}</h3>
+                    <h3 
+                      className="text-xl font-bold text-[#2D3142] line-clamp-1 cursor-pointer hover:text-[#B8A99C] transition-colors"
+                      onClick={() => {
+                        if (seriesItem.hasAccess) {
+                          router.push(`/series/${seriesItem.id}`);
+                        } else {
+                          if (!session) {
+                            router.push(`/series/register?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+                            return;
+                          }
+                          setPurchasingSeriesId(seriesItem.id);
+                        }
+                      }}
+                    >
+                      {seriesItem.title}
+                    </h3>
                     <p className="text-[#5D5D5D] text-sm line-clamp-2">{seriesItem.description}</p>
                     
                     <div className="flex items-center justify-between">
@@ -254,8 +315,8 @@ const SeriesPromotion = () => {
                                   const updatedResponse = await fetch('/api/series');
                                   const updatedData = await updatedResponse.json();
                                   const promotionSeries = updatedData.series
-                                    .filter((s: VideoSeries) => s.isFeatured || updatedData.series.indexOf(s) < 6)
-                                    .slice(0, 6);
+                                    .slice(-3)
+                                    .reverse();
                                   setSeries(promotionSeries);
                                 } else {
                                   const error = await response.json();

@@ -22,6 +22,7 @@ interface SeriesAccess {
     videoCount: number;
     vimeoFolderId: string;
     vimeoFolderName: string;
+    isComingSoon: boolean;
   };
 }
 
@@ -69,7 +70,7 @@ const SeriesViewPage = () => {
       
       setAccessData(data);
       
-      if (data.hasAccess) {
+      if (data.hasAccess && data.series.vimeoFolderId) {
         await fetchSeriesVideos(data.series.vimeoFolderId);
       }
     } catch (error) {
@@ -213,6 +214,128 @@ const SeriesViewPage = () => {
               התחבר
             </motion.button>
           </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Coming Soon Series - Special Layout
+  if (accessData?.series?.isComingSoon) {
+    return (
+      <div className="min-h-screen bg-[#F7F3EB] relative">
+        {/* Background texture */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="w-full h-full bg-[url('/backgrounds/paper-texture.png')] bg-repeat opacity-30"></div>
+        </div>
+        
+        <div className="container mx-auto px-6 py-24">
+          <motion.div
+            className="text-center max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            {/* Back Button */}
+            <div className="flex justify-start mb-8">
+              <motion.button
+                onClick={() => router.back()}
+                className="flex items-center gap-2 text-[#2D3142] hover:text-[#B8A99C] transition-colors bg-white/80 px-4 py-2 rounded-xl backdrop-blur-sm border border-[#D5C4B7]/30 shadow-lg hover:shadow-xl"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FaArrowLeft />
+                <span>חזור לסדרות</span>
+              </motion.button>
+            </div>
+
+            {/* Coming Soon Badge */}
+            <motion.div
+              className="inline-block bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-full text-lg font-bold mb-8 shadow-xl"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+            >
+              🚀 בקרוב
+            </motion.div>
+
+            {/* Series Title */}
+            <motion.h1 
+              className="text-5xl lg:text-6xl font-bold text-[#2D3142] mb-6 leading-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              {accessData.series.title}
+            </motion.h1>
+
+            {/* Description */}
+            <motion.div
+              className="bg-white/90 backdrop-blur-xl rounded-3xl border border-[#D5C4B7]/30 p-8 shadow-2xl mb-12"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+            >
+              <p className="text-[#5D5D5D] text-xl leading-relaxed mb-6">
+                {accessData.series.description || "סדרה מרגשת בדרך אליכם! אנחנו עובדים קשה כדי להביא לכם תוכן איכותי ומקצועי."}
+              </p>
+              
+              <div className="flex flex-wrap justify-center gap-4 text-[#2D3142]">
+                <div className="flex items-center gap-2 bg-[#D5C4B7]/20 px-4 py-2 rounded-xl">
+                  <FaClock className="text-[#B8A99C]" />
+                  <span>בהכנה</span>
+                </div>
+                <div className="flex items-center gap-2 bg-[#B8A99C]/20 px-4 py-2 rounded-xl">
+                  <FaVideo className="text-[#B8A99C]" />
+                  <span>תוכן מקצועי</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* What to Expect */}
+            <motion.div
+              className="bg-white/90 backdrop-blur-xl rounded-3xl border border-[#D5C4B7]/30 p-8 shadow-2xl mb-12"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+            >
+              <h3 className="text-2xl font-bold text-[#2D3142] mb-6">מה לצפות</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] p-4 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-xl">
+                    <FaVideo className="text-white text-2xl" />
+                  </div>
+                  <h4 className="font-bold text-[#2D3142] mb-2">סרטונים איכותיים</h4>
+                  <p className="text-[#5D5D5D]">תוכן מקצועי ומעמיק</p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] p-4 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-xl">
+                    <FaPlay className="text-white text-2xl" />
+                  </div>
+                  <h4 className="font-bold text-[#2D3142] mb-2">גישה מיידית</h4>
+                  <p className="text-[#5D5D5D]">ברגע שהסדרה תהיה מוכנה</p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="bg-gradient-to-r from-[#B8A99C]/80 to-[#D5C4B7]/80 p-4 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-xl">
+                    <FaClock className="text-white text-2xl" />
+                  </div>
+                  <h4 className="font-bold text-[#2D3142] mb-2">שווה ההמתנה</h4>
+                  <p className="text-[#5D5D5D]">תוכן שיעזור לכם להתקדם</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Call to Action */}
+            <motion.div
+              className="space-y-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1 }}
+            >
+
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     );

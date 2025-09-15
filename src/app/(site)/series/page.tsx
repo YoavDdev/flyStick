@@ -22,6 +22,7 @@ interface VideoSeries {
   paypalProductId: string;
   hasAccess: boolean;
   accessType: 'subscription' | 'purchased' | 'none';
+  isComingSoon?: boolean;
 }
 
 interface SeriesData {
@@ -48,7 +49,23 @@ const SeriesMarketplace = () => {
       const response = await fetch("/api/series");
       if (response.ok) {
         const data = await response.json();
-        setSeriesData(data);
+        // Sort series to show "בקרוב" (coming soon) series at the end
+        const sortedSeries = data.series.sort((a: VideoSeries, b: VideoSeries) => {
+          const aIsComingSoon = a.isComingSoon || a.title.includes('בקרוב');
+          const bIsComingSoon = b.isComingSoon || b.title.includes('בקרוב');
+          
+          // If one is coming soon and the other isn't, put coming soon at the end
+          if (aIsComingSoon && !bIsComingSoon) return 1;
+          if (!aIsComingSoon && bIsComingSoon) return -1;
+          
+          // Otherwise maintain original order
+          return 0;
+        });
+        
+        setSeriesData({
+          ...data,
+          series: sortedSeries
+        });
       } else {
         toast.error("שגיאה בטעינת הסדרות");
       }
@@ -206,11 +223,17 @@ const SeriesMarketplace = () => {
                 >
                     {/* Series Thumbnail */}
                     <div className="relative aspect-[2/3] bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] rounded-xl overflow-hidden mb-6">
-                      <img
-                        src="/uploads/series/1757277122800__________.jpg"
-                        alt={series.title}
-                        className="w-full h-full object-cover object-center"
-                      />
+                      {series.thumbnailUrl ? (
+                        <img
+                          src={series.thumbnailUrl}
+                          alt={series.title}
+                          className="w-full h-full object-cover object-center"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <FaVideo className="text-4xl text-white/70" />
+                        </div>
+                      )}
                       
                       {/* Overlay with Play Button */}
                       <div className="absolute inset-0 bg-[#2D3142]/0 group-hover:bg-[#2D3142]/40 transition-all duration-300 flex items-center justify-center">
@@ -256,8 +279,40 @@ const SeriesMarketplace = () => {
                         </div>
                       )}
 
+                      {/* Coming Soon Tag - Oval Style */}
+                      {(series.isComingSoon || series.title.includes('בקרוב')) && (
+                        <motion.div 
+                          className="absolute top-1 left-1 z-10"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.5, ease: "easeOut" }}
+                        >
+                          <div className="relative">
+                            {/* Oval tag with red border */}
+                            <div className="bg-white/95 backdrop-blur-sm text-red-500 px-4 py-2 rounded-full border-2 border-red-500 shadow-md transform -rotate-12">
+                              {/* Tag text */}
+                              <motion.span 
+                                className="relative text-sm font-bold tracking-wide"
+                                animate={{ opacity: [0.9, 1, 0.9] }}
+                                transition={{ 
+                                  duration: 2.5, 
+                                  repeat: Infinity, 
+                                  repeatType: "reverse",
+                                  ease: "easeInOut"
+                                }}
+                              >
+                                בקרוב!
+                              </motion.span>
+                            </div>
+                            
+                            {/* Soft shadow */}
+                            <div className="absolute -bottom-1 left-1 right-1 h-2 bg-red-500/15 blur-md rounded-full transform rotate-12"></div>
+                          </div>
+                        </motion.div>
+                      )}
+
                       {/* Featured Badge */}
-                      {series.isFeatured && (
+                      {series.isFeatured && !(series.isComingSoon || series.title.includes('בקרוב')) && (
                         <div className="absolute top-4 left-4 bg-gradient-to-r from-[#D9713C] to-[#D9713C]/80 text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">
                           <FaStar className="inline mr-1" />
                           מומלץ

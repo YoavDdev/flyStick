@@ -177,16 +177,17 @@ model Subcategory {
 
 model VideoSeries {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  title           String   // "עבודה גב 6 שיעורים"
-  description     String   // Series description
-  price           Float    // Price in shekels (e.g., 69.0)
-  vimeoFolderId   String   // Vimeo folder/project ID containing the videos
-  vimeoFolderName String   // Vimeo folder name for reference
-  paypalProductId String   // PayPal product ID (e.g., "2S9ZM9VEBS3J4")
-  thumbnailUrl    String?  // Optional thumbnail image URL
+  title           String
+  description     String
+  price           Float?   // Optional for coming soon series
+  vimeoFolderId   String?  // Optional for coming soon series
+  vimeoFolderName String?  // Optional for coming soon series
+  paypalProductId String?  // Optional for coming soon series
+  thumbnailUrl    String?
   videoCount      Int      @default(0) // Number of videos in series
   isActive        Boolean  @default(true) // Can be purchased/viewed
   isFeatured      Boolean  @default(false) // Featured on marketplace
+  isComingSoon    Boolean  @default(false) // Coming soon placeholder series
   order           Int      @default(0) // Display order on marketplace
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

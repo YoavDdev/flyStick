@@ -348,7 +348,7 @@ const VideoPlayer = ({
       responsive: true,
       controls: true,
       playsinline: false, // Allow fullscreen on mobile
-      muted: false, // Ensure not muted for autoplay
+      muted: false, // Start with sound enabled
     });
 
     setPlayer(newPlayer);

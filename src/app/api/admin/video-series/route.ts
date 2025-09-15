@@ -52,13 +52,22 @@ export async function POST(request: NextRequest) {
       videoCount,
       isActive,
       isFeatured,
+      isComingSoon,
       order
     } = body;
 
-    // Validate required fields
-    if (!title || !description || !price || !vimeoFolderId || !paypalProductId) {
+    // Validate required fields based on series type
+    if (!title || !description) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Title and description are required" },
+        { status: 400 }
+      );
+    }
+
+    // Additional validation for regular series (not coming soon)
+    if (!isComingSoon && (!price || !vimeoFolderId || !paypalProductId)) {
+      return NextResponse.json(
+        { error: "Price, Vimeo Folder ID, and PayPal Product ID are required for regular series" },
         { status: 400 }
       );
     }
@@ -67,14 +76,15 @@ export async function POST(request: NextRequest) {
       data: {
         title,
         description,
-        price: parseFloat(price),
-        vimeoFolderId,
-        vimeoFolderName: vimeoFolderName || title,
-        paypalProductId,
+        price: isComingSoon ? null : parseFloat(price),
+        vimeoFolderId: isComingSoon ? null : vimeoFolderId,
+        vimeoFolderName: isComingSoon ? null : (vimeoFolderName || title),
+        paypalProductId: isComingSoon ? null : paypalProductId,
         thumbnailUrl,
         videoCount: parseInt(videoCount) || 0,
         isActive: isActive !== false,
         isFeatured: isFeatured === true,
+        isComingSoon: isComingSoon === true,
         order: parseInt(order) || 0
       }
     });
@@ -107,14 +117,36 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Convert numeric fields
-    if (updateData.price) updateData.price = parseFloat(updateData.price);
-    if (updateData.videoCount) updateData.videoCount = parseInt(updateData.videoCount);
-    if (updateData.order) updateData.order = parseInt(updateData.order);
+    // Prepare data for update with proper type conversion
+    const processedData: any = {};
+    
+    // Handle string fields
+    if (updateData.title !== undefined) processedData.title = updateData.title;
+    if (updateData.description !== undefined) processedData.description = updateData.description;
+    if (updateData.vimeoFolderId !== undefined) processedData.vimeoFolderId = updateData.vimeoFolderId || null;
+    if (updateData.vimeoFolderName !== undefined) processedData.vimeoFolderName = updateData.vimeoFolderName || null;
+    if (updateData.paypalProductId !== undefined) processedData.paypalProductId = updateData.paypalProductId || null;
+    if (updateData.thumbnailUrl !== undefined) processedData.thumbnailUrl = updateData.thumbnailUrl || null;
+    
+    // Handle numeric fields with proper validation
+    if (updateData.price !== undefined) {
+      processedData.price = updateData.price === "" || updateData.price === null ? null : parseFloat(updateData.price);
+    }
+    if (updateData.videoCount !== undefined) {
+      processedData.videoCount = updateData.videoCount === "" ? 0 : parseInt(updateData.videoCount) || 0;
+    }
+    if (updateData.order !== undefined) {
+      processedData.order = updateData.order === "" ? 0 : parseInt(updateData.order) || 0;
+    }
+    
+    // Handle boolean fields
+    if (updateData.isActive !== undefined) processedData.isActive = Boolean(updateData.isActive);
+    if (updateData.isFeatured !== undefined) processedData.isFeatured = Boolean(updateData.isFeatured);
+    if (updateData.isComingSoon !== undefined) processedData.isComingSoon = Boolean(updateData.isComingSoon);
 
     const series = await prisma.videoSeries.update({
       where: { id },
-      data: updateData
+      data: processedData
     });
 
     return NextResponse.json(series);

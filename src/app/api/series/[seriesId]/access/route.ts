@@ -30,7 +30,8 @@ export async function GET(
         videoCount: true,
         vimeoFolderId: true,
         vimeoFolderName: true,
-        isActive: true
+        isActive: true,
+        isComingSoon: true
       }
     });
 
