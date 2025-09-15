@@ -48,6 +48,7 @@ const VideoPlayer = ({
   // Mobile orientation and fullscreen state
   const [isMobileLandscape, setIsMobileLandscape] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMobilePortrait, setIsMobilePortrait] = useState(false);
 
   // Function to save video progress - moved outside useEffect for reuse
   const saveProgress = useCallback(async () => {
@@ -118,6 +119,7 @@ const VideoPlayer = ({
       const isMobile = window.innerWidth <= 768;
       const isLandscape = window.innerWidth > window.innerHeight;
       setIsMobileLandscape(isMobile && isLandscape);
+      setIsMobilePortrait(isMobile && !isLandscape);
     };
 
     const handleFullscreenChange = () => {
@@ -588,12 +590,24 @@ const VideoPlayer = ({
         className={`video-container relative ${
           isMobileLandscape || isFullscreen 
             ? 'w-full h-full' 
-            : 'w-full max-w-4xl aspect-video'
+            : isMobilePortrait 
+              ? 'w-full max-w-sm aspect-video'
+              : 'w-full max-w-4xl aspect-video'
         }`}
         ref={videoContainerRef}
         style={{ 
           marginLeft: 'auto',
-          marginRight: 'auto'
+          marginRight: 'auto',
+          // Mobile portrait specific positioning to prevent video from going too high
+          ...(isMobilePortrait && !isFullscreen ? {
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            maxHeight: '60vh', // Ensure video doesn't take full height on mobile
+            width: '90%', // Leave some margin on mobile
+            minHeight: '200px', // Ensure minimum size
+          } : {})
         }}
       />
 
@@ -602,7 +616,7 @@ const VideoPlayer = ({
         className={`absolute text-white text-sm cursor-pointer bg-black bg-opacity-50 hover:bg-opacity-70 p-2 rounded-full shadow-md z-10 flex items-center justify-center border border-white/30 ${
           isMobileLandscape || isFullscreen 
             ? 'top-4 right-4' 
-            : 'top-16 right-6'
+            : isMobilePortrait ? 'top-4 right-4' : 'top-16 right-6'
         }`}
         onClick={handleCloseButton}
         initial={{ opacity: 0, scale: 0.8 }}

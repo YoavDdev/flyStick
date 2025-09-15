@@ -364,6 +364,7 @@ const ExploreVideos = ({
           page,
           query,
         },
+        timeout: 15000, // 15 second timeout for production
       });
 
       const data = response.data;
@@ -387,7 +388,7 @@ const ExploreVideos = ({
       }
 
       // If we received fewer videos than expected, there are no more to load
-      if (videosData.length < 20) {
+      if (videosData.length < 25) { // Updated to match API per_page increase
         setNoMoreVideos(true);
       }
 

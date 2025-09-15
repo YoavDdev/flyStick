@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 
+// Cache for individual video data
+const videoDataCache = new Map();
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes for individual videos
+
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -20,15 +24,25 @@ export async function POST(request) {
     const headers = {
       Authorization: `Bearer ${accessToken}`,
     };
+    
+    // Check cache first and separate cached from uncached videos
+    const cachedVideos = [];
+    const uncachedVideoIds = [];
+    
+    videoIds.forEach(videoId => {
+      if (!videoId || typeof videoId !== 'string') return;
+      
+      const cached = videoDataCache.get(videoId);
+      if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        cachedVideos.push(cached.data);
+      } else {
+        uncachedVideoIds.push(videoId);
+      }
+    });
 
-    // Use Promise.allSettled to parallelize all API calls and prevent blocking
-    const videoPromises = videoIds.map(async (videoId) => {
+    // Only fetch uncached videos
+    const videoPromises = uncachedVideoIds.map(async (videoId) => {
       try {
-        // Skip empty or invalid video IDs
-        if (!videoId || typeof videoId !== 'string') {
-          return null;
-        }
-        
         // Extract video ID from URI if needed
         let cleanVideoId;
         
@@ -49,17 +63,17 @@ export async function POST(request) {
         const res = await axios.get(apiUrl, {
           headers,
           params: {
-            fields: "uri,embed.html,name,description,pictures,duration",
+            fields: "uri,embed.html,name,description,pictures.sizes,duration",
           },
-          timeout: 5000 // Prevent hanging requests
+          timeout: 8000 // Increased timeout for production
         });
         
         if (!res.data || !res.data.uri) {
           return null;
         }
         
-        // Return video data
-        return {
+        // Create video data object
+        const videoData = {
           uri: res.data.uri,
           embedHtml: res.data.embed?.html || "",
           name: res.data.name || "Untitled Video",
@@ -67,21 +81,42 @@ export async function POST(request) {
           thumbnailUri: res.data.pictures?.sizes?.[5]?.link || "",
           duration: res.data.duration || 0,
         };
+        
+        // Cache the result
+        videoDataCache.set(videoId, {
+          data: videoData,
+          timestamp: Date.now()
+        });
+        
+        return videoData;
       } catch (error) {
         console.warn(`Failed to fetch video ${videoId}:`, error.message);
-        return null; // Return null for failed requests
+        return null;
       }
     });
     
-    // Wait for all requests to complete (successful or failed)
+    // Wait for all uncached requests to complete
     const settledResults = await Promise.allSettled(videoPromises);
     
-    // Extract successful results
-    const results = settledResults
+    // Extract successful results from API calls
+    const newResults = settledResults
       .filter(result => result.status === 'fulfilled' && result.value !== null)
       .map(result => result.value);
+    
+    // Combine cached and new results
+    const allResults = [...cachedVideos, ...newResults];
+    
+    // Clean old cache entries periodically
+    if (videoDataCache.size > 200) {
+      const entries = Array.from(videoDataCache.entries());
+      const oldEntries = entries
+        .filter(([key, value]) => Date.now() - value.timestamp > CACHE_DURATION)
+        .slice(0, 50); // Remove 50 old entries at a time
+      
+      oldEntries.forEach(([key]) => videoDataCache.delete(key));
+    }
 
-    return NextResponse.json({ videos: results }, { status: 200 });
+    return NextResponse.json({ videos: allResults }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
