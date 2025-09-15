@@ -115,11 +115,55 @@ const VideoPlayer = ({
 
   // Handle mobile orientation and fullscreen detection
   useEffect(() => {
-    const checkOrientation = () => {
+    let previousOrientation = window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
+    
+    const checkOrientation = async () => {
       const isMobile = window.innerWidth <= 768;
       const isLandscape = window.innerWidth > window.innerHeight;
+      const currentOrientation = isLandscape ? 'landscape' : 'portrait';
+      
       setIsMobileLandscape(isMobile && isLandscape);
       setIsMobilePortrait(isMobile && !isLandscape);
+      
+      // Auto-fullscreen when rotating from portrait to landscape on mobile
+      if (isMobile && 
+          previousOrientation === 'portrait' && 
+          currentOrientation === 'landscape' && 
+          videoContainerRef.current &&
+          !document.fullscreenElement) {
+        
+        try {
+          // Request fullscreen on the video container
+          await videoContainerRef.current.requestFullscreen();
+          console.log('📱 Auto-entered fullscreen on landscape rotation');
+        } catch (error) {
+          console.warn('Failed to enter fullscreen:', error);
+          // Fallback: try on the modal container
+          try {
+            if (modalRef.current) {
+              await modalRef.current.requestFullscreen();
+            }
+          } catch (fallbackError) {
+            console.warn('Fallback fullscreen also failed:', fallbackError);
+          }
+        }
+      }
+      
+      // Exit fullscreen when rotating from landscape to portrait
+      if (isMobile && 
+          previousOrientation === 'landscape' && 
+          currentOrientation === 'portrait' && 
+          document.fullscreenElement) {
+        
+        try {
+          await document.exitFullscreen();
+          console.log('📱 Auto-exited fullscreen on portrait rotation');
+        } catch (error) {
+          console.warn('Failed to exit fullscreen:', error);
+        }
+      }
+      
+      previousOrientation = currentOrientation;
     };
 
     const handleFullscreenChange = () => {
