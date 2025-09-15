@@ -5,6 +5,15 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function GET() {
   try {
+    // Check for authorization to prevent accidental calls
+    const authHeader = process.env.TEST_EMAIL_SECRET;
+    if (!authHeader) {
+      return NextResponse.json(
+        { error: 'Test email endpoint disabled - set TEST_EMAIL_SECRET to enable' },
+        { status: 403 }
+      );
+    }
+
     console.log('Testing email API...');
     console.log('API Key exists:', !!process.env.RESEND_API_KEY);
     console.log('API Key starts with re_:', process.env.RESEND_API_KEY?.startsWith('re_'));

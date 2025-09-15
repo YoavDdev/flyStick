@@ -216,7 +216,7 @@ const AdminVideoSeriesManager = () => {
               <span className="text-sm font-medium text-[#2D3142]">בקרוב - סדרה כמקום שמירה</span>
             </label>
             <p className="text-xs text-gray-600 mt-1">
-              אם מסומן, הסדרה תוצג כ"בקרוב" ותדרוש רק כותרת, תיאור ותמונה
+              אם מסומן, הסדרה תוצג כ&quot;בקרוב&quot; ותדרוש רק כותרת, תיאור ותמונה
             </p>
           </div>
 
