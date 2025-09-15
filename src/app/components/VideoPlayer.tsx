@@ -296,9 +296,37 @@ const VideoPlayer = ({
       responsive: true,
       controls: true,
       playsinline: false, // Allow fullscreen on mobile
+      muted: false, // Ensure not muted for autoplay
     });
 
     setPlayer(newPlayer);
+    
+    // Handle autoplay issues - force play after player is ready
+    newPlayer.ready().then(() => {
+      console.log('🎬 Vimeo player ready, attempting to start playback');
+      
+      // Small delay to ensure player is fully initialized
+      setTimeout(async () => {
+        try {
+          await newPlayer.play();
+          console.log('✅ Video started playing successfully');
+        } catch (error) {
+          console.warn('⚠️ Autoplay failed, user interaction may be required:', error);
+          
+          // Try again with a longer delay
+          setTimeout(async () => {
+            try {
+              await newPlayer.play();
+              console.log('✅ Video started playing on retry');
+            } catch (retryError) {
+              console.warn('❌ Retry autoplay also failed:', retryError);
+            }
+          }, 1000);
+        }
+      }, 500);
+    }).catch(error => {
+      console.error('❌ Player ready failed:', error);
+    });
     
     // Add seek restriction for non-subscribers
     if (!isSubscriber && !isAdmin) {
