@@ -95,6 +95,13 @@ const VideoPlayer = ({
     }
   }, [player]);
 
+  // Exit fullscreen when preview overlay is shown
+  useEffect(() => {
+    if (showPreviewOverlay) {
+      exitFullscreenSafely();
+    }
+  }, [showPreviewOverlay, exitFullscreenSafely]);
+
   // Function to save video progress - moved outside useEffect for reuse
   const saveProgress = useCallback(async () => {
     if (!session?.user || !videoUri || !player) return;
@@ -393,9 +400,6 @@ const VideoPlayer = ({
         
         // If user tries to seek beyond the preview limit, show overlay
         if (currentTime > PREVIEW_LIMIT) {
-          // Exit fullscreen with mobile-specific handling
-          await exitFullscreenSafely();
-          
           newPlayer.setCurrentTime(PREVIEW_LIMIT);
           setShowPreviewOverlay(true);
           newPlayer.pause();
@@ -408,9 +412,6 @@ const VideoPlayer = ({
         
         // If video plays beyond the preview limit, show overlay and pause
         if (currentTime > PREVIEW_LIMIT) {
-          // Exit fullscreen with mobile-specific handling
-          await exitFullscreenSafely();
-          
           newPlayer.pause();
           setShowPreviewOverlay(true);
           
@@ -504,9 +505,6 @@ const VideoPlayer = ({
           if (!isSubscriber && !isAdmin) {
             const currentTime = await newPlayer.getCurrentTime();
             if (currentTime > PREVIEW_LIMIT) {
-              // Exit fullscreen with mobile-specific handling
-              await exitFullscreenSafely();
-              
               newPlayer.setCurrentTime(PREVIEW_LIMIT);
               setShowPreviewOverlay(true);
               newPlayer.pause();
