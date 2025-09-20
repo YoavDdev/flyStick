@@ -279,20 +279,20 @@ const SeriesMarketplace = () => {
                         </div>
                       )}
 
-                      {/* Coming Soon Tag - Oval Style */}
+                      {/* Coming Soon Tag - Half Red Circle at Bottom */}
                       {(series.isComingSoon || series.title.includes('בקרוב')) && (
                         <motion.div 
-                          className="absolute top-1 left-1 z-10"
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
+                          className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-10"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.5, ease: "easeOut" }}
                         >
                           <div className="relative">
-                            {/* Oval tag with red border */}
-                            <div className="bg-white/95 backdrop-blur-sm text-red-500 px-4 py-2 rounded-full border-2 border-red-500 shadow-md transform -rotate-12">
+                            {/* Half red circle at bottom */}
+                            <div className="bg-red-500 text-white px-6 py-3 rounded-t-full shadow-lg">
                               {/* Tag text */}
                               <motion.span 
-                                className="relative text-sm font-bold tracking-wide"
+                                className="text-sm font-bold tracking-wide"
                                 animate={{ opacity: [0.9, 1, 0.9] }}
                                 transition={{ 
                                   duration: 2.5, 
@@ -301,12 +301,9 @@ const SeriesMarketplace = () => {
                                   ease: "easeInOut"
                                 }}
                               >
-                                בקרוב!
+                                בקרוב
                               </motion.span>
                             </div>
-                            
-                            {/* Soft shadow */}
-                            <div className="absolute -bottom-1 left-1 right-1 h-2 bg-red-500/15 blur-md rounded-full transform rotate-12"></div>
                           </div>
                         </motion.div>
                       )}
