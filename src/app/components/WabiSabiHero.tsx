@@ -83,7 +83,7 @@ const WabiSabiHero = () => {
                 ) : (
                   <motion.button
                     onClick={() => scrollToSection('pricing')}
-                    className="group px-10 py-4 rounded-2xl text-white font-medium text-lg transition-all duration-300 hover:opacity-90 relative overflow-hidden bg-black/20 cursor-pointer"
+                    className="group px-10 py-3.5 rounded-2xl text-white font-medium text-lg transition-all duration-300 hover:opacity-90 relative overflow-hidden bg-black/20 cursor-pointer w-[260px]"
                     style={{ 
                       background: 'linear-gradient(135deg, rgba(139, 115, 85, 0.9) 0%, rgba(107, 91, 71, 0.9) 100%)',
                       boxShadow: '0 2px 8px -2px rgba(0, 0, 0, 0.2)',
@@ -93,10 +93,10 @@ const WabiSabiHero = () => {
                     whileTap={{ scale: 0.98 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <span className="relative z-10">
-הצטרפו לדרכי הייחודית
+                    <span className="relative z-10 leading-tight">
+                      הצטרפו לדרכי הייחודית
                       <br />
-                      <span className="text-sm opacity-90">3 ימי חקירה ללא עלות</span>
+                      <span className="text-xs opacity-80">3 ימי חקירה ללא עלות</span>
                     </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </motion.button>
@@ -104,7 +104,7 @@ const WabiSabiHero = () => {
                 
                 <motion.button
                   onClick={() => scrollToSection('features')}
-                  className="px-10 py-4 rounded-2xl font-medium text-lg border-2 transition-all duration-300 hover:opacity-90 bg-black/20 cursor-pointer"
+                  className="px-10 py-4 rounded-2xl font-medium text-lg border-2 transition-all duration-300 hover:opacity-90 bg-black/20 cursor-pointer w-[260px]"
                   style={{ 
                     color: '#F5F1EB',
                     borderColor: 'rgba(255, 255, 255, 0.3)',

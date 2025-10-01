@@ -35,21 +35,20 @@ export default function SeriesLayout({
       <div className="min-h-screen bg-gradient-to-br from-[#F7F3EB] to-white" style={{ isolation: 'isolate' }}>
         {/* Custom Header for Series Page Only */}
         <header className="series-header fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#D5C4B7]/20">
-          <div className="container mx-auto px-6 py-4">
+          <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-4">
             <div className="flex items-center justify-between">
               {/* Logo/Brand */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <Image
                   src={Logo}
                   alt="Studio Boaz Logo"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                  style={{ width: 'auto', height: '40px' }}
+                  width={50}
+                  height={50}
+                  className="object-contain w-[50px] h-[50px] sm:w-[40px] sm:h-[40px]"
                 />
                 <div>
-                  <h1 className="text-xl font-bold text-[#2D3142]">Studio Boaz</h1>
-                  <p className="text-sm text-[#5D5D5D]">סדרות אימונים מקצועיות</p>
+                  <h1 className="text-base sm:text-xl font-bold text-[#2D3142]">Studio Boaz Online</h1>
+                  <p className="text-xs sm:text-sm text-[#5D5D5D]">סדרות אימונים מקצועיות</p>
                 </div>
               </div>
 
@@ -59,9 +58,9 @@ export default function SeriesLayout({
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 bg-[#D5C4B7] text-[#2D3142] px-6 py-2 rounded-lg hover:bg-[#B8A99C] transition-colors font-medium"
+                    className="flex items-center gap-1 sm:gap-2 bg-[#D5C4B7] text-[#2D3142] px-3 py-1.5 sm:px-6 sm:py-2 rounded-lg hover:bg-[#B8A99C] transition-colors font-medium text-xs sm:text-base"
                   >
-                    <FaHome className="text-sm" />
+                    <FaHome className="text-xs sm:text-sm" />
                     <span>לאתר הראשי</span>
                   </motion.button>
                 </Link>

@@ -122,15 +122,15 @@ const SeriesMarketplace = () => {
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-[#D5C4B7]/10 to-[#B8A99C]/10"></div>
-        <div className="container mx-auto px-6 pt-20 pb-16 relative">
+        <div className="container mx-auto px-6 pt-12 md:pt-20 pb-8 md:pb-16 relative">
           <motion.div
-            className="text-center mb-16"
+            className="text-center mb-8 md:mb-16"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
             
-            <h1 className="text-5xl md:text-6xl font-bold text-[#2D3142] mb-6 leading-tight">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-[#2D3142] mb-4 md:mb-6 leading-tight">
               <span className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] bg-clip-text text-transparent">
                 סדרות הווידאו
               </span>
@@ -138,7 +138,7 @@ const SeriesMarketplace = () => {
               <span className="text-[#2D3142]">המקצועיות ביותר</span>
             </h1>
             
-            <p className="text-xl text-[#2D3142]/80 max-w-3xl mx-auto mb-8 leading-relaxed">
+            <p className="text-base md:text-xl text-[#2D3142]/80 max-w-3xl mx-auto mb-6 md:mb-8 leading-relaxed">
               גלו עולם של ידע מקצועי עם סדרות וידאו איכותיות שיקחו אתכם לשלב הבא.
               <br />
               <span className="text-[#D9713C] font-semibold">למידה מותאמת אישית, תוצאות מוכחות.</span>
@@ -149,13 +149,13 @@ const SeriesMarketplace = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] rounded-2xl p-6 max-w-lg mx-auto shadow-md border border-[#D5C4B7]/30"
+                className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] rounded-2xl p-4 md:p-6 max-w-lg mx-auto shadow-md border border-[#D5C4B7]/30"
               >
                 <div className="flex items-center justify-center gap-3 text-[#2D3142]">
-                  <FaCheck className="text-2xl" />
+                  <FaCheck className="text-xl md:text-2xl" />
                   <div>
-                    <p className="font-bold text-lg">מנוי פעיל</p>
-                    <p className="text-[#2D3142]/80">גישה חופשית לכל הסדרות!</p>
+                    <p className="font-bold text-base md:text-lg">מנוי פעיל</p>
+                    <p className="text-sm md:text-base text-[#2D3142]/80">גישה חופשית לכל הסדרות!</p>
                   </div>
                 </div>
               </motion.div>
@@ -170,7 +170,7 @@ const SeriesMarketplace = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-8 py-4 rounded-xl font-bold text-lg shadow-md hover:shadow-lg transition-all duration-300"
+                    className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-6 md:px-8 py-3 md:py-4 rounded-xl font-bold text-base md:text-lg shadow-md hover:shadow-lg transition-all duration-300"
                   >
                     התחל מנוי עכשיו
                   </motion.button>
@@ -178,6 +178,61 @@ const SeriesMarketplace = () => {
                 <p className="text-[#2D3142]/60 text-sm">או רכוש סדרות בנפרד</p>
               </motion.div>
             )}
+          </motion.div>
+          
+          {/* Elegant Scroll Indicator - Only on Mobile */}
+          <motion.div
+            className="md:hidden flex flex-col items-center gap-3 mt-8"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.6 }}
+          >
+            <div className="relative">
+              <motion.div
+                className="absolute inset-0 bg-[#D5C4B7]/20 blur-xl rounded-full"
+                animate={{ 
+                  scale: [1, 1.2, 1],
+                  opacity: [0.3, 0.5, 0.3]
+                }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+              <p className="relative text-[#B56B4A] font-medium text-base px-6 py-2 bg-[#F7F3EB]/80 backdrop-blur-sm rounded-full border border-[#D5C4B7]/30 shadow-sm">
+                הסדרות מחכות לכם למטה
+              </p>
+            </div>
+            
+            <motion.div
+              animate={{ 
+                y: [0, 8, 0],
+                opacity: [0.5, 1, 0.5]
+              }}
+              transition={{ 
+                duration: 2, 
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="flex flex-col items-center gap-1"
+            >
+              <svg 
+                width="24" 
+                height="24" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                className="text-[#D5C4B7]"
+              >
+                <path 
+                  d="M12 5v14m0 0l-7-7m7 7l7-7" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </motion.div>
           </motion.div>
         </div>
       </div>
