@@ -152,10 +152,9 @@ const SeriesMarketplace = () => {
                 className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] rounded-2xl p-4 md:p-6 max-w-lg mx-auto shadow-md border border-[#D5C4B7]/30"
               >
                 <div className="flex items-center justify-center gap-3 text-[#2D3142]">
-                  <FaCheck className="text-xl md:text-2xl" />
-                  <div>
+                  <div className="text-center">
                     <p className="font-bold text-base md:text-lg">מנוי פעיל</p>
-                    <p className="text-sm md:text-base text-[#2D3142]/80">גישה חופשית לכל הסדרות!</p>
+                    <p className="text-sm md:text-base text-[#2D3142]/80">יש לך גישה חופשית לכל הסדרות</p>
                   </div>
                 </div>
               </motion.div>
