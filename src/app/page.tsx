@@ -10,7 +10,7 @@ import ExploreVideos from "./components/ExploreVideos";
 import SeriesPromotion from "./components/SeriesPromotion";
 import StructuredDataHome from "./components/StructuredDataHome";
 import Image from "next/image";
-import desertImage from "../../public/contacMe2.jpeg";
+import desertImage from "../../public/Boaznewback.jpg";
 import { motion } from "framer-motion";
 import type { Metadata } from "next";
 
@@ -64,8 +64,8 @@ export default function HomePage() {
           placeholder="blur"
           sizes="100vw"
         />
-        {/* Static overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
+        {/* Enhanced overlay for better text readability with studio background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/50" />
       </div>
 
       {/* All content with relative positioning over the background */}
