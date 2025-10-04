@@ -98,7 +98,7 @@ export default function SeriesLayout({
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="bg-[#D5C4B7] text-[#2D3142] px-10 py-4 rounded-xl font-bold hover:bg-white transition-colors text-lg shadow-lg w-full sm:w-[240px]"
+                      className="bg-[#D5C4B7] text-[#2D3142] px-10 py-4 rounded-xl font-bold hover:bg-white transition-colors text-lg shadow-lg w-full sm:w-[240px] border-2 border-transparent"
                     >
                       🏠 כנסו לאתר המלא
                     </motion.button>
