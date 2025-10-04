@@ -65,7 +65,7 @@ export default function HomePage() {
           sizes="100vw"
         />
         {/* Enhanced overlay for better text readability with studio background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/35 to-black/45" />
       </div>
 
       {/* All content with relative positioning over the background */}
