@@ -72,7 +72,7 @@ const WabiSabiFeature = () => {
       {/* Main content */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
-          className="mx-auto max-w-2xl lg:text-center"
+          className="mx-auto max-w-2xl text-center"
           variants={containerVariants}
           initial="hidden"
           animate={controls}

@@ -149,12 +149,11 @@ const SeriesMarketplace = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] rounded-2xl p-4 md:p-6 max-w-lg mx-auto shadow-md border border-[#D5C4B7]/30"
+                className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] rounded-xl px-6 md:px-8 py-3 md:py-4 shadow-md inline-block"
               >
-                <div className="flex items-center justify-center gap-3 text-[#2D3142]">
+                <div className="flex items-center justify-center gap-2 text-[#2D3142]">
                   <div className="text-center">
-                    <p className="font-bold text-base md:text-lg">מנוי פעיל</p>
-                    <p className="text-sm md:text-base text-[#2D3142]/80">יש לך גישה חופשית לכל הסדרות</p>
+                    <p className="font-bold text-sm md:text-base">מנוי פעיל - יש לך גישה לכל הסדרות</p>
                   </div>
                 </div>
               </motion.div>
