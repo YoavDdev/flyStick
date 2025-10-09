@@ -122,7 +122,21 @@ const Page: FC<pageProps> = ({ params }) => {
     window.history.pushState({}, "Video", ""); // Push new state when opening video
   };
 
-  const closeVideo = () => {
+  const closeVideo = async () => {
+    // Refetch watched videos to get the latest progress from VideoPlayer
+    if (session?.user) {
+      try {
+        const res = await axios.post("/api/get-watched-videos", {
+          userEmail: session.user.email,
+        });
+        if (res.status === 200) {
+          setWatchedVideos(res.data.watchedVideos);
+        }
+      } catch (err) {
+        console.error("Failed to fetch watched videos on close", err);
+      }
+    }
+    
     setSelectedVideo(null);
     setSelectedVideoData(null);
     setSelectedVideoName(null);
@@ -788,6 +802,20 @@ const Page: FC<pageProps> = ({ params }) => {
                         setSelectedVideoUri(videoUri);
                         openModal();
                         theUserId();
+                      }}
+                      onWatchedStatusChange={async () => {
+                        // Refetch watched videos when completion status changes
+                        if (!session?.user) return;
+                        try {
+                          const res = await axios.post("/api/get-watched-videos", {
+                            userEmail: session.user.email,
+                          });
+                          if (res.status === 200) {
+                            setWatchedVideos(res.data.watchedVideos);
+                          }
+                        } catch (err) {
+                          console.error("Failed to fetch watched videos", err);
+                        }
                       }}
                     />
                   </div>

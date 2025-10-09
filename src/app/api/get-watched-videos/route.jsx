@@ -5,7 +5,7 @@ export async function POST(request) {
   try {
     const body = await request.json();
     
-    const { userEmail, page = 1, limit = 10 } = body;
+    const { userEmail, page = 1, limit = 1000 } = body;
 
     if (!userEmail) {
       return NextResponse.json({ message: "Missing userEmail" }, { status: 400 });

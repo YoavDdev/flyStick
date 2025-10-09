@@ -110,37 +110,17 @@ const Page = () => {
   };
 
   const closeVideo = async () => {
-    if (player) {
-      const currentTime = await player.getCurrentTime();
-      const duration = await player.getDuration();
-      const percent = Math.floor((currentTime / duration) * 100);
-      const uri = selectedVideo?.match(/player\.vimeo\.com\/video\/(\d+)/)?.[1];
-      const videoUri = uri ? `/videos/${uri}` : null;
-  
-      if (session?.user && videoUri) {
-        try {
-          await axios.post("/api/mark-watched", {
-            userEmail: session.user.email,
-            videoUri,
-            progress: percent,
-            resumeTime: currentTime,
-          });
-  
-          setWatchedVideos((prev) => {
-            const existing = prev.find((v) => v.uri === videoUri);
-            if (existing) {
-              return prev.map((v) =>
-                v.uri === videoUri
-                  ? { ...v, progress: percent, resumeTime: currentTime }
-                  : v
-              );
-            } else {
-              return [...prev, { uri: videoUri, progress: percent, resumeTime: currentTime }];
-            }
-          });
-        } catch (err) {
-          console.error("❌ Failed to save on closeVideo:", err);
+    // Refetch watched videos to get the latest progress from VideoPlayer
+    if (session?.user) {
+      try {
+        const res = await axios.post("/api/get-watched-videos", {
+          userEmail: session.user.email,
+        });
+        if (res.status === 200) {
+          setWatchedVideos(res.data.watchedVideos);
         }
+      } catch (err) {
+        console.error("Failed to fetch watched videos on close", err);
       }
     }
   
@@ -704,6 +684,20 @@ useEffect(() => {
                       }}
                       onHashtagClick={handleHashtagClick}
                       isAdmin={subscriptionId === "Admin"}
+                      onWatchedStatusChange={async () => {
+                        // Refetch watched videos when completion status changes
+                        if (!session?.user) return;
+                        try {
+                          const res = await axios.post("/api/get-watched-videos", {
+                            userEmail: session.user.email,
+                          });
+                          if (res.status === 200) {
+                            setWatchedVideos(res.data.watchedVideos);
+                          }
+                        } catch (err) {
+                          console.error("Failed to fetch watched videos", err);
+                        }
+                      }}
                     />
                   </div>
                 ))

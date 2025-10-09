@@ -379,19 +379,19 @@ const Page = () => {
     }
     
     try {
-      // Use DELETE method with query parameters as expected by the API
+      // Delete the watched video record completely
       const res = await axios.delete(`/api/mark-watched?userEmail=${encodeURIComponent(session.user.email)}&videoUri=${encodeURIComponent(uri)}`);
       
       if (res.status === 200) {
-        // Update local state by filtering out the removed video
+        // Remove from local state
         setWatchedVideos(prev => prev.filter(video => video.uri !== uri));
         setVideos(prev => prev.filter(video => video.uri !== uri));
         
-        toast.success("הסרטון הוסר מרשימת הצפייה");
+        toast.success("הסרטון אופס לחלוטין - כאילו מעולם לא נצפה");
       }
     } catch (error: any) {
       console.error("Error removing video from watched list:", error);
-      toast.error("שגיאה בהסרת הסרטון מרשימת הצפייה");
+      toast.error("שגיאה בהסרת הסרטון");
     }
   };
 

@@ -11,7 +11,8 @@ const WabiSabiContact = () => {
     name: '',
     email: '',
     phone: '',
-    message: ''
+    message: '',
+    honeypot: '' // Hidden field for spam detection
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,7 +46,8 @@ const WabiSabiContact = () => {
           name: '',
           email: '',
           phone: '',
-          message: ''
+          message: '',
+          honeypot: ''
         });
         toast.success('הודעתך נשלחה בהצלחה! נחזור אליך בהקדם.');
       } else {
@@ -234,6 +236,17 @@ const WabiSabiContact = () => {
                     placeholder="כתבו לנו את השאלה או ההודעה שלכם..."
                   />
                 </div>
+
+                {/* Honeypot field - hidden from users, bots will fill it */}
+                <input
+                  type="text"
+                  name="honeypot"
+                  value={formData.honeypot}
+                  onChange={handleInputChange}
+                  style={{ display: 'none' }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
 
                 <motion.button
                   type="submit"

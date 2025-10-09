@@ -3,15 +3,56 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Simple spam detection patterns
+function isSpam(name: string, email: string, message: string): boolean {
+  // Check for random gibberish (consecutive random characters)
+  const gibberishPattern = /^[a-zA-Z]{8,}$/; // Long strings of only letters without spaces
+  const hasGibberishName = gibberishPattern.test(name.replace(/\s/g, ''));
+  const hasGibberishMessage = message.length < 50 && gibberishPattern.test(message.replace(/\s/g, ''));
+  
+  // Check for common spam patterns
+  const spamKeywords = ['viagra', 'casino', 'lottery', 'prize', 'click here', 'buy now', 'limited offer'];
+  const hasSpamKeywords = spamKeywords.some(keyword => 
+    message.toLowerCase().includes(keyword) || name.toLowerCase().includes(keyword)
+  );
+  
+  // Check for suspicious email patterns
+  const suspiciousEmailDomains = ['temp-mail', 'guerrillamail', 'throwaway'];
+  const hasSuspiciousEmail = suspiciousEmailDomains.some(domain => email.toLowerCase().includes(domain));
+  
+  // Check if message is too short and looks random
+  const isTooShortAndRandom = message.length < 20 && !/[\u0590-\u05FF]/.test(message) && !/\s/.test(message);
+  
+  return hasGibberishName || hasGibberishMessage || hasSpamKeywords || hasSuspiciousEmail || isTooShortAndRandom;
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, phone, message } = await request.json();
+    const { name, email, phone, message, honeypot } = await request.json();
+
+    // Honeypot field check (bots will fill this)
+    if (honeypot) {
+      console.log('Honeypot triggered - blocking spam');
+      return NextResponse.json(
+        { message: 'האימייל נשלח בהצלחה!' }, // Fake success to confuse bots
+        { status: 200 }
+      );
+    }
 
     // Validate required fields
     if (!name || !email || !message) {
       return NextResponse.json(
         { error: 'שם, אימייל והודעה הם שדות חובה' },
         { status: 400 }
+      );
+    }
+    
+    // Spam detection
+    if (isSpam(name, email, message)) {
+      console.log('Spam detected:', { name, email, message });
+      return NextResponse.json(
+        { message: 'האימייל נשלח בהצלחה!' }, // Fake success to confuse bots
+        { status: 200 }
       );
     }
 

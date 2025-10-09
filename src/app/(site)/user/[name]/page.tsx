@@ -196,7 +196,21 @@ const Page: FC<pageProps> = ({ params }) => {
     window.history.pushState({}, "Video", "");
   };
 
-  const closeVideo = () => {
+  const closeVideo = async () => {
+    // Refetch watched videos to get the latest progress from VideoPlayer
+    if (session?.user) {
+      try {
+        const res = await axios.post("/api/get-watched-videos", {
+          userEmail: session.user.email,
+        });
+        if (res.status === 200) {
+          setWatchedVideos(res.data.watchedVideos);
+        }
+      } catch (err) {
+        console.error("Failed to fetch watched videos on close", err);
+      }
+    }
+    
     setSelectedVideo(null);
     isVideoOpenRef.current = false;
     window.history.pushState({}, "");
@@ -621,15 +635,52 @@ const Page: FC<pageProps> = ({ params }) => {
                       className="w-full h-full object-cover"
                     />
                     
-                    {/* Progress badge positioned at upper right */}
-                    <div className="absolute top-3 right-3 z-10">
-                      <NewVideoProgressBadge 
-                        progress={Math.min(Math.round(getVideoProgress(video.uri) || 0), 100)}
-                        size="md"
-                        variant="fancy"
-                        showLabel={true}
-                      />
-                    </div>
+                    {/* Progress badge positioned at upper right - clickable to toggle completion */}
+                    {getVideoProgress(video.uri) > 0 && (
+                      <div 
+                        className="absolute top-3 right-3 z-10 cursor-pointer"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (!session?.user?.email) return;
+                          
+                          const currentProgress = getVideoProgress(video.uri);
+                          const isCompleted = currentProgress === 100;
+                          
+                          try {
+                            await axios.post('/api/mark-completed', {
+                              userEmail: session.user.email,
+                              videoUri: video.uri,
+                              isCompleted: !isCompleted
+                            });
+                            
+                            toast.success(
+                              !isCompleted 
+                                ? '✅ הסרטון סומן כמושלם!' 
+                                : '⭕ הסרטון סומן כלא מושלם'
+                            );
+                            
+                            // Refresh watched videos
+                            const res = await axios.post("/api/get-watched-videos", {
+                              userEmail: session.user.email,
+                            });
+                            if (res.status === 200) {
+                              setWatchedVideos(res.data.watchedVideos);
+                            }
+                          } catch (error) {
+                            console.error('Error toggling completion:', error);
+                            toast.error('שגיאה בעדכון סטטוס הסרטון');
+                          }
+                        }}
+                        title={getVideoProgress(video.uri) === 100 ? 'לחץ לסמן כלא מושלם' : 'לחץ לסמן כמושלם'}
+                      >
+                        <NewVideoProgressBadge 
+                          progress={Math.min(Math.round(getVideoProgress(video.uri) || 0), 100)}
+                          size="md"
+                          variant="fancy"
+                          showLabel={true}
+                        />
+                      </div>
+                    )}
                     
                     {/* Play button overlay */}
                     <div 

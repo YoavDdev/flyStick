@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import { FaPlay, FaPlus, FaShare, FaCheck } from 'react-icons/fa';
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
 import NewVideoProgressBadge from './NewVideoProgressBadge';
 import toast from 'react-hot-toast';
 
@@ -14,6 +16,7 @@ interface VideoCardProps {
   onAddToFavorites: (videoUri: string) => void;
   onHashtagClick?: (hashtag: string) => void;
   isAdmin?: boolean;
+  onWatchedStatusChange?: () => void; // Callback to refresh watched videos
 }
 
 const VideoCard = ({
@@ -24,10 +27,13 @@ const VideoCard = ({
   onPlayVideo,
   onAddToFavorites,
   onHashtagClick,
-  isAdmin = false
+  isAdmin = false,
+  onWatchedStatusChange
 }: VideoCardProps) => {
+  const { data: session } = useSession();
   const [isHovered, setIsHovered] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isUpdatingCompletion, setIsUpdatingCompletion] = useState(false);
   
   // Helper function to format duration from seconds to H:MM:SS or MM:SS
   const formatDuration = (seconds: number): string => {
@@ -53,6 +59,47 @@ const VideoCard = ({
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
       toast.error('שגיאה בהעתקת מזהה הסרטון');
+    }
+  };
+
+  // Manual completion toggle function
+  const toggleCompletion = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering video play
+    
+    if (!session?.user?.email) {
+      toast.error('יש להתחבר כדי לסמן סרטונים כמושלמים');
+      return;
+    }
+
+    setIsUpdatingCompletion(true);
+    
+    try {
+      const videoUri = `/videos/${video.uri.split('/').pop()}`;
+      const isCurrentlyCompleted = watchedVideo?.progress === 100;
+      const originalProgress = watchedVideo?.progress || 0;
+      
+      await axios.post('/api/mark-completed', {
+        userEmail: session.user.email,
+        videoUri,
+        isCompleted: !isCurrentlyCompleted,
+        currentProgress: isCurrentlyCompleted ? originalProgress : undefined
+      });
+
+      toast.success(
+        !isCurrentlyCompleted 
+          ? '✅ הסרטון סומן כמושלם!' 
+          : '⭕ הסרטון סומן כלא מושלם'
+      );
+      
+      // Refresh the watched videos list
+      if (onWatchedStatusChange) {
+        onWatchedStatusChange();
+      }
+    } catch (error) {
+      console.error('Error toggling completion:', error);
+      toast.error('שגיאה בעדכון סטטוס הסרטון');
+    } finally {
+      setIsUpdatingCompletion(false);
     }
   };
   
@@ -81,10 +128,6 @@ const VideoCard = ({
       return part;
     });
   };
-  
-  // Debug the video prop
-  console.log('VideoCard received video prop:', video);
-  console.log('Video name property:', video?.name);
   
   // Find if this video has been watched
   const watchedVideo = watchedVideos.find((v) => {
@@ -130,14 +173,28 @@ const VideoCard = ({
         
         {/* Create a placeholder div that reserves space but doesn't affect layout */}
         <div className="absolute top-2 right-2 w-12 h-12 pointer-events-none"></div>
-        {watchedVideo && (
-          <NewVideoProgressBadge
-            progress={watchedVideo.progress}
-            className="top-2 right-2 z-10"
-            size="md"
-            variant="fancy"
-            showLabel={true}
-          />
+        {watchedVideo && watchedVideo.progress > 0 && (
+          <div 
+            onClick={toggleCompletion}
+            className="absolute top-2 right-2 z-10 cursor-pointer"
+            title={watchedVideo.progress === 100 ? 'לחץ לסמן כלא מושלם' : 'לחץ לסמן כמושלם'}
+          >
+            <NewVideoProgressBadge
+              progress={watchedVideo.progress}
+              className={`transition-all duration-300 ${
+                isUpdatingCompletion ? 'opacity-50' : 'hover:scale-110'
+              }`}
+              size="md"
+              variant="fancy"
+              showLabel={true}
+            />
+            {/* Loading overlay when updating */}
+            {isUpdatingCompletion && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-full">
+                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
+          </div>
         )}
         <div
           className={`absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center transition-opacity duration-300 ${
