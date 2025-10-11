@@ -34,6 +34,7 @@ const VideoCard = ({
   const [isHovered, setIsHovered] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isUpdatingCompletion, setIsUpdatingCompletion] = useState(false);
+  const [isBadgeHovered, setIsBadgeHovered] = useState(false);
   
   // Helper function to format duration from seconds to H:MM:SS or MM:SS
   const formatDuration = (seconds: number): string => {
@@ -176,18 +177,29 @@ const VideoCard = ({
         {watchedVideo && watchedVideo.progress > 0 && (
           <div 
             onClick={toggleCompletion}
+            onMouseEnter={() => setIsBadgeHovered(true)}
+            onMouseLeave={() => setIsBadgeHovered(false)}
             className="absolute top-2 right-2 z-10 cursor-pointer"
-            title={watchedVideo.progress === 100 ? 'לחץ לסמן כלא מושלם' : 'לחץ לסמן כמושלם'}
           >
-            <NewVideoProgressBadge
-              progress={watchedVideo.progress}
-              className={`transition-all duration-300 ${
-                isUpdatingCompletion ? 'opacity-50' : 'hover:scale-110'
-              }`}
-              size="md"
-              variant="fancy"
-              showLabel={true}
-            />
+            {isBadgeHovered && !isUpdatingCompletion ? (
+              // Show text hint on hover
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#F7F3EB] to-[#D5C4B7] border-2 border-[#B8A99C] shadow-md flex items-center justify-center transition-all duration-300 hover:scale-110">
+                <span className="text-[8px] font-bold text-[#2D3142] text-center leading-tight px-1">
+                  {watchedVideo.progress === 100 ? 'לחץ\nלביטול' : 'לחץ\nלהשלמה'}
+                </span>
+              </div>
+            ) : (
+              // Show progress badge normally
+              <NewVideoProgressBadge
+                progress={watchedVideo.progress}
+                className={`transition-all duration-300 ${
+                  isUpdatingCompletion ? 'opacity-50' : 'hover:scale-110'
+                }`}
+                size="md"
+                variant="fancy"
+                showLabel={true}
+              />
+            )}
             {/* Loading overlay when updating */}
             {isUpdatingCompletion && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-full">

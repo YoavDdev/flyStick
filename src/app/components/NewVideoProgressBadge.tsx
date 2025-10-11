@@ -61,56 +61,53 @@ const NewVideoProgressBadge: React.FC<Props> = ({
     );
   }
   
-  // Fancy variant - modern design with glow effect
+  // Fancy variant - Wabi-Sabi design with earthy tones
   if (variant === 'fancy') {
     return (
       <div
         className={`${positionClass} ${sizeClass} ${className}`}
         title={isCompleted ? "נצפה במלואו" : `התקדמות: ${displayProgress}%`}
       >
-        <div className={`absolute inset-0 rounded-full ${isCompleted ? 'bg-gradient-to-br from-green-400 to-green-600' : 'bg-gradient-to-br from-[#EF8354] to-[#D9713C]'} flex items-center justify-center shadow-lg ${isCompleted ? 'shadow-green-400/30' : 'shadow-[#EF8354]/30'}`}>
-          <div className="absolute inset-0.5 rounded-full bg-gray-900 flex items-center justify-center">
-            {isCompleted ? (
-              <div
-                className="text-green-400 font-bold"
-              >
-                ✓
-              </div>
-            ) : (
-              <>
-                <svg className="absolute inset-0" width="100%" height="100%" viewBox="0 0 100 100">
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="46" 
-                    fill="none" 
-                    stroke="rgba(255,255,255,0.1)" 
-                    strokeWidth="8" 
-                  />
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="46" 
-                    fill="none" 
-                    stroke="url(#gradient)" 
-                    strokeWidth="8" 
-                    strokeDasharray={`${displayProgress * 2.89} 289`}
-                    strokeLinecap="round"
-                    transform="rotate(-90 50 50)"
-                  />
-                  <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#EF8354" />
-                      <stop offset="100%" stopColor="#D9713C" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                {showLabel && (
-                  <span className="text-white font-bold z-10">{displayProgress}%</span>
-                )}
-              </>
-            )}
-          </div>
+        <div className={`absolute inset-0 rounded-full ${
+          isCompleted 
+            ? 'bg-gradient-to-br from-green-400 to-green-500 shadow-lg shadow-green-400/30' 
+            : 'bg-gradient-to-br from-[#F7F3EB] to-[#D5C4B7] shadow-md'
+        } flex items-center justify-center transition-all duration-300 border-2 ${
+          isCompleted ? 'border-green-300' : 'border-[#B8A99C]'
+        }`}>
+          {isCompleted ? (
+            <div className="text-white font-bold text-lg drop-shadow">
+              ✓
+            </div>
+          ) : (
+            <>
+              <svg className="absolute inset-0 -rotate-90" width="100%" height="100%" viewBox="0 0 100 100">
+                <circle 
+                  cx="50" 
+                  cy="50" 
+                  r="44" 
+                  fill="none" 
+                  stroke="#B8A99C" 
+                  strokeWidth="3" 
+                  opacity="0.3"
+                />
+                <circle 
+                  cx="50" 
+                  cy="50" 
+                  r="44" 
+                  fill="none" 
+                  stroke="#EF8354" 
+                  strokeWidth="3" 
+                  strokeDasharray={`${displayProgress * 2.76} 276`}
+                  strokeLinecap="round"
+                  className="transition-all duration-500"
+                />
+              </svg>
+              {showLabel && (
+                <span className="text-[#2D3142] font-semibold text-sm z-10">{displayProgress}%</span>
+              )}
+            </>
+          )}
         </div>
       </div>
     );
