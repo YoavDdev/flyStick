@@ -73,9 +73,18 @@ const SeriesPromotion = () => {
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             סדרות אימונים מקצועיות
           </h2>
-          <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed mb-6">
             כאן תוכלו למצוא סדרות אימונים מקצועיות בתשלום חד פעמי לכל סדרה - רק 69 ₪ לסדרה שלמה! כל סדרה מכילה מגוון תרגילים ושיעורים שיובילו אתכם להתפתחות גופנית ורוחנית
           </p>
+          <Link href="/series">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-white text-[#2D3142] px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors shadow-lg"
+            >
+              כל הסדרות
+            </motion.button>
+          </Link>
         </motion.div>
 
         {/* Responsive Grid */}
