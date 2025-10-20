@@ -71,10 +71,10 @@ const SeriesPromotion = () => {
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            סדרות אימונים מקצועיות
+            רוצים לרכוש סדרה בודדת?
           </h2>
           <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed mb-6">
-            כאן תוכלו למצוא סדרות אימונים מקצועיות בתשלום חד פעמי לכל סדרה - רק 69 ₪ לסדרה שלמה! כל סדרה מכילה מגוון תרגילים ושיעורים שיובילו אתכם להתפתחות גופנית ורוחנית
+            מעוניינים בהכשרה קצרה וממוקדת? אתר הסדרות שלנו מציע סדרות בודדות לרכישה - תשלום חד פעמי לכל סדרה, שלכם לתמיד
           </p>
           <Link href="/series">
             <motion.button
