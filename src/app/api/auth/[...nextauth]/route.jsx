@@ -54,74 +54,78 @@ export const authOptions = {
   debug: false,
   events: {
     signIn: async ({ user, account }) => {
-      console.log(`User signed in: ${user.id}`);
+      try {
+        console.log(`User signed in: ${user.id}`);
 
-      // Check if this is a new user (created recently)
-      const userData = await prisma.user.findUnique({
-        where: { id: user.id },
-        select: { 
-          id: true, 
-          email: true, 
-          createdAt: true,
-          hasSeenWelcomeMessage: true,
-          messageReads: {
-            where: {
-              OR: [
-                {
-                  message: {
-                    title: "Welcome to Studio Boaz Online! 🌟"
-                  }
-                },
-                {
-                  message: {
-                    title: "ברוכים הבאים לסטודיו שלי!"
-                  }
-                }
-              ]
-            }
+        // Check if this is a new user (created recently) - simplified query
+        const userData = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { 
+            id: true, 
+            email: true, 
+            createdAt: true,
+            hasSeenWelcomeMessage: true
           }
-        }
-      });
-
-      // Note: hasSeenWelcomeMessage flag will be set to true when user dismisses the welcome popup
-      // This ensures the popup shows for new users on their first dashboard visit
-      if (userData && !userData.hasSeenWelcomeMessage) {
-        console.log(`🎯 New user detected, welcome popup will be shown: ${user.email}`);
-      }
-
-      // Create "favorites" folder if not exists
-      const isFolderExist = await prisma.folder.findFirst({
-        where: { userId: user.id, name: "favorites" },
-      });
-
-      if (!isFolderExist) {
-        await prisma.folder.create({
-          data: { userId: user.id, name: "favorites", urls: [] },
+        }).catch(err => {
+          console.error("Error fetching user data:", err);
+          return null;
         });
-      }
 
-      // Subscribe Google sign-in users to newsletter
-      if (account.provider === "google") {
+        // Note: hasSeenWelcomeMessage flag will be set to true when user dismisses the welcome popup
+        // This ensures the popup shows for new users on their first dashboard visit
+        if (userData && !userData.hasSeenWelcomeMessage) {
+          console.log(`🎯 New user detected, welcome popup will be shown: ${user.email}`);
+        }
+
+        // Create "favorites" folder if not exists
         try {
-          const newsletterResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/newsletter/subscribe`, {
-            method: 'POST',
-            headers: { "Content-Type": "application/json; charset=utf-8" },
-            body: JSON.stringify({
-              email: user.email,
-              name: user.name,
-              source: 'google_auth'
-            })
+          const isFolderExist = await prisma.folder.findFirst({
+            where: { userId: user.id, name: "favorites" },
           });
 
-          if (newsletterResponse.ok) {
-            console.log("✅ User subscribed to newsletter");
-          } else {
-            const errorData = await newsletterResponse.json();
-            console.error("❌ Newsletter subscription error:", errorData.error);
+          if (!isFolderExist) {
+            await prisma.folder.create({
+              data: { userId: user.id, name: "favorites", urls: [] },
+            });
           }
-        } catch (error) {
-          console.error("❌ Newsletter subscription error:", error);
+        } catch (folderError) {
+          console.error("Error creating favorites folder:", folderError);
+          // Don't block login if folder creation fails
         }
+
+        // Subscribe Google sign-in users to newsletter (non-blocking)
+        if (account?.provider === "google") {
+          // Run newsletter subscription in background without blocking login
+          setTimeout(async () => {
+            try {
+              const baseUrl = process.env.NEXTAUTH_URL || process.env.VERCEL_URL 
+                ? `https://${process.env.VERCEL_URL}` 
+                : 'http://localhost:3000';
+              
+              const newsletterResponse = await fetch(`${baseUrl}/api/newsletter/subscribe`, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json; charset=utf-8" },
+                body: JSON.stringify({
+                  email: user.email,
+                  name: user.name,
+                  source: 'google_auth'
+                })
+              });
+
+              if (newsletterResponse.ok) {
+                console.log("✅ User subscribed to newsletter");
+              } else {
+                const errorData = await newsletterResponse.json().catch(() => ({}));
+                console.error("❌ Newsletter subscription error:", errorData.error || "Unknown error");
+              }
+            } catch (error) {
+              console.error("❌ Newsletter subscription error:", error);
+            }
+          }, 100); // Run after 100ms to not block login
+        }
+      } catch (error) {
+        console.error("❌ SignIn event error:", error);
+        // Don't throw error - allow login to proceed even if event handler fails
       }
     },
   },
