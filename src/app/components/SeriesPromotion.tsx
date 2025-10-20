@@ -193,7 +193,7 @@ const SeriesPromotion = () => {
                                 ease: "easeInOut"
                               }}
                             >
-                              בקרוב
+                              .בקרוב
                             </motion.span>
                           </div>
                         </div>
