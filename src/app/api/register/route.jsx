@@ -4,10 +4,45 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
   const body = await request.json();
-  const { name, email, password, subscribeToNewsletter, userType, registrationSource } = body;
+  const { name, email, password, subscribeToNewsletter, userType, registrationSource, turnstileToken } = body;
 
   if (!name || !email || !password) {
     return new NextResponse("Missing Fields", { status: 400 });
+  }
+
+  // Verify Turnstile token
+  if (!turnstileToken) {
+    return new NextResponse(JSON.stringify({ error: "Security verification required" }), { 
+      status: 400,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+
+  try {
+    const turnstileResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        secret: process.env.TURNSTILE_SECRET_KEY,
+        response: turnstileToken,
+      }),
+    });
+
+    const turnstileData = await turnstileResponse.json();
+
+    if (!turnstileData.success) {
+      console.error('❌ Turnstile verification failed:', turnstileData);
+      return new NextResponse(JSON.stringify({ error: "Security verification failed. Please try again." }), { 
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+  } catch (turnstileError) {
+    console.error('❌ Error verifying Turnstile:', turnstileError);
+    return new NextResponse(JSON.stringify({ error: "Security verification error. Please try again." }), { 
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
   }
 
   const exist = await prisma.user.findUnique({

@@ -1,10 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import Script from "next/script";
 
 // Note: Metadata cannot be exported from client components
 // SEO protection should be handled at the layout level
@@ -21,12 +22,21 @@ const Register = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef<any>(null);
 
   useEffect(() => {
     if (session?.status === "authenticated") {
       router.push("/login");
     }
   }, [session]);
+
+  useEffect(() => {
+    // Setup Turnstile callback
+    window.onTurnstileSuccess = (token: string) => {
+      setTurnstileToken(token);
+    };
+  }, []);
 
   const registerUser = async (e: any) => {
     e.preventDefault();
@@ -41,11 +51,24 @@ const Register = () => {
       return;
     }
 
+    if (!turnstileToken) {
+      toast.error("❌ אנא המתן לאימות האבטחה להסתיים.");
+      return;
+    }
+
     try {
-      const res = await axios.post("/api/register", data);
+      const res = await axios.post("/api/register", {
+        ...data,
+        turnstileToken,
+      });
 
       if (res.status === 200) {
         toast.success("🎉 נרשמת בהצלחה! ברוך הבא למשפחה שלנו");
+        
+        // Reset Turnstile widget
+        if (window.turnstile && turnstileRef.current) {
+          window.turnstile.reset(turnstileRef.current);
+        }
 
         // ✅ Subscribe to newsletter if requested
         if (data.subscribeToNewsletter) {
@@ -64,14 +87,29 @@ const Register = () => {
       } else {
         toast.error("משהו השתבש, אנא נסה שוב");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error registering user:", error);
-      toast.error("משהו השתבש, אנא נסה שוב");
+      
+      // Reset Turnstile on error
+      if (window.turnstile && turnstileRef.current) {
+        window.turnstile.reset(turnstileRef.current);
+        setTurnstileToken("");
+      }
+      
+      const errorMessage = error.response?.data?.error || "משהו השתבש, אנא נסה שוב";
+      toast.error(errorMessage);
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-24 lg:px-8 pb-96 bg-[#F7F3EB]">
+    <>
+      {/* Load Cloudflare Turnstile Script */}
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        strategy="lazyOnload"
+      />
+      
+      <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-24 lg:px-8 pb-96 bg-[#F7F3EB]">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-[#F0E9DF] rounded-2xl shadow-md border border-[#D5C4B7] p-8 mb-8">
           <h2 className="mt-4 text-center text-3xl font-bold leading-9 tracking-tight text-[#2D3142]">
@@ -207,6 +245,17 @@ const Register = () => {
               </label>
             </div>
 
+            {/* Cloudflare Turnstile Widget */}
+            <div className="mt-4 flex justify-center">
+              <div
+                ref={turnstileRef}
+                className="cf-turnstile"
+                data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
+                data-callback="onTurnstileSuccess"
+                data-theme="light"
+              ></div>
+            </div>
+
             <div className="pt-2">
               <button
                 type="submit"
@@ -241,7 +290,17 @@ const Register = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
+
+// TypeScript declaration for Turnstile
+declare global {
+  interface Window {
+    turnstile: any;
+    turnstileToken: string;
+    onTurnstileSuccess: (token: string) => void;
+  }
+}
 
 export default Register;
