@@ -56,6 +56,7 @@ const SeriesViewPage = () => {
   const [watchedVideos, setWatchedVideos] = useState<any[]>([]);
   const [expandedVideo, setExpandedVideo] = useState<string | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<{ embedHtml: string; uri: string; name: string } | null>(null);
+  const [infoModal, setInfoModal] = useState<'videos' | 'access' | 'stats' | 'unlimited' | null>(null);
 
   useEffect(() => {
     if (seriesId) {
@@ -426,19 +427,29 @@ const SeriesViewPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
                   >
-                    <div className="flex items-center gap-2 bg-[#D5C4B7]/20 px-4 py-2 rounded-xl border border-[#D5C4B7]/30">
+                    <motion.button
+                      onClick={() => setInfoModal('videos')}
+                      className="flex items-center gap-2 bg-[#D5C4B7]/20 px-4 py-2 rounded-xl border border-[#D5C4B7]/30 hover:bg-[#D5C4B7]/30 hover:border-[#D5C4B7]/50 transition-all cursor-pointer"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
                       <FaVideo className="text-[#B8A99C]" />
                       <span className="text-[#2D3142] font-medium">{accessData.series.videoCount} פרקים</span>
-                    </div>
+                    </motion.button>
                     
-                    <div className="flex items-center gap-2 bg-gradient-to-r from-[#B8A99C]/20 to-[#D5C4B7]/20 px-4 py-2 rounded-xl border border-[#B8A99C]/30">
+                    <motion.button
+                      onClick={() => setInfoModal('access')}
+                      className="flex items-center gap-2 bg-gradient-to-r from-[#B8A99C]/20 to-[#D5C4B7]/20 px-4 py-2 rounded-xl border border-[#B8A99C]/30 hover:from-[#B8A99C]/30 hover:to-[#D5C4B7]/30 hover:border-[#B8A99C]/50 transition-all cursor-pointer"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
                       <span className="w-2 h-2 bg-[#B8A99C] rounded-full animate-pulse"></span>
                       <span className="text-[#2D3142] font-medium">
                         {accessData.accessType === 'subscription' ? '✨ כלול במנוי' : 
                          accessData.accessType === 'purchased' ? 'נרכש' : 
                          accessData.accessType === 'admin' ? '👑 גישת מנהל' : '🚀 גישה פעילה'}
                       </span>
-                    </div>
+                    </motion.button>
                   </motion.div>
 
                   <motion.p
@@ -457,15 +468,25 @@ const SeriesViewPage = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.9 }}
                 >
-                  <div className="bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] p-6 rounded-2xl text-center text-white shadow-xl">
+                  <motion.button
+                    onClick={() => setInfoModal('stats')}
+                    className="bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] p-6 rounded-2xl text-center text-white shadow-xl hover:shadow-2xl transition-all cursor-pointer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
                     <div className="text-3xl font-bold mb-1">{videos.length}</div>
                     <div className="text-sm opacity-90">סרטונים זמינים</div>
-                  </div>
+                  </motion.button>
                   
-                  <div className="bg-white/80 p-4 rounded-2xl text-center border border-[#D5C4B7]/30 shadow-lg">
+                  <motion.button
+                    onClick={() => setInfoModal('unlimited')}
+                    className="bg-white/80 p-4 rounded-2xl text-center border border-[#D5C4B7]/30 shadow-lg hover:bg-white hover:shadow-xl transition-all cursor-pointer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
                     <div className="text-xl font-bold text-[#2D3142] mb-1">∞</div>
                     <div className="text-xs text-[#5D5D5D]">גישה ללא הגבלה</div>
-                  </div>
+                  </motion.button>
                 </motion.div>
               </div>
             </div>
@@ -565,6 +586,130 @@ const SeriesViewPage = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Info Modal */}
+      {infoModal && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setInfoModal(null)}
+        >
+          <motion.div
+            className="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl border border-[#D5C4B7]/30 relative"
+            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          >
+            <button
+              onClick={() => setInfoModal(null)}
+              className="absolute top-4 left-4 text-[#5D5D5D] hover:text-[#2D3142] text-2xl font-bold transition-colors"
+            >
+              ×
+            </button>
+
+            {infoModal === 'videos' && (
+              <>
+                <div className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] p-4 rounded-2xl w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-xl">
+                  <FaVideo className="text-white text-3xl" />
+                </div>
+                <h3 className="text-2xl font-bold text-[#2D3142] mb-4 text-center">מידע על הסדרה</h3>
+                <div className="space-y-4 text-[#5D5D5D] leading-relaxed">
+                  <p>הסדרה כוללת <strong className="text-[#2D3142]">{accessData.series.videoCount} פרקים מקצועיים</strong> שנבנו בקפידה.</p>
+                  <ul className="list-disc list-inside space-y-2 mr-4">
+                    <li>כל פרק מתמקד בנושא ספציפי</li>
+                    <li>מיועד ללמידה הדרגתית ועמוקה</li>
+                    <li>מתאים לכל הרמות</li>
+                    <li>תוכן עדכני ורלוונטי</li>
+                  </ul>
+                  <p className="text-sm bg-[#D5C4B7]/10 p-3 rounded-lg mt-4">
+                    💡 <strong>טיפ:</strong> מומלץ לעבור על הפרקים לפי הסדר לחוויית למידה אופטימלית
+                  </p>
+                </div>
+              </>
+            )}
+
+            {infoModal === 'access' && (
+              <>
+                <div className="bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] p-4 rounded-2xl w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-xl">
+                  <span className="text-4xl">👑</span>
+                </div>
+                <h3 className="text-2xl font-bold text-[#2D3142] mb-4 text-center">סוג הגישה שלך</h3>
+                <div className="space-y-4 text-[#5D5D5D] leading-relaxed">
+                  <div className="bg-gradient-to-r from-[#B8A99C]/10 to-[#D5C4B7]/10 p-4 rounded-xl border border-[#D5C4B7]/30">
+                    <p className="text-center text-xl font-bold text-[#2D3142] mb-2">
+                      {accessData.accessType === 'subscription' ? '✨ כלול במנוי' : 
+                       accessData.accessType === 'purchased' ? '✅ נרכש' : 
+                       accessData.accessType === 'admin' ? '👑 גישת מנהל' : '🚀 גישה פעילה'}
+                    </p>
+                  </div>
+                  <p className="mt-4">יש לך גישה מלאה לכל התכנים בסדרה זו:</p>
+                  <ul className="list-disc list-inside space-y-2 mr-4">
+                    <li>צפייה בכל הפרקים ללא הגבלה</li>
+                    <li>מעקב אחר ההתקדמות שלך</li>
+                    <li>גישה מכל מכשיר שתרצה</li>
+                    <li>תמיכה טכנית מלאה</li>
+                  </ul>
+                  <p className="text-sm bg-[#B8A99C]/10 p-3 rounded-lg mt-4">
+                    ✨ <strong>הערה:</strong> ההתקדמות שלך נשמרת אוטומטית
+                  </p>
+                </div>
+              </>
+            )}
+
+            {infoModal === 'stats' && (
+              <>
+                <div className="bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] p-4 rounded-2xl w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-xl">
+                  <span className="text-4xl font-bold text-white">{videos.length}</span>
+                </div>
+                <h3 className="text-2xl font-bold text-[#2D3142] mb-4 text-center">סרטונים זמינים</h3>
+                <div className="space-y-4 text-[#5D5D5D] leading-relaxed">
+                  <p>בסדרה זו יש <strong className="text-[#2D3142]">{videos.length} סרטונים</strong> שכבר זמינים לצפייה מיידית.</p>
+                  <div className="bg-[#D5C4B7]/10 p-4 rounded-xl">
+                    <p className="text-sm">📊 <strong>סטטיסטיקה:</strong></p>
+                    <ul className="text-sm mt-2 space-y-1">
+                      <li>• {videos.length} סרטונים להשמעה</li>
+                      <li>• איכות HD מלאה</li>
+                      <li>• נגן וידאו מתקדם</li>
+                    </ul>
+                  </div>
+                  <p className="text-sm bg-[#B8A99C]/10 p-3 rounded-lg mt-4">
+                    🎯 <strong>התחל עכשיו:</strong> גלול למטה כדי לראות את כל הסרטונים
+                  </p>
+                </div>
+              </>
+            )}
+
+            {infoModal === 'unlimited' && (
+              <>
+                <div className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] p-4 rounded-2xl w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-xl">
+                  <span className="text-5xl font-bold text-white">∞</span>
+                </div>
+                <h3 className="text-2xl font-bold text-[#2D3142] mb-4 text-center">גישה ללא הגבלה</h3>
+                <div className="space-y-4 text-[#5D5D5D] leading-relaxed">
+                  <p>הסדרה שלך לתמיד! <strong className="text-[#2D3142]">ללא הגבלת זמן או צפיות.</strong></p>
+                  <ul className="list-disc list-inside space-y-2 mr-4">
+                    <li><strong className="text-[#2D3142]">אין תפוגה</strong> - הסדרה שלך לצמיתות</li>
+                    <li><strong className="text-[#2D3142]">צפיות בלתי מוגבלות</strong> - חזור כמה שתרצה</li>
+                    <li><strong className="text-[#2D3142]">עדכונים עתידיים</strong> - אוטומטית וחינם</li>
+                    <li><strong className="text-[#2D3142]">זמין תמיד</strong> - 24/7 מכל מקום</li>
+                    <li><strong className="text-[#2D3142]">כל המכשירים</strong> - מחשב, טאבלט, נייד</li>
+                  </ul>
+                  <p className="text-sm bg-[#D5C4B7]/10 p-3 rounded-lg mt-4">
+                    🌟 <strong>הבטחה:</strong> ברגע שרכשת את הסדרה, היא שלך לתמיד
+                  </p>
+                </div>
+              </>
+            )}
+
+            <button
+              onClick={() => setInfoModal(null)}
+              className="mt-8 w-full bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] text-white py-3 rounded-xl font-medium hover:shadow-xl transition-all duration-300"
+            >
+              הבנתי, תודה!
+            </button>
+          </motion.div>
+        </div>
+      )}
 
       {/* Video Player Modal */}
       {selectedVideo && (
