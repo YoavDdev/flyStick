@@ -294,12 +294,10 @@ const Page = () => {
   const handleHashtagClick = (hashtag: string) => {
     const hashtagQuery = `# ${hashtag}`;
     setSearchQuery(hashtagQuery);
-    setCurrentPage(1);
-    setVideos([]); // Clear existing videos
     setNoResults(false);
     setDescriptionQuery(hashtagQuery);
-    fetchVideos(1, hashtagQuery);
     closeHashtagDropdown();
+    // Note: fetchVideos is called by useEffect when descriptionQuery changes
   };
   const toggleHashtagDropdown = () => {
     setShowHashtagDropdown(!showHashtagDropdown);
@@ -309,10 +307,8 @@ const Page = () => {
     e.preventDefault();
     const searchTerm = queryToSearch || searchQuery;
     setNoResults(false);
-    setCurrentPage(1);
-    setVideos([]); // Clear existing videos
     setDescriptionQuery(searchTerm);
-    fetchVideos(1, searchTerm);
+    // Note: fetchVideos is called by useEffect when descriptionQuery changes
   };
 
   const closeHashtagDropdown = () => {
