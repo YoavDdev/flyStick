@@ -31,7 +31,15 @@ export const metadata: Metadata = {
     url: "https://www.studioboazonline.com/",
     type: "website",
     siteName: "Studio Boaz Online",
-    locale: "he_IL"
+    locale: "he_IL",
+    images: [
+      {
+        url: "/og-image-wide.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Studio Boaz Online - בועז סטודיו און לין",
+      },
+    ],
   },
   alternates: {
     canonical: "https://www.studioboazonline.com/"

@@ -52,10 +52,10 @@ export const metadata: Metadata = {
     description: "בואו לצלול לשפע עצום של שיעורים ותרגילים שפותחו כדי להעשיר ולפתח את החיבור בין הגוף לנפש שלכם. בועז נחייסי מלמד פלייסטיק, תנועה מרפאה ואימונים אישיים.",
     images: [
       {
-        url: "/android-chrome-144x144.png",
-        width: 144,
-        height: 144,
-        alt: "סטודיו בועז אונליין לוגו",
+        url: "/og-image-wide.jpg",
+        width: 1200,
+        height: 630,
+        alt: "סטודיו בועז אונליין - אימונים אישיים ותנועה מרפאה",
       },
     ],
     siteName: "סטודיו בועז אונליין",
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "סטודיו בועז אונליין - אימונים אישיים ותנועה מרפאה",
     description: "בואו לצלול לשפע עצום של שיעורים ותרגילים שפותחו כדי להעשיר ולפתח את החיבור בין הגוף לנפש שלכם.",
-    images: ["/android-chrome-144x144.png"],
+    images: ["/og-image-wide.jpg"],
   },
   robots: {
     index: true,
