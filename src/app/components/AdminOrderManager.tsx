@@ -231,7 +231,7 @@ export default function AdminOrderManager() {
                 </div>
                 
                 <div className="text-left">
-                  <p className="text-sm text-gray-600">סה"כ</p>
+                  <p className="text-sm text-gray-600">סה&quot;כ</p>
                   <p className="text-2xl font-bold text-[#2D3142]">₪{order.totalAmount}</p>
                 </div>
               </div>
