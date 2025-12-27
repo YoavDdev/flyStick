@@ -214,3 +214,82 @@ model Purchase {
   
   @@unique([userId, seriesId]) // User can only purchase each series once
 }
+
+model Product {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  nameHebrew      String?
+  description     String   @db.String // Rich text description
+  descriptionHebrew String? @db.String
+  price           Float    // Price in shekels
+  images          String[] // Array of image URLs
+  stock           Int      @default(0) // Available quantity
+  sku             String?  @unique // Product SKU
+  weight          Float?   // Weight in grams
+  dimensions      String?  // Dimensions as string "10x5x3 cm"
+  category        String?  // Product category
+  tags            String[] // Search/filter tags
+  isActive        Boolean  @default(true) // Available for purchase
+  isFeatured      Boolean  @default(false) // Featured product
+  order           Int      @default(0) // Display order
+  metaTitle       String?  // SEO
+  metaDescription String?  // SEO
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  orderItems      ShopOrderItem[]
+}
+
+model ShopOrder {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderNumber     String   @unique // Human-readable order number
+  userId          String?  @db.ObjectId // Optional for guest checkout
+  customerName    String
+  customerEmail   String
+  customerPhone   String?
+  
+  // Delivery details
+  deliveryMethod  String   // "pickup" or "shipping" (future)
+  deliveryAddress String?  // For future shipping
+  deliveryNotes   String?  // Special instructions
+  
+  // Payment details
+  paymentMethod   String   // "paypal" or "cash"
+  paypalOrderId   String?  // PayPal transaction ID
+  paypalPayerId   String?  // PayPal payer ID
+  
+  // Order totals
+  subtotal        Float    // Sum of items
+  shippingCost    Float    @default(0) // Future shipping
+  totalAmount     Float    // Final total
+  currency        String   @default("ILS")
+  
+  // Status tracking
+  status          String   @default("PENDING") // PENDING, CONFIRMED, PREPARING, READY, COMPLETED, CANCELLED
+  paymentStatus   String   @default("PENDING") // PENDING, PAID, REFUNDED
+  notes           String?  // Admin notes
+  
+  // Timestamps
+  orderedAt       DateTime @default(now())
+  paidAt          DateTime?
+  completedAt     DateTime?
+  cancelledAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  items           ShopOrderItem[]
+}
+
+model ShopOrderItem {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId         String   @db.ObjectId
+  productId       String   @db.ObjectId
+  productName     String   // Snapshot of product name
+  productImage    String?  // Snapshot of product image
+  quantity        Int
+  pricePerUnit    Float    // Price at time of order
+  subtotal        Float    // quantity * pricePerUnit
+  
+  order           ShopOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product         Product   @relation(fields: [productId], references: [id])
+}

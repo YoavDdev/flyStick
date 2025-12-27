@@ -49,7 +49,7 @@ export const authOptions = {
   ],
   secret: process.env.SECRET,
   session: {
-    strategy: "jwt",
+    strategy: /** @type {"jwt"} */ ("jwt"),
   },
   debug: false,
   events: {

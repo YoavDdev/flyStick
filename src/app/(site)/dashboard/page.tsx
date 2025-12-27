@@ -18,6 +18,8 @@ import AdminMessageComposer from "../../components/AdminMessageComposer";
 import AdminNewsletterComposer from "../../components/AdminNewsletterComposer";
 import AdminFolderMetadataManager from "../../components/AdminFolderMetadataManager";
 import AdminVideoSeriesManager from "../../components/AdminVideoSeriesManager";
+import AdminProductManager from "../../components/AdminProductManager";
+import AdminOrderManager from "../../components/AdminOrderManager";
 import WelcomePopup from "../../components/WelcomePopup";
 
 // Note: Metadata cannot be exported from client components
@@ -346,9 +348,35 @@ const DashboardPage = () => {
                   <AdminVideoSeriesManager />
                 </motion.div>
 
-                {/* Category Manager */}
-                <motion.div variants={itemVariants}>
+                {/* Shop Management Links */}
+                <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Link href="/admin/products">
+                    <div className="bg-white border-2 border-[#D5C4B7] rounded-xl p-6 hover:shadow-lg transition-all hover:border-[#B8A99C] cursor-pointer">
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className="bg-[#D5C4B7] p-3 rounded-full">
+                          <svg className="w-6 h-6 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                          </svg>
+                        </div>
+                        <h3 className="text-xl font-bold text-[#2D3142]">ניהול מוצרים</h3>
+                      </div>
+                      <p className="text-[#2D3142]/60 text-sm">הוספה, עריכה וניהול מוצרי חנות Kohu</p>
+                    </div>
+                  </Link>
 
+                  <Link href="/admin/orders">
+                    <div className="bg-white border-2 border-[#D5C4B7] rounded-xl p-6 hover:shadow-lg transition-all hover:border-[#B8A99C] cursor-pointer">
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className="bg-[#D5C4B7] p-3 rounded-full">
+                          <svg className="w-6 h-6 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                          </svg>
+                        </div>
+                        <h3 className="text-xl font-bold text-[#2D3142]">ניהול הזמנות</h3>
+                      </div>
+                      <p className="text-[#2D3142]/60 text-sm">מעקב וניהול הזמנות, עדכון סטטוסים</p>
+                    </div>
+                  </Link>
                 </motion.div>
               </>
             )}
