@@ -350,7 +350,7 @@ export default function AdminOrdersPage() {
                   </div>
                   
                   <div className="text-left">
-                    <p className="text-sm text-[#2D3142]/60 mb-1">סה"כ</p>
+                    <p className="text-sm text-[#2D3142]/60 mb-1">סה&quot;כ</p>
                     <p className="text-3xl font-bold text-[#2D3142]">₪{order.totalAmount}</p>
                   </div>
                 </div>

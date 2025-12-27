@@ -379,7 +379,7 @@ export default function ProductPage() {
 
                   <div className="pt-6 border-t border-[#2D3142]/10">
                     <div className="flex justify-between items-center mb-6">
-                      <span className="text-lg text-[#2D3142]/60">סה"כ:</span>
+                      <span className="text-lg text-[#2D3142]/60">סה&quot;כ:</span>
                       <span className="text-2xl font-light text-[#2D3142]">₪{totalPrice}</span>
                     </div>
 
