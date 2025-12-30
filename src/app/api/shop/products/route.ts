@@ -11,6 +11,11 @@ export async function GET(request: Request) {
         isActive: true,
         ...(featured ? { isFeatured: true } : {}),
       },
+      include: {
+        variants: {
+          orderBy: { order: "asc" },
+        },
+      },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     });
 

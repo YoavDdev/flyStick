@@ -7,6 +7,8 @@ interface OrderItem {
   id: string;
   productName: string;
   productImage?: string;
+  variantId?: string;
+  variantName?: string;
   quantity: number;
   pricePerUnit: number;
   subtotal: number;
@@ -197,7 +199,10 @@ export default function AdminOrderManager() {
                           />
                         )}
                         <div>
-                          <p className="font-medium">{item.productName}</p>
+                          <p className="font-medium">
+                            {item.productName}
+                            {item.variantName && <span className="text-sm text-gray-500 mr-2">({item.variantName})</span>}
+                          </p>
                           <p className="text-gray-500">כמות: {item.quantity} × ₪{item.pricePerUnit}</p>
                         </div>
                       </div>

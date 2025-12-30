@@ -61,6 +61,7 @@ export async function POST(request: Request) {
     for (const item of items) {
       const product = await prisma.product.findUnique({
         where: { id: item.productId },
+        include: { variants: true },
       });
 
       if (!product) {
@@ -77,9 +78,30 @@ export async function POST(request: Request) {
         );
       }
 
-      if (product.stock < item.quantity) {
+      // Check stock based on whether variant is selected
+      let availableStock = product.stock;
+      let variantInfo = null;
+
+      if (product.hasVariants && item.variantId) {
+        const variant = product.variants?.find((v: any) => v.id === item.variantId);
+        if (!variant) {
+          return NextResponse.json(
+            { error: `Variant not found for ${product.name}` },
+            { status: 404 }
+          );
+        }
+        availableStock = variant.stock;
+        variantInfo = { id: variant.id, name: variant.name };
+      } else if (product.hasVariants && !item.variantId) {
         return NextResponse.json(
-          { error: `Insufficient stock for ${product.name}` },
+          { error: `Please select a variant for ${product.name}` },
+          { status: 400 }
+        );
+      }
+
+      if (availableStock < item.quantity) {
+        return NextResponse.json(
+          { error: `Insufficient stock for ${product.name}${variantInfo ? ` (${variantInfo.name})` : ''}` },
           { status: 400 }
         );
       }
@@ -91,6 +113,8 @@ export async function POST(request: Request) {
         productId: product.id,
         productName: product.nameHebrew || product.name,
         productImage: product.images[0] || null,
+        variantId: variantInfo?.id || null,
+        variantName: variantInfo?.name || null,
         quantity: item.quantity,
         pricePerUnit: product.price,
         subtotal: itemSubtotal,

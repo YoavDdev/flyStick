@@ -3,6 +3,13 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 
+interface ProductVariant {
+  id?: string;
+  name: string;
+  stock: number;
+  order: number;
+}
+
 interface Product {
   id: string;
   name: string;
@@ -19,6 +26,8 @@ interface Product {
   tags: string[];
   isActive: boolean;
   isFeatured: boolean;
+  hasVariants: boolean;
+  variants?: ProductVariant[];
   order: number;
   createdAt: string;
 }
@@ -41,6 +50,8 @@ export default function AdminProductManager() {
     tags: [],
     isActive: true,
     isFeatured: false,
+    hasVariants: false,
+    variants: [],
     order: 0,
   });
   const [imageInput, setImageInput] = useState("");
@@ -80,6 +91,8 @@ export default function AdminProductManager() {
       tags: [],
       isActive: true,
       isFeatured: false,
+      hasVariants: false,
+      variants: [],
       order: 0,
     });
     setImageInput("");
@@ -276,12 +289,15 @@ export default function AdminProductManager() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">מלאי</label>
+              <label className="block text-sm font-medium mb-1">
+                {formData.hasVariants ? "מלאי (לא בשימוש כשיש גרסאות)" : "מלאי"}
+              </label>
               <input
                 type="number"
                 value={formData.stock || 0}
                 onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                disabled={formData.hasVariants}
               />
             </div>
 
@@ -417,6 +433,97 @@ export default function AdminProductManager() {
             </div>
           </div>
 
+          {/* Product Variants Section */}
+          <div className="border-t pt-4">
+            <div className="mb-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={formData.hasVariants}
+                  onChange={(e) => {
+                    const hasVariants = e.target.checked;
+                    setFormData({ 
+                      ...formData, 
+                      hasVariants,
+                      variants: hasVariants ? (formData.variants || []) : []
+                    });
+                  }}
+                  className="rounded"
+                />
+                <span className="text-sm font-medium">יש למוצר גרסאות (טעמים, צבעים וכו&apos;)</span>
+              </label>
+            </div>
+
+            {formData.hasVariants && (
+              <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
+                <div className="flex justify-between items-center">
+                  <h4 className="font-medium">גרסאות מוצר</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        variants: [...(formData.variants || []), { name: "", stock: 0, order: (formData.variants?.length || 0) }]
+                      });
+                    }}
+                    className="px-3 py-1 text-sm bg-[#D5C4B7] text-[#2D3142] rounded hover:bg-[#B8A99C]"
+                  >
+                    + הוסף גרסה
+                  </button>
+                </div>
+
+                {formData.variants && formData.variants.length > 0 ? (
+                  <div className="space-y-2">
+                    {formData.variants.map((variant, index) => (
+                      <div key={index} className="flex gap-2 items-center bg-white p-3 rounded border">
+                        <div className="flex-1">
+                          <input
+                            type="text"
+                            value={variant.name}
+                            onChange={(e) => {
+                              const newVariants = [...(formData.variants || [])];
+                              newVariants[index] = { ...newVariants[index], name: e.target.value };
+                              setFormData({ ...formData, variants: newVariants });
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                            placeholder="שם הגרסה (לדוגמה: בזיליקום, שום)"
+                            dir="rtl"
+                          />
+                        </div>
+                        <div className="w-24">
+                          <input
+                            type="number"
+                            value={variant.stock}
+                            onChange={(e) => {
+                              const newVariants = [...(formData.variants || [])];
+                              newVariants[index] = { ...newVariants[index], stock: parseInt(e.target.value) || 0 };
+                              setFormData({ ...formData, variants: newVariants });
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                            placeholder="מלאי"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newVariants = formData.variants?.filter((_, i) => i !== index) || [];
+                            setFormData({ ...formData, variants: newVariants });
+                          }}
+                          className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                          title="מחק גרסה"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500 text-center py-4">לחץ על &quot;הוסף גרסה&quot; כדי להתחיל</p>
+                )}
+              </div>
+            )}
+          </div>
+
           <div className="flex gap-3 pt-4">
             <button
               onClick={handleSave}
@@ -459,9 +566,22 @@ export default function AdminProductManager() {
                 </p>
                 <div className="flex gap-4 mt-2 text-sm">
                   <span>מחיר: ₪{product.price}</span>
-                  <span>מלאי: {product.stock}</span>
+                  {product.hasVariants ? (
+                    <span>גרסאות: {product.variants?.length || 0}</span>
+                  ) : (
+                    <span>מלאי: {product.stock}</span>
+                  )}
                   {product.sku && <span>SKU: {product.sku}</span>}
                 </div>
+                {product.hasVariants && product.variants && product.variants.length > 0 && (
+                  <div className="mt-2 space-y-1">
+                    {product.variants.map((variant, i) => (
+                      <div key={i} className="text-xs text-gray-600">
+                        • {variant.name} - מלאי: {variant.stock}
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {product.tags.length > 0 && (
                   <div className="flex gap-2 mt-2">
                     {product.tags.map((tag, i) => (

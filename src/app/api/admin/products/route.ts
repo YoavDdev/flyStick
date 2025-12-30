@@ -24,6 +24,11 @@ export async function GET(request: Request) {
 
     const products = await prisma.product.findMany({
       where: includeInactive ? {} : { isActive: true },
+      include: {
+        variants: {
+          orderBy: { order: "asc" },
+        },
+      },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     });
 
@@ -71,9 +76,20 @@ export async function POST(request: Request) {
         tags: body.tags || [],
         isActive: body.isActive !== undefined ? body.isActive : true,
         isFeatured: body.isFeatured || false,
+        hasVariants: body.hasVariants || false,
         order: body.order || 0,
         metaTitle: body.metaTitle,
         metaDescription: body.metaDescription,
+        variants: body.hasVariants && body.variants ? {
+          create: body.variants.map((v: any, index: number) => ({
+            name: v.name,
+            stock: parseInt(v.stock) || 0,
+            order: v.order !== undefined ? v.order : index,
+          })),
+        } : undefined,
+      },
+      include: {
+        variants: true,
       },
     });
 
@@ -104,10 +120,30 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { id, ...updateData } = body;
+    const { id, variants, ...updateData } = body;
 
     if (!id) {
       return NextResponse.json({ error: "Product ID required" }, { status: 400 });
+    }
+
+    // If hasVariants is being updated, handle variant changes
+    if (updateData.hasVariants !== undefined) {
+      // Delete all existing variants first
+      await prisma.productVariant.deleteMany({
+        where: { productId: id },
+      });
+
+      // Create new variants if hasVariants is true and variants are provided
+      if (updateData.hasVariants && variants && variants.length > 0) {
+        await prisma.productVariant.createMany({
+          data: variants.map((v: any, index: number) => ({
+            productId: id,
+            name: v.name,
+            stock: parseInt(v.stock) || 0,
+            order: v.order !== undefined ? v.order : index,
+          })),
+        });
+      }
     }
 
     const product = await prisma.product.update({
@@ -127,9 +163,15 @@ export async function PUT(request: Request) {
         tags: updateData.tags,
         isActive: updateData.isActive,
         isFeatured: updateData.isFeatured,
+        hasVariants: updateData.hasVariants,
         order: updateData.order !== undefined ? parseInt(updateData.order) : undefined,
         metaTitle: updateData.metaTitle,
         metaDescription: updateData.metaDescription,
+      },
+      include: {
+        variants: {
+          orderBy: { order: "asc" },
+        },
       },
     });
 

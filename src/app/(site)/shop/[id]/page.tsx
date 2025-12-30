@@ -7,6 +7,13 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
 
+interface ProductVariant {
+  id: string;
+  name: string;
+  stock: number;
+  order: number;
+}
+
 interface Product {
   id: string;
   name: string;
@@ -16,6 +23,8 @@ interface Product {
   price: number;
   images: string[];
   stock: number;
+  hasVariants: boolean;
+  variants?: ProductVariant[];
   weight?: number;
   dimensions?: string;
   isActive: boolean;
@@ -31,6 +40,7 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [isOrdering, setIsOrdering] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
@@ -84,6 +94,10 @@ export default function ProductPage() {
         }
 
         setProduct(foundProduct);
+        // Auto-select first variant if product has variants
+        if (foundProduct.hasVariants && foundProduct.variants && foundProduct.variants.length > 0) {
+          setSelectedVariant(foundProduct.variants[0]);
+        }
       } catch (error) {
         console.error("Error:", error);
         toast.error("שגיאה בטעינת המוצר");
@@ -112,7 +126,12 @@ export default function ProductPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            items: [{ productId: product.id, quantity }],
+            items: [{ 
+              productId: product.id, 
+              quantity,
+              variantId: selectedVariant?.id,
+              variantName: selectedVariant?.name,
+            }],
             ...checkoutForm,
           }),
         });
@@ -257,6 +276,36 @@ export default function ProductPage() {
                 </p>
               </div>
 
+              {/* Variant Selector */}
+              {product.hasVariants && product.variants && product.variants.length > 0 && (
+                <div className="space-y-4 pt-6 border-t border-[#2D3142]/10">
+                  <label className="block text-[#2D3142]/60 font-light">בחר אפשרות:</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {product.variants.map((variant) => (
+                      <button
+                        key={variant.id}
+                        onClick={() => setSelectedVariant(variant)}
+                        disabled={variant.stock === 0}
+                        className={`px-4 py-3 rounded-xl border-2 transition-all font-light ${
+                          selectedVariant?.id === variant.id
+                            ? "border-[#2D3142] bg-[#2D3142]/5 text-[#2D3142]"
+                            : variant.stock > 0
+                            ? "border-[#2D3142]/20 hover:border-[#2D3142]/40 text-[#2D3142]/70"
+                            : "border-[#2D3142]/10 text-[#2D3142]/30 cursor-not-allowed"
+                        }`}
+                      >
+                        <div className="text-center">
+                          <div className="text-sm">{variant.name}</div>
+                          {variant.stock === 0 && (
+                            <div className="text-xs text-red-500 mt-1">אזל</div>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Product Details */}
               {(product.weight || product.dimensions) && (
                 <div className="space-y-3 text-sm text-[#2D3142]/60 font-light">
@@ -278,9 +327,12 @@ export default function ProductPage() {
                     </button>
                     <span className="w-12 text-center text-lg">{quantity}</span>
                     <button
-                      onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                      onClick={() => {
+                        const maxStock = product.hasVariants && selectedVariant ? selectedVariant.stock : product.stock;
+                        setQuantity(Math.min(maxStock, quantity + 1));
+                      }}
                       className="w-10 h-10 rounded-full border border-[#2D3142]/20 hover:border-[#2D3142]/40 hover:bg-[#2D3142]/5 transition-all"
-                      disabled={quantity >= product.stock}
+                      disabled={quantity >= (product.hasVariants && selectedVariant ? selectedVariant.stock : product.stock)}
                     >
                       +
                     </button>
@@ -288,18 +340,33 @@ export default function ProductPage() {
                 </div>
 
                 <p className="text-sm text-[#2D3142]/40 font-light">
-                  {product.stock > 0 ? `${product.stock} יחידות במלאי` : "אזל מהמלאי"}
+                  {(() => {
+                    const currentStock = product.hasVariants && selectedVariant ? selectedVariant.stock : product.stock;
+                    return currentStock > 0 ? `${currentStock} יחידות במלאי` : "אזל מהמלאי";
+                  })()}
                 </p>
               </div>
 
               {/* Checkout Form */}
               {!showCheckout ? (
                 <button
-                  onClick={() => setShowCheckout(true)}
-                  disabled={product.stock === 0}
+                  onClick={() => {
+                    if (product.hasVariants && !selectedVariant) {
+                      toast.error("נא לבחור אפשרות");
+                      return;
+                    }
+                    setShowCheckout(true);
+                  }}
+                  disabled={(() => {
+                    const currentStock = product.hasVariants && selectedVariant ? selectedVariant.stock : product.stock;
+                    return currentStock === 0;
+                  })()}
                   className="w-full py-4 px-8 bg-[#2D3142] text-white rounded-full font-light tracking-wide hover:bg-[#3D3D3D] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                 >
-                  {product.stock > 0 ? "המשך לרכישה" : "אזל מהמלאי"}
+                  {(() => {
+                    const currentStock = product.hasVariants && selectedVariant ? selectedVariant.stock : product.stock;
+                    return currentStock > 0 ? "המשך לרכישה" : "אזל מהמלאי";
+                  })()}
                 </button>
               ) : (
                 <div className="space-y-6 pt-6 border-t border-[#2D3142]/10">

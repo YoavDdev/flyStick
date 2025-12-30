@@ -223,7 +223,7 @@ model Product {
   descriptionHebrew String? @db.String
   price           Float    // Price in shekels
   images          String[] // Array of image URLs
-  stock           Int      @default(0) // Available quantity
+  stock           Int      @default(0) // Available quantity (used when no variants)
   sku             String?  @unique // Product SKU
   weight          Float?   // Weight in grams
   dimensions      String?  // Dimensions as string "10x5x3 cm"
@@ -231,13 +231,27 @@ model Product {
   tags            String[] // Search/filter tags
   isActive        Boolean  @default(true) // Available for purchase
   isFeatured      Boolean  @default(false) // Featured product
+  hasVariants     Boolean  @default(false) // Does this product have variants?
   order           Int      @default(0) // Display order
   metaTitle       String?  // SEO
   metaDescription String?  // SEO
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   
+  variants        ProductVariant[]
   orderItems      ShopOrderItem[]
+}
+
+model ProductVariant {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId       String   @db.ObjectId
+  name            String   // Variant name (e.g., "בזיליקום", "שום", "צ'ילי")
+  stock           Int      @default(0) // Stock for this variant
+  order           Int      @default(0) // Display order
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model ShopOrder {
@@ -286,6 +300,8 @@ model ShopOrderItem {
   productId       String   @db.ObjectId
   productName     String   // Snapshot of product name
   productImage    String?  // Snapshot of product image
+  variantId       String?  @db.ObjectId // Selected variant (if any)
+  variantName     String?  // Snapshot of variant name
   quantity        Int
   pricePerUnit    Float    // Price at time of order
   subtotal        Float    // quantity * pricePerUnit
