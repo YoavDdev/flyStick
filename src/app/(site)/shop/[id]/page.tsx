@@ -16,11 +16,6 @@ interface ProductVariant {
   order: number;
 }
 
-interface FAQ {
-  question: string;
-  answer: string;
-}
-
 interface Product {
   id: string;
   name: string;
@@ -51,7 +46,6 @@ export default function ProductPage() {
   const [quantity, setQuantity] = useState(1);
   const [isOrdering, setIsOrdering] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   const [checkoutForm, setCheckoutForm] = useState({
     customerName: "",
@@ -189,18 +183,6 @@ export default function ProductPage() {
   if (!isAdmin) return null;
 
   const totalPrice = product.price * quantity;
-
-  // Sample FAQs - can be moved to product data later
-  const faqs: FAQ[] = [
-    {
-      question: "?kohu מה זה",
-      answer: "בתפיסה המאורית קוהו הוא ערפל מסתורי המסמל מעבר בין עולמות. הוא לא רק תופעה טבע אלא לעיתים קרובות גם סימן רוחני או נבואי לעתיד קרוב. כמו ציוץ עדין שמכסה את המציאות."
-    },
-    {
-      question: "?איך הוא נוצר",
-      answer: "עם העבודה שלי כמורה, נוצרו לי סכסים קטנים לפני ובתוך שיעור או טיפול. כל יום מקבל טיפול. ככה אני מתחובב ומרכיב ריחות ענבים ומכניס את ההתאמנים למצב חדש מסוים."
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F7F3EB] via-[#FAF7F2] to-[#F7F3EB]">
@@ -349,40 +331,6 @@ export default function ProductPage() {
                       </p>
                     </div>
                   )}
-                </div>
-              )}
-
-              {/* FAQ Accordion */}
-              {faqs.length > 0 && (
-                <div className="space-y-3 pt-6 border-t border-[#2D3142]/10">
-                  <h3 className="text-lg font-light text-[#2D3142] mb-4">שאלות נפוצות</h3>
-                  {faqs.map((faq, index) => (
-                    <div key={index} className="border border-[#2D3142]/10 rounded-xl overflow-hidden">
-                      <button
-                        onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                        className="w-full px-4 py-3 text-right flex justify-between items-center hover:bg-[#F7F3EB]/30 transition-colors"
-                      >
-                        <span className="font-medium text-[#2D3142]" dir="rtl">{faq.question}</span>
-                        <svg
-                          className={`w-5 h-5 text-[#2D3142]/60 transition-transform ${
-                            openFaqIndex === index ? 'rotate-180' : ''
-                          }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-                      {openFaqIndex === index && (
-                        <div className="px-4 py-3 bg-[#F7F3EB]/20 border-t border-[#2D3142]/10">
-                          <p className="text-[#2D3142]/70 font-light leading-relaxed whitespace-pre-line" dir="rtl">
-                            {faq.answer}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  ))}
                 </div>
               )}
 
