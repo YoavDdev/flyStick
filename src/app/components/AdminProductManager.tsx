@@ -6,6 +6,8 @@ import { toast } from "react-hot-toast";
 interface ProductVariant {
   id?: string;
   name: string;
+  description?: string;
+  image?: string;
   stock: number;
   order: number;
 }
@@ -463,7 +465,7 @@ export default function AdminProductManager() {
                     onClick={() => {
                       setFormData({
                         ...formData,
-                        variants: [...(formData.variants || []), { name: "", stock: 0, order: (formData.variants?.length || 0) }]
+                        variants: [...(formData.variants || []), { name: "", description: "", image: "", stock: 0, order: (formData.variants?.length || 0) }]
                       });
                     }}
                     className="px-3 py-1 text-sm bg-[#D5C4B7] text-[#2D3142] rounded hover:bg-[#B8A99C]"
@@ -475,45 +477,76 @@ export default function AdminProductManager() {
                 {formData.variants && formData.variants.length > 0 ? (
                   <div className="space-y-2">
                     {formData.variants.map((variant, index) => (
-                      <div key={index} className="flex gap-2 items-center bg-white p-3 rounded border">
-                        <div className="flex-1">
-                          <input
-                            type="text"
-                            value={variant.name}
-                            onChange={(e) => {
-                              const newVariants = [...(formData.variants || [])];
-                              newVariants[index] = { ...newVariants[index], name: e.target.value };
+                      <div key={index} className="space-y-3 bg-white p-4 rounded border">
+                        <div className="flex gap-2 items-start">
+                          <div className="flex-1 space-y-2">
+                            <input
+                              type="text"
+                              value={variant.name}
+                              onChange={(e) => {
+                                const newVariants = [...(formData.variants || [])];
+                                newVariants[index] = { ...newVariants[index], name: e.target.value };
+                                setFormData({ ...formData, variants: newVariants });
+                              }}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                              placeholder="שם הגרסה (לדוגמה: בזיליקום, שום)"
+                              dir="rtl"
+                            />
+                            <textarea
+                              value={variant.description || ""}
+                              onChange={(e) => {
+                                const newVariants = [...(formData.variants || [])];
+                                newVariants[index] = { ...newVariants[index], description: e.target.value };
+                                setFormData({ ...formData, variants: newVariants });
+                              }}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                              placeholder="תיאור הגרסה"
+                              rows={2}
+                              dir="rtl"
+                            />
+                            <input
+                              type="text"
+                              value={variant.image || ""}
+                              onChange={(e) => {
+                                const newVariants = [...(formData.variants || [])];
+                                newVariants[index] = { ...newVariants[index], image: e.target.value };
+                                setFormData({ ...formData, variants: newVariants });
+                              }}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                              placeholder="URL תמונה (אופציונלי)"
+                            />
+                          </div>
+                          <div className="w-24">
+                            <label className="text-xs text-gray-600">מלאי</label>
+                            <input
+                              type="number"
+                              value={variant.stock}
+                              onChange={(e) => {
+                                const newVariants = [...(formData.variants || [])];
+                                newVariants[index] = { ...newVariants[index], stock: parseInt(e.target.value) || 0 };
+                                setFormData({ ...formData, variants: newVariants });
+                              }}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                              placeholder="מלאי"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newVariants = formData.variants?.filter((_, i) => i !== index) || [];
                               setFormData({ ...formData, variants: newVariants });
                             }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            placeholder="שם הגרסה (לדוגמה: בזיליקום, שום)"
-                            dir="rtl"
-                          />
+                            className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 mt-5"
+                            title="מחק גרסה"
+                          >
+                            ×
+                          </button>
                         </div>
-                        <div className="w-24">
-                          <input
-                            type="number"
-                            value={variant.stock}
-                            onChange={(e) => {
-                              const newVariants = [...(formData.variants || [])];
-                              newVariants[index] = { ...newVariants[index], stock: parseInt(e.target.value) || 0 };
-                              setFormData({ ...formData, variants: newVariants });
-                            }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            placeholder="מלאי"
-                          />
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const newVariants = formData.variants?.filter((_, i) => i !== index) || [];
-                            setFormData({ ...formData, variants: newVariants });
-                          }}
-                          className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                          title="מחק גרסה"
-                        >
-                          ×
-                        </button>
+                        {variant.image && (
+                          <div className="mt-2">
+                            <img src={variant.image} alt={variant.name} className="w-24 h-24 object-cover rounded" />
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

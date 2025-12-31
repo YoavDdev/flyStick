@@ -246,6 +246,8 @@ model ProductVariant {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
   productId       String   @db.ObjectId
   name            String   // Variant name (e.g., "בזיליקום", "שום", "צ'ילי")
+  description     String?  @db.String // Variant description
+  image           String?  // Variant image URL
   stock           Int      @default(0) // Stock for this variant
   order           Int      @default(0) // Display order
   createdAt       DateTime @default(now())

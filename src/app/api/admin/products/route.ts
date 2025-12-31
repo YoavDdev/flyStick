@@ -83,6 +83,8 @@ export async function POST(request: Request) {
         variants: body.hasVariants && body.variants ? {
           create: body.variants.map((v: any, index: number) => ({
             name: v.name,
+            description: v.description || null,
+            image: v.image || null,
             stock: parseInt(v.stock) || 0,
             order: v.order !== undefined ? v.order : index,
           })),
@@ -139,6 +141,8 @@ export async function PUT(request: Request) {
           data: variants.map((v: any, index: number) => ({
             productId: id,
             name: v.name,
+            description: v.description || null,
+            image: v.image || null,
             stock: parseInt(v.stock) || 0,
             order: v.order !== undefined ? v.order : index,
           })),
