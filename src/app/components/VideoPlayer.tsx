@@ -725,7 +725,7 @@ const VideoPlayer = ({
       <div
         className={`video-container relative ${
           isMobileLandscape || isFullscreen 
-            ? 'w-full h-full' 
+            ? 'w-full h-full flex items-center justify-center' 
             : isMobilePortrait 
               ? 'w-full max-w-sm aspect-video'
               : 'w-full max-w-4xl aspect-video'
@@ -734,6 +734,11 @@ const VideoPlayer = ({
         style={{ 
           marginLeft: 'auto',
           marginRight: 'auto',
+          // Mobile landscape/fullscreen: ensure video fits properly
+          ...(isMobileLandscape || isFullscreen ? {
+            maxWidth: '100vw',
+            maxHeight: '100vh',
+          } : {}),
           // Mobile portrait specific positioning to prevent video from going too high
           ...(isMobilePortrait && !isFullscreen ? {
             position: 'absolute',
