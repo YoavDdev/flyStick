@@ -165,8 +165,22 @@ const VideoPlayer = ({
     return () => setIsVideoOpen(false);
   }, [setIsVideoOpen]);
 
+  // Auto-hide disclaimer after 5 seconds
+  useEffect(() => {
+    const disclaimerTimer = setTimeout(() => {
+      setDisclaimerFadingOut(true);
+      setTimeout(() => {
+        setShowDisclaimer(false);
+      }, 1000);
+    }, 5000);
+
+    return () => clearTimeout(disclaimerTimer);
+  }, []);
+
   // Handle mobile orientation and fullscreen detection
   useEffect(() => {
+    if (!player) return;
+    
     let previousOrientation = window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
     
     const checkOrientation = async () => {
@@ -177,27 +191,18 @@ const VideoPlayer = ({
       setIsMobileLandscape(isMobile && isLandscape);
       setIsMobilePortrait(isMobile && !isLandscape);
       
-      // Auto-fullscreen when rotating from portrait to landscape on mobile
+      // Auto-fullscreen with Vimeo player when rotating to landscape on mobile
       if (isMobile && 
           previousOrientation === 'portrait' && 
           currentOrientation === 'landscape' && 
-          videoContainerRef.current &&
-          !document.fullscreenElement) {
+          player) {
         
         try {
-          // Request fullscreen on the video container
-          await videoContainerRef.current.requestFullscreen();
-          console.log('📱 Auto-entered fullscreen on landscape rotation');
+          // Use Vimeo's native fullscreen
+          await player.requestFullscreen();
+          console.log('📱 Entered Vimeo fullscreen on landscape rotation');
         } catch (error) {
-          console.warn('Failed to enter fullscreen:', error);
-          // Fallback: try on the modal container
-          try {
-            if (modalRef.current) {
-              await modalRef.current.requestFullscreen();
-            }
-          } catch (fallbackError) {
-            console.warn('Fallback fullscreen also failed:', fallbackError);
-          }
+          console.warn('Failed to enter Vimeo fullscreen:', error);
         }
       }
       
@@ -205,13 +210,16 @@ const VideoPlayer = ({
       if (isMobile && 
           previousOrientation === 'landscape' && 
           currentOrientation === 'portrait' && 
-          document.fullscreenElement) {
+          player) {
         
         try {
-          await document.exitFullscreen();
-          console.log('📱 Auto-exited fullscreen on portrait rotation');
+          const isPlayerFullscreen = await player.getFullscreen();
+          if (isPlayerFullscreen) {
+            await player.exitFullscreen();
+            console.log('📱 Exited Vimeo fullscreen on portrait rotation');
+          }
         } catch (error) {
-          console.warn('Failed to exit fullscreen:', error);
+          console.warn('Failed to exit Vimeo fullscreen:', error);
         }
       }
       
@@ -236,7 +244,7 @@ const VideoPlayer = ({
       window.removeEventListener('orientationchange', checkOrientation);
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
     };
-  }, []);
+  }, [player]);
 
   // Handle mobile app interruptions (phone calls, app switching)
   useEffect(() => {
@@ -283,51 +291,13 @@ const VideoPlayer = ({
       console.log('📱 Saved progress on page hide');
     };
 
-    const handleBeforeUnload = () => {
-      // Browser is closing/refreshing - save progress immediately (sync)
-      if (player && session?.user && videoUri) {
-        try {
-          // Use synchronous methods for beforeunload to ensure immediate save
-          player.getCurrentTime().then(currentTime => {
-            player.getDuration().then(duration => {
-              const uri = videoUri.startsWith('/videos/') 
-                ? videoUri 
-                : `/videos/${videoUri.split('/').pop()}`;
-              const storageKey = `video_progress_${session.user?.email}_${uri.replace(/[^a-zA-Z0-9]/g, '_')}`;
-              
-              // Synchronous save to localStorage for immediate persistence
-              player.getDuration().then(duration => {
-                localStorage.setItem(storageKey, JSON.stringify({
-                  resumeTime: currentTime,
-                  progress: Math.floor((currentTime / duration) * 100),
-                  timestamp: Date.now()
-                }));
-              });
-            });
-          });
-        } catch (e) {
-          console.warn('Failed emergency save:', e);
-        }
-      }
-    };
-
     // Add event listeners for mobile interruption scenarios
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('pagehide', handlePageHide);
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    // Save progress more frequently on mobile (every 5 seconds)
-    const progressInterval = setInterval(async () => {
-      if (player && !document.hidden) {
-        await saveProgress();
-      }
-    }, 5000);
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('pagehide', handlePageHide);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      clearInterval(progressInterval);
     };
   }, [player, saveProgress, session, videoUri]);
 
@@ -553,42 +523,30 @@ const VideoPlayer = ({
       }
     }
     
-    // Handle disclaimer overlay - show for 5 seconds then fade out
-    const disclaimerTimer = setTimeout(() => {
-      setDisclaimerFadingOut(true);
-      setTimeout(() => {
-        setShowDisclaimer(false);
-      }, 1000); // Wait for fade out animation
-    }, 5000); // Show disclaimer for 5 seconds
+    // Note: Disclaimer must be manually dismissed with button click
+    // Browser security prevents automatic fullscreen without user interaction
     
-    // Progress tracking with throttling
+    // Progress tracking - save on pause and every 20 seconds during playback
     let lastSaved = 0;
-    
-    // Set up an interval to periodically save progress
     const progressInterval = setInterval(async () => {
-      if (!session?.user || !videoUri) return;
+      if (!session?.user || !videoUri || document.hidden) return;
       
       const now = Date.now();
-      if (now - lastSaved < 15000) return; // Save only if 15 seconds have passed (increased from 5s)
+      if (now - lastSaved < 20000) return; // Save every 20 seconds
       lastSaved = now;
       
-      // Use the saveProgress function we defined earlier
-      saveProgress();
-    }, 15000); // Check every 15 seconds;
+      await saveProgress();
+    }, 20000);
     
-    // Track progress with throttling
-    newPlayer.on("timeupdate", saveProgress);
+    // Save on pause event
+    const handlePause = async () => {
+      await saveProgress();
+    };
     
-    newPlayer.on("pause", saveProgress);
-    
-    // Save before page unload
-    window.addEventListener("beforeunload", saveProgress);
+    newPlayer.on("pause", handlePause);
 
     // Clean up when component unmounts
     return () => {
-      // Clear the disclaimer timer
-      clearTimeout(disclaimerTimer);
-      
       // Clear the progress interval
       clearInterval(progressInterval);
       
@@ -601,12 +559,14 @@ const VideoPlayer = ({
         }
       }
       
+      // Remove pause event listener
+      newPlayer.off("pause", handlePause);
+      
       // Save progress one last time before unmounting
       saveProgress();
       newPlayer.destroy();
-      window.removeEventListener("beforeunload", saveProgress);
     };
-  }, [embedHtml, videoUri]); // Only recreate player when video actually changes
+  }, [embedHtml, videoUri]);
 
   const handleClose = useCallback(async () => {
     if (player && videoUri && session?.user) {
@@ -723,35 +683,20 @@ const VideoPlayer = ({
       ref={modalRef}
     >
       <div
-        className={`video-container relative ${
-          isMobileLandscape || isFullscreen 
-            ? 'w-full aspect-video' 
-            : isMobilePortrait 
-              ? 'w-full max-w-sm aspect-video'
-              : 'w-full max-w-4xl aspect-video'
-        }`}
+        className="relative"
         ref={videoContainerRef}
         style={{ 
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          // Mobile landscape/fullscreen: limit height to prevent overflow
-          ...(isMobileLandscape || isFullscreen ? {
-            maxHeight: '90vh',
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-          } : {}),
-          // Mobile portrait specific positioning to prevent video from going too high
-          ...(isMobilePortrait && !isFullscreen ? {
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            maxHeight: '60vh',
-            width: '90%',
-            minHeight: '200px',
-          } : {})
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          // Width is calculated based on max height to prevent overflow
+          // In landscape: limit width so video height stays within viewport
+          width: isMobileLandscape || isFullscreen 
+            ? 'min(95vw, calc(85vh * 16 / 9))' 
+            : isMobilePortrait 
+              ? 'min(90vw, calc(60vh * 16 / 9))'
+              : 'min(56rem, calc(85vh * 16 / 9))',
         }}
       />
 
@@ -871,7 +816,9 @@ const VideoPlayer = ({
             <button
               onClick={() => {
                 setDisclaimerFadingOut(true);
-                setTimeout(() => setShowDisclaimer(false), 500);
+                setTimeout(() => {
+                  setShowDisclaimer(false);
+                }, 500);
               }}
               className="mt-6 bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] font-semibold py-3 px-8 rounded-full transition-all duration-300 shadow-lg hover:scale-105 active:scale-95"
             >
