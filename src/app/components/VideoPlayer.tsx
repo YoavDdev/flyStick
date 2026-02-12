@@ -725,7 +725,7 @@ const VideoPlayer = ({
       <div
         className={`video-container relative ${
           isMobileLandscape || isFullscreen 
-            ? 'w-full h-full flex items-center justify-center' 
+            ? 'w-full aspect-video' 
             : isMobilePortrait 
               ? 'w-full max-w-sm aspect-video'
               : 'w-full max-w-4xl aspect-video'
@@ -734,10 +734,13 @@ const VideoPlayer = ({
         style={{ 
           marginLeft: 'auto',
           marginRight: 'auto',
-          // Mobile landscape/fullscreen: ensure video fits properly
+          // Mobile landscape/fullscreen: limit height to prevent overflow
           ...(isMobileLandscape || isFullscreen ? {
-            maxWidth: '100vw',
-            maxHeight: '100vh',
+            maxHeight: '90vh',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
           } : {}),
           // Mobile portrait specific positioning to prevent video from going too high
           ...(isMobilePortrait && !isFullscreen ? {
@@ -745,9 +748,9 @@ const VideoPlayer = ({
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            maxHeight: '60vh', // Ensure video doesn't take full height on mobile
-            width: '90%', // Leave some margin on mobile
-            minHeight: '200px', // Ensure minimum size
+            maxHeight: '60vh',
+            width: '90%',
+            minHeight: '200px',
           } : {})
         }}
       />
