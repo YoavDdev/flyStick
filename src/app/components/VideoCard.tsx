@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import NewVideoProgressBadge from './NewVideoProgressBadge';
 import toast from 'react-hot-toast';
+import { trackAddToFavorites, trackVideoComplete } from '../libs/analytics';
 
 interface VideoCardProps {
   video: any;
@@ -86,6 +87,9 @@ const VideoCard = ({
         currentProgress: isCurrentlyCompleted ? originalProgress : undefined
       });
 
+      if (!isCurrentlyCompleted) {
+        trackVideoComplete(video.name || 'unknown');
+      }
       toast.success(
         !isCurrentlyCompleted 
           ? '✅ הסרטון סומן כמושלם!' 
@@ -224,7 +228,7 @@ const VideoCard = ({
             {video.name || 'Untitled Video'}
           </h3>
           <button
-            onClick={() => onAddToFavorites(`/videos/${video.uri.split('/').pop()}`)}
+            onClick={() => { trackAddToFavorites(video.name || 'unknown'); onAddToFavorites(`/videos/${video.uri.split('/').pop()}`); }}
             className="text-gray-500 hover:text-[#EF8354] transition-colors duration-300 ml-2"
           >
             <FaPlus />

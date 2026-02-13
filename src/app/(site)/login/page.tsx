@@ -5,6 +5,7 @@ import { signIn, useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/dist/client/link";
+import { trackLogin } from "../../libs/analytics";
 
 // Note: Metadata cannot be exported from client components
 // SEO protection should be handled at the layout level
@@ -35,12 +36,14 @@ const Page = () => {
 
     if (callback?.ok && !callback?.error) {
       toast.success("🎉 התחברת בהצלחה! ברוך הבא");
+      trackLogin("credentials");
     }
 
     setLoading(false);
   };
 
   const onRegisterUser = async () => {
+    trackLogin("google");
     const res = await signIn("google");
   };
 
@@ -141,7 +144,7 @@ const Page = () => {
             </p>
 
             <button
-              onClick={() => signIn("google")}
+              onClick={() => { trackLogin("google"); signIn("google"); }}
               disabled={loading}
               className="flex w-full justify-center items-center py-3 px-5 border mt-2 gap-3 border-[#D5C4B7] rounded-lg text-[#2D3142] bg-white/80 hover:bg-white hover:border-[#B8A99C] hover:shadow-md transition-all duration-300"
             >

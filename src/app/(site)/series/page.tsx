@@ -8,6 +8,7 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { FaPlay, FaLock, FaCheck, FaStar, FaVideo } from "react-icons/fa";
+import { trackSeriesPurchase, trackSeriesView } from "../../libs/analytics";
 
 interface VideoSeries {
   id: string;
@@ -94,6 +95,7 @@ const SeriesMarketplace = () => {
       if (response.ok) {
         const result = await response.json();
         toast.success("הרכישה הושלמה בהצלחה! 🎉");
+        trackSeriesPurchase(seriesId, amount);
         fetchSeries(); // Refresh to update access status
         setPurchasingSeriesId(null);
       } else {

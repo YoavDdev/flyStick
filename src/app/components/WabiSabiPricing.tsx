@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import SubscriptionDetails from "./../api/SubscriptionDetails";
+import { trackSubscriptionClick, trackSubscriptionSuccess, trackRegisterFromPricing, trackPricingView } from "../libs/analytics";
 
 const includedFeatures = [
   "מאות שיעורים מקצועיים בנושאי תנועה, נשימה, יציבה וריפוי",
@@ -21,6 +22,11 @@ const includedFeatures = [
 export default function WabiSabiPricing() {
   const { data: session } = useSession();
   const { subscriptionStatus, loading } = SubscriptionDetails();
+
+  // Track pricing section view
+  if (typeof window !== "undefined") {
+    trackPricingView();
+  }
 
   const saveOrderInDatabase = async (orderId: any, email: any) => {
     try {
@@ -194,8 +200,7 @@ export default function WabiSabiPricing() {
                         <div className="space-y-4">
                           <motion.button
                             onClick={() => {
-                              // Here we would trigger the PayPal subscription flow
-                              // For now, we'll just show the PayPal provider when this button is clicked
+                              trackSubscriptionClick("credit_card");
                               document.getElementById('paypal-button-container')?.classList.remove('hidden');
                               document.getElementById('payment-buttons')?.classList.add('hidden');
                             }}
@@ -222,7 +227,7 @@ export default function WabiSabiPricing() {
                           
                           <motion.button
                             onClick={() => {
-                              // Here we would trigger the PayPal subscription flow
+                              trackSubscriptionClick("paypal");
                               document.getElementById('paypal-button-container')?.classList.remove('hidden');
                               document.getElementById('payment-buttons')?.classList.add('hidden');
                             }}
@@ -277,6 +282,7 @@ export default function WabiSabiPricing() {
                               }}
                               onApprove={(data, actions) => {
                                 toast.success("המנוי נרכש בהצלחה!");
+                                trackSubscriptionSuccess(data.subscriptionID || "");
                                 return new Promise((resolve) => {
                                   if (session.user) {
                                     saveOrderInDatabase(
@@ -309,7 +315,7 @@ export default function WabiSabiPricing() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.5, delay: 0.3 }}
                       >
-                        <Link href="/register">
+                        <Link href="/register" onClick={() => trackRegisterFromPricing()}>
                           <motion.button
                             className="w-full rounded-lg bg-[#B8A99C] px-6 py-4 text-center text-lg font-medium text-white shadow-md hover:bg-[#D5C4B7] transition-all duration-300 ease-in-out border border-[#B8A99C]/30 relative overflow-hidden group"
                             whileHover={{ opacity: 0.9 }}

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import Script from "next/script";
+import { trackRegister } from "../../libs/analytics";
 
 // Note: Metadata cannot be exported from client components
 // SEO protection should be handled at the layout level
@@ -64,6 +65,7 @@ const Register = () => {
 
       if (res.status === 200) {
         toast.success("🎉 נרשמת בהצלחה! ברוך הבא למשפחה שלנו");
+        trackRegister("credentials");
         
         // Reset Turnstile widget
         if (window.turnstile && turnstileRef.current) {
@@ -275,7 +277,7 @@ const Register = () => {
             </p>
 
             <button
-              onClick={() => signIn("google")}
+              onClick={() => { trackRegister("google"); signIn("google"); }}
               className="flex w-full justify-center items-center py-3 px-5 border mt-2 gap-3 border-[#D5C4B7] rounded-lg text-[#2D3142] bg-white/80 hover:bg-white hover:border-[#B8A99C] hover:shadow-md transition-all duration-300"
             >
               <img

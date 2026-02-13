@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import PreviewOverlay from './PreviewOverlay';
 import { useVideoPlayer } from '../context/VideoPlayerContext';
+import { trackVideoPlay } from '../libs/analytics';
 
 interface VideoPlayerProps {
   videoUri: string | null;
@@ -348,8 +349,13 @@ const VideoPlayer = ({
     });
 
     // Listen for play event to hide user interaction overlay
+    let hasTrackedPlay = false;
     newPlayer.on('play', () => {
       setNeedsUserInteraction(false);
+      if (!hasTrackedPlay) {
+        hasTrackedPlay = true;
+        trackVideoPlay(videoName || 'unknown');
+      }
     });
 
     // Also listen for loaded event as backup
