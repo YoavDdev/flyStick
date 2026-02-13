@@ -6,6 +6,7 @@ import Provider from "./context/AuthContext";
 import ToasterContext from "./context/ToasterContext";
 import { VideoPlayerProvider } from "./context/VideoPlayerContext";
 import StructuredData from "./components/StructuredData";
+import GoogleAnalytics from "./components/GoogleAnalytics";
 
 const rubik = Rubik({ subsets: ["latin", "hebrew"] });
 
@@ -91,6 +92,7 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl">
       <head>
+        <GoogleAnalytics />
         <StructuredData type="website" />
         <StructuredData type="person" />
         <StructuredData type="organization" />
