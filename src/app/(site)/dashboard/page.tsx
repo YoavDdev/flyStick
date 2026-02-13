@@ -378,6 +378,38 @@ const DashboardPage = () => {
                     </div>
                   </Link>
                 </motion.div>
+
+                {/* Analytics Quick Links */}
+                <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <a href="https://analytics.google.com/analytics/web/#/p471498498/reports/intelligenthome" target="_blank" rel="noopener noreferrer">
+                    <div className="bg-white border-2 border-[#D5C4B7] rounded-xl p-6 hover:shadow-lg transition-all hover:border-[#B8A99C] cursor-pointer">
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className="bg-[#D5C4B7] p-3 rounded-full">
+                          <svg className="w-6 h-6 text-[#2D3142]" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M22 3.2l-5.1 18.4c-.2.8-1.2.9-1.6.2l-4.4-7.5-7.5-4.4c-.7-.4-.6-1.4.2-1.6L22 3.2z" opacity="0" />
+                            <path d="M3 17h4v-4H3v4zm0-6h4V7H3v4zm6 6h4V7H9v10zm6 0h4V3h-4v14z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-xl font-bold text-[#2D3142]">Google Analytics</h3>
+                      </div>
+                      <p className="text-[#2D3142]/60 text-sm">צפייה בנתוני תנועה, מבקרים ודפים פופולריים</p>
+                    </div>
+                  </a>
+
+                  <a href="https://search.google.com/search-console?resource_id=sc-domain%3Astudioboazonline.com" target="_blank" rel="noopener noreferrer">
+                    <div className="bg-white border-2 border-[#D5C4B7] rounded-xl p-6 hover:shadow-lg transition-all hover:border-[#B8A99C] cursor-pointer">
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className="bg-[#D5C4B7] p-3 rounded-full">
+                          <svg className="w-6 h-6 text-[#2D3142]" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-xl font-bold text-[#2D3142]">Search Console</h3>
+                      </div>
+                      <p className="text-[#2D3142]/60 text-sm">ביצועי חיפוש, אינדוקס ומילות מפתח בגוגל</p>
+                    </div>
+                  </a>
+                </motion.div>
               </>
             )}
 
