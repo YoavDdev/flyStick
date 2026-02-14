@@ -194,6 +194,69 @@ const AdminAIManager = () => {
                 <li>• סרטונים חדשים שעולים ל-Vimeo ייכנסו לקטלוג תוך שעה</li>
               </ul>
             </div>
+
+            {/* AI Optimization Guide */}
+            <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-5 border border-purple-200">
+              <h5 className="font-bold text-purple-900 text-base mb-3">🎯 איך לגרום ל-AI להמליץ הכי טוב?</h5>
+              <p className="text-xs text-purple-800 mb-4">
+                העוזר קורא את המידע שאתה מזין ב-Vimeo ובלוח הבקרה. ככל שהמידע מדויק יותר — ההמלצות טובות יותר!
+              </p>
+
+              {/* Step 1: Video Names */}
+              <div className="bg-white/70 rounded-lg p-3 mb-3 border border-purple-100">
+                <p className="font-bold text-purple-900 text-sm mb-1">1️⃣ שמות סרטונים ב-Vimeo</p>
+                <p className="text-xs text-purple-700 mb-2">
+                  שם הסרטון הוא הדבר הראשון שהעוזר רואה. תן שמות ברורים בעברית שמתארים את התוכן.
+                </p>
+                <div className="bg-red-50 rounded p-2 mb-1.5 border border-red-200">
+                  <p className="text-xs text-red-700">❌ <strong>לא טוב:</strong> &quot;שיעור 14&quot; / &quot;תרגול חדש&quot; / &quot;VID_20240301&quot;</p>
+                </div>
+                <div className="bg-green-50 rounded p-2 border border-green-200">
+                  <p className="text-xs text-green-700">✅ <strong>מצוין:</strong> &quot;תרגול רך ונעים לגב התחתון&quot; / &quot;אימון קיר לחיזוק הרגליים&quot;</p>
+                </div>
+              </div>
+
+              {/* Step 2: Video Descriptions */}
+              <div className="bg-white/70 rounded-lg p-3 mb-3 border border-purple-100">
+                <p className="font-bold text-purple-900 text-sm mb-1">2️⃣ תיאור סרטון ב-Vimeo (הכי חשוב!)</p>
+                <p className="text-xs text-purple-700 mb-2">
+                  כשמעלים סרטון ל-Vimeo, יש שדה &quot;Description&quot; (תיאור). העוזר קורא את זה כדי להבין למי הסרטון מתאים. כתוב 1-2 משפטים שכוללים:
+                </p>
+                <ul className="text-xs text-purple-700 space-y-1 mb-2 mr-3">
+                  <li>• <strong>מה עושים בשיעור</strong> — מתיחות? חיזוק? נשימה? שילוב?</li>
+                  <li>• <strong>למי זה מתאים</strong> — מתחילים? מתקדמים? כאבי גב? ישיבה ממושכת?</li>
+                  <li>• <strong>אביזרים נדרשים</strong> — מקל? כסא? קיר? מזרן?</li>
+                </ul>
+                <div className="bg-green-50 rounded p-2 border border-green-200">
+                  <p className="text-xs text-green-700">✅ <strong>דוגמה:</strong> &quot;תרגול עדין לגב התחתון. מתאים למתחילים ולמי שיושב הרבה. כולל מתיחות, עבודת נשימה ותנועה איטית על מזרן.&quot;</p>
+                </div>
+              </div>
+
+              {/* Step 3: Folder Metadata */}
+              <div className="bg-white/70 rounded-lg p-3 mb-3 border border-purple-100">
+                <p className="font-bold text-purple-900 text-sm mb-1">3️⃣ מידע על תיקיות (בלוח הבקרה למעלה)</p>
+                <p className="text-xs text-purple-700 mb-2">
+                  ב&quot;ניהול תיקיות&quot; למעלה, ודא שלכל תיקיה יש:
+                </p>
+                <ul className="text-xs text-purple-700 space-y-1 mr-3">
+                  <li>• <strong>תיאור</strong> — מה סוג השיעורים בתיקיה הזו?</li>
+                  <li>• <strong>רמת קושי</strong> — מתחילים / בינוניים / מתקדמים</li>
+                  <li>• <strong>קטגוריה</strong> — סוג האימון (פילאטיס, פלייסטיק, קיר...)</li>
+                  <li>• <strong>תיקיה מוצגת</strong> — רק תיקיות שסומנו כ&quot;מוצגות&quot; מופיעות ל-AI</li>
+                </ul>
+              </div>
+
+              {/* Summary */}
+              <div className="bg-purple-100/50 rounded-lg p-3 border border-purple-200">
+                <p className="font-bold text-purple-900 text-sm mb-1">⚡ סיכום — מה לעשות עכשיו?</p>
+                <ol className="text-xs text-purple-800 space-y-1 mr-3 list-decimal">
+                  <li>היכנס ל-<strong>Vimeo</strong> → לכל סרטון הוסף <strong>תיאור בעברית</strong> (1-2 משפטים)</li>
+                  <li>ודא ש<strong>שמות הסרטונים</strong> ברורים ומתארים את התוכן</li>
+                  <li>ב<strong>ניהול תיקיות</strong> למעלה, מלא תיאור + רמה + קטגוריה</li>
+                  <li>העוזר <strong>מתעדכן אוטומטית</strong> תוך שעה מכל שינוי!</li>
+                </ol>
+              </div>
+            </div>
           </div>
         </div>
       )}
