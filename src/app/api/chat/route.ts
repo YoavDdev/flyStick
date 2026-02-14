@@ -29,16 +29,19 @@ setInterval(() => {
   });
 }, 5 * 60 * 1000);
 
-// Cache for video catalog - refresh every hour
-let videoCatalogCache: string | null = null;
-let videoCatalogTimestamp = 0;
+// Cache for folder catalog - refresh every hour
+let folderCatalogCache: string | null = null;
+let folderCatalogTimestamp = 0;
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
 
+// Cache for folder videos - keyed by folder name, refresh every hour
+const folderVideosCache = new Map<string, { data: string; timestamp: number }>();
+
 // Build a compact folder-level summary (no individual videos) to minimize tokens
-async function buildVideoCatalog(): Promise<string> {
+async function buildFolderCatalog(): Promise<string> {
   const now = Date.now();
-  if (videoCatalogCache && now - videoCatalogTimestamp < CACHE_DURATION) {
-    return videoCatalogCache;
+  if (folderCatalogCache && now - folderCatalogTimestamp < CACHE_DURATION) {
+    return folderCatalogCache;
   }
 
   const accessToken = process.env.VIMEO_TOKEN;
@@ -68,14 +71,95 @@ async function buildVideoCatalog(): Promise<string> {
       );
     }
 
-    videoCatalogCache = catalogParts.join("\n");
-    videoCatalogTimestamp = now;
-    return videoCatalogCache;
+    folderCatalogCache = catalogParts.join("\n");
+    folderCatalogTimestamp = now;
+    return folderCatalogCache;
   } catch (error) {
-    console.error("Error building video catalog:", error);
+    console.error("Error building folder catalog:", error);
     return "לא ניתן לטעון את קטלוג הסרטונים כרגע.";
   }
 }
+
+// Fetch videos for a specific folder by name
+async function fetchFolderVideos(folderName: string): Promise<string> {
+  const now = Date.now();
+  const cached = folderVideosCache.get(folderName);
+  if (cached && now - cached.timestamp < CACHE_DURATION) {
+    return cached.data;
+  }
+
+  const accessToken = process.env.VIMEO_TOKEN;
+  if (!accessToken) {
+    return "לא ניתן לטעון סרטונים כרגע.";
+  }
+
+  const headers = { Authorization: `Bearer ${accessToken}` };
+
+  try {
+    // First find the folder URI
+    const foldersRes = await axios.get("https://api.vimeo.com/me/projects", {
+      headers,
+      params: { per_page: 100, fields: "uri,name" },
+      timeout: 15000,
+    });
+
+    const folder = (foldersRes.data.data || []).find(
+      (f: any) => f.name === folderName
+    );
+
+    if (!folder) {
+      return `לא נמצאה תיקיה בשם "${folderName}".`;
+    }
+
+    const videosRes = await axios.get(
+      `https://api.vimeo.com${folder.uri}/videos`,
+      {
+        headers,
+        params: { fields: "name,duration,description", per_page: 50 },
+        timeout: 10000,
+      }
+    );
+
+    const videos = videosRes.data.data || [];
+    if (videos.length === 0) {
+      return `אין סרטונים בתיקיה "${folderName}".`;
+    }
+
+    const videoList = videos.map((v: any) => {
+      const mins = v.duration ? Math.round(v.duration / 60) : 0;
+      const desc = v.description ? ` - ${v.description.slice(0, 80)}` : "";
+      return `• ${v.name} (${mins} דקות)${desc}`;
+    }).join("\n");
+
+    const result = `סרטונים בתיקיה "${folderName}":\n${videoList}`;
+    folderVideosCache.set(folderName, { data: result, timestamp: now });
+    return result;
+  } catch (error) {
+    console.error(`Error fetching videos for folder "${folderName}":`, error);
+    return `שגיאה בטעינת סרטונים מתיקיה "${folderName}".`;
+  }
+}
+
+// OpenAI function definition for fetching folder videos
+const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
+  {
+    type: "function",
+    function: {
+      name: "get_folder_videos",
+      description: "מביא את רשימת הסרטונים מתיקיה ספציפית באתר. השתמש בזה כדי להמליץ על סרטונים ספציפיים.",
+      parameters: {
+        type: "object",
+        properties: {
+          folder_name: {
+            type: "string",
+            description: "שם התיקיה בדיוק כפי שמופיע בקטלוג (למשל: \"קונטרולוג'י מתחילים\")",
+          },
+        },
+        required: ["folder_name"],
+      },
+    },
+  },
+];
 
 const SYSTEM_PROMPT = `אתה העוזר הדיגיטלי של "סטודיו בועז אונליין" - פלטפורמה לאימונים, תנועה מרפאה וכושר של בועז נחייסי.
 
@@ -89,7 +173,7 @@ const SYSTEM_PROMPT = `אתה העוזר הדיגיטלי של "סטודיו ב�
 
 כללים:
 1. דבר בעברית
-2. המלץ על תיקיות מתאימות לפי הקטלוג למטה
+2. כשמשתמש מבקש המלצה על שיעורים, השתמש בפונקציה get_folder_videos כדי להביא סרטונים מהתיקיה המתאימה ולהמליץ על סרטונים ספציפיים
 3. פורמט המלצת סרטון: [שם](/explore?video=שם) - בתיקיית "שם". ללא דומיין.
 4. פורמט דף: [שם](/path)
 5. תשובות קצרות, עד 3-4 המלצות
@@ -130,11 +214,13 @@ export async function POST(request: NextRequest) {
     // Limit conversation history to last 6 messages to save tokens
     const recentMessages = messages.slice(-6);
 
-    // Build the video catalog context
-    const catalog = await buildVideoCatalog();
+    // Build the folder catalog context
+    const catalog = await buildFolderCatalog();
 
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    const completion = await openai.chat.completions.create({
+
+    // First call - AI decides if it needs specific folder videos
+    const firstCompletion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         {
@@ -143,11 +229,46 @@ export async function POST(request: NextRequest) {
         },
         ...recentMessages,
       ],
+      tools,
+      tool_choice: "auto",
       max_tokens: 500,
       temperature: 0.7,
     });
 
-    const reply = completion.choices[0]?.message?.content || "מצטער, לא הצלחתי לעבד את הבקשה.";
+    const firstMessage = firstCompletion.choices[0]?.message;
+
+    // If the AI wants to call get_folder_videos, execute it and send results back
+    if (firstMessage?.tool_calls && firstMessage.tool_calls.length > 0) {
+      const toolCall = firstMessage.tool_calls[0] as any;
+      const args = JSON.parse(toolCall.function.arguments);
+      const folderVideos = await fetchFolderVideos(args.folder_name);
+
+      // Second call - AI generates final answer with specific video data
+      const secondCompletion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: SYSTEM_PROMPT + catalog,
+          },
+          ...recentMessages,
+          firstMessage,
+          {
+            role: "tool",
+            tool_call_id: toolCall.id,
+            content: folderVideos,
+          },
+        ],
+        max_tokens: 500,
+        temperature: 0.7,
+      });
+
+      const reply = secondCompletion.choices[0]?.message?.content || "מצטער, לא הצלחתי לעבד את הבקשה.";
+      return NextResponse.json({ success: true, message: reply });
+    }
+
+    // No tool call - AI answered directly (e.g. general questions)
+    const reply = firstMessage?.content || "מצטער, לא הצלחתי לעבד את הבקשה.";
 
     return NextResponse.json({
       success: true,
