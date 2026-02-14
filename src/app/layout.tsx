@@ -7,6 +7,7 @@ import ToasterContext from "./context/ToasterContext";
 import { VideoPlayerProvider } from "./context/VideoPlayerContext";
 import StructuredData from "./components/StructuredData";
 import GoogleAnalytics from "./components/GoogleAnalytics";
+import LiveBanner from "./components/LiveBanner";
 
 const rubik = Rubik({ subsets: ["latin", "hebrew"] });
 
@@ -101,6 +102,7 @@ export default function RootLayout({
         <Provider>
           <VideoPlayerProvider>
             <ToasterContext />
+            <LiveBanner />
             <WabiSabiNavbar />
             {children}
             {showFooter && <WabiSabiFooter />}

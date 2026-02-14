@@ -21,6 +21,7 @@ import AdminVideoSeriesManager from "../../components/AdminVideoSeriesManager";
 import AdminProductManager from "../../components/AdminProductManager";
 import AdminOrderManager from "../../components/AdminOrderManager";
 import WelcomePopup from "../../components/WelcomePopup";
+import AdminLiveManager from "../../components/AdminLiveManager";
 
 // Note: Metadata cannot be exported from client components
 // SEO protection should be handled at the layout level
@@ -346,6 +347,11 @@ const DashboardPage = () => {
                 {/* Video Series Manager */}
                 <motion.div variants={itemVariants}>
                   <AdminVideoSeriesManager />
+                </motion.div>
+
+                {/* Live Stream Manager */}
+                <motion.div variants={itemVariants}>
+                  <AdminLiveManager />
                 </motion.div>
 
                 {/* Shop Management Links */}

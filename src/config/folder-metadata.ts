@@ -129,6 +129,14 @@ export const folderMetadata: Record<string, FolderMetadata> = {
     isVisible: true
   }
 ,
+  "שיעורי לייב": {
+    description: "הקלטות של שיעורים בשידור חי עם בועז. כל שבוע שיעור חדש!",
+    level: "all",
+    levelHebrew: "כל הרמות",
+    category: "technique",
+    order: 14,
+    isVisible: true
+  },
   "My library": {
     description: "תכנים חדשים בMy library",
     level: "all",

@@ -296,6 +296,26 @@ model ShopOrder {
   items           ShopOrderItem[]
 }
 
+model LiveStream {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  title           String   // Title of the live stream
+  description     String?  @db.String // Description
+  youtubeUrl      String?  // YouTube Live stream URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID)
+  youtubeVideoId  String?  // Extracted YouTube video ID for embedding
+  scheduledAt     DateTime // When the stream is scheduled
+  status          String   @default("scheduled") // scheduled, live, ended, cancelled
+  vimeoVideoUri   String?  // After stream ends, the Vimeo URI of the recorded video
+  vimeoFolderName String   @default("שיעורי לייב") // Target Vimeo folder for replay
+  thumbnailUrl    String?  // Custom thumbnail
+  duration        Int?     // Duration in minutes (estimated)
+  isRecurring     Boolean  @default(true) // Weekly recurring
+  recurringDay    String?  // Day of week (e.g., "sunday", "tuesday")
+  recurringTime   String?  // Time (e.g., "10:00")
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
 model ShopOrderItem {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
   orderId         String   @db.ObjectId

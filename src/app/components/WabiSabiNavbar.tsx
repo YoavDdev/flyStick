@@ -198,7 +198,8 @@ const WabiSabiNavbar = () => {
   
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-300 bg-[#F7F3EB]/95 backdrop-blur-sm shadow-sm`}
+      className={`fixed w-full z-50 transition-all duration-300 bg-[#F7F3EB]/95 backdrop-blur-sm shadow-sm`}
+      style={{ top: 'var(--live-banner-height, 0px)' }}
     >
       {/* Texture overlay */}
 
