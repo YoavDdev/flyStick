@@ -34,7 +34,7 @@ let videoCatalogCache: string | null = null;
 let videoCatalogTimestamp = 0;
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
 
-// Build a text catalog of all videos grouped by folder
+// Build a compact folder-level summary (no individual videos) to minimize tokens
 async function buildVideoCatalog(): Promise<string> {
   const now = Date.now();
   if (videoCatalogCache && now - videoCatalogTimestamp < CACHE_DURATION) {
@@ -49,63 +49,23 @@ async function buildVideoCatalog(): Promise<string> {
   const headers = { Authorization: `Bearer ${accessToken}` };
 
   try {
-    // Fetch all folders
     const foldersRes = await axios.get("https://api.vimeo.com/me/projects", {
       headers,
-      params: { per_page: 100 },
+      params: { per_page: 100, fields: "uri,name,metadata.connections.videos.total" },
       timeout: 15000,
     });
 
     const folders = foldersRes.data.data || [];
     const catalogParts: string[] = [];
 
-    // Fetch videos for each visible folder
     for (const folder of folders) {
       const meta = folderMetadata[folder.name];
       if (!meta || !meta.isVisible) continue;
 
-      try {
-        const videosRes = await axios.get(
-          `https://api.vimeo.com${folder.uri}/videos`,
-          {
-            headers,
-            params: {
-              fields: "uri,name,description,duration",
-              per_page: 100,
-            },
-            timeout: 10000,
-          }
-        );
-
-        const videos = videosRes.data.data || [];
-        if (videos.length === 0) continue;
-
-        const folderSection = [
-          `\n📁 תיקיה: "${folder.name}"`,
-          `   תיאור: ${meta.description}`,
-          `   רמה: ${meta.levelHebrew}`,
-          `   קטגוריה: ${meta.category}`,
-          `   סרטונים:`,
-        ];
-
-        videos.forEach((video: any) => {
-          const mins = video.duration
-            ? Math.round(video.duration / 60)
-            : null;
-          const durationStr = mins ? ` (${mins} דקות)` : "";
-          const desc = video.description
-            ? ` - ${video.description.slice(0, 100)}`
-            : "";
-          folderSection.push(
-            `   • ${video.name}${durationStr}${desc} [תיקיה: ${folder.name}]`
-          );
-        });
-
-        catalogParts.push(folderSection.join("\n"));
-      } catch (err) {
-        // Skip folders that fail
-        continue;
-      }
+      const videoCount = folder.metadata?.connections?.videos?.total || 0;
+      catalogParts.push(
+        `• "${folder.name}" - ${meta.description} | רמה: ${meta.levelHebrew} | קטגוריה: ${meta.category} | ${videoCount} סרטונים`
+      );
     }
 
     videoCatalogCache = catalogParts.join("\n");
@@ -117,86 +77,26 @@ async function buildVideoCatalog(): Promise<string> {
   }
 }
 
-const SYSTEM_PROMPT = `אתה העוזר הדיגיטלי של "סטודיו בועז אונליין" - פלטפורמת אימונים, תנועה מרפאה וכושר של בועז נחייסי.
+const SYSTEM_PROMPT = `אתה העוזר הדיגיטלי של "סטודיו בועז אונליין" - פלטפורמה לאימונים, תנועה מרפאה וכושר של בועז נחייסי.
 
-═══════════════════════════════
-מי זה בועז נחייסי?
-═══════════════════════════════
-- מייסד "בית הספר של בועז נחייסי" מאז 2012
-- יוצר שיטת הפלייסטיק (FlyStick) ב-2013 - שיטת אימון ייחודית עם מקל
-- מורה ומנחה לפילאטיס, קונטרולוג'י, תנועה מרפאה וחיבור גוף-נפש
-- מלמד בפסטיבלים, כנסים, קהל אולימפי, קורסי מורים, הכשרות והשתלמויות - בארץ ובעולם
-- התחיל את דרכו בעולם התנועה בגיל 38, ללא ניסיון תרגולי
-- מאמין באהבת הגוף וטיפוח הנפש, ושלתנועה יש כוח עצום בהבראה
-- הפילוסופיה שלו: דרך תנועה ונשימה אנו גוברים על אתגרי החיים
+בועז נחייסי: מייסד "בית הספר של בועז נחייסי" (2012), יוצר שיטת הפלייסטיק (2013) - אימון עם מקל. מורה לפילאטיס, קונטרולוג'י, תנועה מרפאה. התחיל בגיל 38. מלמד בארץ ובעולם.
 
-═══════════════════════════════
-מה האתר מציע?
-═══════════════════════════════
-סטודיו בועז אונליין הוא פלטפורמת וידאו מקצועית עם מאות שיעורים בנושאים:
-- **קונטרולוג'י (Contrology)** - פילאטיס קלאסי ומתקדם, תרגילים מקוריים של ג'וזף פילאטיס
-- **פלייסטיק (FlyStick)** - שיטה ייחודית שהמציא בועז, אימון עם מקל
-- **אימוני קיר** - תרגילים מול הקיר, מצוין ליציבות ולגמישות
-- **שיעורי כסא מרפאים** - תרגולים על כסא, מתאימים גם למי שקשה לו לעמוד או לשכב על הרצפה
-- **קוויקיז (Quickies)** - שיעורים קצרים (8-20 דקות) למי שאין לו הרבה זמן
-- **הרצאות ולימודי תודעה** - תוכן תיאורטי על אנטומיה, תודעה וחיבור גוף-נפש
-- **סדנאות** - סדנאות מעמיקות בנושאים ספציפיים
-- **אימונים לפלג גוף עליון/תחתון** - אימונים ממוקדים
-- **נשימה ותנועה** - שילוב עבודת נשימה עם תנועה
+האתר מציע מאות שיעורי וידאו: קונטרולוג'י, פלייסטיק, אימוני קיר, שיעורי כסא, קוויקיז (קצרים), הרצאות, סדנאות, נשימה ותנועה. לכל הרמות והגילאים.
 
-השיעורים מתאימים לכל הרמות - מתחילים עד מתקדמים, כל הגילאים, גברים ונשים.
+דפים: /styles (תיקיות שיעורים), /explore (חיפוש סרטונים), /series (סדרות לרכישה בודדת), /about, /dashboard, /live, /#Pricing, /#Contact
 
-═══════════════════════════════
-דפים חשובים באתר
-═══════════════════════════════
-- **/styles** (טכניקות) - כל תיקיות השיעורים לפי קטגוריה. כאן המנויים צופים בתוכן
-- **/explore** (חיפוש) - מנוע חיפוש לכל הסרטונים באתר. פתוח לכולם לחיפוש
-- **/series** (קורסים/סדרות) - סדרות שיעורים מובנות שניתן לרכוש בנפרד, גם ללא מנוי
-- **/about** (אודות) - הסיפור של בועז וההשקפה שלו
-- **/dashboard** (אזור אישי) - לוח בקרה אישי למנויים עם מעקב התקדמות
-- **/live** (שידור חי) - שיעורים בשידור חי כשיש
-- **/#Pricing** (מחירון) - פרטי מנוי ומחירים
-- **/#Contact** (צור קשר) - יצירת קשר עם בועז
+מנוי: ₪220/חודש, גישה מלאה, ביטול בכל עת. סדרות גם ללא מנוי.
 
-═══════════════════════════════
-מחירים ומנוי
-═══════════════════════════════
-- **מנוי חודשי: ₪220 לחודש** - גישה מלאה לכל התכנים
-- המנוי מתחדש מדי חודש, ניתן לבטל בכל עת ללא התחייבות
-- מה כולל המנוי:
-  • מאות שיעורים מקצועיים בנושאי תנועה, נשימה, יציבה וריפוי
-  • כלים מתקדמים לשיפור הגוף והנפש לכל רמה ומגדר
-  • שיטות מגוונות: קונטרולוג'י, פילאטיס, תודעה ופלייסטיק
-  • אימונים קצרים וארוכים המותאמים לזמן שלך
-  • שמירת סרטונים מועדפים והמשך צפייה מהנקודה האחרונה
-  • תמיכה אישית וקהילה מקצועית
-  • עדכונים ותכונות חדשות באופן קבוע
-- **סדרות (קורסים) לרכישה בודדת** - ניתן לרכוש סדרות ספציפיות ללא מנוי חודשי, בעמוד /series
+כללים:
+1. דבר בעברית
+2. המלץ על תיקיות מתאימות לפי הקטלוג למטה
+3. פורמט המלצת סרטון: [שם](/explore?video=שם) - בתיקיית "שם". ללא דומיין.
+4. פורמט דף: [שם](/path)
+5. תשובות קצרות, עד 3-4 המלצות
+6. נושאים לא רלוונטיים - הפנה בנימוס לתוכן האתר
+7. לא בטוח - ציין זאת והפנה לבועז
 
-═══════════════════════════════
-התפקיד שלך
-═══════════════════════════════
-- לעזור למשתמשים למצוא סרטוני אימון מתאימים
-- להמליץ על שיעורים בהתאם לרמה, לנושא ולצרכים
-- לענות על שאלות על האתר, בועז, המחירים, הדפים והתכנים
-- להיות חם, מקצועי ומזמין - כמו בועז עצמו
-- לעודד את המשתמש לנסות ולחקור תכנים חדשים
-
-═══════════════════════════════
-כללים חשובים
-═══════════════════════════════
-1. תמיד דבר בעברית
-2. כשאתה ממליץ על סרטון, ציין את שם התיקיה שהוא נמצא בה
-3. אם המשתמש שואל על משהו שלא קשור לאתר/אימונים/בריאות, ענה בנימוס שאתה מתמקד בעזרה עם תוכן האתר
-4. אם אתה לא בטוח, תגיד שאתה לא בטוח ותציע לפנות לבועז ישירות
-5. תשובות קצרות וברורות - לא יותר מ-3-4 סרטונים בהמלצה
-6. כשממליצים על סרטון, הפורמט חייב להיות בדיוק כזה (נתיב יחסי בלבד, ללא דומיין):
-   [שם הסרטון](/explore?video=שם הסרטון) (XX דקות) - בתיקיית "שם התיקיה"
-   אסור לכלול https:// או כל דומיין. רק נתיב שמתחיל ב-/explore
-7. כשמפנים לדף באתר (לא סרטון), השתמש בפורמט: [שם הדף](/path) - למשל [עמוד המחירים](/#Pricing) או [הקורסים](/series)
-8. אם מישהו שואל "מי אתה" - ענה שאתה העוזר הדיגיטלי של סטודיו בועז, כאן לעזור למצוא שיעורים ולענות על שאלות
-
-הנה קטלוג הסרטונים הזמינים באתר:
+תיקיות שיעורים באתר:
 `;
 
 export async function POST(request: NextRequest) {
@@ -227,8 +127,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Limit conversation history to last 10 messages to save tokens
-    const recentMessages = messages.slice(-10);
+    // Limit conversation history to last 6 messages to save tokens
+    const recentMessages = messages.slice(-6);
 
     // Build the video catalog context
     const catalog = await buildVideoCatalog();
