@@ -582,10 +582,20 @@ useEffect(() => {
     if (!videoToOpenFromUrl || videos.length === 0) return;
   
     // Match by video ID from URI (e.g., /videos/1102449243)
-    const match = videos.find((v) => {
+    let match = videos.find((v) => {
       const videoId = v.uri.split('/').pop();
       return videoId === videoToOpenFromUrl;
     });
+
+    // Also try matching by video name (for AI chat links)
+    if (!match) {
+      match = videos.find((v) => v.name === videoToOpenFromUrl);
+    }
+
+    // Fallback: partial name match (first result from search)
+    if (!match && videos.length > 0) {
+      match = videos[0];
+    }
   
     if (match) {
       // ✅ השהייה קטנה מבטיחה שה־DOM מוכן

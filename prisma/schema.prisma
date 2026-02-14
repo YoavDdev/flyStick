@@ -316,6 +316,13 @@ model LiveStream {
   updatedAt       DateTime @updatedAt
 }
 
+model SiteSettings {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  key       String   @unique // Setting key (e.g., "ai_chat_enabled")
+  value     String   // Setting value (e.g., "true" / "false")
+  updatedAt DateTime @updatedAt
+}
+
 model ShopOrderItem {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
   orderId         String   @db.ObjectId

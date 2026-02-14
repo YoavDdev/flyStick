@@ -8,6 +8,7 @@ import { VideoPlayerProvider } from "./context/VideoPlayerContext";
 import StructuredData from "./components/StructuredData";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import LiveBanner from "./components/LiveBanner";
+import ChatBot from "./components/ChatBot";
 
 const rubik = Rubik({ subsets: ["latin", "hebrew"] });
 
@@ -105,6 +106,7 @@ export default function RootLayout({
             <LiveBanner />
             <WabiSabiNavbar />
             {children}
+            <ChatBot />
             {showFooter && <WabiSabiFooter />}
           </VideoPlayerProvider>
         </Provider>
