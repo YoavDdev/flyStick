@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 
 // This endpoint can be called by external cron services like Vercel Cron or external schedulers

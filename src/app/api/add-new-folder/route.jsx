@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 // pages/api/add-new-folder.js
 
 import prisma from "../../libs/prismadb";

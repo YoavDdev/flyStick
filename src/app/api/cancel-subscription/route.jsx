@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 // cancel-subscription.js
 import prisma from "../../libs/prismadb";
 import { NextResponse } from "next/server";

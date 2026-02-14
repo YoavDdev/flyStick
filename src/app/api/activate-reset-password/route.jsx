@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 // activate-reset-password/route.jsx
 
 import bcrypt from "bcrypt";

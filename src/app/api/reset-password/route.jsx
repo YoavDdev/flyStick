@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 // reset-password.js
 
 import bcrypt from "bcrypt";

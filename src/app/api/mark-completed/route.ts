@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import prismadb from "../../libs/prismadb";
 import { NextResponse } from "next/server";
 
