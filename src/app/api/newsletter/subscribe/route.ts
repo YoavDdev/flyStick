@@ -5,7 +5,6 @@ import { Resend } from 'resend';
 import crypto from 'crypto';
 
 const prisma = new PrismaClient();
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -62,6 +61,7 @@ export async function POST(request: NextRequest) {
     // Send welcome email
     try {
       console.log('🔄 Sending welcome email to:', email);
+      const resend = new Resend(process.env.RESEND_API_KEY);
       const emailResult = await resend.emails.send({
         from: 'Studio Boaz <info@studioboazonline.com>',
         to: [email],

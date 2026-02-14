@@ -4,10 +4,6 @@ import OpenAI from "openai";
 import axios from "axios";
 import { folderMetadata } from "@/config/folder-metadata";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 // Rate limiting: 10 messages per minute per IP
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT = 10;
@@ -237,6 +233,7 @@ export async function POST(request: NextRequest) {
     // Build the video catalog context
     const catalog = await buildVideoCatalog();
 
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [

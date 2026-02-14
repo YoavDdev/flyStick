@@ -2,8 +2,6 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 // Simple spam detection patterns
 function isSpam(name: string, email: string, message: string): boolean {
   // Check for random gibberish (consecutive random characters)
@@ -58,6 +56,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Send email to admin
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
       from: 'Studio Boaz <info@studioboazonline.com>',
       to: ['yoavddev@gmail.com', 'zzaaoobb@gmail.com'],

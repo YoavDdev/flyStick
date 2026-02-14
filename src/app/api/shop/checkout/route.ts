@@ -5,8 +5,6 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import prisma from "@/app/libs/prismadb";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 function generateOrderNumber(): string {
   const timestamp = Date.now().toString().slice(-8);
   const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
@@ -173,6 +171,7 @@ export async function POST(request: Request) {
         </div>
       `).join('');
 
+      const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
         from: 'Studio Boaz <info@studioboazonline.com>',
         to: ['yoavddev@gmail.com', 'zzaaoobb@gmail.com'],

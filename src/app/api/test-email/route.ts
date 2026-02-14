@@ -2,8 +2,6 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function GET() {
   try {
     // Check for authorization to prevent accidental calls
@@ -20,6 +18,7 @@ export async function GET() {
     console.log('API Key starts with re_:', process.env.RESEND_API_KEY?.startsWith('re_'));
 
     // Send a simple test email
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
       from: 'Studio Boaz <info@studioboazonline.com>',
       to: ['info@studioboazonline.com'],

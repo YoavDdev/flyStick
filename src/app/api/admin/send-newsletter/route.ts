@@ -4,7 +4,6 @@ import { PrismaClient } from '@prisma/client';
 import { Resend } from 'resend';
 
 const prisma = new PrismaClient();
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -64,6 +63,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Send newsletter to all subscribers
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const emailPromises = subscribers.map(subscriber => 
       resend.emails.send({
         from: 'Studio Boaz <info@studioboazonline.com>',

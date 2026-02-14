@@ -5,7 +5,6 @@ import { Resend } from 'resend';
 import { SUBSCRIPTION_PRICES, MONTHLY_SUMMARY_CONFIG } from '../../../config/subscription-pricing';
 
 const prisma = new PrismaClient();
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -264,6 +263,7 @@ export async function POST(request: NextRequest) {
     `;
 
     // Send the email
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
       from: 'Studio Boaz Online <info@studioboazonline.com>',
       to: MONTHLY_SUMMARY_CONFIG.RECIPIENTS,
