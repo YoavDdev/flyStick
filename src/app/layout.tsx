@@ -103,11 +103,15 @@ export default function RootLayout({
         <Provider>
           <VideoPlayerProvider>
             <ToasterContext />
-            <LiveBanner />
-            <WabiSabiNavbar />
+            <div id="site-chrome-top">
+              <LiveBanner />
+              <WabiSabiNavbar />
+            </div>
             {children}
-            <ChatBot />
-            {showFooter && <WabiSabiFooter />}
+            <div id="site-chrome-bottom">
+              <ChatBot />
+              {showFooter && <WabiSabiFooter />}
+            </div>
           </VideoPlayerProvider>
         </Provider>
       </body>
