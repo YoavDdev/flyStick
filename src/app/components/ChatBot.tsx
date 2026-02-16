@@ -121,6 +121,8 @@ const ChatBot = () => {
       ]);
     } finally {
       setLoading(false);
+      // Keep focus in input field for continuous conversation
+      setTimeout(() => inputRef.current?.focus(), 0);
     }
   };
 
@@ -211,10 +213,10 @@ const ChatBot = () => {
       {/* Chat toggle button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-5 left-5 z-[55] w-14 h-14 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center ${
+        className={`fixed bottom-5 right-5 z-[55] w-14 h-14 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center ${
           isOpen
             ? "bg-[#2D3142] hover:bg-[#3d4152] rotate-0"
-            : "bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] hover:from-[#c4b3a6] hover:to-[#a7988b] hover:scale-105"
+            : "bg-[#2D3142] hover:bg-[#3d4152] hover:scale-105"
         }`}
         aria-label={isOpen ? "סגור צ׳אט" : "פתח צ׳אט עוזר"}
       >
@@ -232,12 +234,12 @@ const ChatBot = () => {
       {/* Chat window */}
       {isOpen && (
         <div
-          className="fixed bottom-24 left-5 z-[55] w-[340px] sm:w-[380px] h-[480px] bg-[#FFFCF7] border border-[#D5C4B7] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+          className="fixed bottom-24 right-5 z-[55] w-[340px] sm:w-[380px] h-[480px] bg-white border-2 border-[#2D3142] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
           dir="rtl"
         >
           {/* Header */}
-          <div className="bg-gradient-to-l from-[#D5C4B7] to-[#B8A99C] px-4 py-3 flex items-center gap-3 flex-shrink-0">
-            <div className="w-9 h-9 bg-white/30 rounded-full flex items-center justify-center">
+          <div className="bg-[#2D3142] px-4 py-3 flex items-center gap-3 flex-shrink-0 border-b-2 border-[#2D3142]">
+            <div className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
               </svg>
