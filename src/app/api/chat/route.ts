@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import axios from "axios";
 import { folderMetadata } from "@/config/folder-metadata";
+import { knowledgeBase } from "@/config/knowledge-base";
 
 // Rate limiting: 10 messages per minute per IP
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -140,7 +141,25 @@ async function fetchFolderVideos(folderName: string): Promise<string> {
   }
 }
 
-// OpenAI function definition for fetching folder videos
+// Search knowledge base by keywords
+function searchKnowledge(query: string): string {
+  const queryLower = query.toLowerCase();
+  const matches = knowledgeBase.filter((chunk) =>
+    chunk.keywords.some((kw) => queryLower.includes(kw.toLowerCase())) ||
+    chunk.topic.toLowerCase().includes(queryLower)
+  );
+
+  if (matches.length === 0) {
+    return "לא נמצא מידע ספציפי בנושא זה במאגר הידע.";
+  }
+
+  return matches
+    .slice(0, 3)
+    .map((m) => `**${m.topic}**\n${m.content}`)
+    .join("\n\n");
+}
+
+// OpenAI function definitions
 const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
   {
     type: "function",
@@ -159,11 +178,30 @@ const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "get_knowledge",
+      description: "מביא ידע על הפילוסופיה של בועז, עקרונות התנועה, נשימה, גוף כיישות מים, פלקשיין/אקסטנשיין, נוכחות והתבוננות, כאב כרוני, וכו'. השתמש כשהמשתמש שואל על הגישה הפילוסופית או עקרונות יסוד.",
+      parameters: {
+        type: "object",
+        properties: {
+          topic: {
+            type: "string",
+            description: "הנושא או מילות מפתח לחיפוש (למשל: 'נשימה', 'פלקשיין', 'כאב כרוני', 'נוכחות')",
+          },
+        },
+        required: ["topic"],
+      },
+    },
+  },
 ];
 
 const SYSTEM_PROMPT = `אתה העוזר הדיגיטלי של "סטודיו בועז אונליין" - פלטפורמה לאימונים, תנועה מרפאה וכושר של בועז נחייסי.
 
 בועז נחייסי: מייסד "בית הספר של בועז נחייסי" (2012), יוצר שיטת הפלייסטיק (2013) - אימון עם מקל. מורה לפילאטיס, קונטרולוג'י, תנועה מרפאה. התחיל בגיל 38. מלמד בארץ ובעולם.
+
+הפילוסופיה: בועז מלמד על הגוף כיישות מים (70% מים), חשיבות הנשימה כפונקציה ראשונית, תרגול פיסי כגילוי רוחני, נוכחות והתבוננות, והתנועה בין פלקשיין (כיפוף, אהבה כלפי חוץ) לאקסטנשיין (פתיחה, אהבה עצמית).
 
 האתר מציע מאות שיעורי וידאו: קונטרולוג'י, פלייסטיק, אימוני קיר, שיעורי כסא, קוויקיז (קצרים), הרצאות, סדנאות, נשימה ותנועה. לכל הרמות והגילאים.
 
@@ -173,17 +211,16 @@ const SYSTEM_PROMPT = `אתה העוזר הדיגיטלי של "סטודיו ב�
 
 כללים:
 1. דבר בעברית
-2. כשמשתמש מבקש המלצה על שיעורים, השתמש בפונקציה get_folder_videos כדי להביא סרטונים מהתיקיה המתאימה ולהמליץ על סרטונים ספציפיים
-3. פורמט המלצת סרטון: [שם](/explore?video=שם) - בתיקיית "שם". ללא דומיין.
-4. פורמט דף: [שם](/path)
-5. תשובות קצרות, עד 3-4 המלצות
-6. נושאים לא רלוונטיים - הפנה בנימוס לתוכן האתר
-7. לא בטוח - ציין זאת והפנה לבועז
+2. כשמשתמש שואל על עקרונות, פילוסופיה או גישה - השתמש בפונקציה get_knowledge
+3. כשמשתמש מבקש המלצה על שיעורים - השתמש בפונקציה get_folder_videos
+4. פורמט המלצת סרטון: [שם](/explore?video=שם) - בתיקיית "שם". ללא דומיין.
+5. פורמט דף: [שם](/path)
+6. תשובות קצרות, עד 3-4 המלצות
+7. נושאים לא רלוונטיים - הפנה בנימוס לתוכן האתר
+8. לא בטוח - ציין זאת והפנה לבועז
 
 תיקיות שיעורים באתר:
-`;
-
-export async function POST(request: NextRequest) {
+`;export async function POST(request: NextRequest) {
   try {
     // Rate limit check
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
@@ -237,13 +274,19 @@ export async function POST(request: NextRequest) {
 
     const firstMessage = firstCompletion.choices[0]?.message;
 
-    // If the AI wants to call get_folder_videos, execute it and send results back
+    // If the AI wants to call functions, execute them and send results back
     if (firstMessage?.tool_calls && firstMessage.tool_calls.length > 0) {
       const toolCall = firstMessage.tool_calls[0] as any;
       const args = JSON.parse(toolCall.function.arguments);
-      const folderVideos = await fetchFolderVideos(args.folder_name);
+      
+      let toolResult = "";
+      if (toolCall.function.name === "get_folder_videos") {
+        toolResult = await fetchFolderVideos(args.folder_name);
+      } else if (toolCall.function.name === "get_knowledge") {
+        toolResult = searchKnowledge(args.topic);
+      }
 
-      // Second call - AI generates final answer with specific video data
+      // Second call - AI generates final answer with function results
       const secondCompletion = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
@@ -256,7 +299,7 @@ export async function POST(request: NextRequest) {
           {
             role: "tool",
             tool_call_id: toolCall.id,
-            content: folderVideos,
+            content: toolResult,
           },
         ],
         max_tokens: 500,
