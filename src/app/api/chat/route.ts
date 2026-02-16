@@ -220,7 +220,9 @@ const SYSTEM_PROMPT = `אתה העוזר הדיגיטלי של "סטודיו ב�
 8. לא בטוח - ציין זאת והפנה לבועז
 
 תיקיות שיעורים באתר:
-`;export async function POST(request: NextRequest) {
+`;
+
+export async function POST(request: NextRequest) {
   try {
     // Rate limit check
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
@@ -276,15 +278,24 @@ const SYSTEM_PROMPT = `אתה העוזר הדיגיטלי של "סטודיו ב�
 
     // If the AI wants to call functions, execute them and send results back
     if (firstMessage?.tool_calls && firstMessage.tool_calls.length > 0) {
-      const toolCall = firstMessage.tool_calls[0] as any;
-      const args = JSON.parse(toolCall.function.arguments);
-      
-      let toolResult = "";
-      if (toolCall.function.name === "get_folder_videos") {
-        toolResult = await fetchFolderVideos(args.folder_name);
-      } else if (toolCall.function.name === "get_knowledge") {
-        toolResult = searchKnowledge(args.topic);
-      }
+      const toolResults = await Promise.all(
+        firstMessage.tool_calls.map(async (toolCall: any) => {
+          const args = JSON.parse(toolCall.function.arguments);
+          
+          let toolResult = "";
+          if (toolCall.function.name === "get_folder_videos") {
+            toolResult = await fetchFolderVideos(args.folder_name);
+          } else if (toolCall.function.name === "get_knowledge") {
+            toolResult = searchKnowledge(args.topic);
+          }
+
+          return {
+            role: "tool" as const,
+            tool_call_id: toolCall.id,
+            content: toolResult,
+          };
+        })
+      );
 
       // Second call - AI generates final answer with function results
       const secondCompletion = await openai.chat.completions.create({
@@ -296,11 +307,7 @@ const SYSTEM_PROMPT = `אתה העוזר הדיגיטלי של "סטודיו ב�
           },
           ...recentMessages,
           firstMessage,
-          {
-            role: "tool",
-            tool_call_id: toolCall.id,
-            content: toolResult,
-          },
+          ...toolResults,
         ],
         max_tokens: 500,
         temperature: 0.7,
