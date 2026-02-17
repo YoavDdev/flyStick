@@ -412,7 +412,65 @@ export default function AdminPage() {
             <button
               onClick={async () => {
                 try {
-                  console.log('🔍 [ADMIN] Running PayPal diagnostic...');
+                  console.log('� [ADMIN] Starting email-based PayPal sync...');
+                  
+                  if (!session?.user?.email) {
+                    toast.error('❌ שגיאה: לא נמצא מייל משתמש');
+                    return;
+                  }
+                  
+                  const toastId = toast.loading('🔍 מחפש מנויי PayPal לפי מייל...');
+                  
+                  const response = await fetch('/api/admin/sync-paypal-by-email', {
+                    method: 'POST',
+                    headers: {
+                      "Authorization": `Bearer ${session.user.email}`,
+                      "Content-Type": "application/json"
+                    },
+                    cache: 'no-store'
+                  });
+                  
+                  if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || 'שגיאה בסנכרון');
+                  }
+                  
+                  const result = await response.json();
+                  
+                  console.log('✅ [ADMIN] Email sync results:', result);
+                  
+                  toast.success(
+                    `✅ סנכרון מנויים הושלם!\n` +
+                    `מנויי PayPal: ${result.stats.totalPayPalSubscriptions}\n` +
+                    `התאמות: ${result.stats.matched}\n` +
+                    `עודכנו: ${result.stats.updated}\n` +
+                    `כבר מקושרים: ${result.stats.alreadyLinked}\n` +
+                    `לא נמצאו: ${result.stats.notFound}`,
+                    { id: toastId, duration: 8000 }
+                  );
+                  
+                  // Refresh user list
+                  fetchUsers();
+                  
+                } catch (error) {
+                  console.error('❌ [ADMIN] Email sync error:', error);
+                  toast.dismiss();
+                  const errorMessage = error instanceof Error ? error.message : 'שגיאה לא ידועה';
+                  toast.error(
+                    `❌ שגיאה בסנכרון: ${errorMessage}`,
+                    { duration: 5000 }
+                  );
+                }
+              }}
+              className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-600/30 text-sm sm:text-base"
+            >
+              📧 סנכרן PayPal לפי מייל
+            </button>
+            
+            <button
+              onClick={async () => {
+                try {
+                  console.log('�🔍 [ADMIN] Running PayPal diagnostic...');
                   
                   if (!session?.user?.email) {
                     toast.error('❌ שגיאה: לא נמצא מייל משתמש');

@@ -404,24 +404,33 @@ export default function AdminUserTable({
               
               <td className="px-3 py-4 whitespace-nowrap text-sm">
                 {editingUser === user.id ? (
-                  <select
-                    value={editForm.subscriptionId}
-                    onChange={(e) => setEditForm({ ...editForm, subscriptionId: e.target.value })}
-                    className="w-full px-2 py-1 border border-[#D1D5DB] rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-[#B56B4A]"
-                  >
-                    <option value="">ללא מנוי</option>
-                    <option value="free">גישה חופשית</option>
-                    <option value="trial_30">תקופת ניסיון (30 יום)</option>
-                    {/* Show PayPal subscription option if user has PayPal data */}
-                    {user.paypalId && (
-                      <option value={user.paypalId}>
-                        {user.subscriptionId === user.paypalId 
-                          ? `מנוי PayPal נוכחי (${user.paypalId.substring(0, 15)}...)` 
-                          : `שחזר מנוי PayPal (${user.paypalId.substring(0, 15)}...)`
-                        }
-                      </option>
-                    )}
-                  </select>
+                  <div className="space-y-2">
+                    <select
+                      value={editForm.subscriptionId}
+                      onChange={(e) => setEditForm({ ...editForm, subscriptionId: e.target.value })}
+                      className="w-full px-2 py-1 border border-[#D1D5DB] rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-[#B56B4A]"
+                    >
+                      <option value="">ללא מנוי</option>
+                      <option value="free">גישה חופשית</option>
+                      <option value="trial_30">תקופת ניסיון (30 יום)</option>
+                      {/* Show PayPal subscription option if user has PayPal data */}
+                      {user.paypalId && (
+                        <option value={user.paypalId}>
+                          {user.subscriptionId === user.paypalId 
+                            ? `מנוי PayPal נוכחי (${user.paypalId.substring(0, 15)}...)` 
+                            : `שחזר מנוי PayPal (${user.paypalId.substring(0, 15)}...)`
+                          }
+                        </option>
+                      )}
+                    </select>
+                    <input
+                      type="text"
+                      value={editForm.subscriptionId}
+                      onChange={(e) => setEditForm({ ...editForm, subscriptionId: e.target.value })}
+                      placeholder="או הזן subscription ID ידנית (I-...)"
+                      className="w-full px-2 py-1 border border-[#D1D5DB] rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-[#B56B4A] text-gray-600"
+                    />
+                  </div>
                 ) : (
                   <div className={getSubscriptionStatusClass(user.subscriptionId, user.paypalStatus)}>
                     {getSubscriptionStatusText(user)}
