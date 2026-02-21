@@ -370,8 +370,8 @@ const ChatBot = () => {
                 disabled={!input.trim() || loading}
                 className="w-10 h-10 bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] hover:from-[#c4b3a6] hover:to-[#a7988b] text-white rounded-full flex items-center justify-center transition-all disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
               >
-                <svg className="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12l14-7-4 7 4 7L5 12zm0 0h9" />
                 </svg>
               </button>
             </div>
