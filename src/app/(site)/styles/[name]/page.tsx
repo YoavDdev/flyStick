@@ -10,7 +10,6 @@ import VideoPlayer from "@/app/components/VideoPlayer";
 import VideoCard from "@/app/components/VideoCard";
 import PlaylistModal from "@/app/components/PlaylistModal";
 import SearchBar from "@/app/components/SearchBar";
-import { trackFolderView } from "@/app/libs/analytics";
 
 
 interface pageProps {
@@ -171,7 +170,6 @@ const Page: FC<pageProps> = ({ params }) => {
             setFolderName(targetFolder.name);
             setFolderUri(targetFolder.uri);
             setFolderMetadata(targetFolder.metadata);
-            trackFolderView(targetFolder.name);
             console.log('✅ Found folder URI:', targetFolder.uri);
             console.log('📝 Found folder metadata:', targetFolder.metadata);
           } else {

@@ -27,8 +27,15 @@ export const authOptions = {
           throw new Error("Please enter an email and password");
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+        // Normalize email and use case-insensitive search
+        const normalizedEmail = credentials.email.toLowerCase().trim();
+        const user = await prisma.user.findFirst({
+          where: { 
+            email: {
+              equals: normalizedEmail,
+              mode: 'insensitive'
+            }
+          },
         });
 
         if (!user || !user?.hashedPassword) {

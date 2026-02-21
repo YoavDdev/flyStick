@@ -11,6 +11,9 @@ export async function POST(request) {
     return new NextResponse("Missing Fields", { status: 400 });
   }
 
+  // Normalize email to lowercase to prevent duplicate accounts
+  const normalizedEmail = email.toLowerCase().trim();
+
   // Verify Turnstile token
   if (!turnstileToken) {
     return new NextResponse(JSON.stringify({ error: "Security verification required" }), { 
@@ -46,9 +49,13 @@ export async function POST(request) {
     });
   }
 
-  const exist = await prisma.user.findUnique({
+  // Check for existing user with case-insensitive email comparison
+  const exist = await prisma.user.findFirst({
     where: {
-      email,
+      email: {
+        equals: normalizedEmail,
+        mode: 'insensitive'
+      }
     },
   });
 
@@ -64,7 +71,7 @@ export async function POST(request) {
   const user = await prisma.user.create({
     data: {
       name,
-      email,
+      email: normalizedEmail,
       hashedPassword,
       userType: userType || "subscription",
       registrationSource: registrationSource || "main_app",
@@ -78,7 +85,7 @@ export async function POST(request) {
 
     await resend.emails.send({
       from: 'Studio Boaz Online <info@studioboazonline.com>',
-      to: [email],
+      to: [normalizedEmail],
       subject: 'ברוך הבא לסטודיו',
       html: `
         <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; max-width: 500px; margin: 0 auto; background: #F7F3EB; padding: 20px; border-radius: 12px;">
@@ -117,7 +124,7 @@ export async function POST(request) {
       `
     });
 
-    console.log("🎉 Welcome email sent successfully to:", email);
+    console.log("🎉 Welcome email sent successfully to:", normalizedEmail);
   } catch (welcomeError) {
     console.error("❌ Error sending welcome email:", welcomeError);
     // Don't fail registration if welcome email fails
@@ -130,7 +137,7 @@ export async function POST(request) {
         method: 'POST',
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          email,
+          email: normalizedEmail,
           name,
           source: 'registration'
         })
