@@ -10,18 +10,36 @@ export async function PATCH(request) {
     const body = await request.json();
     const { token, password } = body;
 
-    // Validate token, check expiration, etc. (Add your validation logic here)
-    const resetInfo = await prisma.passwordReset.findFirst({
+    // Validate input
+    if (!token || !token.trim()) {
+      return NextResponse.json({ error: "Token is required" }, { status: 400 });
+    }
+
+    if (!password || password.length < 6) {
+      return NextResponse.json({ error: "Password must be at least 6 characters" }, { status: 400 });
+    }
+
+    // Find the reset token
+    const resetInfo = await prisma.passwordReset.findUnique({
       where: {
-        token,
+        token: token.trim(),
       },
       include: {
         user: true,
       },
     });
 
-    if (!resetInfo || resetInfo.expiresAt < new Date()) {
-      return new NextResponse("Invalid or expired token", { status: 400 });
+    if (!resetInfo) {
+      return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });
+    }
+
+    // Check if token has expired
+    if (resetInfo.expiresAt < new Date()) {
+      // Delete expired token
+      await prisma.passwordReset.delete({
+        where: { token: resetInfo.token },
+      });
+      return NextResponse.json({ error: "Token has expired. Please request a new password reset." }, { status: 400 });
     }
 
     // Update user's password
@@ -36,14 +54,16 @@ export async function PATCH(request) {
     // Delete the used reset token
     await prisma.passwordReset.delete({
       where: {
-        id: resetInfo.id, // Assuming resetInfo has the id field
         token: resetInfo.token,
       },
     });
 
-    return new NextResponse({ message: "Password reset successful" });
+    console.log('✅ Password reset successful for user:', resetInfo.userId);
+    return NextResponse.json({ success: true, message: "Password reset successful" }, { status: 200 });
   } catch (error) {
-    console.error("Error completing password reset:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error("❌ Error completing password reset:", error);
+    return NextResponse.json({ 
+      error: "An error occurred while resetting password. Please try again." 
+    }, { status: 500 });
   }
 }

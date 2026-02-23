@@ -1,7 +1,6 @@
 export const dynamic = 'force-dynamic';
 // reset-password.js
 
-import bcrypt from "bcrypt";
 import prisma from "../../libs/prismadb";
 import { v4 as uuidv4 } from "uuid";
 import { NextResponse } from "next/server";
@@ -12,13 +11,28 @@ export async function POST(request) {
     const body = await request.json();
     const { email } = body;
 
+    // Validate email
+    if (!email || !email.trim()) {
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
+    }
+
     // Retrieve user based on the provided email
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { email: email.toLowerCase().trim() },
     });
 
     if (!user) {
-      return new NextResponse("User not found", { status: 404 });
+      // Don't reveal if user exists or not (security best practice)
+      return NextResponse.json({ 
+        success: true, 
+        message: "If this email exists, a password reset link has been sent" 
+      }, { status: 200 });
     }
 
     // Generate a unique token using uuid
@@ -32,6 +46,14 @@ export async function POST(request) {
         expiresAt: new Date(Date.now() + 3600000), // Token expires in 1 hour
       },
     });
+
+    // Check if Resend API key is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.error('❌ RESEND_API_KEY is not configured');
+      return NextResponse.json({ 
+        error: "Email service is not configured. Please contact support." 
+      }, { status: 503 });
+    }
 
     // Initialize Resend
     const resend = new Resend(process.env.RESEND_API_KEY);
@@ -48,7 +70,7 @@ export async function POST(request) {
           <div style="background-color: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
             <h2 style="color: #2D3142; margin-bottom: 20px; text-align: center; direction: rtl;">איפוס סיסמה</h2>
             
-            <p style="color: #3D3D3D; line-height: 1.6; margin-bottom: 20px; text-align: right;">שלום,</p>
+            <p style="color: #3D3D3D; line-height: 1.6; margin-bottom: 20px; text-align: right;">שלום ${user.name || ''},</p>
             
             <p style="color: #3D3D3D; line-height: 1.6; margin-bottom: 20px; text-align: right;">
               קיבלנו בקשה לאיפוס הסיסמה שלך. לחץ על הקישור למטה כדי לאפס את הסיסמה:
@@ -77,46 +99,21 @@ export async function POST(request) {
 
     if (error) {
       console.error('❌ Password reset email failed:', error);
-      throw new Error('Failed to send password reset email');
+      // Don't expose internal errors to user
+      return NextResponse.json({ 
+        error: "Failed to send reset email. Please try again or contact support." 
+      }, { status: 500 });
     }
     
     console.log('✅ Password reset email sent successfully:', data);
 
-    return new NextResponse({ message: "Password reset initiated" });
+    return NextResponse.json({ success: true, message: "Password reset initiated" }, { status: 200 });
   } catch (error) {
-    console.error("Error initiating password reset:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error("❌ Error initiating password reset:", error);
+    // Log the full error but return generic message to user
+    return NextResponse.json({ 
+      error: "An error occurred. Please try again later." 
+    }, { status: 500 });
   }
 }
 
-export async function PATCH(request) {
-  try {
-    const body = await request.json();
-    const { token, password } = body;
-
-    // Validate token, check expiration, etc. (Add your validation logic here)
-    const resetInfo = await prisma.passwordReset.findUnique({
-      where: { token },
-      include: { user: true },
-    });
-
-    if (!resetInfo || resetInfo.expiresAt < new Date()) {
-      return new NextResponse("Invalid or expired token", { status: 400 });
-    }
-
-    // Update user's password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await prisma.user.update({
-      where: { id: resetInfo.userId },
-      data: { hashedPassword },
-    });
-
-    // Delete the used reset token
-    await prisma.passwordReset.delete({ where: { token } });
-
-    return new NextResponse({ message: "Password reset successful" });
-  } catch (error) {
-    console.error("Error completing password reset:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
-  }
-}
