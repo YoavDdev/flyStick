@@ -62,7 +62,7 @@ export async function POST(request) {
     console.log('🔄 Sending password reset email to:', user.email);
     
     const { data, error } = await resend.emails.send({
-      from: 'Studio Boaz <onboarding@resend.dev>',
+      from: 'Studio Boaz <info@mail.studioboazonline.com>',
       to: user.email,
       subject: 'איפוס סיסמה - Studio Boaz',
       html: `
