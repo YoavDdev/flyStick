@@ -1,12 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import SubscriptionDetails from "./../api/SubscriptionDetails";
 import { trackSubscriptionClick, trackSubscriptionSuccess, trackRegisterFromPricing, trackPricingView } from "../libs/analytics";
 
 const includedFeatures = [
@@ -21,7 +21,34 @@ const includedFeatures = [
 
 export default function WabiSabiPricing() {
   const { data: session } = useSession();
-  const { subscriptionStatus, loading } = SubscriptionDetails();
+  const [hasContentAccess, setHasContentAccess] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkSubscriptionStatus = async () => {
+      try {
+        if (session?.user?.email) {
+          const response = await fetch("/api/check-admin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: session.user.email }),
+          });
+          const data = await response.json();
+          setHasContentAccess(data.hasContentAccess || false);
+        }
+      } catch (error) {
+        console.error("Error checking subscription status:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (session?.user) {
+      checkSubscriptionStatus();
+    } else {
+      setLoading(false);
+    }
+  }, [session]);
 
   // Track pricing section view
   if (typeof window !== "undefined") {
@@ -163,7 +190,7 @@ export default function WabiSabiPricing() {
                   </div>
                 </motion.div>
 
-                {subscriptionStatus === "ACTIVE" ? (
+                {hasContentAccess ? (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}

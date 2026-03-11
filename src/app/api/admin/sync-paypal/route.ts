@@ -3,19 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 import axios from "axios";
 import { verifyAdminAccess } from "@/app/libs/adminAuth";
-import { rateLimit, rateLimitConfigs } from "@/app/libs/rateLimit";
 
 // Increase the API route timeout to 60 seconds (Vercel Pro limit)
 export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   try {
-    // Apply rate limiting for PayPal operations
-    const rateLimitResult = rateLimit(rateLimitConfigs.paypal)(request);
-    if (rateLimitResult) {
-      return rateLimitResult;
-    }
-    
     // Verify admin access using new standardized method
     const authResult = await verifyAdminAccess(request);
     

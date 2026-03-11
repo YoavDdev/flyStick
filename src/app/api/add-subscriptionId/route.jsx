@@ -1,14 +1,65 @@
 export const dynamic = 'force-dynamic';
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+import axios from "axios";
 
 const prisma = new PrismaClient();
+
+// Helper: Cancel an old PayPal subscription via API
+async function cancelOldPayPalSubscription(oldSubscriptionId) {
+  try {
+    const clientId = process.env.PAYPAL_CLIENT_ID;
+    const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+
+    if (!clientId || !clientSecret) {
+      console.error("⚠️ PayPal credentials missing, cannot cancel old subscription");
+      return;
+    }
+
+    const auth = { username: clientId, password: clientSecret };
+
+    // First check if the old subscription is still active
+    const statusResponse = await axios.get(
+      `https://api.paypal.com/v1/billing/subscriptions/${oldSubscriptionId}`,
+      { auth, timeout: 10000 }
+    );
+
+    const currentStatus = statusResponse.data.status;
+    if (currentStatus !== "ACTIVE" && currentStatus !== "APPROVED") {
+      console.log(`ℹ️ Old subscription ${oldSubscriptionId} is already ${currentStatus}, no need to cancel`);
+      return;
+    }
+
+    // Cancel the old subscription on PayPal
+    await axios.post(
+      `https://api.paypal.com/v1/billing/subscriptions/${oldSubscriptionId}/cancel`,
+      { reason: "User created a new subscription - cancelling duplicate" },
+      { auth, timeout: 10000 }
+    );
+
+    console.log(`✅ Successfully cancelled old PayPal subscription: ${oldSubscriptionId}`);
+  } catch (error) {
+    console.error(`⚠️ Failed to cancel old PayPal subscription ${oldSubscriptionId}:`, error.message);
+    // Don't throw - we still want to save the new subscription
+  }
+}
 
 export async function POST(request) {
   const body = await request.json();
   const { orderId: orderId, email } = body;
 
   try {
+    // 🔍 Check if user already has an active PayPal subscription
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email },
+      select: { subscriptionId: true, name: true },
+    });
+
+    if (existingUser?.subscriptionId?.startsWith("I-") && existingUser.subscriptionId !== orderId) {
+      console.log(`⚠️ User ${email} already has subscription ${existingUser.subscriptionId}, new: ${orderId}. Cancelling old one.`);
+      await cancelOldPayPalSubscription(existingUser.subscriptionId);
+    }
+
     const user = await prisma.user.update({
       where: {
         email: email,
