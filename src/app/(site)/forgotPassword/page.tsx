@@ -88,7 +88,13 @@ const ForgotPasswordPage = () => {
               </button>
             </div>
 
-            <div className="mt-6 text-center">
+            <div className="mt-4 p-3 bg-[#F7F3EB] rounded-lg border border-[#D5C4B7]/50">
+              <p className="text-xs text-[#2D3142]/70 text-center leading-5">
+                לא קיבלת מייל? בדוק/י בתיקיית הספאם (דואר זבל).
+              </p>
+            </div>
+
+            <div className="mt-4 text-center">
               <Link
                 href="/login"
                 className="text-sm text-[#D9713C] hover:text-[#B8A99C] transition-colors duration-200 hover:underline focus:outline-none"
