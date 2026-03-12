@@ -63,6 +63,7 @@ export async function POST(request) {
     
     const { data, error } = await resend.emails.send({
       from: 'Studio Boaz <info@mail.studioboazonline.com>',
+      reply_to: 'zzaaoobb@gmail.com',
       to: user.email,
       subject: 'איפוס סיסמה - Studio Boaz',
       html: `
