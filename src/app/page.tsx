@@ -8,6 +8,7 @@ import {
 } from "./components";
 import ExploreVideos from "./components/ExploreVideos";
 import SeriesPromotion from "./components/SeriesPromotion";
+import UpcomingLiveWidget from "./components/UpcomingLiveWidget";
 import StructuredDataHome from "./components/StructuredDataHome";
 import Image from "next/image";
 import desertImage from "../../public/Boaznewback.jpg";
@@ -101,6 +102,13 @@ export default function HomePage() {
         {/* Series Promotion */}
         <section id="series-promotion">
           <SeriesPromotion />
+        </section>
+
+        {/* Upcoming Live Streams */}
+        <section id="live-streams" className="py-12">
+          <div className="container mx-auto px-6">
+            <UpcomingLiveWidget />
+          </div>
         </section>
         
         {/* Pricing section */}

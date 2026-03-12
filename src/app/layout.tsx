@@ -7,7 +7,7 @@ import ToasterContext from "./context/ToasterContext";
 import { VideoPlayerProvider } from "./context/VideoPlayerContext";
 import StructuredData from "./components/StructuredData";
 import GoogleAnalytics from "./components/GoogleAnalytics";
-import LiveBanner from "./components/LiveBanner";
+import VimeoLiveBanner from "./components/VimeoLiveBanner";
 import ChatBot from "./components/ChatBot";
 
 const rubik = Rubik({ subsets: ["latin", "hebrew"] });
@@ -104,7 +104,7 @@ export default function RootLayout({
           <VideoPlayerProvider>
             <ToasterContext />
             <div id="site-chrome-top">
-              <LiveBanner />
+              <VimeoLiveBanner />
               <WabiSabiNavbar />
             </div>
             {children}

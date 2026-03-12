@@ -21,7 +21,7 @@ import AdminVideoSeriesManager from "../../components/AdminVideoSeriesManager";
 import AdminProductManager from "../../components/AdminProductManager";
 import AdminOrderManager from "../../components/AdminOrderManager";
 import WelcomePopup from "../../components/WelcomePopup";
-import AdminLiveManager from "../../components/AdminLiveManager";
+import AdminVimeoLivePanel from "../../components/AdminVimeoLivePanel";
 import AdminAIManager from "../../components/AdminAIManager";
 
 // Note: Metadata cannot be exported from client components
@@ -350,9 +350,9 @@ const DashboardPage = () => {
                   <AdminVideoSeriesManager />
                 </motion.div>
 
-                {/* Live Stream Manager */}
+                {/* Vimeo Live Stream Panel */}
                 <motion.div variants={itemVariants}>
-                  <AdminLiveManager />
+                  <AdminVimeoLivePanel />
                 </motion.div>
 
                 {/* AI Chat Manager */}

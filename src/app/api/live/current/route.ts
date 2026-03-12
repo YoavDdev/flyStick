@@ -2,64 +2,67 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 
-// GET - Fetch the current or next upcoming live stream
+// GET - Get the current live stream or next upcoming from DB
 export async function GET(request: NextRequest) {
   try {
-    const now = new Date();
-
-    // First, check if there's a currently live stream
-    const liveStream = await prisma.liveStream.findFirst({
-      where: {
-        status: "live",
-        isActive: true,
-      },
+    // Check for currently live event
+    const liveEvent = await prisma.liveEvent.findFirst({
+      where: { status: "live" },
       orderBy: { scheduledAt: "desc" },
     });
 
-    if (liveStream) {
+    if (liveEvent) {
       return NextResponse.json({
         success: true,
-        stream: liveStream,
         streamState: "live",
+        stream: {
+          id: liveEvent.id,
+          title: liveEvent.title,
+          description: liveEvent.description || "",
+          vimeoEmbedUrl: liveEvent.vimeoEmbedUrl || "",
+          scheduledAt: liveEvent.scheduledAt.toISOString(),
+          estimatedDuration: liveEvent.estimatedDuration,
+        },
       });
     }
 
-    // If no live stream, get the next scheduled one
-    const nextStream = await prisma.liveStream.findFirst({
+    // Check for next scheduled event (future events only)
+    const now = new Date();
+    const scheduledEvents = await prisma.liveEvent.findMany({
       where: {
         status: "scheduled",
-        isActive: true,
         scheduledAt: { gte: now },
       },
       orderBy: { scheduledAt: "asc" },
+      take: 5,
     });
 
-    if (nextStream) {
+    if (scheduledEvents.length > 0) {
+      const nextEvent = scheduledEvents[0];
       return NextResponse.json({
         success: true,
-        stream: nextStream,
         streamState: "scheduled",
+        stream: {
+          id: nextEvent.id,
+          title: nextEvent.title,
+          description: nextEvent.description || "",
+          scheduledAt: nextEvent.scheduledAt.toISOString(),
+          estimatedDuration: nextEvent.estimatedDuration,
+        },
+        upcomingCount: scheduledEvents.length,
       });
     }
 
-    // No upcoming streams - get the most recent ended stream
-    const lastStream = await prisma.liveStream.findFirst({
-      where: {
-        status: "ended",
-        isActive: true,
-      },
-      orderBy: { scheduledAt: "desc" },
-    });
-
+    // No streams
     return NextResponse.json({
       success: true,
-      stream: lastStream || null,
-      streamState: lastStream ? "ended" : "none",
+      streamState: "none",
+      stream: null,
     });
   } catch (error: any) {
-    console.error("Error fetching live stream:", error.message);
+    console.error("Error fetching current live stream:", error.message);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch live stream data" },
+      { success: false, streamState: "none", stream: null },
       { status: 500 }
     );
   }
