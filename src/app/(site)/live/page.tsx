@@ -52,6 +52,33 @@ const LivePulse = () => (
   </div>
 );
 
+// Google Calendar link generator
+const getGoogleCalendarUrl = (event: any) => {
+  const start = new Date(event.scheduledAt);
+  const end = new Date(start.getTime() + (event.estimatedDuration || 60) * 60000);
+  const fmtGcal = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: event.title,
+    dates: `${fmtGcal(start)}/${fmtGcal(end)}`,
+    details: `${event.description || "שיעור בשידור חי עם בועז נחייסי"}\n\nלצפייה: https://studioboazonline.com/live`,
+    location: "https://studioboazonline.com/live",
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+};
+
+const AddToCalendarButton = ({ event }: { event: any }) => (
+  <a
+    href={getGoogleCalendarUrl(event)}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center gap-1.5 text-xs bg-white text-[#2D3142] px-3 py-1.5 rounded-full hover:bg-[#D5C4B7]/20 transition-colors border border-[#D5C4B7]/50 shadow-sm"
+  >
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+    הוסף ליומן
+  </a>
+);
+
 // ============ CALENDAR ============
 const EventCalendar = ({ events }: { events: any[] }) => {
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
@@ -141,33 +168,46 @@ const EventCalendar = ({ events }: { events: any[] }) => {
           <h3 className="font-bold text-[#2D3142] text-sm">
             יום {HEBREW_DAYS[new Date(year, month, selectedDay).getDay()]} {selectedDay} {HEBREW_MONTHS[month]}
           </h3>
-          {selectedEvents.map((e: any) => (
-            <div key={e.id} className={`p-3 rounded-xl flex items-center gap-3 ${
-              e.status === "live" ? "bg-red-50 border border-red-200" :
-              e.status === "scheduled" ? "bg-blue-50 border border-blue-200" :
-              "bg-gray-50 border border-gray-200"
-            }`}>
-              <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
-                e.status === "live" ? "bg-red-500 animate-pulse" :
-                e.status === "scheduled" ? "bg-[#B56B4A]" : "bg-gray-400"
-              }`} />
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-[#2D3142] text-sm">{e.title}</p>
-                <p className="text-xs text-[#5D5D5D]">
-                  {fmt(new Date(e.scheduledAt))} | {e.estimatedDuration} דקות
-                  {e.status === "ended" && " | הסתיים"}
-                  {e.status === "live" && " | משדר עכשיו!"}
-                </p>
-                {e.description && <p className="text-xs text-[#5D5D5D] mt-1">{e.description}</p>}
+          {selectedEvents.map((e: any) => {
+            const inner = (
+              <div className={`p-3 rounded-xl flex items-center gap-3 ${
+                e.status === "live" ? "bg-red-50 border border-red-200" :
+                e.status === "scheduled" ? "bg-blue-50 border border-blue-200" :
+                "bg-gray-50 border border-gray-200"
+              } ${e.status === "ended" ? "hover:bg-gray-100 cursor-pointer" : ""}`}>
+                <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                  e.status === "live" ? "bg-red-500 animate-pulse" :
+                  e.status === "scheduled" ? "bg-[#B56B4A]" : "bg-gray-400"
+                }`} />
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-[#2D3142] text-sm">{e.title}</p>
+                  <p className="text-xs text-[#5D5D5D]">
+                    {fmt(new Date(e.scheduledAt))} | {e.estimatedDuration} דקות
+                    {e.status === "ended" && " | הסתיים"}
+                    {e.status === "live" && " | משדר עכשיו!"}
+                  </p>
+                  {e.description && <p className="text-xs text-[#5D5D5D] mt-1">{e.description}</p>}
+                </div>
+                {e.status === "scheduled" && (
+                  <AddToCalendarButton event={e} />
+                )}
+                {e.status === "live" && (
+                  <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full flex-shrink-0">שידור חי</span>
+                )}
+                {e.status === "ended" && (
+                  <span className="inline-flex items-center gap-1 text-xs bg-[#D5C4B7]/20 text-[#2D3142] px-2.5 py-1 rounded-full border border-[#D5C4B7]/40">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    צפה בהקלטה
+                  </span>
+                )}
               </div>
-              {e.status === "scheduled" && (
-                <span className="text-xs bg-[#B56B4A] text-white px-2 py-1 rounded-full flex-shrink-0">עתידי</span>
-              )}
-              {e.status === "live" && (
-                <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full flex-shrink-0">שידור חי</span>
-              )}
-            </div>
-          ))}
+            );
+            return e.status === "ended" ? (
+              <Link key={e.id} href={`/explore?video=${encodeURIComponent(e.title)}`}>{inner}</Link>
+            ) : (
+              <div key={e.id}>{inner}</div>
+            );
+          })}
         </div>
       )}
 
@@ -209,6 +249,9 @@ const UpcomingList = ({ events }: { events: any[] }) => {
         <div className="mt-4">
           <Countdown targetDate={nextEvent.scheduledAt} />
         </div>
+        <div className="mt-4">
+          <AddToCalendarButton event={nextEvent} />
+        </div>
       </div>
 
       {/* Other upcoming */}
@@ -227,6 +270,7 @@ const UpcomingList = ({ events }: { events: any[] }) => {
                   <span className="text-xs text-[#5D5D5D] whitespace-nowrap">
                     {HEBREW_DAYS[d.getDay()]} {d.getDate()}.{d.getMonth()+1} | {fmt(d)}
                   </span>
+                  <AddToCalendarButton event={e} />
                 </div>
               );
             })}

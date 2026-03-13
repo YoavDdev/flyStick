@@ -194,12 +194,12 @@ const Page = () => {
         params: {
           page,
           query: queryToUse,
-          fields: "uri,embed.html,name,description,pictures,duration",
+          fields: "uri,embed.html,name,description,pictures,duration,type",
         },
       });
 
       const data = response.data;
-      const videosData = data.data;
+      const videosData = data.data.filter((v: any) => v.type !== "live");
 
       if (videosData.length === 0 && page === 1) {
         // Set noResults to true if no videos are found on the first page
