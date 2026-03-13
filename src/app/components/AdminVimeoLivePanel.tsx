@@ -20,6 +20,7 @@ const AdminVimeoLivePanel = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState<LiveEvent | null>(null);
   const [saving, setSaving] = useState(false);
+  const [showPastEvents, setShowPastEvents] = useState(false);
 
   // Form state
   const [form, setForm] = useState({
@@ -170,7 +171,7 @@ const AdminVimeoLivePanel = () => {
 
   const liveEvents = events.filter((e) => e.status === "live");
   const scheduledEvents = events.filter((e) => e.status === "scheduled").sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime());
-  const pastEvents = events.filter((e) => e.status === "ended" || e.status === "cancelled").slice(0, 5);
+  const pastEvents = events.filter((e) => e.status === "ended" || e.status === "cancelled").sort((a, b) => new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime());
 
   return (
     <div className="bg-white rounded-2xl shadow-md border border-[#D5C4B7]/30 overflow-hidden">
@@ -319,23 +320,33 @@ const AdminVimeoLivePanel = () => {
           </div>
         )}
 
-        {/* Past Events */}
+        {/* Past Events - Collapsible */}
         {pastEvents.length > 0 && (
-          <div>
-            <h4 className="font-medium text-[#2D3142] mb-2 text-sm">🕐 אחרונים</h4>
-            <div className="space-y-1">
-              {pastEvents.map((event) => {
-                const cfg = statusConfig[event.status] || statusConfig.ended;
-                return (
-                  <div key={event.id} className="flex items-center gap-3 p-2 rounded-lg text-sm text-[#5D5D5D]">
-                    <span className={`px-2 py-0.5 rounded-full text-xs ${cfg.color}`}>{cfg.text}</span>
-                    <span className="truncate flex-1">{event.title}</span>
-                    <span className="text-xs">{formatDate(event.scheduledAt)}</span>
-                    <button onClick={() => handleDelete(event.id)} className="text-xs text-red-400 hover:text-red-600">מחק</button>
-                  </div>
-                );
-              })}
-            </div>
+          <div className="border border-[#D5C4B7]/30 rounded-xl overflow-hidden">
+            <button
+              onClick={() => setShowPastEvents(!showPastEvents)}
+              className="w-full flex items-center justify-between p-3 bg-[#F7F3EB]/50 hover:bg-[#F7F3EB] transition-colors text-sm"
+            >
+              <span className="font-medium text-[#5D5D5D]">🕐 היסטוריית שידורים ({pastEvents.length})</span>
+              <svg className={`w-4 h-4 text-[#5D5D5D] transition-transform ${showPastEvents ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {showPastEvents && (
+              <div className="p-3 space-y-1 max-h-64 overflow-y-auto">
+                {pastEvents.map((event) => {
+                  const cfg = statusConfig[event.status] || statusConfig.ended;
+                  return (
+                    <div key={event.id} className="flex items-center gap-3 p-2 rounded-lg text-sm text-[#5D5D5D] hover:bg-[#F7F3EB]/50">
+                      <span className={`px-2 py-0.5 rounded-full text-xs ${cfg.color}`}>{cfg.text}</span>
+                      <span className="truncate flex-1">{event.title}</span>
+                      <span className="text-xs whitespace-nowrap">{formatDate(event.scheduledAt)}</span>
+                      <button onClick={() => handleDelete(event.id)} className="text-xs text-red-400 hover:text-red-600">מחק</button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 
