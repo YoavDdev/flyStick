@@ -9,7 +9,7 @@ const BANNER_HEIGHT = 40; // px
 const VimeoLiveBanner = () => {
   const [bannerState, setBannerState] = useState<"none" | "live" | "soon">("none");
   const [streamTitle, setStreamTitle] = useState("");
-  const [hoursUntil, setHoursUntil] = useState(0);
+  const [minutesUntil, setMinutesUntil] = useState(0);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -26,10 +26,10 @@ const VimeoLiveBanner = () => {
           const scheduled = new Date(data.stream.scheduledAt).getTime();
           const diffHours = (scheduled - now) / (1000 * 60 * 60);
 
-          if (diffHours > 0 && diffHours <= 6) {
+          if (diffHours > 0 && diffHours <= 1) {
             setBannerState("soon");
             setStreamTitle(data.stream.title || "שידור חי");
-            setHoursUntil(Math.ceil(diffHours));
+            setMinutesUntil(Math.ceil(diffHours * 60));
           } else {
             setBannerState("none");
           }
@@ -74,8 +74,8 @@ const VimeoLiveBanner = () => {
       <div
         className={`fixed top-0 left-0 right-0 z-[9999] flex items-center justify-center gap-2 px-4 text-white text-sm font-medium cursor-pointer transition-all duration-300 ${
           bannerState === "live"
-            ? "bg-gradient-to-r from-red-600 to-red-500 animate-pulse"
-            : "bg-gradient-to-r from-amber-600 to-amber-500"
+            ? "bg-gradient-to-r from-green-600 to-green-500"
+            : "bg-gradient-to-r from-indigo-500 to-purple-500"
         }`}
         style={{ height: BANNER_HEIGHT }}
         dir="rtl"
@@ -91,7 +91,7 @@ const VimeoLiveBanner = () => {
         )}
         {bannerState === "soon" && (
           <span>
-            📅 עוד {hoursUntil === 1 ? "שעה" : `${hoursUntil} שעות`}: {streamTitle} - לעמוד השידור
+            📅 עוד {minutesUntil} דקות: {streamTitle} - לעמוד השידור
           </span>
         )}
       </div>
