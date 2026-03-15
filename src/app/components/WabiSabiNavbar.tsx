@@ -87,6 +87,7 @@ const WabiSabiNavbar = () => {
     { href: "/", label: "בית", icon: AiOutlineHome },
     { href: "/series", label: "קורסים", icon: AiOutlineInfoCircle },
     { href: "/styles", label: "טכניקות", icon: AiOutlineInfoCircle },
+    { href: "/live", label: "שידור חי", icon: AiOutlineInfoCircle },
     { href: "/about", label: "אודות", icon: AiOutlineInfoCircle },
     { href: "/#Contact", label: "צור קשר", icon: AiOutlinePhone },
     { href: "/#Pricing", label: "מחיר", icon: AiOutlineDollar }
@@ -500,6 +501,23 @@ const WabiSabiNavbar = () => {
                       </div>
                     </motion.div>
                   </Link>
+                  <Link href="/live" onClick={closeMobileMenu}>
+                    <motion.div 
+                      className="flex items-center justify-between py-2 border-b border-[#D0C8B0]/20"
+                      whileHover={{ x: -5, transition: { duration: 0.2 } }}
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-lg text-[#5D5D5D] hover:text-[#B56B4A] transition-colors duration-300">
+                          שידור חי
+                        </span>
+                        <div className="ml-3 p-1.5 rounded-full bg-[#8E9A7C]/5">
+                          <svg className="h-4 w-4 text-[#8E9A7C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Link>
                   <button onClick={() => signOut()}>
                     <motion.div 
                       className="flex items-center justify-between py-2 border-b border-[#D0C8B0]/20 w-full"
@@ -547,8 +565,8 @@ const WabiSabiNavbar = () => {
               <h3 className="text-[#8E9A7C] font-medium mb-3 sm:mb-4 pr-1 text-base sm:text-lg">תפריט ראשי</h3>
               <ul className="text-lg sm:text-xl space-y-3 sm:space-y-4">
                 {navigationLinks.filter(link => {
-                  // Hide "קורסים" and "טכניקות" when user is logged in
-                  if (session?.user && (link.label === "קורסים" || link.label === "טכניקות")) {
+                  // Hide links that appear in personal area when user is logged in
+                  if (session?.user && (link.label === "קורסים" || link.label === "טכניקות" || link.label === "שידור חי")) {
                     return false;
                   }
                   return true;

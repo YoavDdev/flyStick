@@ -121,6 +121,14 @@ const EventCalendar = ({ events }: { events: any[] }) => {
         </button>
       </div>
 
+      {/* Legend */}
+      <div className="border-b border-[#D5C4B7]/20 p-2 flex items-center justify-center gap-4 text-[10px] text-[#5D5D5D]">
+        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded-full bg-red-500 inline-flex items-center justify-center text-white text-[8px]">5</span> שידור חי</span>
+        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded-full bg-[#B56B4A] inline-flex items-center justify-center text-white text-[8px]">5</span> מתוזמן</span>
+        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded-full bg-[#B8A99C] inline-flex items-center justify-center text-white text-[8px]">5</span> הסתיים</span>
+        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded-full bg-orange-400 inline-flex items-center justify-center text-white text-[8px]">5</span> בוטל</span>
+      </div>
+
       {/* Day names */}
       <div className="grid grid-cols-7 border-b border-[#D5C4B7]/20">
         {HEBREW_DAYS_SHORT.map((d) => (
@@ -138,6 +146,7 @@ const EventCalendar = ({ events }: { events: any[] }) => {
           const hasLive = dayEvts.some(e => e.status === "live");
           const hasScheduled = dayEvts.some(e => e.status === "scheduled");
           const hasEnded = dayEvts.some(e => e.status === "ended");
+          const hasCancelled = dayEvts.some(e => e.status === "cancelled");
 
           return (
             <button
@@ -148,15 +157,13 @@ const EventCalendar = ({ events }: { events: any[] }) => {
               }`}
             >
               <span className={`text-sm font-medium mt-1 w-7 h-7 flex items-center justify-center rounded-full ${
-                isToday ? "bg-[#2D3142] text-white" : "text-[#2D3142]"
+                hasLive ? "bg-red-500 text-white animate-pulse" :
+                hasScheduled ? "bg-[#B56B4A] text-white" :
+                hasCancelled ? "bg-orange-400 text-white" :
+                hasEnded ? "bg-[#B8A99C] text-white" :
+                isToday ? "text-[#B56B4A] font-bold underline underline-offset-2 decoration-2 decoration-[#B56B4A]" :
+                "text-[#2D3142]"
               }`}>{day}</span>
-              {dayEvts.length > 0 && (
-                <div className="flex gap-0.5 mt-1">
-                  {hasLive && <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />}
-                  {hasScheduled && <div className="w-2 h-2 rounded-full bg-[#B56B4A]" />}
-                  {hasEnded && <div className="w-2 h-2 rounded-full bg-[#B8A99C]" />}
-                </div>
-              )}
             </button>
           );
         })}
@@ -173,17 +180,20 @@ const EventCalendar = ({ events }: { events: any[] }) => {
               <div className={`p-3 rounded-xl flex items-center gap-3 ${
                 e.status === "live" ? "bg-red-50 border border-red-200" :
                 e.status === "scheduled" ? "bg-blue-50 border border-blue-200" :
+                e.status === "cancelled" ? "bg-orange-50 border border-orange-200" :
                 "bg-gray-50 border border-gray-200"
               } ${e.status === "ended" ? "hover:bg-gray-100 cursor-pointer" : ""}`}>
                 <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
                   e.status === "live" ? "bg-red-500 animate-pulse" :
-                  e.status === "scheduled" ? "bg-[#B56B4A]" : "bg-gray-400"
+                  e.status === "scheduled" ? "bg-[#B56B4A]" :
+                  e.status === "cancelled" ? "bg-orange-400" : "bg-gray-400"
                 }`} />
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-[#2D3142] text-sm">{e.title}</p>
+                  <p className={`font-medium text-sm ${e.status === "cancelled" ? "line-through text-[#5D5D5D]" : "text-[#2D3142]"}`}>{e.title}</p>
                   <p className="text-xs text-[#5D5D5D]">
                     {fmt(new Date(e.scheduledAt))} | {e.estimatedDuration} דקות
                     {e.status === "ended" && " | הסתיים"}
+                  {e.status === "cancelled" && " | בוטל"}
                     {e.status === "live" && " | משדר עכשיו!"}
                   </p>
                   {e.description && <p className="text-xs text-[#5D5D5D] mt-1">{e.description}</p>}
@@ -200,6 +210,9 @@ const EventCalendar = ({ events }: { events: any[] }) => {
                     צפה בהקלטה
                   </span>
                 )}
+                {e.status === "cancelled" && (
+                  <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full flex-shrink-0 font-medium">בוטל</span>
+                )}
               </div>
             );
             return e.status === "ended" ? (
@@ -211,12 +224,6 @@ const EventCalendar = ({ events }: { events: any[] }) => {
         </div>
       )}
 
-      {/* Legend */}
-      <div className="border-t border-[#D5C4B7]/20 p-3 flex items-center justify-center gap-4 text-[10px] text-[#5D5D5D]">
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500 inline-block" /> שידור חי</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#B56B4A] inline-block" /> מתוזמן</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#B8A99C] inline-block" /> הסתיים</span>
-      </div>
     </div>
   );
 };

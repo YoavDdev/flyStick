@@ -105,10 +105,38 @@ export async function PUT(request: NextRequest) {
       updateData.vimeoEmbedUrl = normalizeVimeoUrl(updateData.vimeoEmbedUrl);
     }
 
+    // Check if we're cancelling — need event info before update
+    const isCancelling = updateData.status === "cancelled";
+    let originalEvent = null;
+    if (isCancelling) {
+      originalEvent = await prisma.liveEvent.findUnique({ where: { id } });
+    }
+
     const event = await prisma.liveEvent.update({
       where: { id },
       data: updateData,
     });
+
+    // Auto-create system message when cancelling a scheduled event
+    if (isCancelling && originalEvent && originalEvent.status === "scheduled") {
+      try {
+        const d = new Date(originalEvent.scheduledAt);
+        const days = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+        const dateStr = `יום ${days[d.getDay()]} ${d.getDate()}.${d.getMonth() + 1} בשעה ${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
+
+        await prisma.message.create({
+          data: {
+            title: `שיעור בשידור חי בוטל`,
+            content: `השיעור "${originalEvent.title}" שתוכנן ל${dateStr} בוטל. עקבו אחרי לוח השידורים לעדכונים על שיעורים חדשים.`,
+            link: "/live",
+            linkText: "לוח שידורים",
+            isActive: true,
+          },
+        });
+      } catch (msgErr: any) {
+        console.error("Error creating cancellation message (non-blocking):", msgErr.message);
+      }
+    }
 
     return NextResponse.json({ success: true, event });
   } catch (error: any) {
