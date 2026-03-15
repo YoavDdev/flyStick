@@ -371,31 +371,59 @@ const LiveStreamPage = () => {
                 {stream.description && <p className="text-[#5D5D5D] mt-1">{stream.description}</p>}
               </div>
 
-              {getVimeoEmbedUrl(stream) ? (
-                getVimeoEmbedUrl(stream)!.includes("/interaction") ? (
-                  <div className="bg-black rounded-2xl overflow-hidden shadow-xl" style={{ minHeight: "70vh" }}>
-                    <iframe src={`${getVimeoEmbedUrl(stream)}?autoplay=1`} className="w-full h-full" style={{ minHeight: "70vh" }} allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share" allowFullScreen title={stream.title} />
+              {session ? (
+                <>
+                  {getVimeoEmbedUrl(stream) ? (
+                    getVimeoEmbedUrl(stream)!.includes("/interaction") ? (
+                      <div className="bg-black rounded-2xl overflow-hidden shadow-xl" style={{ minHeight: "70vh" }}>
+                        <iframe src={`${getVimeoEmbedUrl(stream)}?autoplay=1`} className="w-full h-full" style={{ minHeight: "70vh" }} allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share" allowFullScreen title={stream.title} />
+                      </div>
+                    ) : (
+                      <div className="bg-black rounded-2xl overflow-hidden shadow-xl aspect-video">
+                        <iframe src={`${getVimeoEmbedUrl(stream)}?autoplay=1`} className="w-full h-full" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen title={stream.title} />
+                      </div>
+                    )
+                  ) : (
+                    <div className="bg-black rounded-2xl overflow-hidden shadow-xl aspect-video flex items-center justify-center">
+                      <p className="text-xl text-white">השידור יתחיל בקרוב...</p>
+                    </div>
+                  )}
+
+                  <div className="mt-4 bg-white/70 rounded-2xl p-4 border border-[#D5C4B7]/30 shadow-md flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-[#D5C4B7] rounded-full flex items-center justify-center">
+                        <svg className="w-5 h-5 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                      </div>
+                      <div><p className="font-bold text-[#2D3142] text-sm">בועז נחייסי</p><p className="text-xs text-[#5D5D5D]">מורה ומנחה</p></div>
+                    </div>
+                    <p className="text-xs text-[#5D5D5D]">ההקלטה תהיה זמינה לאחר השידור למנויים בלבד</p>
                   </div>
-                ) : (
-                  <div className="bg-black rounded-2xl overflow-hidden shadow-xl aspect-video">
-                    <iframe src={`${getVimeoEmbedUrl(stream)}?autoplay=1`} className="w-full h-full" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen title={stream.title} />
-                  </div>
-                )
+                </>
               ) : (
-                <div className="bg-black rounded-2xl overflow-hidden shadow-xl aspect-video flex items-center justify-center">
-                  <p className="text-xl text-white">השידור יתחיל בקרוב...</p>
+                <div className="bg-gradient-to-b from-[#2D3142] to-[#1a1d2e] rounded-2xl overflow-hidden shadow-xl aspect-video flex flex-col items-center justify-center text-center p-8 relative">
+                  <div className="absolute inset-0 opacity-10">
+                    <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-red-500 rounded-full blur-3xl animate-pulse" />
+                    <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-[#D5C4B7] rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
+                  </div>
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-center gap-2 mb-4">
+                      <div className="relative"><div className="w-3 h-3 bg-red-500 rounded-full"></div><div className="absolute inset-0 w-3 h-3 bg-red-500 rounded-full animate-ping"></div></div>
+                      <span className="text-red-400 font-bold">שידור חי עכשיו</span>
+                    </div>
+                    <svg className="w-16 h-16 text-white/30 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                    <h3 className="text-white text-xl sm:text-2xl font-bold mb-2">הירשמו כדי לצפות בשידור</h3>
+                    <p className="text-white/60 text-sm mb-6 max-w-md">השידור החי פתוח לכל מי שרשום באתר. הירשמו בחינם כדי להצטרף לשיעור עם בועז נחייסי.</p>
+                    <div className="flex flex-col sm:flex-row items-center gap-3 justify-center">
+                      <Link href="/register" className="bg-white text-[#2D3142] px-6 py-3 rounded-full font-bold text-sm hover:bg-[#D5C4B7] transition-colors shadow-lg">
+                        הרשמה חינם
+                      </Link>
+                      <Link href="/login" className="text-white/80 border border-white/30 px-6 py-3 rounded-full text-sm hover:bg-white/10 transition-colors">
+                        כבר רשומים? התחברו
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               )}
-
-              <div className="mt-4 bg-white/70 rounded-2xl p-4 border border-[#D5C4B7]/30 shadow-md flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#D5C4B7] rounded-full flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                  </div>
-                  <div><p className="font-bold text-[#2D3142] text-sm">בועז נחייסי</p><p className="text-xs text-[#5D5D5D]">מורה ומנחה</p></div>
-                </div>
-                <p className="text-xs text-[#5D5D5D]">ההקלטה תהיה זמינה לאחר השידור למנויים בלבד</p>
-              </div>
             </div>
           )}
 
@@ -417,7 +445,7 @@ const LiveStreamPage = () => {
               <div className="bg-white/70 rounded-2xl p-5 border border-[#D5C4B7]/30 shadow text-center">
                 <p className="text-2xl mb-2">🎯</p>
                 <p className="text-sm font-medium text-[#2D3142]">שידור חינם</p>
-                <p className="text-xs text-[#5D5D5D]">פתוח לכולם</p>
+                <p className="text-xs text-[#5D5D5D]">לרשומים בלבד</p>
               </div>
               <div className="bg-white/70 rounded-2xl p-5 border border-[#D5C4B7]/30 shadow text-center">
                 <p className="text-2xl mb-2">💬</p>
