@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const emailPromises = subscribers.map(subscriber => 
       resend.emails.send({
-        from: 'Studio Boaz <info@studioboazonline.com>',
+        from: 'Studio Boaz <info@mail.studioboazonline.com>',
         to: [subscriber.email],
         subject: subject,
         html: `

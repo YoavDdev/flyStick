@@ -173,7 +173,7 @@ export async function POST(request: Request) {
 
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: 'Studio Boaz <info@studioboazonline.com>',
+        from: 'Studio Boaz <info@mail.studioboazonline.com>',
         to: ['yoavddev@gmail.com', 'zzaaoobb@gmail.com'],
         subject: `🛒 הזמנה חדשה בחנות Kohu - #${orderNumber}`,
         html: `

@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     // Send email to admin
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
-      from: 'Studio Boaz <info@studioboazonline.com>',
+      from: 'Studio Boaz <info@mail.studioboazonline.com>',
       to: ['yoavddev@gmail.com', 'zzaaoobb@gmail.com'],
       subject: `הודעה חדשה מאתר Studio Boaz - ${name}`,
       html: `
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
 
     // Send confirmation email to user
     await resend.emails.send({
-      from: 'Studio Boaz <info@studioboazonline.com>',
+      from: 'Studio Boaz <info@mail.studioboazonline.com>',
       to: [email],
       subject: 'תודה שיצרת קשר - המסע שלנו מתחיל',
       html: `

@@ -78,7 +78,7 @@ export async function POST(request) {
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
-        from: 'Studio Boaz Online <info@studioboazonline.com>',
+        from: 'Studio Boaz Online <info@mail.studioboazonline.com>',
         to: [email],
         subject: 'זהו. יש לך מנוי והכל פתוח לפניך!',
         html: `
@@ -134,7 +134,7 @@ export async function POST(request) {
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
-        from: 'Studio Boaz Online <info@studioboazonline.com>',
+        from: 'Studio Boaz Online <info@mail.studioboazonline.com>',
         to: ['yoavddev@gmail.com', 'zzaaoobb@gmail.com'],
         subject: `🎉 מנוי חדש נרשם - ${user.name || 'משתמש חדש'}`,
         html: `

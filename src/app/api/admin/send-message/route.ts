@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       const emailPromises = subscribers.map(async (subscriber: NewsletterSubscriber) => {
         try {
           const { data, error } = await resend.emails.send({
-            from: 'info@studioboazonline.com',
+            from: 'info@mail.studioboazonline.com',
             to: subscriber.email,
             subject: 'הודעה חדשה - Studio Boaz',
             html: `

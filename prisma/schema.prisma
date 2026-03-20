@@ -193,6 +193,7 @@ model VideoSeries {
   updatedAt       DateTime @updatedAt
   
   purchases       Purchase[]
+  pendingGifts    PendingGift[]
 }
 
 model Purchase {
@@ -209,10 +210,40 @@ model Purchase {
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
   
+  // Gift purchase fields
+  isGift              Boolean   @default(false)
+  giftSenderEmail     String?   // Email of the person who bought the gift
+  giftSenderName      String?   // Name of the person who bought the gift
+  giftRecipientName   String?   // Name of the gift recipient
+  giftMessage         String?   // Personal message from sender
+  giftClaimedAt       DateTime? // When the recipient claimed the gift
+  
   user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   series          VideoSeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
   
   @@unique([userId, seriesId]) // User can only purchase each series once
+}
+
+// Pending gifts for recipients who haven't registered yet
+model PendingGift {
+  id                  String      @id @default(auto()) @map("_id") @db.ObjectId
+  seriesId            String      @db.ObjectId
+  recipientEmail      String      // Email of the intended recipient
+  recipientName       String?     // Name of the recipient (optional)
+  senderEmail         String      // Email of the buyer
+  senderName          String?     // Name of the buyer
+  giftMessage         String?     // Personal message
+  paypalOrderId       String      // PayPal order/transaction ID
+  paypalPayerId       String?     // PayPal payer ID
+  amount              Float       // Amount paid
+  currency            String      @default("ILS")
+  status              String      @default("PENDING") // PENDING, CLAIMED, EXPIRED
+  claimedAt           DateTime?   // When the recipient registered and claimed
+  claimedByUserId     String?     @db.ObjectId // User ID once claimed
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  
+  series              VideoSeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
 }
 
 model Product {

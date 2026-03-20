@@ -20,8 +20,8 @@ export async function GET() {
     // Send a simple test email
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
-      from: 'Studio Boaz <info@studioboazonline.com>',
-      to: ['info@studioboazonline.com'],
+      from: 'Studio Boaz <info@mail.studioboazonline.com>',
+      to: ['info@mail.studioboazonline.com'],
       subject: 'Test Email from Studio Boaz',
       html: '<h1>This is a test email</h1><p>If you receive this, the email system is working!</p>',
     });

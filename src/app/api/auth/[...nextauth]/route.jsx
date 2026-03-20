@@ -101,6 +101,73 @@ export const authOptions = {
           // Don't block login if folder creation fails
         }
 
+        // 🎁 Check for pending gifts and claim them automatically
+        if (user.email) {
+          try {
+            const normalizedEmail = user.email.toLowerCase().trim();
+            const pendingGifts = await prisma.pendingGift.findMany({
+              where: {
+                recipientEmail: normalizedEmail,
+                status: "PENDING"
+              },
+              include: { series: true }
+            });
+
+            for (const gift of pendingGifts) {
+              try {
+                // Check if user already has this series (avoid duplicate)
+                const existingPurchase = await prisma.purchase.findUnique({
+                  where: {
+                    userId_seriesId: {
+                      userId: user.id,
+                      seriesId: gift.seriesId
+                    }
+                  }
+                });
+
+                if (!existingPurchase) {
+                  await prisma.purchase.create({
+                    data: {
+                      userId: user.id,
+                      seriesId: gift.seriesId,
+                      paypalOrderId: gift.paypalOrderId,
+                      paypalPayerId: gift.paypalPayerId,
+                      amount: gift.amount,
+                      currency: gift.currency,
+                      status: "COMPLETED",
+                      isGift: true,
+                      giftSenderEmail: gift.senderEmail,
+                      giftSenderName: gift.senderName,
+                      giftRecipientName: gift.recipientName || user.name,
+                      giftMessage: gift.giftMessage,
+                      giftClaimedAt: new Date()
+                    }
+                  });
+                }
+
+                await prisma.pendingGift.update({
+                  where: { id: gift.id },
+                  data: {
+                    status: "CLAIMED",
+                    claimedAt: new Date(),
+                    claimedByUserId: user.id
+                  }
+                });
+
+                console.log(`🎁 Pending gift claimed on sign-in: ${gift.series.title} for ${normalizedEmail}`);
+              } catch (giftClaimError) {
+                console.error(`❌ Error claiming gift ${gift.id}:`, giftClaimError);
+              }
+            }
+
+            if (pendingGifts.length > 0) {
+              console.log(`🎁 ${pendingGifts.length} gift(s) claimed on sign-in for: ${normalizedEmail}`);
+            }
+          } catch (giftError) {
+            console.error("❌ Error checking pending gifts:", giftError);
+          }
+        }
+
         // Subscribe Google sign-in users to newsletter (non-blocking)
         if (account?.provider === "google") {
           // Run newsletter subscription in background without blocking login

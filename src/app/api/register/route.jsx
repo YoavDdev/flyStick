@@ -78,13 +78,68 @@ export async function POST(request) {
     },
   });
 
-  // 🎉 ALWAYS send welcome email to ALL new users
+  // � Check for pending gifts and claim them automatically
+  try {
+    const pendingGifts = await prisma.pendingGift.findMany({
+      where: {
+        recipientEmail: normalizedEmail,
+        status: "PENDING"
+      },
+      include: { series: true }
+    });
+
+    for (const gift of pendingGifts) {
+      try {
+        // Create a real purchase for the new user
+        await prisma.purchase.create({
+          data: {
+            userId: user.id,
+            seriesId: gift.seriesId,
+            paypalOrderId: gift.paypalOrderId,
+            paypalPayerId: gift.paypalPayerId,
+            amount: gift.amount,
+            currency: gift.currency,
+            status: "COMPLETED",
+            isGift: true,
+            giftSenderEmail: gift.senderEmail,
+            giftSenderName: gift.senderName,
+            giftRecipientName: gift.recipientName || name,
+            giftMessage: gift.giftMessage,
+            giftClaimedAt: new Date()
+          }
+        });
+
+        // Mark the pending gift as claimed
+        await prisma.pendingGift.update({
+          where: { id: gift.id },
+          data: {
+            status: "CLAIMED",
+            claimedAt: new Date(),
+            claimedByUserId: user.id
+          }
+        });
+
+        console.log(`🎁 Pending gift claimed: ${gift.series.title} for ${normalizedEmail}`);
+      } catch (giftClaimError) {
+        console.error(`❌ Error claiming gift ${gift.id}:`, giftClaimError);
+      }
+    }
+
+    if (pendingGifts.length > 0) {
+      console.log(`🎁 ${pendingGifts.length} gift(s) claimed for new user: ${normalizedEmail}`);
+    }
+  } catch (giftError) {
+    console.error("❌ Error checking pending gifts:", giftError);
+    // Don't fail registration if gift claiming fails
+  }
+
+  // �🎉 ALWAYS send welcome email to ALL new users
   try {
     const { Resend } = await import('resend');
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     await resend.emails.send({
-      from: 'Studio Boaz Online <info@studioboazonline.com>',
+      from: 'Studio Boaz Online <info@mail.studioboazonline.com>',
       to: [normalizedEmail],
       subject: 'ברוך הבא לסטודיו',
       html: `

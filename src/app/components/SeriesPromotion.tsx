@@ -38,6 +38,10 @@ const SeriesPromotion = () => {
   const [loading, setLoading] = useState(true);
   const [purchasingSeriesId, setPurchasingSeriesId] = useState<string | null>(null);
   const [saleConfig, setSaleConfig] = useState<SaleConfig | null>(null);
+  const [giftSeriesId, setGiftSeriesId] = useState<string | null>(null);
+  const [giftForm, setGiftForm] = useState({ recipientEmail: '', recipientName: '', giftMessage: '' });
+  const [giftProcessing, setGiftProcessing] = useState(false);
+  const [giftConfirmed, setGiftConfirmed] = useState(false);
 
   useEffect(() => {
     const fetchSaleConfig = async () => {
@@ -77,6 +81,40 @@ const SeriesPromotion = () => {
       return saleConfig.salePrice;
     }
     return item.price;
+  };
+
+  const handleGiftPurchaseComplete = async (seriesId: string, paypalOrderId: string, paypalPayerId: string, amount: number) => {
+    setGiftProcessing(true);
+    try {
+      const response = await fetch('/api/series/gift-purchase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          seriesId,
+          paypalOrderId,
+          paypalPayerId,
+          amount,
+          currency: 'ILS',
+          recipientEmail: giftForm.recipientEmail,
+          recipientName: giftForm.recipientName,
+          giftMessage: giftForm.giftMessage
+        })
+      });
+      const result = await response.json();
+      if (response.ok) {
+        toast.success(result.message || 'המתנה נשלחה בהצלחה! 🎁');
+        setGiftSeriesId(null);
+        setGiftForm({ recipientEmail: '', recipientName: '', giftMessage: '' });
+        setGiftConfirmed(false);
+      } else {
+        toast.error(result.error || 'שגיאה בעיבוד המתנה');
+      }
+    } catch (error) {
+      console.error('Error processing gift purchase:', error);
+      toast.error('שגיאה בעיבוד המתנה');
+    } finally {
+      setGiftProcessing(false);
+    }
   };
 
   if (loading) {
@@ -286,24 +324,149 @@ const SeriesPromotion = () => {
                             צפה עכשיו
                           </motion.button>
                         </Link>
-                      ) : (
-                        <motion.button
-                          onClick={() => {
-                            if (!session) {
-                              router.push(`/series/register?returnUrl=${encodeURIComponent(window.location.pathname)}`);
-                              return;
-                            }
-                            setPurchasingSeriesId(seriesItem.id);
-                          }}
-                          className="bg-[#B8A99C] text-white px-4 py-2 rounded-lg hover:bg-[#D5C4B7] transition-colors text-sm font-medium"
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                        >
-                          רכישה
-                        </motion.button>
-                      )}
+                      ) : !(seriesItem.isComingSoon || seriesItem.title.includes('בקרוב')) ? (
+                        <div className="flex items-center gap-2">
+                          <motion.button
+                            onClick={() => {
+                              if (!session) {
+                                router.push(`/series/register?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+                                return;
+                              }
+                              setPurchasingSeriesId(seriesItem.id);
+                            }}
+                            className="bg-[#B8A99C] text-white px-4 py-2 rounded-lg hover:bg-[#D5C4B7] transition-colors text-sm font-medium"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                          >
+                            רכישה
+                          </motion.button>
+                          <motion.button
+                            onClick={() => {
+                              if (!session) {
+                                router.push(`/series/register?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+                                return;
+                              }
+                              setGiftSeriesId(seriesItem.id);
+                              setPurchasingSeriesId(null);
+                            }}
+                            className="bg-[#D9713C] text-white px-3 py-2 rounded-lg hover:bg-[#D9713C]/80 transition-colors text-sm font-bold"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            title="קנה כמתנה"
+                          >
+                            🎁
+                          </motion.button>
+                        </div>
+                      ) : null}
                     </div>
                   </div>
+
+                  {/* Gift Purchase Form */}
+                  {giftSeriesId === seriesItem.id && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="mt-4 pt-4 border-t border-[#D9713C]/30"
+                    >
+                      <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-lg p-4 border border-[#D9713C]/20">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-xl">🎁</span>
+                          <h4 className="text-base font-bold text-[#2D3142]">שלח כמתנה</h4>
+                        </div>
+                        <div className="space-y-2">
+                          <input
+                            type="email"
+                            value={giftForm.recipientEmail}
+                            onChange={(e) => setGiftForm({...giftForm, recipientEmail: e.target.value})}
+                            className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/80 text-sm"
+                            placeholder="אימייל המקבל/ת *"
+                          />
+                          <input
+                            type="text"
+                            value={giftForm.recipientName}
+                            onChange={(e) => setGiftForm({...giftForm, recipientName: e.target.value})}
+                            className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/80 text-sm"
+                            placeholder="שם המקבל/ת (אופציונלי)"
+                          />
+                          <textarea
+                            value={giftForm.giftMessage}
+                            onChange={(e) => setGiftForm({...giftForm, giftMessage: e.target.value})}
+                            className="w-full p-2 border border-[#D5C4B7]/30 rounded-lg bg-white/80 text-sm resize-none"
+                            rows={2}
+                            placeholder="הודעה אישית (אופציונלי)"
+                          />
+                        </div>
+                        {giftForm.recipientEmail && !giftConfirmed && (
+                          <div className="mt-3">
+                            <button
+                              onClick={() => {
+                                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                if (!emailRegex.test(giftForm.recipientEmail)) {
+                                  toast.error('כתובת אימייל לא תקינה');
+                                  return;
+                                }
+                                if (giftForm.recipientEmail.toLowerCase().trim() === session?.user?.email?.toLowerCase().trim()) {
+                                  toast.error('לא ניתן לשלוח מתנה לעצמך');
+                                  return;
+                                }
+                                setGiftConfirmed(true);
+                              }}
+                              className="w-full bg-[#D9713C] text-white py-2 rounded-lg font-bold text-sm hover:bg-[#D9713C]/90 transition-colors"
+                            >
+                              אישור ומעבר לתשלום
+                            </button>
+                          </div>
+                        )}
+                        {giftConfirmed && (
+                          <div className="mt-3">
+                            <div className="bg-white/60 rounded-lg p-2.5 mb-3 border border-[#D9713C]/20">
+                              <p className="text-xs text-[#5D5D5D] mb-0.5">שולח מתנה ל:</p>
+                              <p className="text-sm font-bold text-[#2D3142]">{giftForm.recipientName || giftForm.recipientEmail}</p>
+                              <p className="text-xs text-[#5D5D5D]">{giftForm.recipientEmail}</p>
+                              <button
+                                onClick={() => setGiftConfirmed(false)}
+                                className="text-xs text-[#D9713C] hover:underline mt-1"
+                              >
+                                שינוי פרטים
+                              </button>
+                            </div>
+                            <PayPalScriptProvider
+                              options={{
+                                clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
+                                components: "buttons",
+                                intent: "capture",
+                                currency: "ILS"
+                              }}
+                            >
+                              <PayPalButtons
+                                style={{ color: "gold", shape: "pill", height: 35, label: "pay" }}
+                                createOrder={(data, actions) => {
+                                  const chargePrice = getDisplayPrice(seriesItem);
+                                  return actions.order.create({
+                                    purchase_units: [{ amount: { value: chargePrice.toString(), currency_code: "ILS" }, description: `מתנה: ${seriesItem.title}` }],
+                                    intent: "CAPTURE"
+                                  });
+                                }}
+                                onApprove={(data, actions) => {
+                                  const chargePrice = getDisplayPrice(seriesItem);
+                                  return actions.order!.capture().then((details) => {
+                                    handleGiftPurchaseComplete(seriesItem.id, data.orderID, details.payer?.payer_id || "", chargePrice);
+                                  });
+                                }}
+                                onError={(err) => { console.error('PayPal gift error:', err); toast.error('שגיאה בתשלום'); }}
+                              />
+                            </PayPalScriptProvider>
+                          </div>
+                        )}
+                        <button
+                          onClick={() => { setGiftSeriesId(null); setGiftForm({ recipientEmail: '', recipientName: '', giftMessage: '' }); setGiftConfirmed(false); }}
+                          className="mt-2 text-sm text-[#5D5D5D] hover:text-[#2D3142] transition-colors w-full text-center"
+                        >
+                          ביטול
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
 
                   {/* Inline PayPal for purchasing */}
                   {purchasingSeriesId === seriesItem.id && (

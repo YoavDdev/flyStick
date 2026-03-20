@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       console.log('🔄 Sending welcome email to:', email);
       const resend = new Resend(process.env.RESEND_API_KEY);
       const emailResult = await resend.emails.send({
-        from: 'Studio Boaz <info@studioboazonline.com>',
+        from: 'Studio Boaz <info@mail.studioboazonline.com>',
         to: [email],
         subject: 'ברוכים הבאים למסע הפנימי שלנו - Studio Boaz',
       html: `

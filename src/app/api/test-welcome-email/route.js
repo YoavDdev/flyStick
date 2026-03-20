@@ -18,7 +18,7 @@ export async function POST(request) {
     console.log("✅ Resend instance created");
 
     const result = await resend.emails.send({
-      from: 'Studio Boaz Online <info@studioboazonline.com>',
+      from: 'Studio Boaz Online <info@mail.studioboazonline.com>',
       to: [email],
       subject: '🧪 Test Welcome Email - סטודיו בועז אונליין',
       html: `

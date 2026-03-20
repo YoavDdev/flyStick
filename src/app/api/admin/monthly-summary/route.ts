@@ -265,7 +265,7 @@ export async function POST(request: NextRequest) {
     // Send the email
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
-      from: 'Studio Boaz Online <info@studioboazonline.com>',
+      from: 'Studio Boaz Online <info@mail.studioboazonline.com>',
       to: MONTHLY_SUMMARY_CONFIG.RECIPIENTS,
       subject: MONTHLY_SUMMARY_CONFIG.SUBJECT_TEMPLATE(currentMonth, paypalActiveCount, monthlyRevenue),
       html: emailContent
