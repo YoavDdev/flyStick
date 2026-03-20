@@ -23,14 +23,36 @@ interface VideoSeries {
   isComingSoon?: boolean;
 }
 
+interface SaleConfig {
+  isActive: boolean;
+  saleName: string | null;
+  badgeText: string | null;
+  originalPrice: number | null;
+  salePrice: number | null;
+}
+
 const SeriesPromotion = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [series, setSeries] = useState<VideoSeries[]>([]);
   const [loading, setLoading] = useState(true);
   const [purchasingSeriesId, setPurchasingSeriesId] = useState<string | null>(null);
+  const [saleConfig, setSaleConfig] = useState<SaleConfig | null>(null);
 
   useEffect(() => {
+    const fetchSaleConfig = async () => {
+      try {
+        const response = await fetch('/api/sale-config');
+        if (response.ok) {
+          const data = await response.json();
+          setSaleConfig(data);
+        }
+      } catch (error) {
+        console.error('Error fetching sale config:', error);
+      }
+    };
+    fetchSaleConfig();
+
     const fetchSeries = async () => {
       try {
         const response = await fetch('/api/series');
@@ -49,6 +71,13 @@ const SeriesPromotion = () => {
 
     fetchSeries();
   }, []);
+
+  const getDisplayPrice = (item: VideoSeries) => {
+    if (saleConfig?.isActive && saleConfig.salePrice) {
+      return saleConfig.salePrice;
+    }
+    return item.price;
+  };
 
   if (loading) {
     return (
@@ -164,6 +193,18 @@ const SeriesPromotion = () => {
                       <div className="absolute top-3 right-3 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
                         <FaCheck className="inline mr-1" />
                         {seriesItem.accessType === 'subscription' ? 'מנוי' : 'נרכש'}
+                      </div>
+                    ) : saleConfig?.isActive && saleConfig.salePrice ? (
+                      <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
+                        {saleConfig.badgeText && (
+                          <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-md animate-pulse">
+                            {saleConfig.badgeText}
+                          </div>
+                        )}
+                        <div className="bg-[#D9713C] text-white px-2 py-1 rounded-full text-xs font-bold shadow-md flex items-center gap-1">
+                          <span className="line-through opacity-70 text-[10px]">₪{saleConfig.originalPrice}</span>
+                          <span>₪{saleConfig.salePrice}</span>
+                        </div>
                       </div>
                     ) : (
                       <div className="absolute top-3 right-3 bg-[#B8A99C] text-white px-2 py-1 rounded-full text-xs font-medium">
@@ -288,10 +329,11 @@ const SeriesPromotion = () => {
                             label: "pay"
                           }}
                           createOrder={(data, actions) => {
+                            const chargePrice = getDisplayPrice(seriesItem);
                             return actions.order.create({
                               purchase_units: [{
                                 amount: {
-                                  value: seriesItem.price.toString(),
+                                  value: chargePrice.toString(),
                                   currency_code: "ILS"
                                 },
                                 description: seriesItem.title

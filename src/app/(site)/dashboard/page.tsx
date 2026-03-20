@@ -18,6 +18,7 @@ import AdminMessageComposer from "../../components/AdminMessageComposer";
 import AdminNewsletterComposer from "../../components/AdminNewsletterComposer";
 import AdminFolderMetadataManager from "../../components/AdminFolderMetadataManager";
 import AdminVideoSeriesManager from "../../components/AdminVideoSeriesManager";
+import AdminSaleManager from "../../components/AdminSaleManager";
 import AdminProductManager from "../../components/AdminProductManager";
 import AdminOrderManager from "../../components/AdminOrderManager";
 import WelcomePopup from "../../components/WelcomePopup";
@@ -343,6 +344,11 @@ const DashboardPage = () => {
                 {/* Folder Metadata Manager */}
                 <motion.div variants={itemVariants}>
                   <AdminFolderMetadataManager />
+                </motion.div>
+
+                {/* Sale Manager */}
+                <motion.div variants={itemVariants}>
+                  <AdminSaleManager />
                 </motion.div>
 
                 {/* Video Series Manager */}

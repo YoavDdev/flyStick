@@ -34,16 +34,45 @@ interface SeriesData {
   };
 }
 
+interface SaleConfig {
+  isActive: boolean;
+  saleName: string | null;
+  badgeText: string | null;
+  originalPrice: number | null;
+  salePrice: number | null;
+}
+
 const SeriesMarketplace = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [seriesData, setSeriesData] = useState<SeriesData | null>(null);
   const [loading, setLoading] = useState(true);
   const [purchasingSeriesId, setPurchasingSeriesId] = useState<string | null>(null);
+  const [saleConfig, setSaleConfig] = useState<SaleConfig | null>(null);
 
   useEffect(() => {
     fetchSeries();
+    fetchSaleConfig();
   }, [session]);
+
+  const fetchSaleConfig = async () => {
+    try {
+      const response = await fetch("/api/sale-config");
+      if (response.ok) {
+        const data = await response.json();
+        setSaleConfig(data);
+      }
+    } catch (error) {
+      console.error("Error fetching sale config:", error);
+    }
+  };
+
+  const getDisplayPrice = (series: VideoSeries) => {
+    if (saleConfig?.isActive && saleConfig.salePrice) {
+      return saleConfig.salePrice;
+    }
+    return series.price;
+  };
 
   const fetchSeries = async () => {
     try {
@@ -328,6 +357,18 @@ const SeriesMarketplace = () => {
                           <FaCheck className="inline mr-1" />
                           {series.accessType === 'subscription' ? 'מנוי' : 'נרכש'}
                         </div>
+                      ) : saleConfig?.isActive && saleConfig.salePrice ? (
+                        <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
+                          {saleConfig.badgeText && (
+                            <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md animate-pulse">
+                              {saleConfig.badgeText}
+                            </div>
+                          )}
+                          <div className="bg-gradient-to-r from-[#D9713C] to-[#D9713C]/80 text-white px-3 py-1 rounded-full text-sm font-bold shadow-md flex items-center gap-2">
+                            <span className="line-through opacity-70 text-xs">₪{saleConfig.originalPrice}</span>
+                            <span>₪{saleConfig.salePrice}</span>
+                          </div>
+                        </div>
                       ) : (
                         <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D9713C] to-[#D9713C]/80 text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">
                           ₪{series.price}
@@ -431,10 +472,11 @@ const SeriesMarketplace = () => {
                               label: "pay"
                             }}
                             createOrder={(data, actions) => {
+                              const chargePrice = getDisplayPrice(series);
                               return actions.order.create({
                                 purchase_units: [{
                                   amount: {
-                                    value: series.price.toString(),
+                                    value: chargePrice.toString(),
                                     currency_code: "ILS"
                                   },
                                   description: series.title
@@ -443,12 +485,13 @@ const SeriesMarketplace = () => {
                               });
                             }}
                             onApprove={(data, actions) => {
+                              const chargePrice = getDisplayPrice(series);
                               return actions.order!.capture().then((details) => {
                                 handlePurchaseComplete(
                                   series.id,
                                   data.orderID,
                                   details.payer?.payer_id || "",
-                                  series.price
+                                  chargePrice
                                 );
                               });
                             }}

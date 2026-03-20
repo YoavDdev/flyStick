@@ -331,3 +331,14 @@ model ShopOrderItem {
   order           ShopOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product         Product   @relation(fields: [productId], references: [id])
 }
+
+model SaleConfig {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  isActive        Boolean  @default(false)
+  saleName        String   @default("מבצע")
+  badgeText       String?  // e.g. "מבצע פסח!" 
+  originalPrice   Float    // Original price to show with strikethrough
+  salePrice       Float    // Discounted price
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
