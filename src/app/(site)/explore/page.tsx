@@ -199,7 +199,7 @@ const Page = () => {
       });
 
       const data = response.data;
-      const videosData = data.data.filter((v: any) => v.type !== "live");
+      const videosData = data.data;
 
       if (videosData.length === 0 && page === 1) {
         // Set noResults to true if no videos are found on the first page
