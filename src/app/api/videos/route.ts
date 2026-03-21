@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
       params: {
         page,
         query,
-        fields: "uri,embed.html,name,description,pictures.sizes,duration",
+        fields: "uri,embed.html,name,description,pictures.sizes,duration,type",
         per_page: 25, // Increased from default 20 for better batching
       },
       timeout: 10000, // 10 second timeout
