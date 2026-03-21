@@ -289,12 +289,23 @@ function buildRecipientEmail({ senderName, recipientName, seriesTitle, giftMessa
         
         <div style="background: linear-gradient(135deg, #D5C4B7 0%, #B8A99C 100%); padding: 40px; text-align: center;">
           <div style="margin-bottom: 15px;">
-            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block;">
-              <path d="M20 12V22H4V12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M22 7H2V12H22V7Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M12 22V7" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M12 7H7.5C6.83696 7 6.20107 6.73661 5.73223 6.26777C5.26339 5.79893 5 5.16304 5 4.5C5 3.83696 5.26339 3.20107 5.73223 2.73223C6.20107 2.26339 6.83696 2 7.5 2C11 2 12 7 12 7Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M12 7H16.5C17.163 7 17.7989 6.73661 18.2678 6.26777C18.7366 5.79893 19 5.16304 19 4.5C19 3.83696 18.7366 3.20107 18.2678 2.73223C17.7989 2.26339 17.163 2 16.5 2C13 2 12 7 12 7Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="70" height="70" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block;">
+              <!-- Radiance lines -->
+              <line x1="32" y1="4" x2="32" y2="10" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="44" y1="8" x2="42" y2="13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="52" y1="16" x2="48" y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="20" y1="8" x2="22" y2="13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="12" y1="16" x2="16" y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="54" y1="28" x2="49" y2="28" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="10" y1="28" x2="15" y2="28" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <!-- Gift box -->
+              <rect x="18" y="28" width="28" height="28" rx="2" fill="white"/>
+              <rect x="18" y="20" width="28" height="8" rx="1" fill="white"/>
+              <rect x="30" y="20" width="4" height="36" fill="rgba(255,255,255,0.7)"/>
+              <!-- Bow -->
+              <ellipse cx="26" cy="20" rx="6" ry="3" fill="white"/>
+              <ellipse cx="38" cy="20" rx="6" ry="3" fill="white"/>
+              <circle cx="32" cy="20" r="2" fill="white"/>
             </svg>
           </div>
           <h1 style="color: white; margin: 0; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.2); line-height: 1.4;">קיבלת מתנה מרגשת!</h1>
