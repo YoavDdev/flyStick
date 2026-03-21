@@ -175,7 +175,7 @@ export async function POST(request: NextRequest) {
       const baseUrl = process.env.NEXTAUTH_URL || 'https://studioboazonline.com';
 
       // 1. Email to RECIPIENT
-      const recipientSubject = `🎁 קיבלת מתנה מ${senderName}! - ${series.title}`;
+      const recipientSubject = `🎁 קיבלת מתנה מ-${senderName}! - ${series.title}`;
       const recipientHtml = buildRecipientEmail({
         senderName,
         recipientName: recipientName || "",
@@ -261,13 +261,13 @@ export async function POST(request: NextRequest) {
 function buildRecipientEmail({ senderName, recipientName, seriesTitle, giftMessage, isRegistered, baseUrl }: {
   senderName: string; recipientName: string; seriesTitle: string; giftMessage: string; isRegistered: boolean; baseUrl: string;
 }) {
-  const greeting = recipientName ? `${recipientName} יקר/ה` : 'שלום';
+  const greeting = recipientName ? `היי ${recipientName},` : 'שלום,';
   const actionButton = isRegistered
-    ? `<a href="${baseUrl}/series" style="display: inline-block; background: linear-gradient(135deg, #D5C4B7, #B8A99C); color: #2D3142; padding: 14px 32px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 16px;">צפה בסדרה עכשיו</a>`
-    : `<a href="${baseUrl}/series/register" style="display: inline-block; background: linear-gradient(135deg, #D5C4B7, #B8A99C); color: #2D3142; padding: 14px 32px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 16px;">הירשמו כדי לצפות בסדרה</a>`;
+    ? `<a href="${baseUrl}/series" style="display: inline-block; background: linear-gradient(135deg, #D5C4B7, #B8A99C); color: white; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 17px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">צפייה בקורס עכשיו</a>`
+    : `<a href="${baseUrl}/series/register" style="display: inline-block; background: linear-gradient(135deg, #D5C4B7, #B8A99C); color: white; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 17px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">להרשמה וצפייה בקורס</a>`;
   const accessNote = isRegistered
-    ? 'הסדרה כבר מחכה לך בחשבון שלך!'
-    : 'כדי לצפות בסדרה, צרו חשבון חינמי עם כתובת האימייל הזו והסדרה תחכה לכם אוטומטית.';
+    ? 'הקורס כבר מחכה לכם באתר בתפריט "קורסים".'
+    : 'כדי לצפות בקורס, עליכם תחילה להירשם באתר וליצור חשבון ללא עלות. הקורס מחכה לכם באתר בתפריט "קורסים".';
 
   return `
     <!DOCTYPE html>
@@ -277,30 +277,41 @@ function buildRecipientEmail({ senderName, recipientName, seriesTitle, giftMessa
       <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
         
         <div style="background: linear-gradient(135deg, #D5C4B7 0%, #B8A99C 100%); padding: 40px; text-align: center;">
-          <div style="font-size: 48px; margin-bottom: 10px;">🎁</div>
-          <h1 style="color: white; margin: 0; font-size: 26px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">קיבלת מתנה!</h1>
+          <div style="font-size: 60px; margin-bottom: 15px;">🎁</div>
+          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.2); line-height: 1.4;">קיבלת מתנה מרגשת!</h1>
         </div>
         
-        <div style="padding: 30px;">
-          <p style="color: #2D3142; font-size: 18px; line-height: 1.8;">${greeting},</p>
-          <p style="color: #2D3142; font-size: 16px; line-height: 1.8;">
-            <strong>${senderName}</strong> רכש/ה עבורך את הסדרה <strong>"${seriesTitle}"</strong> מ-Studio Boaz Online!
+        <div style="padding: 35px;">
+          <p style="color: #2D3142; font-size: 18px; line-height: 1.6; margin-bottom: 10px;">${greeting}</p>
+          
+          <p style="color: #D5694D; font-size: 19px; font-weight: bold; line-height: 1.5; margin: 15px 0;">איזה כיף, כמה אוהבים אותך!<br/>קיבלת מתנה מרגשת במיוחד.</p>
+          
+          <p style="color: #2D3142; font-size: 16px; line-height: 1.8; margin: 20px 0;">
+            <strong style="color: #B8A99C;">${senderName}</strong> רכש/ה עבורך קורס בנושא <strong>"${seriesTitle}"</strong> מהסטודיו המקיף, העמוק והמתקדם ביותר לתנועה גופנית ומנטלית של בועז נחייסי.
+          </p>
+          
+          <p style="color: #5D5D5D; font-size: 15px; line-height: 1.7; margin: 20px 0;">
+            זהו קורס אונליין המגלם בתוכו תובנות מעשיות לשיפור תפקודי, הבראה והבנה טובה יותר של הפלא בו אנו חיים.
           </p>
           
           ${giftMessage ? `
-            <div style="background: #F7F3EB; border-right: 4px solid #D5C4B7; padding: 16px 20px; border-radius: 8px; margin: 20px 0;">
-              <p style="color: #5D5D5D; font-size: 14px; margin: 0 0 4px 0;">הודעה אישית:</p>
-              <p style="color: #2D3142; font-size: 16px; line-height: 1.6; margin: 0; font-style: italic;">"${giftMessage}"</p>
+            <div style="background: linear-gradient(to left, #FFF3E0, #FFE8CC); border-right: 4px solid #D5C4B7; padding: 18px 22px; border-radius: 10px; margin: 25px 0;">
+              <p style="color: #B8A99C; font-size: 14px; margin: 0 0 8px 0; font-weight: bold;">💌 הודעה אישית מ-${senderName}:</p>
+              <p style="color: #2D3142; font-size: 16px; line-height: 1.7; margin: 0; font-style: italic;">"${giftMessage}"</p>
             </div>
           ` : ''}
           
-          <p style="color: #5D5D5D; font-size: 15px; line-height: 1.6;">${accessNote}</p>
+          <div style="background: #F7F3EB; border: 2px solid #D5C4B7; border-radius: 12px; padding: 20px; margin: 25px 0;">
+            <p style="color: #2D3142; font-size: 16px; line-height: 1.8; margin: 0;">
+              ${accessNote}
+            </p>
+          </div>
           
           <div style="text-align: center; margin: 30px 0;">${actionButton}</div>
         </div>
         
         <div style="background: #2D3142; color: white; padding: 20px; text-align: center;">
-          <p style="margin: 0; font-size: 14px; opacity: 0.8;">Studio Boaz Online</p>
+          <p style="margin: 0; font-size: 14px; opacity: 0.8;">Studio Boaz Online - בועז נחייסי</p>
         </div>
       </div>
     </body>
