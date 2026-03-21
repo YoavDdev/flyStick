@@ -278,8 +278,8 @@ function buildRecipientEmail({ senderName, recipientName, seriesTitle, giftMessa
         
         <!-- Header with Logo and Website -->
         <div style="background: white; padding: 25px 20px; text-align: center; border-bottom: 3px solid #D5C4B7;">
-          <div style="display: inline-block; width: 70px; height: 70px; background: linear-gradient(135deg, #D5C4B7, #B8A99C); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-            <span style="color: white; font-size: 32px; font-weight: bold; font-family: 'Georgia', serif;">SB</span>
+          <div style="margin-bottom: 15px;">
+            <img src="https://studioboazonline.com/Flystick_logo.svg" alt="Studio Boaz Online" style="height: 80px; width: auto; display: inline-block;" />
           </div>
           <div style="margin-top: 12px;">
             <a href="https://studioboazonline.com" style="color: #2D3142; text-decoration: none; font-size: 16px; font-weight: 600; display: block; margin-bottom: 6px;">www.studioboazonline.com</a>
