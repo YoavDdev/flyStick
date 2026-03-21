@@ -288,14 +288,22 @@ function buildRecipientEmail({ senderName, recipientName, seriesTitle, giftMessa
         </div>
         
         <div style="background: linear-gradient(135deg, #D5C4B7 0%, #B8A99C 100%); padding: 40px; text-align: center;">
-          <div style="font-size: 60px; margin-bottom: 15px;">🎁</div>
+          <div style="margin-bottom: 15px;">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block;">
+              <path d="M20 12V22H4V12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M22 7H2V12H22V7Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 22V7" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 7H7.5C6.83696 7 6.20107 6.73661 5.73223 6.26777C5.26339 5.79893 5 5.16304 5 4.5C5 3.83696 5.26339 3.20107 5.73223 2.73223C6.20107 2.26339 6.83696 2 7.5 2C11 2 12 7 12 7Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 7H16.5C17.163 7 17.7989 6.73661 18.2678 6.26777C18.7366 5.79893 19 5.16304 19 4.5C19 3.83696 18.7366 3.20107 18.2678 2.73223C17.7989 2.26339 17.163 2 16.5 2C13 2 12 7 12 7Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
           <h1 style="color: white; margin: 0; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.2); line-height: 1.4;">קיבלת מתנה מרגשת!</h1>
         </div>
         
         <div style="padding: 35px;">
           <p style="color: #2D3142; font-size: 18px; line-height: 1.6; margin-bottom: 10px;">${greeting}</p>
           
-          <p style="color: #D5694D; font-size: 19px; font-weight: bold; line-height: 1.5; margin: 15px 0;">איזה כיף, כמה אוהבים אותך!<br/>קיבלת מתנה מרגשת במיוחד.</p>
+          <p style="color: #2D3142; font-size: 19px; font-weight: bold; line-height: 1.5; margin: 15px 0;">איזה כיף, כמה אוהבים אותך!<br/>קיבלת מתנה מרגשת במיוחד.</p>
           
           <p style="color: #2D3142; font-size: 16px; line-height: 1.8; margin: 20px 0;">
             <strong style="color: #B8A99C;">${senderName}</strong> רכש/ה עבורך קורס בנושא <strong>"${seriesTitle}"</strong> מהסטודיו המקיף, העמוק והמתקדם ביותר לתנועה גופנית ומנטלית של בועז נחייסי.
