@@ -499,12 +499,15 @@ const SeriesMarketplace = () => {
                                 setGiftSeriesId(series.id);
                                 setPurchasingSeriesId(null);
                               }}
-                              className="bg-gradient-to-r from-[#D9713C] to-[#D9713C]/80 text-white px-4 py-2 rounded-lg transition-all duration-300 text-sm font-bold shadow-md"
+                              className="bg-white/90 border-2 border-[#B8A99C] text-[#2D3142] px-4 py-2 rounded-lg hover:bg-[#B8A99C]/10 hover:border-[#D5C4B7] transition-all duration-300 text-sm font-bold shadow-md"
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
-                              title="קנה כמתנה"
+                              title="שלח כמתנה למישהו אחר"
                             >
-                              🎁
+                              <span className="flex items-center gap-1.5">
+                                <span>🎁</span>
+                                <span>שלח מתנה</span>
+                              </span>
                             </motion.button>
                           </div>
                         )}
@@ -516,12 +519,20 @@ const SeriesMarketplace = () => {
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
-                        className="mt-6 pt-6 border-t border-[#D9713C]/30"
+                        className="mt-6 pt-6 border-t border-[#D5C4B7]/30"
                       >
-                        <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-5 border border-[#D9713C]/20">
-                          <div className="flex items-center gap-2 mb-4">
-                            <span className="text-2xl">🎁</span>
-                            <h4 className="text-lg font-bold text-[#2D3142]">שלח כמתנה</h4>
+                        <div className="bg-gradient-to-br from-[#F7F3EB] to-white rounded-xl p-6 border-2 border-[#D5C4B7]/40 shadow-lg">
+                          <div className="bg-gradient-to-r from-[#B8A99C]/10 to-[#D5C4B7]/10 rounded-lg p-4 mb-5 border border-[#D5C4B7]/30">
+                            <div className="flex items-center gap-3 mb-2">
+                              <span className="text-3xl">🎁</span>
+                              <div>
+                                <h4 className="text-xl font-bold text-[#2D3142]">שליחת מתנה</h4>
+                                <p className="text-sm text-[#5D5D5D]">רוכש/ת את הסדרה עבור מישהו אחר</p>
+                              </div>
+                            </div>
+                            <div className="bg-white/60 rounded-lg p-3 mt-3">
+                              <p className="text-xs text-[#2D3142] font-medium">💡 שימו לב: הסדרה תישלח למקבל/ת המתנה, לא אליכם</p>
+                            </div>
                           </div>
 
                           <div className="space-y-3">
@@ -573,7 +584,7 @@ const SeriesMarketplace = () => {
                                   }
                                   setGiftConfirmed(true);
                                 }}
-                                className="w-full bg-[#D9713C] text-white py-2.5 rounded-lg font-bold text-sm hover:bg-[#D9713C]/90 transition-colors"
+                                className="w-full bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] text-white py-2.5 rounded-lg font-bold text-sm hover:from-[#D5C4B7] hover:to-[#B8A99C] transition-colors shadow-md"
                               >
                                 אישור ומעבר לתשלום
                               </button>
@@ -582,7 +593,7 @@ const SeriesMarketplace = () => {
 
                           {giftConfirmed && (
                             <div className="mt-4">
-                              <div className="bg-white/60 rounded-lg p-3 mb-3 border border-[#D9713C]/20">
+                              <div className="bg-white/80 rounded-lg p-3 mb-3 border border-[#D5C4B7]/30 shadow-sm">
                                 <p className="text-xs text-[#5D5D5D] mb-1">שולח מתנה ל:</p>
                                 <p className="text-sm font-bold text-[#2D3142]">{giftForm.recipientName || giftForm.recipientEmail}</p>
                                 <p className="text-xs text-[#5D5D5D]">{giftForm.recipientEmail}</p>
