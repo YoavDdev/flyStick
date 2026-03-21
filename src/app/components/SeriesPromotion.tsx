@@ -314,32 +314,40 @@ const SeriesPromotion = () => {
                         <span>{seriesItem.videoCount} פרקים</span>
                       </div>
                       
-                      {seriesItem.hasAccess ? (
-                        <Link href={`/series/${seriesItem.id}`}>
-                          <motion.button
-                            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                          >
-                            צפה עכשיו
-                          </motion.button>
-                        </Link>
-                      ) : !(seriesItem.isComingSoon || seriesItem.title.includes('בקרוב')) ? (
+                      {!(seriesItem.isComingSoon || seriesItem.title.includes('בקרוב')) ? (
                         <div className="flex items-center gap-2">
-                          <motion.button
-                            onClick={() => {
-                              if (!session) {
-                                router.push(`/series/register?returnUrl=${encodeURIComponent(window.location.pathname)}`);
-                                return;
-                              }
-                              setPurchasingSeriesId(seriesItem.id);
-                            }}
-                            className="bg-[#B8A99C] text-white px-4 py-2 rounded-lg hover:bg-[#D5C4B7] transition-colors text-sm font-medium"
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                          >
-                            רכישה
-                          </motion.button>
+                          {/* View Now button - for users with access */}
+                          {seriesItem.hasAccess && (
+                            <Link href={`/series/${seriesItem.id}`}>
+                              <motion.button
+                                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                              >
+                                צפה עכשיו
+                              </motion.button>
+                            </Link>
+                          )}
+                          
+                          {/* Purchase button - only for users without access */}
+                          {!seriesItem.hasAccess && (
+                            <motion.button
+                              onClick={() => {
+                                if (!session) {
+                                  router.push(`/series/register?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+                                  return;
+                                }
+                                setPurchasingSeriesId(seriesItem.id);
+                              }}
+                              className="bg-[#B8A99C] text-white px-4 py-2 rounded-lg hover:bg-[#D5C4B7] transition-colors text-sm font-medium"
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              רכישה
+                            </motion.button>
+                          )}
+                          
+                          {/* Gift button - always show (even if user already purchased) */}
                           <motion.button
                             onClick={() => {
                               if (!session) {

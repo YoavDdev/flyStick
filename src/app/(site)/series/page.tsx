@@ -467,23 +467,28 @@ const SeriesMarketplace = () => {
                           <span>{series.videoCount} פרקים</span>
                         </div>
                         
-                        {!series.hasAccess && !seriesData?.userInfo.hasActiveSubscription && !(series.isComingSoon || series.title.includes('בקרוב')) && (
+                        {!(series.isComingSoon || series.title.includes('בקרוב')) && (
                           <div className="flex items-center gap-2">
-                            <motion.button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                if (!session) {
-                                  router.push(`/series/register?returnUrl=${encodeURIComponent(window.location.pathname)}`);
-                                  return;
-                                }
-                                setPurchasingSeriesId(series.id);
-                              }}
-                              className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-6 py-2 rounded-lg hover:from-[#B8A99C] hover:to-[#D5C4B7] transition-all duration-300 text-sm font-bold shadow-md"
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                            >
-                              רכישה
-                            </motion.button>
+                            {/* Purchase button - only for users without access */}
+                            {!series.hasAccess && !seriesData?.userInfo.hasActiveSubscription && (
+                              <motion.button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (!session) {
+                                    router.push(`/series/register?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+                                    return;
+                                  }
+                                  setPurchasingSeriesId(series.id);
+                                }}
+                                className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-6 py-2 rounded-lg hover:from-[#B8A99C] hover:to-[#D5C4B7] transition-all duration-300 text-sm font-bold shadow-md"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                              >
+                                רכישה
+                              </motion.button>
+                            )}
+                            
+                            {/* Gift button - always show (even if user already purchased) */}
                             <motion.button
                               onClick={(e) => {
                                 e.stopPropagation();
