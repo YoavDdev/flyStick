@@ -390,29 +390,31 @@ const SeriesMarketplace = () => {
                         </div>
                       </div>
 
-                      {/* Access Status Badge */}
+                      {/* Access Status Badge / Price Badge */}
                       {series.hasAccess ? (
                         <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-3 py-1 rounded-full text-sm font-bold shadow-md">
                           <FaCheck className="inline mr-1" />
                           {series.accessType === 'subscription' ? 'מנוי' : 'נרכש'}
                         </div>
-                      ) : saleConfig?.isActive && saleConfig.salePrice ? (
-                        <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
-                          {saleConfig.badgeText && (
-                            <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md animate-pulse">
-                              {saleConfig.badgeText}
+                      ) : !(series.isComingSoon || series.title.includes('בקרוב')) ? (
+                        saleConfig?.isActive && saleConfig.salePrice ? (
+                          <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
+                            {saleConfig.badgeText && (
+                              <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md animate-pulse">
+                                {saleConfig.badgeText}
+                              </div>
+                            )}
+                            <div className="bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] text-white px-3 py-1 rounded-full text-sm font-bold shadow-md flex items-center gap-2">
+                              <span className="line-through opacity-70 text-xs">₪{saleConfig.originalPrice}</span>
+                              <span>₪{saleConfig.salePrice}</span>
                             </div>
-                          )}
-                          <div className="bg-gradient-to-r from-[#D9713C] to-[#D9713C]/80 text-white px-3 py-1 rounded-full text-sm font-bold shadow-md flex items-center gap-2">
-                            <span className="line-through opacity-70 text-xs">₪{saleConfig.originalPrice}</span>
-                            <span>₪{saleConfig.salePrice}</span>
                           </div>
-                        </div>
-                      ) : (
-                        <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D9713C] to-[#D9713C]/80 text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">
-                          ₪{series.price}
-                        </div>
-                      )}
+                        ) : (
+                          <div className="absolute top-4 right-4 bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">
+                            ₪{series.price}
+                          </div>
+                        )
+                      ) : null}
 
                       {/* Coming Soon Tag - Half Red Circle at Bottom */}
                       {(series.isComingSoon || series.title.includes('בקרוב')) && (

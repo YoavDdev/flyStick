@@ -226,29 +226,31 @@ const SeriesPromotion = () => {
                       </div>
                     </div>
 
-                    {/* Access Status Badge */}
+                    {/* Access Status Badge / Price Badge */}
                     {seriesItem.hasAccess ? (
                       <div className="absolute top-3 right-3 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
                         <FaCheck className="inline mr-1" />
                         {seriesItem.accessType === 'subscription' ? 'מנוי' : 'נרכש'}
                       </div>
-                    ) : saleConfig?.isActive && saleConfig.salePrice ? (
-                      <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
-                        {saleConfig.badgeText && (
-                          <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-md animate-pulse">
-                            {saleConfig.badgeText}
+                    ) : !(seriesItem.isComingSoon || seriesItem.title.includes('בקרוב')) ? (
+                      saleConfig?.isActive && saleConfig.salePrice ? (
+                        <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
+                          {saleConfig.badgeText && (
+                            <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-md animate-pulse">
+                              {saleConfig.badgeText}
+                            </div>
+                          )}
+                          <div className="bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] text-white px-2 py-1 rounded-full text-xs font-bold shadow-md flex items-center gap-1">
+                            <span className="line-through opacity-70 text-[10px]">₪{saleConfig.originalPrice}</span>
+                            <span>₪{saleConfig.salePrice}</span>
                           </div>
-                        )}
-                        <div className="bg-[#D9713C] text-white px-2 py-1 rounded-full text-xs font-bold shadow-md flex items-center gap-1">
-                          <span className="line-through opacity-70 text-[10px]">₪{saleConfig.originalPrice}</span>
-                          <span>₪{saleConfig.salePrice}</span>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="absolute top-3 right-3 bg-[#B8A99C] text-white px-2 py-1 rounded-full text-xs font-medium">
-                        ₪{seriesItem.price}
-                      </div>
-                    )}
+                      ) : (
+                        <div className="absolute top-3 right-3 bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] text-white px-2 py-1 rounded-full text-xs font-medium">
+                          ₪{seriesItem.price}
+                        </div>
+                      )
+                    ) : null}
 
                     {/* Coming Soon Tag - Half Red Circle at Bottom */}
                     {(seriesItem.isComingSoon || seriesItem.title.includes('בקרוב')) && (
