@@ -289,23 +289,12 @@ function buildRecipientEmail({ senderName, recipientName, seriesTitle, giftMessa
         
         <div style="background: linear-gradient(135deg, #D5C4B7 0%, #B8A99C 100%); padding: 40px; text-align: center;">
           <div style="margin-bottom: 15px;">
-            <svg width="70" height="70" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block;">
-              <!-- Radiance lines -->
-              <line x1="32" y1="4" x2="32" y2="10" stroke="white" stroke-width="2" stroke-linecap="round"/>
-              <line x1="44" y1="8" x2="42" y2="13" stroke="white" stroke-width="2" stroke-linecap="round"/>
-              <line x1="52" y1="16" x2="48" y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/>
-              <line x1="20" y1="8" x2="22" y2="13" stroke="white" stroke-width="2" stroke-linecap="round"/>
-              <line x1="12" y1="16" x2="16" y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/>
-              <line x1="54" y1="28" x2="49" y2="28" stroke="white" stroke-width="2" stroke-linecap="round"/>
-              <line x1="10" y1="28" x2="15" y2="28" stroke="white" stroke-width="2" stroke-linecap="round"/>
-              <!-- Gift box -->
-              <rect x="18" y="28" width="28" height="28" rx="2" fill="white"/>
-              <rect x="18" y="20" width="28" height="8" rx="1" fill="white"/>
-              <rect x="30" y="20" width="4" height="36" fill="rgba(255,255,255,0.7)"/>
-              <!-- Bow -->
-              <ellipse cx="26" cy="20" rx="6" ry="3" fill="white"/>
-              <ellipse cx="38" cy="20" rx="6" ry="3" fill="white"/>
-              <circle cx="32" cy="20" r="2" fill="white"/>
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block;">
+              <path d="M20 12V21C20 21.2652 19.8946 21.5196 19.7071 21.7071C19.5196 21.8946 19.2652 22 19 22H5C4.73478 22 4.48043 21.8946 4.29289 21.7071C4.10536 21.5196 4 21.2652 4 21V12" fill="white"/>
+              <path d="M22 7H2V12H22V7Z" fill="white"/>
+              <rect x="11" y="7" width="2" height="15" fill="rgba(181, 168, 156, 0.5)"/>
+              <path d="M12 7C12 7 10.5 2 7 2C5.89543 2 5 2.89543 5 4C5 5.10457 5.89543 6 7 6C8.5 6 10 6.5 12 7Z" fill="white"/>
+              <path d="M12 7C12 7 13.5 2 17 2C18.1046 2 19 2.89543 19 4C19 5.10457 18.1046 6 17 6C15.5 6 14 6.5 12 7Z" fill="white"/>
             </svg>
           </div>
           <h1 style="color: white; margin: 0; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.2); line-height: 1.4;">קיבלת מתנה מרגשת!</h1>
