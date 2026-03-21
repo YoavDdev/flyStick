@@ -362,11 +362,11 @@ const SeriesPromotion = () => {
                             className="bg-white/90 border-2 border-[#B8A99C] text-[#2D3142] px-3 py-2 rounded-lg hover:bg-[#B8A99C]/10 hover:border-[#D5C4B7] transition-colors text-sm font-bold"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            title="שלח כמתנה למישהו אחר"
+                            title="רכישה כמתנה למישהו אחר"
                           >
                             <span className="flex items-center gap-1">
                               <span>🎁</span>
-                              <span className="text-xs">מתנה</span>
+                              <span className="text-xs">רכישה כמתנה</span>
                             </span>
                           </motion.button>
                         </div>
