@@ -24,6 +24,7 @@ import AdminOrderManager from "../../components/AdminOrderManager";
 import WelcomePopup from "../../components/WelcomePopup";
 import AdminVimeoLivePanel from "../../components/AdminVimeoLivePanel";
 import AdminAIManager from "../../components/AdminAIManager";
+import AdminTabs from "../../components/AdminTabs";
 
 // Note: Metadata cannot be exported from client components
 // SEO protection should be handled at the layout level
@@ -331,111 +332,166 @@ const DashboardPage = () => {
 
             {/* Admin Components - Only visible to admin users */}
             {isAdmin && (
-              <>
-                <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
-                  <div className="flex-1">
-                    <AdminMessageComposer />
-                  </div>
-                  <div className="flex-1">
-                    <AdminNewsletterComposer />
-                  </div>
-                </motion.div>
-                
-                {/* Folder Metadata Manager */}
-                <motion.div variants={itemVariants}>
-                  <AdminFolderMetadataManager />
-                </motion.div>
-
-                {/* Sale Manager */}
-                <motion.div variants={itemVariants}>
-                  <AdminSaleManager />
-                </motion.div>
-
-                {/* Video Series Manager */}
-                <motion.div variants={itemVariants}>
-                  <AdminVideoSeriesManager />
-                </motion.div>
-
-                {/* Vimeo Live Stream Panel */}
-                <motion.div variants={itemVariants}>
-                  <AdminVimeoLivePanel />
-                </motion.div>
-
-                {/* AI Chat Manager */}
-                <motion.div variants={itemVariants}>
-                  <AdminAIManager />
-                </motion.div>
-
-                {/* Shop Management Links */}
-                <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Link href="/admin/products">
-                    <div className="bg-white border-2 border-[#D5C4B7] rounded-xl p-6 hover:shadow-lg transition-all hover:border-[#B8A99C] cursor-pointer">
-                      <div className="flex items-center gap-4 mb-3">
-                        <div className="bg-[#D5C4B7] p-3 rounded-full">
-                          <svg className="w-6 h-6 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                          </svg>
+              <motion.div variants={itemVariants}>
+                <AdminTabs>
+                  {{
+                    statistics: (
+                      <div className="space-y-6">
+                        {/* Admin Stats Cards */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                          <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                            <div className="flex items-center gap-3 mb-2">
+                              <MdOutlineAdminPanelSettings className="text-purple-500 text-2xl" />
+                              <h4 className="font-semibold text-[#2D3142]">סטטוס</h4>
+                            </div>
+                            <p className="text-lg font-bold text-[#2D3142]">מנהל מערכת</p>
+                          </div>
+                          
+                          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <div className="flex items-center gap-3 mb-2">
+                              <FaUserPlus className="text-blue-500 text-xl" />
+                              <h4 className="font-semibold text-[#2D3142]">משתמשים חדשים</h4>
+                            </div>
+                            <p className="text-lg font-bold text-[#2D3142]">{userStats.newUsers}</p>
+                            <p className="text-xs text-[#2D3142]/60">30 ימים אחרונים</p>
+                          </div>
+                          
+                          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <div className="flex items-center gap-3 mb-2">
+                              <MdOutlineSubscriptions className="text-green-500 text-xl" />
+                              <h4 className="font-semibold text-[#2D3142]">מנויים חדשים</h4>
+                            </div>
+                            <p className="text-lg font-bold text-[#2D3142]">{userStats.newSubscriptions}</p>
+                            <p className="text-xs text-[#2D3142]/60">30 ימים אחרונים</p>
+                          </div>
+                          
+                          <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                            <div className="flex items-center gap-3 mb-2">
+                              <MdOutlineSubscriptions className="text-red-500 text-xl" />
+                              <h4 className="font-semibold text-[#2D3142]">ביטולי מנוי</h4>
+                            </div>
+                            <p className="text-lg font-bold text-[#2D3142]">{userStats.recentCancellations}</p>
+                            <p className="text-xs text-[#2D3142]/60">30 ימים אחרונים</p>
+                          </div>
                         </div>
-                        <h3 className="text-xl font-bold text-[#2D3142]">ניהול מוצרים</h3>
-                      </div>
-                      <p className="text-[#2D3142]/60 text-sm">הוספה, עריכה וניהול מוצרי חנות Kohu</p>
-                    </div>
-                  </Link>
 
-                  <Link href="/admin/orders">
-                    <div className="bg-white border-2 border-[#D5C4B7] rounded-xl p-6 hover:shadow-lg transition-all hover:border-[#B8A99C] cursor-pointer">
-                      <div className="flex items-center gap-4 mb-3">
-                        <div className="bg-[#D5C4B7] p-3 rounded-full">
-                          <svg className="w-6 h-6 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                          </svg>
-                        </div>
-                        <h3 className="text-xl font-bold text-[#2D3142]">ניהול הזמנות</h3>
-                      </div>
-                      <p className="text-[#2D3142]/60 text-sm">מעקב וניהול הזמנות, עדכון סטטוסים</p>
-                    </div>
-                  </Link>
-                </motion.div>
+                        {/* Analytics Links */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <a href="https://analytics.google.com/analytics/web/#/p471498498/reports/intelligenthome" target="_blank" rel="noopener noreferrer">
+                            <div className="bg-white border-2 border-[#D5C4B7] rounded-xl p-6 hover:shadow-lg transition-all hover:border-[#B8A99C] cursor-pointer">
+                              <div className="flex items-center gap-4 mb-3">
+                                <div className="bg-[#D5C4B7] p-3 rounded-full">
+                                  <svg className="w-6 h-6 text-[#2D3142]" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M3 17h4v-4H3v4zm0-6h4V7H3v4zm6 6h4V7H9v10zm6 0h4V3h-4v14z" />
+                                  </svg>
+                                </div>
+                                <h3 className="text-xl font-bold text-[#2D3142]">Google Analytics</h3>
+                              </div>
+                              <p className="text-[#2D3142]/60 text-sm">צפייה בנתוני תנועה, מבקרים ודפים פופולריים</p>
+                            </div>
+                          </a>
 
-                {/* Analytics Quick Links */}
-                <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <a href="https://analytics.google.com/analytics/web/#/p471498498/reports/intelligenthome" target="_blank" rel="noopener noreferrer">
-                    <div className="bg-white border-2 border-[#D5C4B7] rounded-xl p-6 hover:shadow-lg transition-all hover:border-[#B8A99C] cursor-pointer">
-                      <div className="flex items-center gap-4 mb-3">
-                        <div className="bg-[#D5C4B7] p-3 rounded-full">
-                          <svg className="w-6 h-6 text-[#2D3142]" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M22 3.2l-5.1 18.4c-.2.8-1.2.9-1.6.2l-4.4-7.5-7.5-4.4c-.7-.4-.6-1.4.2-1.6L22 3.2z" opacity="0" />
-                            <path d="M3 17h4v-4H3v4zm0-6h4V7H3v4zm6 6h4V7H9v10zm6 0h4V3h-4v14z" />
-                          </svg>
+                          <a href="https://search.google.com/search-console?resource_id=sc-domain%3Astudioboazonline.com" target="_blank" rel="noopener noreferrer">
+                            <div className="bg-white border-2 border-[#D5C4B7] rounded-xl p-6 hover:shadow-lg transition-all hover:border-[#B8A99C] cursor-pointer">
+                              <div className="flex items-center gap-4 mb-3">
+                                <div className="bg-[#D5C4B7] p-3 rounded-full">
+                                  <svg className="w-6 h-6 text-[#2D3142]" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                                  </svg>
+                                </div>
+                                <h3 className="text-xl font-bold text-[#2D3142]">Search Console</h3>
+                              </div>
+                              <p className="text-[#2D3142]/60 text-sm">ביצועי חיפוש, אינדוקס ומילות מפתח בגוגל</p>
+                            </div>
+                          </a>
                         </div>
-                        <h3 className="text-xl font-bold text-[#2D3142]">Google Analytics</h3>
-                      </div>
-                      <p className="text-[#2D3142]/60 text-sm">צפייה בנתוני תנועה, מבקרים ודפים פופולריים</p>
-                    </div>
-                  </a>
 
-                  <a href="https://search.google.com/search-console?resource_id=sc-domain%3Astudioboazonline.com" target="_blank" rel="noopener noreferrer">
-                    <div className="bg-white border-2 border-[#D5C4B7] rounded-xl p-6 hover:shadow-lg transition-all hover:border-[#B8A99C] cursor-pointer">
-                      <div className="flex items-center gap-4 mb-3">
-                        <div className="bg-[#D5C4B7] p-3 rounded-full">
-                          <svg className="w-6 h-6 text-[#2D3142]" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-                          </svg>
-                        </div>
-                        <h3 className="text-xl font-bold text-[#2D3142]">Search Console</h3>
+                        {/* Admin Panel Link */}
+                        <Link href="/admin" className="block">
+                          <div className="bg-white border-2 border-[#D5C4B7] rounded-xl p-6 hover:shadow-lg transition-all hover:border-[#B8A99C] cursor-pointer">
+                            <div className="flex items-center gap-4">
+                              <div className="bg-[#D5C4B7] p-3 rounded-full">
+                                <MdOutlineAdminPanelSettings className="text-2xl text-[#2D3142]" />
+                              </div>
+                              <div>
+                                <h3 className="text-xl font-bold text-[#2D3142]">ניהול מלא של המערכת</h3>
+                                <p className="text-[#2D3142]/60 text-sm">גישה לכל משתמשי המערכת וניהול מלא</p>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
                       </div>
-                      <p className="text-[#2D3142]/60 text-sm">ביצועי חיפוש, אינדוקס ומילות מפתח בגוגל</p>
-                    </div>
-                  </a>
-                </motion.div>
-              </>
+                    ),
+                    communication: (
+                      <div className="space-y-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                          <AdminMessageComposer />
+                          <AdminNewsletterComposer />
+                        </div>
+                      </div>
+                    ),
+                    content: (
+                      <div className="space-y-6">
+                        <AdminFolderMetadataManager />
+                        <AdminVideoSeriesManager />
+                      </div>
+                    ),
+                    live: (
+                      <div className="space-y-6">
+                        <AdminVimeoLivePanel />
+                      </div>
+                    ),
+                    commerce: (
+                      <div className="space-y-6">
+                        <AdminSaleManager />
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <Link href="/admin/products">
+                            <div className="bg-white border-2 border-[#D5C4B7] rounded-xl p-6 hover:shadow-lg transition-all hover:border-[#B8A99C] cursor-pointer">
+                              <div className="flex items-center gap-4 mb-3">
+                                <div className="bg-[#D5C4B7] p-3 rounded-full">
+                                  <svg className="w-6 h-6 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                  </svg>
+                                </div>
+                                <h3 className="text-xl font-bold text-[#2D3142]">ניהול מוצרים</h3>
+                              </div>
+                              <p className="text-[#2D3142]/60 text-sm">הוספה, עריכה וניהול מוצרי חנות Kohu</p>
+                            </div>
+                          </Link>
+
+                          <Link href="/admin/orders">
+                            <div className="bg-white border-2 border-[#D5C4B7] rounded-xl p-6 hover:shadow-lg transition-all hover:border-[#B8A99C] cursor-pointer">
+                              <div className="flex items-center gap-4 mb-3">
+                                <div className="bg-[#D5C4B7] p-3 rounded-full">
+                                  <svg className="w-6 h-6 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                  </svg>
+                                </div>
+                                <h3 className="text-xl font-bold text-[#2D3142]">ניהול הזמנות</h3>
+                              </div>
+                              <p className="text-[#2D3142]/60 text-sm">מעקב וניהול הזמנות, עדכון סטטוסים</p>
+                            </div>
+                          </Link>
+                        </div>
+                      </div>
+                    ),
+                    tools: (
+                      <div className="space-y-6">
+                        <AdminAIManager />
+                      </div>
+                    ),
+                  }}
+                </AdminTabs>
+              </motion.div>
             )}
 
-            {/* WhatsApp Group Join Section */}
-            <motion.div 
-              variants={itemVariants}
-              className="bg-[#F7F3EB] rounded-xl p-4 sm:p-6 border border-[#D5C4B7]/30 shadow-md relative overflow-hidden"
-            >
+            {/* WhatsApp Group Join Section - Hidden for Admin */}
+            {!isAdmin && (
+              <motion.div 
+                variants={itemVariants}
+                className="bg-[#F7F3EB] rounded-xl p-4 sm:p-6 border border-[#D5C4B7]/30 shadow-md relative overflow-hidden"
+              >
               <div className="absolute top-0 left-0 w-32 h-32 opacity-10 -mt-10 -ml-10">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -468,140 +524,96 @@ const DashboardPage = () => {
                 </div>
               </div>
             </motion.div>
+            )}
 
-            {/* User Stats Section - New Addition */}
-            <motion.div variants={itemVariants} className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="bg-[#D5C4B7] p-3 rounded-full">
-                  <AiOutlineTrophy size={24} className="text-[#2D3142]" />
+            {/* User Stats Section - Only for non-admin users */}
+            {!isAdmin && (
+              <motion.div variants={itemVariants} className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="bg-[#D5C4B7] p-3 rounded-full">
+                    <AiOutlineTrophy size={24} className="text-[#2D3142]" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#2D3142]">
+                    {isSeriesOnlyUser ? 'סטטוס רכישות' : 'סטטוס מנוי'}
+                  </h3>
                 </div>
-                <h3 className="text-xl font-bold text-[#2D3142]">
-                  {isSeriesOnlyUser ? 'סטטוס רכישות' : 'סטטוס מנוי'}
-                </h3>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                {/* Dynamic stats based on subscription type */}
-                {isSeriesOnlyUser && (
-                  <>
-                    <div className="bg-purple-50 p-4 rounded-lg flex items-center gap-3">
-                      <FaPlay className="text-purple-500 text-xl" />
-                      <div>
-                        <h4 className="font-semibold text-[#2D3142]">סטטוס</h4>
-                        <p className="text-lg font-bold">רוכש סדרות</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                  {/* Dynamic stats based on subscription type */}
+                  {isSeriesOnlyUser && (
+                    <>
+                      <div className="bg-purple-50 p-4 rounded-lg flex items-center gap-3">
+                        <FaPlay className="text-purple-500 text-xl" />
+                        <div>
+                          <h4 className="font-semibold text-[#2D3142]">סטטוס</h4>
+                          <p className="text-lg font-bold">רוכש סדרות</p>
+                        </div>
                       </div>
-                    </div>
+                      <div className="bg-blue-50 p-4 rounded-lg flex items-center gap-3">
+                        <FaVideo className="text-blue-500 text-xl" />
+                        <div>
+                          <h4 className="font-semibold text-[#2D3142]">סדרות שנרכשו</h4>
+                          <p className="text-lg font-bold">{purchasedSeries.length} סדרות</p>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  
+                  {!isSeriesOnlyUser && subscriptionId === "trial_30" && (
                     <div className="bg-blue-50 p-4 rounded-lg flex items-center gap-3">
-                      <FaVideo className="text-blue-500 text-xl" />
+                      <FaClock className="text-blue-500 text-xl" />
                       <div>
-                        <h4 className="font-semibold text-[#2D3142]">סדרות שנרכשו</h4>
-                        <p className="text-lg font-bold">{purchasedSeries.length} סדרות</p>
+                        <h4 className="font-semibold text-[#2D3142]">ימים שנותרו בניסיון</h4>
+                        <p className="text-lg font-bold">{userStats.daysLeft} ימים</p>
                       </div>
                     </div>
-                  </>
-                )}
-                
-                {!isSeriesOnlyUser && subscriptionId === "trial_30" && (
-                  <div className="bg-blue-50 p-4 rounded-lg flex items-center gap-3">
-                    <FaClock className="text-blue-500 text-xl" />
-                    <div>
-                      <h4 className="font-semibold text-[#2D3142]">ימים שנותרו בניסיון</h4>
-                      <p className="text-lg font-bold">{userStats.daysLeft} ימים</p>
-                    </div>
-                  </div>
-                )}
+                  )}
 
-                {!isSeriesOnlyUser && userStats.cancellationDate && (
-                  <div className="bg-amber-50 p-4 rounded-lg flex items-center gap-3">
-                    <FaClock className="text-amber-500 text-xl" />
-                    <div>
-                      <h4 className="font-semibold text-[#2D3142]">ימים שנותרו בתקופת החסד</h4>
-                      <p className="text-lg font-bold">{userStats.daysLeft} ימים</p>
-                    </div>
-                  </div>
-                )}
-
-                {!isSeriesOnlyUser && subscriptionId === "free" && (
-                  <div className="bg-green-50 p-4 rounded-lg flex items-center gap-3">
-                    <BiSolidBadgeCheck className="text-green-500 text-xl" />
-                    <div>
-                      <h4 className="font-semibold text-[#2D3142]">סטטוס גישה</h4>
-                      <p className="text-lg font-bold">גישה חופשית</p>
-                    </div>
-                  </div>
-                )}
-
-                {subscriptionId === "Admin" && (
-                  <>
-                    <div className="bg-purple-50 p-4 rounded-lg flex items-center gap-3">
-                      <MdOutlineAdminPanelSettings className="text-purple-500 text-xl" />
+                  {!isSeriesOnlyUser && userStats.cancellationDate && (
+                    <div className="bg-amber-50 p-4 rounded-lg flex items-center gap-3">
+                      <FaClock className="text-amber-500 text-xl" />
                       <div>
-                        <h4 className="font-semibold text-[#2D3142]">סטטוס</h4>
-                        <p className="text-lg font-bold">מנהל מערכת</p>
+                        <h4 className="font-semibold text-[#2D3142]">ימים שנותרו בתקופת החסד</h4>
+                        <p className="text-lg font-bold">{userStats.daysLeft} ימים</p>
                       </div>
                     </div>
-                    <div className="bg-blue-50 p-4 rounded-lg flex items-center gap-3">
-                      <FaUserPlus className="text-blue-500 text-xl" />
-                      <div>
-                        <h4 className="font-semibold text-[#2D3142]">משתמשים חדשים (30 ימים)</h4>
-                        <p className="text-lg font-bold">{userStats.newUsers}</p>
-                      </div>
-                    </div>
+                  )}
+
+                  {!isSeriesOnlyUser && subscriptionId === "free" && (
                     <div className="bg-green-50 p-4 rounded-lg flex items-center gap-3">
-                      <MdOutlineSubscriptions className="text-green-500 text-xl" />
+                      <BiSolidBadgeCheck className="text-green-500 text-xl" />
                       <div>
-                        <h4 className="font-semibold text-[#2D3142]">מנויים חדשים (30 ימים)</h4>
-                        <p className="text-lg font-bold">{userStats.newSubscriptions}</p>
+                        <h4 className="font-semibold text-[#2D3142]">סטטוס גישה</h4>
+                        <p className="text-lg font-bold">גישה חופשית</p>
                       </div>
                     </div>
-                    <div className="bg-red-50 p-4 rounded-lg flex items-center gap-3">
-                      <MdOutlineSubscriptions className="text-red-500 text-xl" />
+                  )}
+
+                  {subscriptionId && subscriptionId.startsWith("I-") && !userStats.cancellationDate && (
+                    <div className="bg-green-50 p-4 rounded-lg flex items-center gap-3">
+                      <BiSolidBadgeCheck className="text-green-500 text-xl" />
                       <div>
-                        <h4 className="font-semibold text-[#2D3142]">ביטולי מנוי (30 ימים)</h4>
-                        <p className="text-lg font-bold">{userStats.recentCancellations}</p>
+                        <h4 className="font-semibold text-[#2D3142]">סטטוס:</h4>
+                        <p className="text-lg font-bold">פעיל</p>
                       </div>
                     </div>
-                    <Link href="/admin" className="bg-gray-50 p-4 rounded-lg flex items-center gap-3 hover:bg-gray-100 transition-colors">
-                      <MdOutlineAdminPanelSettings className="text-gray-700 text-xl" />
+                  )}
+
+                  {userStats.trialStartDate && (
+                    <div className="bg-blue-50 p-4 rounded-lg flex items-center gap-3">
+                      <FaCalendarAlt className="text-blue-500 text-xl" />
                       <div>
-                        <h4 className="font-semibold text-[#2D3142]">דף ניהול</h4>
-                        <p className="text-sm text-gray-600">לחץ כאן לניהול המערכת</p>
+                        <h4 className="font-semibold text-[#2D3142]">תאריך התחלת ניסיון</h4>
+                        <p className="text-lg font-bold">{new Date(userStats.trialStartDate).toLocaleDateString('he-IL')}</p>
                       </div>
-                    </Link>
-                  </>
-                )}
-
-                {/* Stats for regular users only - admin stats are handled separately */}
-                {subscriptionId !== "Admin" && (
-                  <>
-                    {/* No watched videos or favorites stats as requested */}
-                  </>
-                )}
-
-                {subscriptionId && subscriptionId.startsWith("I-") && !userStats.cancellationDate && (
-                  <div className="bg-green-50 p-4 rounded-lg flex items-center gap-3">
-                    <BiSolidBadgeCheck className="text-green-500 text-xl" />
-                    <div>
-                      <h4 className="font-semibold text-[#2D3142]">סטטוס:</h4>
-                      <p className="text-lg font-bold">פעיל</p>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
+              </motion.div>
+            )}
 
-                {userStats.trialStartDate && (
-                  <div className="bg-blue-50 p-4 rounded-lg flex items-center gap-3">
-                    <FaCalendarAlt className="text-blue-500 text-xl" />
-                    <div>
-                      <h4 className="font-semibold text-[#2D3142]">תאריך התחלת ניסיון</h4>
-                      <p className="text-lg font-bold">{new Date(userStats.trialStartDate).toLocaleDateString('he-IL')}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-
-            {/* Dashboard Cards Grid - Only for regular users, not series-only users */}
-            {!isSeriesOnlyUser && (
+            {/* Dashboard Cards Grid - Only for regular users, not series-only users or admin */}
+            {!isSeriesOnlyUser && !isAdmin && (
               <motion.div 
                 variants={containerVariants}
                 initial="hidden"
@@ -734,8 +746,8 @@ const DashboardPage = () => {
               </motion.div>
             )}
 
-            {/* Subscription Status Section - Hidden for Series-Only Users */}
-            {!isSeriesOnlyUser && (
+            {/* Subscription Status Section - Hidden for Series-Only Users and Admin */}
+            {!isSeriesOnlyUser && !isAdmin && (
               <motion.div variants={itemVariants} className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="bg-[#D5C4B7] p-3 rounded-full">
@@ -840,11 +852,12 @@ const DashboardPage = () => {
               </motion.div>
             )}
 
-            {/* Newsletter Section */}
-            <motion.div 
-              variants={itemVariants}
-              className="bg-[#F7F3EB] rounded-xl p-4 sm:p-6 border border-[#D5C4B7]/30 shadow-md"
-            >
+            {/* Newsletter Section - Hidden for Admin */}
+            {!isAdmin && (
+              <motion.div 
+                variants={itemVariants}
+                className="bg-[#F7F3EB] rounded-xl p-4 sm:p-6 border border-[#D5C4B7]/30 shadow-md"
+              >
               <h3 className="text-lg sm:text-xl font-bold text-[#2D3142] mb-2 text-center">
                 הרשמו לניוזלטר שלנו
               </h3>
@@ -858,6 +871,7 @@ const DashboardPage = () => {
                 <ConvertkitEmailForm />
               </div>
             </motion.div>
+            )}
           </motion.div>
           </>
         ) : (
