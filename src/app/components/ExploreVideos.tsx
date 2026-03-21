@@ -368,7 +368,7 @@ const ExploreVideos = ({
       });
 
       const data = response.data;
-      const videosData = data.data;
+      const videosData = data.data.filter((v: any) => v.type !== "live");
 
       if (videosData.length === 0 && page === 1) {
         // No results found for the search query
