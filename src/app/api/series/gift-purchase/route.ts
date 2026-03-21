@@ -276,6 +276,17 @@ function buildRecipientEmail({ senderName, recipientName, seriesTitle, giftMessa
     <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #F7F3EB; margin: 0; padding: 20px; direction: rtl;">
       <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
         
+        <!-- Header with Logo and Website -->
+        <div style="background: white; padding: 25px 20px; text-align: center; border-bottom: 3px solid #D5C4B7;">
+          <div style="display: inline-block; width: 70px; height: 70px; background: linear-gradient(135deg, #D5C4B7, #B8A99C); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            <span style="color: white; font-size: 32px; font-weight: bold; font-family: 'Georgia', serif;">SB</span>
+          </div>
+          <div style="margin-top: 12px;">
+            <a href="https://studioboazonline.com" style="color: #2D3142; text-decoration: none; font-size: 16px; font-weight: 600; display: block; margin-bottom: 6px;">www.studioboazonline.com</a>
+            <p style="color: #B8A99C; font-size: 14px; margin: 0; font-weight: 500;">שיעורים, הרצאות וארועים</p>
+          </div>
+        </div>
+        
         <div style="background: linear-gradient(135deg, #D5C4B7 0%, #B8A99C 100%); padding: 40px; text-align: center;">
           <div style="font-size: 60px; margin-bottom: 15px;">🎁</div>
           <h1 style="color: white; margin: 0; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.2); line-height: 1.4;">קיבלת מתנה מרגשת!</h1>
