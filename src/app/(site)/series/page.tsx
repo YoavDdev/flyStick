@@ -398,9 +398,9 @@ const SeriesMarketplace = () => {
                         </div>
                       ) : !(series.isComingSoon || series.title.includes('בקרוב')) ? (
                         saleConfig?.isActive && saleConfig.salePrice ? (
-                          <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
+                          <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
                             {saleConfig.badgeText && (
-                              <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md animate-pulse">
+                              <div className="bg-gradient-to-r from-red-600 to-red-500 text-white px-4 py-2 rounded-full text-sm font-extrabold shadow-xl border-2 border-white animate-pulse">
                                 {saleConfig.badgeText}
                               </div>
                             )}

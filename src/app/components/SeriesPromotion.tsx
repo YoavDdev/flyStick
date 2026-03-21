@@ -234,9 +234,9 @@ const SeriesPromotion = () => {
                       </div>
                     ) : !(seriesItem.isComingSoon || seriesItem.title.includes('בקרוב')) ? (
                       saleConfig?.isActive && saleConfig.salePrice ? (
-                        <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
+                        <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5">
                           {saleConfig.badgeText && (
-                            <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-md animate-pulse">
+                            <div className="bg-gradient-to-r from-red-600 to-red-500 text-white px-3 py-1.5 rounded-full text-xs font-extrabold shadow-xl border-2 border-white animate-pulse">
                               {saleConfig.badgeText}
                             </div>
                           )}
