@@ -392,7 +392,7 @@ const SeriesMarketplace = () => {
 
                       {/* Access Status Badge / Price Badge */}
                       {series.hasAccess ? (
-                        <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-[#2D3142] px-3 py-1 rounded-full text-sm font-bold shadow-md">
+                        <div className="absolute top-4 right-4 bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-white px-4 py-2 rounded-full text-sm font-bold shadow-xl border-2 border-white">
                           <FaCheck className="inline mr-1" />
                           {series.accessType === 'subscription' ? 'מנוי' : 'נרכש'}
                         </div>

@@ -228,7 +228,7 @@ const SeriesPromotion = () => {
 
                     {/* Access Status Badge / Price Badge */}
                     {seriesItem.hasAccess ? (
-                      <div className="absolute top-3 right-3 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                      <div className="absolute top-3 right-3 bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-xl border-2 border-white">
                         <FaCheck className="inline mr-1" />
                         {seriesItem.accessType === 'subscription' ? 'מנוי' : 'נרכש'}
                       </div>
