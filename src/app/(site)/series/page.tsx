@@ -53,6 +53,7 @@ const SeriesMarketplace = () => {
   const [giftForm, setGiftForm] = useState({ recipientEmail: '', recipientName: '', giftMessage: '' });
   const [giftProcessing, setGiftProcessing] = useState(false);
   const [giftConfirmed, setGiftConfirmed] = useState(false);
+  const [giftSuccessData, setGiftSuccessData] = useState<{ seriesTitle: string; recipientName: string; recipientEmail: string } | null>(null);
 
   useEffect(() => {
     fetchSeries();
@@ -114,6 +115,7 @@ const SeriesMarketplace = () => {
   const handleGiftPurchaseComplete = async (seriesId: string, paypalOrderId: string, paypalPayerId: string, amount: number) => {
     setGiftProcessing(true);
     try {
+      const series = seriesData?.series.find(s => s.id === seriesId);
       const response = await fetch("/api/series/gift-purchase", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -131,7 +133,12 @@ const SeriesMarketplace = () => {
 
       const result = await response.json();
       if (response.ok) {
-        toast.success(result.message || "המתנה נשלחה בהצלחה! 🎁");
+        // Show success modal with gift details
+        setGiftSuccessData({
+          seriesTitle: series?.title || 'הסדרה',
+          recipientName: giftForm.recipientName || giftForm.recipientEmail,
+          recipientEmail: giftForm.recipientEmail
+        });
         setGiftSeriesId(null);
         setGiftForm({ recipientEmail: '', recipientName: '', giftMessage: '' });
         setGiftConfirmed(false);
@@ -736,6 +743,94 @@ const SeriesMarketplace = () => {
               ))}
             </div>
         </div>
+      )}
+
+      {/* Gift Success Modal */}
+      {giftSuccessData && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#2D3142]/60 backdrop-blur-sm"
+          onClick={() => setGiftSuccessData(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, y: 20, opacity: 0 }}
+            animate={{ scale: 1, y: 0, opacity: 1 }}
+            exit={{ scale: 0.9, y: 20, opacity: 0 }}
+            transition={{ type: "spring", duration: 0.5 }}
+            className="relative bg-gradient-to-br from-[#F7F3EB] to-white rounded-3xl p-8 max-w-md w-full shadow-2xl border-2 border-[#D5C4B7]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Gift Icon */}
+            <div className="flex justify-center mb-6">
+              <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.2, type: "spring", duration: 0.7 }}
+                className="bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] rounded-full p-6 shadow-lg"
+              >
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 12V21C20 21.2652 19.8946 21.5196 19.7071 21.7071C19.5196 21.8946 19.2652 22 19 22H5C4.73478 22 4.48043 21.8946 4.29289 21.7071C4.10536 21.5196 4 21.2652 4 21V12" fill="white"/>
+                  <path d="M22 7H2V12H22V7Z" fill="white"/>
+                  <rect x="11" y="7" width="2" height="15" fill="rgba(181, 168, 156, 0.5)"/>
+                  <path d="M12 7C12 7 10.5 2 7 2C5.89543 2 5 2.89543 5 4C5 5.10457 5.89543 6 7 6C8.5 6 10 6.5 12 7Z" fill="white"/>
+                  <path d="M12 7C12 7 13.5 2 17 2C18.1046 2 19 2.89543 19 4C19 5.10457 18.1046 6 17 6C15.5 6 14 6.5 12 7Z" fill="white"/>
+                </svg>
+              </motion.div>
+            </div>
+
+            {/* Success Message */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-center mb-6"
+            >
+              <h2 className="text-3xl font-bold text-[#2D3142] mb-3">
+                המתנה נשלחה בהצלחה! 🎉
+              </h2>
+              <p className="text-[#2D3142]/70 text-base leading-relaxed">
+                מייל עם פרטי הגישה נשלח למקבל/ת המתנה
+              </p>
+            </motion.div>
+
+            {/* Gift Details */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-white/80 rounded-2xl p-5 mb-6 border border-[#D5C4B7]/30 shadow-sm space-y-3"
+            >
+              <div>
+                <p className="text-xs text-[#2D3142]/60 mb-1 font-medium">הסדרה שנרכשה:</p>
+                <p className="text-lg font-bold text-[#2D3142]">{giftSuccessData.seriesTitle}</p>
+              </div>
+              <div className="border-t border-[#D5C4B7]/20 pt-3">
+                <p className="text-xs text-[#2D3142]/60 mb-1 font-medium">נשלחה אל:</p>
+                <p className="text-base font-bold text-[#2D3142]">{giftSuccessData.recipientName}</p>
+                <p className="text-sm text-[#2D3142]/60 mt-1">{giftSuccessData.recipientEmail}</p>
+              </div>
+            </motion.div>
+
+            {/* Close Button */}
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              onClick={() => setGiftSuccessData(null)}
+              className="w-full bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-white py-3.5 rounded-xl font-bold text-lg hover:from-[#B8A99C] hover:to-[#D5C4B7] transition-all duration-300 shadow-md hover:shadow-lg"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              סגירה
+            </motion.button>
+
+            {/* Decorative Elements */}
+            <div className="absolute -top-2 -right-2 w-16 h-16 bg-gradient-to-br from-[#D5C4B7]/20 to-transparent rounded-full blur-xl" />
+            <div className="absolute -bottom-2 -left-2 w-20 h-20 bg-gradient-to-tr from-[#B8A99C]/20 to-transparent rounded-full blur-xl" />
+          </motion.div>
+        </motion.div>
       )}
 
     </div>
