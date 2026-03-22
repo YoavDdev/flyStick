@@ -54,6 +54,8 @@ const SeriesMarketplace = () => {
   const [giftProcessing, setGiftProcessing] = useState(false);
   const [giftConfirmed, setGiftConfirmed] = useState(false);
   const [giftSuccessData, setGiftSuccessData] = useState<{ seriesTitle: string; recipientName: string; recipientEmail: string } | null>(null);
+  const [giftEligibilityError, setGiftEligibilityError] = useState<string | null>(null);
+  const [checkingEligibility, setCheckingEligibility] = useState(false);
 
   useEffect(() => {
     fetchSeries();
@@ -112,6 +114,37 @@ const SeriesMarketplace = () => {
     }
   };
 
+  const checkGiftEligibility = async (seriesId: string) => {
+    setCheckingEligibility(true);
+    setGiftEligibilityError(null);
+    try {
+      const response = await fetch("/api/series/check-gift-eligibility", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          seriesId,
+          recipientEmail: giftForm.recipientEmail
+        })
+      });
+
+      const result = await response.json();
+      if (result.eligible) {
+        setGiftConfirmed(true);
+        return true;
+      } else {
+        setGiftEligibilityError(result.error);
+        toast.error(result.error);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error checking gift eligibility:", error);
+      toast.error("שגיאה בבדיקת זכאות");
+      return false;
+    } finally {
+      setCheckingEligibility(false);
+    }
+  };
+
   const handleGiftPurchaseComplete = async (seriesId: string, paypalOrderId: string, paypalPayerId: string, amount: number) => {
     setGiftProcessing(true);
     try {
@@ -142,6 +175,7 @@ const SeriesMarketplace = () => {
         setGiftSeriesId(null);
         setGiftForm({ recipientEmail: '', recipientName: '', giftMessage: '' });
         setGiftConfirmed(false);
+        setGiftEligibilityError(null);
       } else {
         toast.error(result.error || "שגיאה בעיבוד המתנה");
       }
@@ -581,6 +615,11 @@ const SeriesMarketplace = () => {
 
                           {giftForm.recipientEmail && !giftConfirmed && (
                             <div className="mt-4">
+                              {giftEligibilityError && (
+                                <div className="mb-3 bg-red-50 border border-red-200 rounded-lg p-3">
+                                  <p className="text-sm text-red-600 font-medium">⚠️ {giftEligibilityError}</p>
+                                </div>
+                              )}
                               <button
                                 onClick={() => {
                                   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -592,11 +631,12 @@ const SeriesMarketplace = () => {
                                     toast.error("לא ניתן לשלוח מתנה לעצמך");
                                     return;
                                   }
-                                  setGiftConfirmed(true);
+                                  checkGiftEligibility(series.id);
                                 }}
-                                className="w-full bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] text-white py-2.5 rounded-lg font-bold text-sm hover:from-[#D5C4B7] hover:to-[#B8A99C] transition-colors shadow-md"
+                                disabled={checkingEligibility}
+                                className="w-full bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] text-white py-2.5 rounded-lg font-bold text-sm hover:from-[#D5C4B7] hover:to-[#B8A99C] transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                               >
-                                אישור ומעבר לתשלום
+                                {checkingEligibility ? '🔍 בודק זכאות...' : 'אישור ומעבר לתשלום'}
                               </button>
                             </div>
                           )}
@@ -667,6 +707,7 @@ const SeriesMarketplace = () => {
                               setGiftSeriesId(null);
                               setGiftForm({ recipientEmail: '', recipientName: '', giftMessage: '' });
                               setGiftConfirmed(false);
+                              setGiftEligibilityError(null);
                             }}
                             className="w-full mt-3 text-sm text-[#2D3142]/60 hover:text-[#2D3142] transition-colors"
                           >
