@@ -323,6 +323,13 @@ export default function AdminPage() {
 
           <div className="mb-6 flex flex-wrap justify-center gap-3">
             <button
+              onClick={() => router.push('/admin/gift-purchases')}
+              className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] hover:from-[#B8A99C] hover:to-[#D5C4B7] text-white py-2 px-4 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#D5C4B7]/30 text-sm sm:text-base font-bold"
+            >
+              🎁 ניהול רכישות מתנה
+            </button>
+            
+            <button
               onClick={async () => {
                 try {
                   console.log('🚀 [ADMIN] Starting PayPal sync button click');
