@@ -522,6 +522,7 @@ const SeriesMarketplace = () => {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         className="mt-6 pt-6 border-t border-[#D5C4B7]/30"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <div className="bg-gradient-to-br from-[#F7F3EB] to-white rounded-xl p-6 border-2 border-[#D5C4B7]/40 shadow-lg">
                           <div className="bg-gradient-to-r from-[#B8A99C]/10 to-[#D5C4B7]/10 rounded-lg p-4 mb-5 border border-[#D5C4B7]/30">
