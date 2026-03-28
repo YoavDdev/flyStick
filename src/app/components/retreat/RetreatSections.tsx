@@ -294,6 +294,7 @@ export function RetreatGallery({
                 style={{ aspectRatio: i === 0 ? "4/3" : "1/1" }}
                 onClick={() => setSelectedImage(i)}
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={img.src}
                   alt={img.alt}
@@ -464,6 +465,7 @@ export function RetreatInstructor({
           <div className="flex flex-col md:flex-row items-center gap-10 md:gap-14">
             {/* Image */}
             <div className="flex-shrink-0 w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={instructor.image}
                 alt={instructor.name}

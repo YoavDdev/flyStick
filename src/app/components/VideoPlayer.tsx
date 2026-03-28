@@ -572,6 +572,7 @@ const VideoPlayer = ({
       saveProgress();
       newPlayer.destroy();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embedHtml, videoUri]);
 
   const handleClose = useCallback(async () => {

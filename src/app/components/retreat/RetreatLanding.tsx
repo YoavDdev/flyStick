@@ -105,6 +105,7 @@ function RetreatHero({ retreat }: { retreat: RetreatConfig }) {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background image */}
       <div className="absolute inset-0">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={retreat.heroImage}
           alt={retreat.title}

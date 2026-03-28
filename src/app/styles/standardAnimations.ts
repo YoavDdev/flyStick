@@ -59,8 +59,10 @@ export const staggerChildrenVariants = {
   }
 };
 
-export default {
+const standardAnimations = {
   standardEasing,
   pageTransitionVariants,
   staggerChildrenVariants,
 };
+
+export default standardAnimations;
