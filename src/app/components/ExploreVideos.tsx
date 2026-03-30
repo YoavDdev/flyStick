@@ -368,7 +368,8 @@ const ExploreVideos = ({
       });
 
       const data = response.data;
-      const videosData = data.data.filter((v: any) => v.type !== "live");
+      // Filter out upcoming live events (type "live" with no duration), keep recorded live sessions
+      const videosData = data.data.filter((v: any) => v.type !== "live" || (v.type === "live" && v.duration > 0));
 
       if (videosData.length === 0 && page === 1) {
         // No results found for the search query
