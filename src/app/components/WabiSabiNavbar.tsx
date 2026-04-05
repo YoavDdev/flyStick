@@ -10,6 +10,7 @@ import { AiOutlineMenu, AiOutlineClose, AiOutlineInstagram, AiOutlineFacebook, A
 import { motion, AnimatePresence, Variants } from "framer-motion";
 
 import DropdownMenu from "./DropdownMenu";
+import UserMessageNotification from "./UserMessageNotification";
 import { useVideoPlayer } from "../context/VideoPlayerContext";
 
 interface WabiSabiNavbarProps {}
@@ -287,6 +288,19 @@ const WabiSabiNavbar = () => {
               </motion.li>
             ))}
             
+            {/* Notifications + User Menu */}
+            {session?.user && (
+              <motion.li
+                className="mr-4"
+                initial="hidden"
+                animate="visible"
+                variants={navItemVariants}
+                transition={{ delay: (navigationLinks.length - 1) * 0.1, duration: 0.3 }}
+              >
+                <UserMessageNotification />
+              </motion.li>
+            )}
+            
             {/* User Menu or Login Button */}
             <motion.div 
               className="mr-6 relative"
@@ -336,14 +350,19 @@ const WabiSabiNavbar = () => {
           </ul>
         </div>
 
-        {/* Mobile Menu Button */}
-        <motion.div 
-          onClick={toggleMobileMenu}
-          whileTap={{ scale: 0.95 }}
-          className="md:hidden cursor-pointer bg-[#E5DFD0]/70 p-2.5 rounded-full shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center"
-        >
-          <AiOutlineMenu size={20} className="text-[#8E9A7C] hover:text-[#B56B4A] transition-colors duration-300" />
-        </motion.div>
+        {/* Mobile: Notifications + Menu Button */}
+        <div className="md:hidden flex items-center gap-2">
+          {session?.user && (
+            <UserMessageNotification />
+          )}
+          <motion.div 
+            onClick={toggleMobileMenu}
+            whileTap={{ scale: 0.95 }}
+            className="cursor-pointer bg-[#E5DFD0]/70 p-2.5 rounded-full shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center"
+          >
+            <AiOutlineMenu size={20} className="text-[#8E9A7C] hover:text-[#B56B4A] transition-colors duration-300" />
+          </motion.div>
+        </div>
       </div>
 
       {/* Mobile Menu */}
