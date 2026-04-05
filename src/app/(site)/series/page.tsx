@@ -549,7 +549,8 @@ const SeriesMarketplace = () => {
                             >
                               <span className="flex items-center gap-1.5">
                                 <span>🎁</span>
-                                <span>מתנה</span>
+                                <span className="hidden sm:inline">רכישה כמתנה</span>
+                                <span className="sm:hidden">מתנה</span>
                               </span>
                             </motion.button>
                           </div>

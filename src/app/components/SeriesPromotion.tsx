@@ -366,7 +366,8 @@ const SeriesPromotion = () => {
                           >
                             <span className="flex items-center gap-1">
                               <span>🎁</span>
-                              <span className="text-xs">מתנה</span>
+                              <span className="text-xs hidden sm:inline">רכישה כמתנה</span>
+                              <span className="text-xs sm:hidden">מתנה</span>
                             </span>
                           </motion.button>
                         </div>
