@@ -79,8 +79,62 @@ const AddToCalendarButton = ({ event }: { event: any }) => (
   </a>
 );
 
+// ============ REGISTER BUTTON ============
+const RegisterButton = ({ event, isLoggedIn, isRegistered, onToggle, registering }: {
+  event: any;
+  isLoggedIn: boolean;
+  isRegistered: boolean;
+  onToggle: (eventId: string) => void;
+  registering: string | null;
+}) => {
+  if (event.status !== "scheduled") return null;
+
+  if (!isLoggedIn) {
+    return (
+      <Link href="/register" className="inline-flex items-center gap-1 text-[10px] bg-[#B56B4A] text-white px-2.5 py-1 rounded-full hover:bg-[#9a5a3d] transition-colors flex-shrink-0">
+        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
+        הירשם
+      </Link>
+    );
+  }
+
+  const isBusy = registering === event.id;
+
+  return (
+    <button
+      onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggle(event.id); }}
+      disabled={isBusy}
+      className={`inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full transition-colors flex-shrink-0 ${
+        isRegistered
+          ? "bg-green-100 text-green-700 border border-green-300 hover:bg-red-50 hover:text-red-600 hover:border-red-300"
+          : "bg-[#B56B4A] text-white hover:bg-[#9a5a3d]"
+      } disabled:opacity-50`}
+    >
+      {isBusy ? (
+        <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+      ) : isRegistered ? (
+        <>
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+          <span className="group-hover:hidden">נרשמת</span>
+        </>
+      ) : (
+        <>
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+          הרשם לשיעור
+        </>
+      )}
+    </button>
+  );
+};
+
 // ============ CALENDAR ============
-const EventCalendar = ({ events }: { events: any[] }) => {
+const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, registering }: {
+  events: any[];
+  isLoggedIn: boolean;
+  registeredIds: string[];
+  onToggleRegister: (eventId: string) => void;
+  registering: string | null;
+}) => {
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
@@ -199,7 +253,13 @@ const EventCalendar = ({ events }: { events: any[] }) => {
                   {e.description && <p className="text-xs text-[#5D5D5D] mt-1">{e.description}</p>}
                 </div>
                 {e.status === "scheduled" && (
-                  <AddToCalendarButton event={e} />
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <RegisterButton event={e} isLoggedIn={isLoggedIn} isRegistered={registeredIds.includes(e.id)} onToggle={onToggleRegister} registering={registering} />
+                    <AddToCalendarButton event={e} />
+                  </div>
+                )}
+                {e.status === "scheduled" && e.registrationCount > 0 && (
+                  <span className="text-[10px] text-[#5D5D5D]">{e.registrationCount} נרשמו</span>
                 )}
                 {e.status === "live" && (
                   <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full flex-shrink-0">שידור חי</span>
@@ -229,7 +289,13 @@ const EventCalendar = ({ events }: { events: any[] }) => {
 };
 
 // ============ UPCOMING LIST ============
-const UpcomingList = ({ events }: { events: any[] }) => {
+const UpcomingList = ({ events, isLoggedIn, registeredIds, onToggleRegister, registering }: {
+  events: any[];
+  isLoggedIn: boolean;
+  registeredIds: string[];
+  onToggleRegister: (eventId: string) => void;
+  registering: string | null;
+}) => {
   const upcoming = events
     .filter(e => e.status === "scheduled")
     .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime());
@@ -256,9 +322,13 @@ const UpcomingList = ({ events }: { events: any[] }) => {
         <div className="mt-4">
           <Countdown targetDate={nextEvent.scheduledAt} />
         </div>
-        <div className="mt-4">
+        <div className="mt-4 flex items-center justify-center gap-3">
+          <RegisterButton event={nextEvent} isLoggedIn={isLoggedIn} isRegistered={registeredIds.includes(nextEvent.id)} onToggle={onToggleRegister} registering={registering} />
           <AddToCalendarButton event={nextEvent} />
         </div>
+        {nextEvent.registrationCount > 0 && (
+          <p className="text-xs text-[#5D5D5D] mt-2">{nextEvent.registrationCount} נרשמו לשיעור</p>
+        )}
       </div>
 
       {/* Other upcoming */}
@@ -277,6 +347,7 @@ const UpcomingList = ({ events }: { events: any[] }) => {
                   <span className="text-xs text-[#5D5D5D] whitespace-nowrap">
                     {HEBREW_DAYS[d.getDay()]} {d.getDate()}.{d.getMonth()+1} | {fmt(d)}
                   </span>
+                  <RegisterButton event={e} isLoggedIn={isLoggedIn} isRegistered={registeredIds.includes(e.id)} onToggle={onToggleRegister} registering={registering} />
                   <AddToCalendarButton event={e} />
                 </div>
               );
@@ -431,6 +502,8 @@ const LiveStreamPage = () => {
   const [allEvents, setAllEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [registeredIds, setRegisteredIds] = useState<string[]>([]);
+  const [registering, setRegistering] = useState<string | null>(null);
 
   const fetchStreamData = useCallback(async () => {
     try {
@@ -447,22 +520,58 @@ const LiveStreamPage = () => {
     } finally { setLoading(false); }
   }, []);
 
-  // Check admin status
+  // Check admin status + fetch user registrations
   useEffect(() => {
-    const checkAdmin = async () => {
-      if (!session?.user?.email) return;
+    if (!session?.user?.email) return;
+    const email = session.user.email;
+    const init = async () => {
       try {
-        const res = await fetch("/api/check-admin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: session.user.email }),
-        });
-        const data = await res.json();
-        setIsAdmin(data.isAdmin === true);
+        const [adminRes, regRes] = await Promise.all([
+          fetch("/api/check-admin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+          }),
+          fetch(`/api/live/register?email=${encodeURIComponent(email)}`),
+        ]);
+        const adminData = await adminRes.json();
+        const regData = await regRes.json();
+        setIsAdmin(adminData.isAdmin === true);
+        if (regData.success) setRegisteredIds(regData.registeredEventIds || []);
       } catch { /* ignore */ }
     };
-    checkAdmin();
+    init();
   }, [session]);
+
+  // Toggle registration for an event
+  const handleToggleRegister = async (eventId: string) => {
+    if (!session?.user?.email) return;
+    setRegistering(eventId);
+    try {
+      const isRegistered = registeredIds.includes(eventId);
+      if (isRegistered) {
+        const res = await fetch(`/api/live/register?eventId=${eventId}&email=${encodeURIComponent(session.user.email)}`, { method: "DELETE" });
+        const data = await res.json();
+        if (data.success) {
+          setRegisteredIds(prev => prev.filter(id => id !== eventId));
+          // Update count in allEvents
+          setAllEvents(prev => prev.map(e => e.id === eventId ? { ...e, registrationCount: data.count } : e));
+        }
+      } else {
+        const res = await fetch("/api/live/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ eventId, email: session.user.email }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          setRegisteredIds(prev => [...prev, eventId]);
+          setAllEvents(prev => prev.map(e => e.id === eventId ? { ...e, registrationCount: data.count } : e));
+        }
+      }
+    } catch { /* ignore */ }
+    setRegistering(null);
+  };
 
   useEffect(() => {
     fetchStreamData();
@@ -581,7 +690,7 @@ const LiveStreamPage = () => {
           )}
 
           {/* UPCOMING EVENTS + COUNTDOWN (when not live) */}
-          {!isLive && <UpcomingList events={allEvents} />}
+          {!isLive && <UpcomingList events={allEvents} isLoggedIn={!!session} registeredIds={registeredIds} onToggleRegister={handleToggleRegister} registering={registering} />}
 
           {/* MONTHLY CALENDAR - always visible */}
           <div>
@@ -589,7 +698,7 @@ const LiveStreamPage = () => {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
               לוח שידורים
             </h2>
-            <EventCalendar events={allEvents} />
+            <EventCalendar events={allEvents} isLoggedIn={!!session} registeredIds={registeredIds} onToggleRegister={handleToggleRegister} registering={registering} />
           </div>
 
           {/* INFO CARDS (when not live) */}

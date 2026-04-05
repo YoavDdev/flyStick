@@ -25,6 +25,16 @@ export async function GET(request: NextRequest) {
       orderBy: { scheduledAt: "desc" },
     });
 
+    // Get registration counts for all events
+    const allEventIds = [...futureEvents, ...pastEvents].map(e => e.id);
+    const regCounts = await prisma.liveEventRegistration.groupBy({
+      by: ["eventId"],
+      where: { eventId: { in: allEventIds } },
+      _count: { eventId: true },
+    });
+    const countMap: Record<string, number> = {};
+    regCounts.forEach((r: any) => { countMap[r.eventId] = r._count.eventId; });
+
     const allEvents = [...futureEvents, ...pastEvents].map((event) => ({
       id: event.id,
       title: event.title,
@@ -33,6 +43,7 @@ export async function GET(request: NextRequest) {
       scheduledAt: event.scheduledAt.toISOString(),
       estimatedDuration: event.estimatedDuration,
       vimeoEmbedUrl: event.vimeoEmbedUrl || "",
+      registrationCount: countMap[event.id] || 0,
     }));
 
     return NextResponse.json({ success: true, events: allEvents });

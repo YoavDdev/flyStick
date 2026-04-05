@@ -21,6 +21,9 @@ const AdminVimeoLivePanel = () => {
   const [editingEvent, setEditingEvent] = useState<LiveEvent | null>(null);
   const [saving, setSaving] = useState(false);
   const [showPastEvents, setShowPastEvents] = useState(false);
+  const [expandedRegs, setExpandedRegs] = useState<string | null>(null);
+  const [regsData, setRegsData] = useState<Record<string, any[]>>({});
+  const [regsLoading, setRegsLoading] = useState(false);
 
   // Form state
   const [form, setForm] = useState({
@@ -154,6 +157,23 @@ const AdminVimeoLivePanel = () => {
     } catch (err) {
       setError("שגיאה במחיקה");
     }
+  };
+
+  const fetchRegistrations = async (eventId: string) => {
+    if (expandedRegs === eventId) {
+      setExpandedRegs(null);
+      return;
+    }
+    setRegsLoading(true);
+    setExpandedRegs(eventId);
+    try {
+      const res = await fetch(`/api/admin/live-events/registrations?eventId=${eventId}`, { headers: getAuthHeaders() });
+      const data = await res.json();
+      if (data.success) {
+        setRegsData(prev => ({ ...prev, [eventId]: data.registrations }));
+      }
+    } catch { /* ignore */ }
+    setRegsLoading(false);
   };
 
   const formatDate = (dateStr: string) => {
@@ -303,6 +323,9 @@ const AdminVimeoLivePanel = () => {
                       <button onClick={() => handleStatusChange(event.id, "live")} className="text-xs bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors">
                         התחל שידור
                       </button>
+                      <button onClick={() => fetchRegistrations(event.id)} className={`text-xs px-3 py-1 rounded-lg border transition-colors ${expandedRegs === event.id ? "bg-[#D5C4B7]/30 border-[#D5C4B7]" : "bg-white border-[#D5C4B7] hover:bg-[#D5C4B7]/20"} text-[#2D3142]`}>
+                        👥 נרשמים
+                      </button>
                       <button onClick={() => openEditForm(event)} className="text-xs bg-white text-[#2D3142] px-3 py-1 rounded-lg border border-[#D5C4B7] hover:bg-[#D5C4B7]/20 transition-colors">
                         ערוך
                       </button>
@@ -313,6 +336,30 @@ const AdminVimeoLivePanel = () => {
                         מחק
                       </button>
                     </div>
+
+                    {/* Registrations list */}
+                    {expandedRegs === event.id && (
+                      <div className="mt-3 bg-white border border-[#D5C4B7]/40 rounded-lg p-3">
+                        <h5 className="text-xs font-bold text-[#2D3142] mb-2">👥 נרשמים לשיעור</h5>
+                        {regsLoading ? (
+                          <p className="text-xs text-[#5D5D5D]">טוען...</p>
+                        ) : (regsData[event.id]?.length || 0) === 0 ? (
+                          <p className="text-xs text-[#5D5D5D]">אין נרשמים עדיין</p>
+                        ) : (
+                          <div className="space-y-1.5">
+                            {regsData[event.id].map((reg: any, i: number) => (
+                              <div key={reg.id} className="flex items-center gap-2 text-xs p-1.5 rounded bg-[#F7F3EB]/50">
+                                <span className="text-[#5D5D5D] w-5">{i + 1}.</span>
+                                <span className="font-medium text-[#2D3142]">{reg.userName}</span>
+                                <span className="text-[#5D5D5D]">{reg.userEmail}</span>
+                                {reg.isSubscriber && <span className="text-[8px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">מנוי</span>}
+                              </div>
+                            ))}
+                            <p className="text-[10px] text-[#5D5D5D] mt-2 pt-2 border-t border-[#D5C4B7]/20">סה"כ: {regsData[event.id].length} נרשמים</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
               })}
