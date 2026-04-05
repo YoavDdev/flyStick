@@ -172,87 +172,65 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-[10002] p-4"
+            className="fixed inset-0 bg-black/30 flex items-start justify-center z-[10002] p-4 pt-16 sm:pt-20"
             onClick={() => setIsModalOpen(false)}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-[#F7F3EB] rounded-xl max-w-2xl w-full max-h-[80vh] overflow-hidden shadow-md"
+              className="bg-[#F7F3EB] rounded-xl max-w-sm w-full max-h-[60vh] overflow-hidden shadow-lg border border-[#D5C4B7]/40"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="bg-[#D5C4B7] p-4 flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <FaEnvelope className="text-[#2D3142] text-xl" />
-                  <h2 className="text-xl font-bold text-[#2D3142]">
+              <div className="bg-[#D5C4B7] px-4 py-3 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <FaEnvelope className="text-[#2D3142] text-base" />
+                  <h2 className="text-base font-bold text-[#2D3142]">
                     הודעות מבועז
                   </h2>
                   {unreadCount > 0 && (
-                    <span className="bg-red-500 text-white text-sm px-2 py-1 rounded-full">
-                      {unreadCount} חדשות
+                    <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                      {unreadCount}
                     </span>
                   )}
                 </div>
                 
-                <div className="flex items-center gap-2">
-                  {unreadCount > 0 && (
-                    <motion.button
-                      onClick={markAllAsRead}
-                      disabled={isLoading}
-                      className="text-sm bg-[#B8A99C] hover:bg-[#A09080] disabled:bg-[#B8A99C]/50 text-white px-3 py-1 rounded-md transition-colors"
-                      whileHover={{ y: -1 }}
-                      whileTap={{ y: 0 }}
-                    >
-                      {isLoading ? "מסמן..." : "סמן הכל כנקרא"}
-                    </motion.button>
-                  )}
-                  
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    className="text-[#2D3142] hover:text-[#1A1D2E] transition-colors"
-                  >
-                    <FaTimes className="text-lg" />
-                  </button>
-                </div>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="text-[#2D3142] hover:text-[#1A1D2E] transition-colors"
+                >
+                  <FaTimes className="text-sm" />
+                </button>
               </div>
 
               {/* Messages List */}
-              <div className="p-4 max-h-[60vh] overflow-y-auto">
+              <div className="p-3 max-h-[50vh] overflow-y-auto">
                 {allMessages.length === 0 ? (
-                  <div className="text-center py-8 text-[#3D3D3D]">
-                    <FaEnvelopeOpen className="text-4xl mx-auto mb-4 opacity-50" />
-                    <p>אין הודעות עדיין</p>
+                  <div className="text-center py-6 text-[#3D3D3D]">
+                    <FaEnvelopeOpen className="text-2xl mx-auto mb-3 opacity-50" />
+                    <p className="text-sm">אין הודעות עדיין</p>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-2.5">
                     {/* Unread Messages */}
                     {messages.unreadMessages.map((message) => (
                       <motion.div
                         key={message.id}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="bg-[#D5C4B7]/30 border border-[#D5C4B7] rounded-lg p-4 shadow-sm"
+                        className="bg-[#D5C4B7]/30 border border-[#D5C4B7] rounded-lg p-3 shadow-sm"
                       >
-                        <div className="flex justify-between items-start mb-2">
-                          <h3 className="font-bold text-[#2D3142] text-lg">
+                        <div className="flex justify-between items-start mb-1">
+                          <h3 className="font-bold text-[#2D3142] text-sm">
                             {message.title}
                           </h3>
-                          <div className="flex items-center gap-2">
-                            <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                              חדש
-                            </span>
-                            <button
-                              onClick={() => markAsRead(message.id)}
-                              className="text-[#3D3D3D] hover:text-[#2D3142] text-sm"
-                            >
-                              סמן כנקרא
-                            </button>
-                          </div>
+                          <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full flex-shrink-0 mr-2">
+                            חדש
+                          </span>
                         </div>
                         
-                        <p className="text-[#3D3D3D] mb-3 leading-relaxed">
+                        <p className="text-[#3D3D3D] text-xs leading-relaxed mb-2">
                           {message.content}
                         </p>
                         
@@ -261,14 +239,14 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
                             href={message.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-4 py-2 rounded-md transition-colors text-sm font-medium"
+                            className="inline-flex items-center gap-1.5 bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-3 py-1.5 rounded-md transition-colors text-xs font-medium"
                           >
                             {message.linkText || "לחץ כאן"}
-                            <FaExternalLinkAlt className="text-xs" />
+                            <FaExternalLinkAlt className="text-[10px]" />
                           </a>
                         )}
                         
-                        <div className="text-xs text-[#3D3D3D]/70 mt-3">
+                        <div className="text-[10px] text-[#3D3D3D]/60 mt-2">
                           {formatDate(message.createdAt)}
                         </div>
                       </motion.div>
@@ -278,15 +256,15 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
                     {messages.readMessages.map((message) => (
                       <motion.div
                         key={message.id}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="bg-white border border-[#D5C4B7]/30 rounded-lg p-4 shadow-sm opacity-75"
+                        className="bg-white border border-[#D5C4B7]/30 rounded-lg p-3 shadow-sm opacity-70"
                       >
-                        <h3 className="font-bold text-[#2D3142] text-lg mb-2">
+                        <h3 className="font-bold text-[#2D3142] text-sm mb-1">
                           {message.title}
                         </h3>
                         
-                        <p className="text-[#3D3D3D] mb-3 leading-relaxed">
+                        <p className="text-[#3D3D3D] text-xs leading-relaxed mb-2">
                           {message.content}
                         </p>
                         
@@ -295,14 +273,14 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
                             href={message.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 bg-[#D5C4B7]/50 hover:bg-[#D5C4B7] text-[#2D3142] px-4 py-2 rounded-md transition-colors text-sm font-medium"
+                            className="inline-flex items-center gap-1.5 bg-[#D5C4B7]/50 hover:bg-[#D5C4B7] text-[#2D3142] px-3 py-1.5 rounded-md transition-colors text-xs font-medium"
                           >
                             {message.linkText || "לחץ כאן"}
-                            <FaExternalLinkAlt className="text-xs" />
+                            <FaExternalLinkAlt className="text-[10px]" />
                           </a>
                         )}
                         
-                        <div className="text-xs text-[#3D3D3D]/70 mt-3">
+                        <div className="text-[10px] text-[#3D3D3D]/60 mt-2">
                           {formatDate(message.createdAt)}
                         </div>
                       </motion.div>
