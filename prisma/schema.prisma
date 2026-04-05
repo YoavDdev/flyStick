@@ -96,14 +96,15 @@ model PasswordReset {
 }
 
 model Message {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  content     String
-  link        String?  // Optional link for "new video" or other announcements
-  linkText    String?  // Text to display for the link
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  isActive    Boolean  @default(true) // Allow admin to deactivate messages
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  content        String
+  link           String?  // Optional link for "new video" or other announcements
+  linkText       String?  // Text to display for the link
+  targetUserIds  String[] @db.ObjectId // Empty = broadcast to all, populated = only these users
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  isActive       Boolean  @default(true) // Allow admin to deactivate messages
   
   messageReads MessageRead[]
 }

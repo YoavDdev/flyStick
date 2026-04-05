@@ -31,9 +31,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Get all active messages
+    // Get all active messages (broadcast + targeted to this user)
     const allMessages = await prisma.message.findMany({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+        OR: [
+          { targetUserIds: { isEmpty: true } },  // Broadcast messages
+          { targetUserIds: { has: user.id } },    // Targeted to this user
+        ],
+      },
       orderBy: { createdAt: "desc" },
     });
 

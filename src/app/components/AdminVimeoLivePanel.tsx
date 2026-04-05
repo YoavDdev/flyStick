@@ -24,6 +24,9 @@ const AdminVimeoLivePanel = () => {
   const [expandedRegs, setExpandedRegs] = useState<string | null>(null);
   const [regsData, setRegsData] = useState<Record<string, any[]>>({});
   const [regsLoading, setRegsLoading] = useState(false);
+  const [msgForm, setMsgForm] = useState<{ eventId: string; title: string; content: string } | null>(null);
+  const [sendingMsg, setSendingMsg] = useState(false);
+  const [msgSuccess, setMsgSuccess] = useState<string | null>(null);
 
   // Form state
   const [form, setForm] = useState({
@@ -157,6 +160,33 @@ const AdminVimeoLivePanel = () => {
     } catch (err) {
       setError("שגיאה במחיקה");
     }
+  };
+
+  const sendMessageToRegistrants = async (eventId: string) => {
+    if (!msgForm || !msgForm.title || !msgForm.content) {
+      setError("חסרים כותרת ותוכן להודעה");
+      return;
+    }
+    setSendingMsg(true);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/live-events/registrations/message", {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ eventId, title: msgForm.title, content: msgForm.content }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMsgForm(null);
+        setMsgSuccess(`ההודעה נשלחה ל-${data.count} נרשמים!`);
+        setTimeout(() => setMsgSuccess(null), 4000);
+      } else {
+        setError(data.error || "שגיאה בשליחת הודעה");
+      }
+    } catch {
+      setError("שגיאה בשליחת הודעה");
+    }
+    setSendingMsg(false);
   };
 
   const fetchRegistrations = async (eventId: string) => {
@@ -356,6 +386,56 @@ const AdminVimeoLivePanel = () => {
                               </div>
                             ))}
                             <p className="text-[10px] text-[#5D5D5D] mt-2 pt-2 border-t border-[#D5C4B7]/20">סה"כ: {regsData[event.id].length} נרשמים</p>
+                          </div>
+                        )}
+
+                        {/* Send message to registrants */}
+                        {(regsData[event.id]?.length || 0) > 0 && !msgForm && (
+                          <button
+                            onClick={() => setMsgForm({ eventId: event.id, title: `עדכון: ${event.title}`, content: "" })}
+                            className="mt-3 w-full text-xs bg-[#2D3142] text-white px-3 py-2 rounded-lg hover:bg-[#2D3142]/80 transition-colors font-medium flex items-center justify-center gap-1.5"
+                          >
+                            ✉️ שלח הודעה לנרשמים
+                          </button>
+                        )}
+
+                        {msgForm && msgForm.eventId === event.id && (
+                          <div className="mt-3 bg-[#F7F3EB] border border-[#D5C4B7]/50 rounded-lg p-3 space-y-2">
+                            <h6 className="text-xs font-bold text-[#2D3142]">✉️ הודעה לנרשמים ({regsData[event.id]?.length || 0})</h6>
+                            <input
+                              type="text"
+                              value={msgForm.title}
+                              onChange={(e) => setMsgForm({ ...msgForm, title: e.target.value })}
+                              className="w-full border border-[#D5C4B7] rounded-lg px-3 py-1.5 text-xs bg-white"
+                              placeholder="כותרת (למשל: השיעור מבוטל)"
+                            />
+                            <textarea
+                              value={msgForm.content}
+                              onChange={(e) => setMsgForm({ ...msgForm, content: e.target.value })}
+                              className="w-full border border-[#D5C4B7] rounded-lg px-3 py-1.5 text-xs bg-white min-h-[60px] resize-none"
+                              placeholder="תוכן ההודעה..."
+                            />
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => sendMessageToRegistrants(event.id)}
+                                disabled={sendingMsg}
+                                className="text-xs bg-[#2D3142] text-white px-3 py-1.5 rounded-lg hover:bg-[#2D3142]/80 transition-colors disabled:opacity-50"
+                              >
+                                {sendingMsg ? "שולח..." : "שלח"}
+                              </button>
+                              <button
+                                onClick={() => setMsgForm(null)}
+                                className="text-xs bg-white text-[#5D5D5D] px-3 py-1.5 rounded-lg border border-[#D5C4B7] hover:bg-[#F7F3EB] transition-colors"
+                              >
+                                ביטול
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {msgSuccess && expandedRegs === event.id && (
+                          <div className="mt-2 bg-green-50 border border-green-200 text-green-700 text-xs p-2 rounded-lg text-center">
+                            {msgSuccess}
                           </div>
                         )}
                       </div>
