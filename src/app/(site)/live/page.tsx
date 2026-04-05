@@ -316,6 +316,113 @@ const PastEventsList = ({ events }: { events: any[] }) => {
   );
 };
 
+// ============ ADMIN CONTROL BAR ============
+const AdminLiveControlBar = ({ isAdmin, streamState, allEvents, onAction }: {
+  isAdmin: boolean;
+  streamState: string;
+  allEvents: any[];
+  onAction: (action: string, eventId?: string) => void;
+}) => {
+  const [acting, setActing] = useState(false);
+  const [confirmEnd, setConfirmEnd] = useState(false);
+
+  if (!isAdmin) return null;
+
+  const isLive = streamState === "live";
+  const nextScheduled = allEvents
+    .filter(e => e.status === "scheduled")
+    .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())[0];
+  const liveEvent = allEvents.find(e => e.status === "live");
+
+  const handleAction = async (action: string, eventId?: string) => {
+    setActing(true);
+    setConfirmEnd(false);
+    await onAction(action, eventId);
+    setActing(false);
+  };
+
+  return (
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[9999] w-[calc(100%-2rem)] max-w-lg" dir="rtl">
+      <div className="bg-[#2D3142] text-white rounded-2xl shadow-2xl border border-[#D5C4B7]/30 p-3 sm:p-4">
+        <div className="flex items-center justify-between gap-3">
+          {/* Status indicator */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className={`w-2.5 h-2.5 rounded-full ${isLive ? "bg-red-500 animate-pulse" : nextScheduled ? "bg-[#B56B4A]" : "bg-gray-500"}`} />
+            <span className="text-xs font-medium">
+              {isLive ? "משדר עכשיו" : nextScheduled ? "יש אירוע מתוזמן" : "אין אירועים"}
+            </span>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex items-center gap-2">
+            {!isLive && nextScheduled && (
+              <button
+                onClick={() => handleAction("start", nextScheduled.id)}
+                disabled={acting}
+                className="flex items-center gap-1.5 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full text-sm font-bold transition-colors disabled:opacity-50 shadow-lg"
+              >
+                {acting ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <div className="relative">
+                      <div className="w-2.5 h-2.5 bg-white rounded-full" />
+                    </div>
+                    התחל שידור
+                  </>
+                )}
+              </button>
+            )}
+
+            {isLive && !confirmEnd && (
+              <button
+                onClick={() => setConfirmEnd(true)}
+                disabled={acting}
+                className="flex items-center gap-1.5 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-full text-sm font-bold transition-colors disabled:opacity-50"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" /></svg>
+                סיים שידור
+              </button>
+            )}
+
+            {isLive && confirmEnd && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleAction("end", liveEvent?.id)}
+                  disabled={acting}
+                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-full text-xs font-bold transition-colors disabled:opacity-50"
+                >
+                  {acting ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : "כן, סיים"}
+                </button>
+                <button
+                  onClick={() => setConfirmEnd(false)}
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-full text-xs transition-colors"
+                >
+                  ביטול
+                </button>
+              </div>
+            )}
+
+            {!isLive && !nextScheduled && (
+              <span className="text-xs text-gray-400">צרו אירוע מהדשבורד</span>
+            )}
+          </div>
+        </div>
+
+        {/* Event info line */}
+        {(isLive && liveEvent) && (
+          <p className="text-[10px] text-gray-400 mt-1.5 truncate">משדר: {liveEvent.title}</p>
+        )}
+        {(!isLive && nextScheduled) && (
+          <p className="text-[10px] text-gray-400 mt-1.5 truncate">הבא: {nextScheduled.title} | {fmt(new Date(nextScheduled.scheduledAt))}</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // ============ MAIN PAGE ============
 const LiveStreamPage = () => {
   const { data: session } = useSession();
@@ -323,6 +430,7 @@ const LiveStreamPage = () => {
   const [streamState, setStreamState] = useState<string>("none");
   const [allEvents, setAllEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchStreamData = useCallback(async () => {
     try {
@@ -339,11 +447,49 @@ const LiveStreamPage = () => {
     } finally { setLoading(false); }
   }, []);
 
+  // Check admin status
+  useEffect(() => {
+    const checkAdmin = async () => {
+      if (!session?.user?.email) return;
+      try {
+        const res = await fetch("/api/check-admin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: session.user.email }),
+        });
+        const data = await res.json();
+        setIsAdmin(data.isAdmin === true);
+      } catch { /* ignore */ }
+    };
+    checkAdmin();
+  }, [session]);
+
   useEffect(() => {
     fetchStreamData();
     const interval = setInterval(fetchStreamData, 60000);
     return () => clearInterval(interval);
   }, [fetchStreamData]);
+
+  // Admin quick-action handler
+  const handleAdminAction = async (action: string, eventId?: string) => {
+    if (!session?.user?.email) return;
+    try {
+      const res = await fetch("/api/live/quick-control", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, eventId, email: session.user.email }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Refresh data immediately
+        await fetchStreamData();
+      } else {
+        alert(data.error || "שגיאה");
+      }
+    } catch {
+      alert("שגיאת רשת");
+    }
+  };
 
   if (loading) {
     return (
@@ -481,6 +627,14 @@ const LiveStreamPage = () => {
 
         </div>
       </div>
+
+      {/* Admin floating control bar */}
+      <AdminLiveControlBar
+        isAdmin={isAdmin}
+        streamState={streamState}
+        allEvents={allEvents}
+        onAction={handleAdminAction}
+      />
     </div>
   );
 };
