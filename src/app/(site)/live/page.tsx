@@ -231,35 +231,37 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
           </h3>
           {selectedEvents.map((e: any) => {
             const inner = (
-              <div className={`p-3 rounded-xl flex items-center gap-3 ${
+              <div className={`p-3 rounded-xl flex flex-col gap-2 ${
                 e.status === "live" ? "bg-red-50 border border-red-200" :
                 e.status === "scheduled" ? "bg-blue-50 border border-blue-200" :
                 e.status === "cancelled" ? "bg-orange-50 border border-orange-200" :
                 "bg-gray-50 border border-gray-200"
               } ${e.status === "ended" ? "hover:bg-gray-100 cursor-pointer" : ""}`}>
-                <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
-                  e.status === "live" ? "bg-red-500 animate-pulse" :
-                  e.status === "scheduled" ? "bg-[#B56B4A]" :
-                  e.status === "cancelled" ? "bg-orange-400" : "bg-gray-400"
-                }`} />
-                <div className="flex-1 min-w-0">
-                  <p className={`font-medium text-sm ${e.status === "cancelled" ? "line-through text-[#5D5D5D]" : "text-[#2D3142]"}`}>{e.title}</p>
-                  <p className="text-xs text-[#5D5D5D]">
-                    {fmt(new Date(e.scheduledAt))} | {e.estimatedDuration} דקות
-                    {e.status === "ended" && " | הסתיים"}
-                  {e.status === "cancelled" && " | בוטל"}
-                    {e.status === "live" && " | משדר עכשיו!"}
-                  </p>
-                  {e.description && <p className="text-xs text-[#5D5D5D] mt-1">{e.description}</p>}
+                <div className="flex items-center gap-3">
+                  <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                    e.status === "live" ? "bg-red-500 animate-pulse" :
+                    e.status === "scheduled" ? "bg-[#B56B4A]" :
+                    e.status === "cancelled" ? "bg-orange-400" : "bg-gray-400"
+                  }`} />
+                  <div className="flex-1 min-w-0">
+                    <p className={`font-medium text-sm ${e.status === "cancelled" ? "line-through text-[#5D5D5D]" : "text-[#2D3142]"}`}>{e.title}</p>
+                    <p className="text-xs text-[#5D5D5D]">
+                      {fmt(new Date(e.scheduledAt))} | {e.estimatedDuration} דקות
+                      {e.status === "ended" && " | הסתיים"}
+                    {e.status === "cancelled" && " | בוטל"}
+                      {e.status === "live" && " | משדר עכשיו!"}
+                    </p>
+                    {e.description && <p className="text-xs text-[#5D5D5D] mt-1">{e.description}</p>}
+                  </div>
                 </div>
                 {e.status === "scheduled" && (
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <RegisterButton event={e} isLoggedIn={isLoggedIn} isRegistered={registeredIds.includes(e.id)} onToggle={onToggleRegister} registering={registering} />
                     <AddToCalendarButton event={e} />
+                    {e.registrationCount > 0 && (
+                      <span className="text-[10px] text-[#5D5D5D]">{e.registrationCount} נרשמו</span>
+                    )}
                   </div>
-                )}
-                {e.status === "scheduled" && e.registrationCount > 0 && (
-                  <span className="text-[10px] text-[#5D5D5D]">{e.registrationCount} נרשמו</span>
                 )}
                 {e.status === "live" && (
                   <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full flex-shrink-0">שידור חי</span>
@@ -339,16 +341,20 @@ const UpcomingList = ({ events, isLoggedIn, registeredIds, onToggleRegister, reg
             {upcoming.slice(1).map((e) => {
               const d = new Date(e.scheduledAt);
               return (
-                <div key={e.id} className="flex items-center gap-3 p-3 rounded-xl bg-[#F7F3EB] hover:bg-[#D5C4B7]/10 transition-colors">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#B56B4A] flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#2D3142] truncate">{e.title}</p>
+                <div key={e.id} className="p-3 rounded-xl bg-[#F7F3EB] hover:bg-[#D5C4B7]/10 transition-colors space-y-2">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#B56B4A] flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-[#2D3142] truncate">{e.title}</p>
+                    </div>
+                    <span className="text-xs text-[#5D5D5D] whitespace-nowrap">
+                      {HEBREW_DAYS[d.getDay()]} {d.getDate()}.{d.getMonth()+1} | {fmt(d)}
+                    </span>
                   </div>
-                  <span className="text-xs text-[#5D5D5D] whitespace-nowrap">
-                    {HEBREW_DAYS[d.getDay()]} {d.getDate()}.{d.getMonth()+1} | {fmt(d)}
-                  </span>
-                  <RegisterButton event={e} isLoggedIn={isLoggedIn} isRegistered={registeredIds.includes(e.id)} onToggle={onToggleRegister} registering={registering} />
-                  <AddToCalendarButton event={e} />
+                  <div className="flex items-center gap-2 flex-wrap pr-5">
+                    <RegisterButton event={e} isLoggedIn={isLoggedIn} isRegistered={registeredIds.includes(e.id)} onToggle={onToggleRegister} registering={registering} />
+                    <AddToCalendarButton event={e} />
+                  </div>
                 </div>
               );
             })}
