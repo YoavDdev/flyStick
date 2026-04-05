@@ -511,7 +511,7 @@ const SeriesMarketplace = () => {
                         </div>
                         
                         {!(series.isComingSoon || series.title.includes('בקרוב')) && (
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap justify-end">
                             {/* Purchase button - only for users without access */}
                             {!series.hasAccess && !seriesData?.userInfo.hasActiveSubscription && (
                               <motion.button
@@ -542,14 +542,14 @@ const SeriesMarketplace = () => {
                                 setGiftSeriesId(series.id);
                                 setPurchasingSeriesId(null);
                               }}
-                              className="bg-white/90 border-2 border-[#B8A99C] text-[#2D3142] px-4 py-2 rounded-lg hover:bg-[#B8A99C]/10 hover:border-[#D5C4B7] transition-all duration-300 text-sm font-bold shadow-md"
+                              className="bg-white/90 border-2 border-[#B8A99C] text-[#2D3142] px-3 py-2 rounded-lg hover:bg-[#B8A99C]/10 hover:border-[#D5C4B7] transition-all duration-300 text-sm font-bold shadow-md whitespace-nowrap"
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               title="רכישה כמתנה למישהו אחר"
                             >
                               <span className="flex items-center gap-1.5">
                                 <span>🎁</span>
-                                <span>רכישה כמתנה</span>
+                                <span>מתנה</span>
                               </span>
                             </motion.button>
                           </div>
