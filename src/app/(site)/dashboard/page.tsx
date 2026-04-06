@@ -681,6 +681,112 @@ const DashboardPage = () => {
               </motion.div>
             )}
 
+            {/* Subscription Management Section - Moved up for visibility */}
+            {!isSeriesOnlyUser && !isAdmin && (
+              <motion.div variants={itemVariants} className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="bg-[#D5C4B7] p-3 rounded-full">
+                    <MdOutlineSubscriptions size={24} className="text-[#2D3142]" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#2D3142]">ניהול מנוי</h3>
+                </div>
+
+              {loading ? (
+                <p className="text-center py-4">טוען...</p>
+              ) : (
+                <div className="mt-4">
+                  {(subscriptionStatus === "ACTIVE" || subscriptionId === "Admin" || subscriptionStatus === "PENDING_CANCELLATION") && (
+                    <>
+                      <div className="bg-green-100 text-green-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
+                        <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                        <p>המנוי שלך פעיל</p>
+                      </div>
+                      <p className="mb-4">
+                        אתה נהנה כרגע מגישה מלאה לכל התכנים שלנו. אם ברצונך לבטל
+                        את המנוי שלך, אנא לחץ על הכפתור למטה או צור קשר ב
+                        <Link
+                          href="/contact"
+                          className="text-[#B8A99C] hover:text-[#D5C4B7] mx-1"
+                        >
+                          לחץ כאן
+                        </Link>
+                        . שימו לב, סיום מנוי מאפשר להנות מתכני הסטודיו עד לתום
+                        תקופת החיוב.
+                      </p>
+                      <motion.button
+                        onClick={cancelSubscription}
+                        className="bg-red-500 text-white py-2 px-6 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
+                        whileHover={{ y: -2 }}
+                        whileTap={{ y: 0 }}
+                      >
+                        בטל מנוי
+                      </motion.button>
+                    </>
+                  )}
+
+                  {subscriptionStatus === "PENDING_CANCELLATION" && (
+                    <>
+                      <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
+                        <span className="w-3 h-3 bg-yellow-500 rounded-full"></span>
+                        <p>המנוי שלך בתהליך ביטול</p>
+                      </div>
+                      <p>
+                        המנוי שלך נמצא בתהליך ביטול. תוכל להמשיך להנות מהתכנים
+                        שלנו עד תום תקופת החיוב הנוכחית. במידה ואתה מעוניין
+                        להפסיק את תהליך הביטול ולהמשיך במנוי, צור איתנו קשר
+                        ב&apos;צרו קשר&apos;.
+                      </p>
+                    </>
+                  )}
+
+                  {subscriptionStatus === "CANCELLED" && (
+                    <>
+                      <div className="bg-red-100 text-red-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
+                        <span className="w-3 h-3 bg-red-500 rounded-full"></span>
+                        <p>המנוי שלך בוטל</p>
+                      </div>
+                      <p className="mb-4">
+                        המנוי שלך בוטל בהצלחה. לחידוש המנוי לחצו על הכפתור
+                        מטה.
+                      </p>
+                      <Link href="/#Pricing">
+                        <motion.span 
+                          className="inline-block bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] py-2 px-6 rounded-md transition duration-300 ease-in-out"
+                          whileHover={{ y: -2 }}
+                          whileTap={{ y: 0 }}
+                        >
+                          חדש את המנוי שלך
+                        </motion.span>
+                      </Link>
+                    </>
+                  )}
+
+                  {subscriptionStatus === null && (
+                    <>
+                      <div className="bg-gray-100 text-gray-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
+                        <span className="w-3 h-3 bg-gray-500 rounded-full"></span>
+                        <p>אין מנוי פעיל</p>
+                      </div>
+                      <p className="mb-4">
+                        אין לך מנוי פעיל. להצטרפות למנוי חדש ולהנות מתכני
+                        הסטודיו, לחצו על הכפתור מטה.
+                      </p>
+                      <Link href="/#Pricing">
+                        <motion.span 
+                          className="inline-block bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] py-2 px-6 rounded-md transition duration-300 ease-in-out"
+                          whileHover={{ y: -2 }}
+                          whileTap={{ y: 0 }}
+                        >
+                          הפעל מנוי
+                        </motion.span>
+                      </Link>
+                    </>
+                  )}
+                </div>
+              )}
+              </motion.div>
+            )}
+
             {/* Dashboard Cards Grid - Only for regular users, not series-only users or admin */}
             {!isSeriesOnlyUser && !isAdmin && (
               <motion.div 
@@ -812,112 +918,6 @@ const DashboardPage = () => {
                     </motion.button>
                   </Link>
                 </div>
-              </motion.div>
-            )}
-
-            {/* Subscription Status Section - Hidden for Series-Only Users and Admin */}
-            {!isSeriesOnlyUser && !isAdmin && (
-              <motion.div variants={itemVariants} className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-[#D5C4B7] p-3 rounded-full">
-                    <MdOutlineSubscriptions size={24} className="text-[#2D3142]" />
-                  </div>
-                  <h3 className="text-xl font-bold text-[#2D3142]">ניהול מנוי</h3>
-                </div>
-
-              {loading ? (
-                <p className="text-center py-4">טוען...</p>
-              ) : (
-                <div className="mt-4">
-                  {(subscriptionStatus === "ACTIVE" || subscriptionId === "Admin" || subscriptionStatus === "PENDING_CANCELLATION") && (
-                    <>
-                      <div className="bg-green-100 text-green-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
-                        <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-                        <p>המנוי שלך פעיל</p>
-                      </div>
-                      <p className="mb-4">
-                        אתה נהנה כרגע מגישה מלאה לכל התכנים שלנו. אם ברצונך לבטל
-                        את המנוי שלך, אנא לחץ על הכפתור למטה או צור קשר ב
-                        <Link
-                          href="/contact"
-                          className="text-[#B8A99C] hover:text-[#D5C4B7] mx-1"
-                        >
-                          לחץ כאן
-                        </Link>
-                        . שימו לב, סיום מנוי מאפשר להנות מתכני הסטודיו עד לתום
-                        תקופת החיוב.
-                      </p>
-                      <motion.button
-                        onClick={cancelSubscription}
-                        className="bg-red-500 text-white py-2 px-6 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
-                        whileHover={{ y: -2 }}
-                        whileTap={{ y: 0 }}
-                      >
-                        בטל מנוי
-                      </motion.button>
-                    </>
-                  )}
-
-                  {subscriptionStatus === "PENDING_CANCELLATION" && (
-                    <>
-                      <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
-                        <span className="w-3 h-3 bg-yellow-500 rounded-full"></span>
-                        <p>המנוי שלך בתהליך ביטול</p>
-                      </div>
-                      <p>
-                        המנוי שלך נמצא בתהליך ביטול. תוכל להמשיך להנות מהתכנים
-                        שלנו עד תום תקופת החיוב הנוכחית. במידה ואתה מעוניין
-                        להפסיק את תהליך הביטול ולהמשיך במנוי, צור איתנו קשר
-                        ב&apos;צרו קשר&apos;.
-                      </p>
-                    </>
-                  )}
-
-                  {subscriptionStatus === "CANCELLED" && (
-                    <>
-                      <div className="bg-red-100 text-red-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
-                        <span className="w-3 h-3 bg-red-500 rounded-full"></span>
-                        <p>המנוי שלך בוטל</p>
-                      </div>
-                      <p className="mb-4">
-                        המנוי שלך בוטל בהצלחה. לחידוש המנוי לחצו על הכפתור
-                        מטה.
-                      </p>
-                      <Link href="/#Pricing">
-                        <motion.span 
-                          className="inline-block bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] py-2 px-6 rounded-md transition duration-300 ease-in-out"
-                          whileHover={{ y: -2 }}
-                          whileTap={{ y: 0 }}
-                        >
-                          חדש את המנוי שלך
-                        </motion.span>
-                      </Link>
-                    </>
-                  )}
-
-                  {subscriptionStatus === null && (
-                    <>
-                      <div className="bg-gray-100 text-gray-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
-                        <span className="w-3 h-3 bg-gray-500 rounded-full"></span>
-                        <p>אין מנוי פעיל</p>
-                      </div>
-                      <p className="mb-4">
-                        אין לך מנוי פעיל. להצטרפות למנוי חדש ולהנות מתכני
-                        הסטודיו, לחצו על הכפתור מטה.
-                      </p>
-                      <Link href="/#Pricing">
-                        <motion.span 
-                          className="inline-block bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] py-2 px-6 rounded-md transition duration-300 ease-in-out"
-                          whileHover={{ y: -2 }}
-                          whileTap={{ y: 0 }}
-                        >
-                          הפעל מנוי
-                        </motion.span>
-                      </Link>
-                    </>
-                  )}
-                </div>
-              )}
               </motion.div>
             )}
 

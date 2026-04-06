@@ -64,6 +64,7 @@ export default function AdminUserTable({
 }: AdminUserTableProps) {
   const [editingUser, setEditingUser] = useState<string | null>(null);
   const [deletingUser, setDeletingUser] = useState<string | null>(null);
+  const [cancellingUser, setCancellingUser] = useState<string | null>(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
     step: 1 | 2;
     userEmail: string;
@@ -78,6 +79,47 @@ export default function AdminUserTable({
     subscriptionId: "",
     setCancellationDate: false,
   });
+
+  // Handle cancel PayPal subscription for a user
+  const handleCancelSubscription = async (user: User) => {
+    if (!user.subscriptionId?.startsWith("I-")) {
+      toast.error("למשתמש אין מנוי PayPal פעיל");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `האם אתה בטוח שברצונך לבטל את מנוי PayPal של ${user.name || user.email}?\n\nפעולה זו תבטל את המנוי ב-PayPal ותפסיק חיובים עתידיים.`
+    );
+
+    if (!confirmed) return;
+
+    setCancellingUser(user.id);
+    try {
+      const res = await fetch("/api/admin/cancel-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userEmail: user.email }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success(data.message || "המנוי בוטל בהצלחה");
+        // Update the user in the table
+        await onUpdateUser(user.id, {
+          subscriptionId: null,
+          cancellationDate: new Date().toISOString(),
+        } as any);
+      } else {
+        toast.error(data.error || "שגיאה בביטול המנוי");
+      }
+    } catch (error) {
+      console.error("Error cancelling subscription:", error);
+      toast.error("שגיאה בביטול המנוי");
+    } finally {
+      setCancellingUser(null);
+    }
+  };
 
   // Handle edit button click
   const handleEditClick = (user: User) => {
@@ -716,21 +758,43 @@ export default function AdminUserTable({
                     </div>
                   </div>
                 ) : (
-                  <div className="flex gap-2 justify-end">
-                    <button
-                      onClick={() => handleEditClick(user)}
-                      disabled={isUpdating}
-                      className={`${isUpdating ? 'bg-[#D5C4B7]/30 text-[#5D5D5D]/50 cursor-not-allowed' : 'bg-[#D5C4B7]/50 text-[#5D5D5D] hover:bg-[#D5C4B7] cursor-pointer'} px-2 py-1 rounded-md text-xs transition-colors`}
-                    >
-                      ערוך
-                    </button>
-                    {user.subscriptionId !== "Admin" && (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex gap-2 justify-end">
                       <button
-                        onClick={() => handleDeleteClick(user)}
+                        onClick={() => handleEditClick(user)}
                         disabled={isUpdating}
-                        className={`${isUpdating ? 'bg-red-300 text-red-500 cursor-not-allowed' : 'bg-red-500 text-white hover:bg-red-600 cursor-pointer'} px-2 py-1 rounded-md text-xs transition-colors`}
+                        className={`${isUpdating ? 'bg-[#D5C4B7]/30 text-[#5D5D5D]/50 cursor-not-allowed' : 'bg-[#D5C4B7]/50 text-[#5D5D5D] hover:bg-[#D5C4B7] cursor-pointer'} px-2 py-1 rounded-md text-xs transition-colors`}
                       >
-                        מחק
+                        ערוך
+                      </button>
+                      {user.subscriptionId !== "Admin" && (
+                        <button
+                          onClick={() => handleDeleteClick(user)}
+                          disabled={isUpdating}
+                          className={`${isUpdating ? 'bg-red-300 text-red-500 cursor-not-allowed' : 'bg-red-500 text-white hover:bg-red-600 cursor-pointer'} px-2 py-1 rounded-md text-xs transition-colors`}
+                        >
+                          מחק
+                        </button>
+                      )}
+                    </div>
+                    {user.subscriptionId?.startsWith("I-") && user.paypalStatus === "ACTIVE" && (
+                      <button
+                        onClick={() => handleCancelSubscription(user)}
+                        disabled={cancellingUser === user.id || isUpdating}
+                        className={`${
+                          cancellingUser === user.id 
+                            ? 'bg-amber-200 text-amber-600 cursor-wait' 
+                            : 'bg-amber-500 text-white hover:bg-amber-600 cursor-pointer'
+                        } px-2 py-1 rounded-md text-xs transition-colors flex items-center justify-center gap-1 w-full`}
+                      >
+                        {cancellingUser === user.id ? (
+                          <>
+                            <span className="inline-block h-3 w-3 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+                            מבטל...
+                          </>
+                        ) : (
+                          'בטל מנוי PayPal'
+                        )}
                       </button>
                     )}
                   </div>
