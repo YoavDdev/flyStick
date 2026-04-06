@@ -8,6 +8,7 @@ import AdminDashboardSummary from "../../components/AdminDashboardSummary";
 import AdminUserActivityMetrics from "../../components/AdminUserActivityMetrics";
 import AdminMessageComposer from "@/app/components/AdminMessageComposer";
 import AdminNewsletterComposer from "@/app/components/AdminNewsletterComposer";
+import AdminEmailTester from "@/app/components/AdminEmailTester";
 import AdminFolderMetadataManager from "@/app/components/AdminFolderMetadataManager";
 import CategoryManager from "@/app/components/CategoryManager";
 import AdminMonthlySummaryTrigger from "@/app/components/AdminMonthlySummaryTrigger";
@@ -311,6 +312,9 @@ export default function AdminPage() {
           
           {/* User Activity Metrics */}
           <AdminUserActivityMetrics users={users} />
+          
+          {/* Email System Tester */}
+          <AdminEmailTester />
           
           {/* Message Composer */}
           <AdminMessageComposer />
