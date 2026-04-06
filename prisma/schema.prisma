@@ -43,6 +43,7 @@ model User {
 
   watchedVideos  WatchedVideo[]
   messageReads   MessageRead[]
+  messageReplies MessageReply[]
   purchases      Purchase[]
   liveEventRegistrations LiveEventRegistration[]
 }
@@ -102,11 +103,14 @@ model Message {
   link           String?  // Optional link for "new video" or other announcements
   linkText       String?  // Text to display for the link
   targetUserIds  String[] @db.ObjectId // Empty = broadcast to all, populated = only these users
+  allowReply     Boolean  @default(false) // If true, users can reply to this message
+  targetGroup    String?  // Group label for admin reference: "all", "active", "free", "series", "newsletter", "individual"
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   isActive       Boolean  @default(true) // Allow admin to deactivate messages
   
-  messageReads MessageRead[]
+  messageReads  MessageRead[]
+  replies       MessageReply[]
 }
 
 model MessageRead {
@@ -119,6 +123,20 @@ model MessageRead {
   message Message @relation(fields: [messageId], references: [id])
   
   @@unique([userId, messageId]) // Prevent duplicate reads
+}
+
+model MessageReply {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  messageId String   @db.ObjectId
+  userId    String   @db.ObjectId
+  content   String
+  isRead    Boolean  @default(false) // Has admin read this reply
+  createdAt DateTime @default(now())
+  
+  message Message @relation(fields: [messageId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  
+  @@unique([userId, messageId]) // One reply per user per message
 }
 
 model NewsletterSubscriber {

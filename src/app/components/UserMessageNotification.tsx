@@ -2,8 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaEnvelope, FaEnvelopeOpen, FaTimes, FaExternalLinkAlt } from "react-icons/fa";
+import { FaEnvelope, FaEnvelopeOpen, FaTimes, FaExternalLinkAlt, FaReply, FaCheck } from "react-icons/fa";
+import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
+
+interface MessageReply {
+  id: string;
+  content: string;
+  createdAt: string;
+}
 
 interface Message {
   id: string;
@@ -11,6 +18,8 @@ interface Message {
   content: string;
   link?: string;
   linkText?: string;
+  allowReply?: boolean;
+  replies?: MessageReply[];
   createdAt: string;
 }
 
@@ -27,6 +36,9 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
   }>({ unreadMessages: [], readMessages: [] });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
+  const [isSendingReply, setIsSendingReply] = useState(false);
 
   const fetchMessages = async () => {
     if (!session?.user?.email) return;
@@ -98,6 +110,31 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
       } catch (error) {
         console.error("Error auto-marking messages as read:", error);
       }
+    }
+  };
+
+  const handleSubmitReply = async (messageId: string) => {
+    if (!replyText.trim()) return;
+    setIsSendingReply(true);
+    try {
+      const res = await fetch("/api/user/message-reply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messageId, content: replyText.trim() }),
+      });
+      if (res.ok) {
+        toast.success("התשובה נשלחה בהצלחה!");
+        setReplyingTo(null);
+        setReplyText("");
+        fetchMessages();
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "שגיאה בשליחה");
+      }
+    } catch (err) {
+      toast.error("שגיאה בשליחת התשובה");
+    } finally {
+      setIsSendingReply(false);
     }
   };
 
@@ -245,6 +282,56 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
                             <FaExternalLinkAlt className="text-[10px]" />
                           </a>
                         )}
+
+                        {/* Reply Section */}
+                        {message.allowReply && (
+                          <div className="mt-2 pt-2 border-t border-[#D5C4B7]/30">
+                            {message.replies && message.replies.length > 0 ? (
+                              <div className="bg-green-50 border border-green-200 rounded-md p-2">
+                                <div className="flex items-center gap-1 mb-1">
+                                  <FaCheck className="text-green-500 text-[10px]" />
+                                  <span className="text-[10px] text-green-700 font-medium">התשובה שלך:</span>
+                                </div>
+                                <p className="text-xs text-green-800">{message.replies[0].content}</p>
+                              </div>
+                            ) : replyingTo === message.id ? (
+                              <div className="space-y-2">
+                                <textarea
+                                  value={replyText}
+                                  onChange={(e) => setReplyText(e.target.value)}
+                                  placeholder="כתוב תשובה לבועז..."
+                                  rows={2}
+                                  className="w-full px-3 py-2 border border-[#D5C4B7]/40 rounded-md text-xs resize-none focus:outline-none focus:ring-1 focus:ring-[#D5C4B7] bg-white text-[#2D3142]"
+                                  style={{ direction: "rtl" }}
+                                  autoFocus
+                                />
+                                <div className="flex gap-2">
+                                  <button
+                                    onClick={() => handleSubmitReply(message.id)}
+                                    disabled={isSendingReply || !replyText.trim()}
+                                    className="bg-[#2D3142] hover:bg-[#4A4E69] disabled:opacity-50 text-white px-3 py-1 rounded-md text-xs font-medium flex items-center gap-1 transition-colors"
+                                  >
+                                    {isSendingReply ? "שולח..." : <>שלח <FaReply className="text-[10px]" /></>}
+                                  </button>
+                                  <button
+                                    onClick={() => { setReplyingTo(null); setReplyText(""); }}
+                                    className="text-[#3D3D3D]/60 hover:text-[#3D3D3D] px-2 py-1 text-xs transition-colors"
+                                  >
+                                    ביטול
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => setReplyingTo(message.id)}
+                                className="flex items-center gap-1 text-[#2D3142] hover:text-[#4A4E69] text-xs font-medium transition-colors"
+                              >
+                                <FaReply className="text-[10px]" />
+                                השב לבועז
+                              </button>
+                            )}
+                          </div>
+                        )}
                         
                         <div className="text-[10px] text-[#3D3D3D]/60 mt-2">
                           {formatDate(message.createdAt)}
@@ -278,6 +365,56 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
                             {message.linkText || "לחץ כאן"}
                             <FaExternalLinkAlt className="text-[10px]" />
                           </a>
+                        )}
+
+                        {/* Reply Section for read messages */}
+                        {message.allowReply && (
+                          <div className="mt-2 pt-2 border-t border-[#D5C4B7]/20">
+                            {message.replies && message.replies.length > 0 ? (
+                              <div className="bg-green-50/70 border border-green-200/50 rounded-md p-2">
+                                <div className="flex items-center gap-1 mb-1">
+                                  <FaCheck className="text-green-400 text-[10px]" />
+                                  <span className="text-[10px] text-green-600 font-medium">התשובה שלך:</span>
+                                </div>
+                                <p className="text-xs text-green-700">{message.replies[0].content}</p>
+                              </div>
+                            ) : replyingTo === message.id ? (
+                              <div className="space-y-2">
+                                <textarea
+                                  value={replyText}
+                                  onChange={(e) => setReplyText(e.target.value)}
+                                  placeholder="כתוב תשובה לבועז..."
+                                  rows={2}
+                                  className="w-full px-3 py-2 border border-[#D5C4B7]/40 rounded-md text-xs resize-none focus:outline-none focus:ring-1 focus:ring-[#D5C4B7] bg-white text-[#2D3142]"
+                                  style={{ direction: "rtl" }}
+                                  autoFocus
+                                />
+                                <div className="flex gap-2">
+                                  <button
+                                    onClick={() => handleSubmitReply(message.id)}
+                                    disabled={isSendingReply || !replyText.trim()}
+                                    className="bg-[#2D3142] hover:bg-[#4A4E69] disabled:opacity-50 text-white px-3 py-1 rounded-md text-xs font-medium flex items-center gap-1 transition-colors"
+                                  >
+                                    {isSendingReply ? "שולח..." : <>שלח <FaReply className="text-[10px]" /></>}
+                                  </button>
+                                  <button
+                                    onClick={() => { setReplyingTo(null); setReplyText(""); }}
+                                    className="text-[#3D3D3D]/60 hover:text-[#3D3D3D] px-2 py-1 text-xs transition-colors"
+                                  >
+                                    ביטול
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => setReplyingTo(message.id)}
+                                className="flex items-center gap-1 text-[#2D3142]/60 hover:text-[#2D3142] text-xs font-medium transition-colors"
+                              >
+                                <FaReply className="text-[10px]" />
+                                השב לבועז
+                              </button>
+                            )}
+                          </div>
                         )}
                         
                         <div className="text-[10px] text-[#3D3D3D]/60 mt-2">

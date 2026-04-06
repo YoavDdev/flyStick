@@ -40,6 +40,12 @@ export async function GET(request: NextRequest) {
           { targetUserIds: { has: user.id } },    // Targeted to this user
         ],
       },
+      include: {
+        replies: {
+          where: { userId: user.id },
+          select: { id: true, content: true, createdAt: true },
+        },
+      },
       orderBy: { createdAt: "desc" },
     });
 

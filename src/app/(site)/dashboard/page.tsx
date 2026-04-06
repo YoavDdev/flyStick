@@ -25,6 +25,8 @@ import WelcomePopup from "../../components/WelcomePopup";
 import AdminVimeoLivePanel from "../../components/AdminVimeoLivePanel";
 import AdminAIManager from "../../components/AdminAIManager";
 import AdminTabs from "../../components/AdminTabs";
+import AdminTargetedMessageComposer from "../../components/AdminTargetedMessageComposer";
+import AdminMessageReplies from "../../components/AdminMessageReplies";
 
 // Note: Metadata cannot be exported from client components
 // SEO protection should be handled at the layout level
@@ -427,6 +429,10 @@ const DashboardPage = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                           <AdminMessageComposer />
                           <AdminNewsletterComposer />
+                        </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                          <AdminTargetedMessageComposer />
+                          <AdminMessageReplies />
                         </div>
                       </div>
                     ),
