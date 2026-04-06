@@ -58,7 +58,8 @@ const AdminMessageComposer = ({ onMessageSent }: AdminMessageComposerProps) => {
         throw new Error(data.error || "שגיאה בשליחת ההודעה");
       }
 
-      toast.success("ההודעה נשלחה בהצלחה לכל המשתמשים!");
+      const emailInfo = data.emailsSent ? ` + ${data.emailsSent} אימיילים נשלחו` : '';
+      toast.success(`הודעת מערכת נשלחה לכל המשתמשים!${emailInfo}`);
       
       // Reset form
       setTitle("");
