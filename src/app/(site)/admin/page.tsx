@@ -629,6 +629,7 @@ export default function AdminPage() {
               users={sortedUsers} 
               onUpdateUser={handleUpdateUser}
               onDeleteUser={handleDeleteUser}
+              onRefresh={() => fetchUsers()}
               sortField={sortField}
               sortDirection={sortDirection}
               isUpdating={isUpdating}

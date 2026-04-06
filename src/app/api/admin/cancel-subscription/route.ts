@@ -72,6 +72,9 @@ export async function POST(request: NextRequest) {
       data: {
         subscriptionId: null,
         cancellationDate: new Date(),
+        paypalStatus: "CANCELLED",
+        paypalCancellationDate: new Date(),
+        paypalLastSyncAt: new Date(),
       },
     });
 

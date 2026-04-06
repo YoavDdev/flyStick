@@ -47,6 +47,7 @@ type AdminUserTableProps = {
   users: User[];
   onUpdateUser: (userId: string, updates: Partial<User>) => Promise<void>;
   onDeleteUser: (userId: string) => Promise<void>;
+  onRefresh?: () => void;
   sortField: keyof User;
   sortDirection: "asc" | "desc";
   onSort: (field: string) => void;
@@ -57,6 +58,7 @@ export default function AdminUserTable({
   users,
   onUpdateUser,
   onDeleteUser,
+  onRefresh,
   sortField,
   sortDirection,
   onSort,
@@ -65,6 +67,7 @@ export default function AdminUserTable({
   const [editingUser, setEditingUser] = useState<string | null>(null);
   const [deletingUser, setDeletingUser] = useState<string | null>(null);
   const [cancellingUser, setCancellingUser] = useState<string | null>(null);
+  const [checkingUser, setCheckingUser] = useState<string | null>(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
     step: 1 | 2;
     userEmail: string;
@@ -79,6 +82,45 @@ export default function AdminUserTable({
     subscriptionId: "",
     setCancellationDate: false,
   });
+
+  // Handle check PayPal status for a user
+  const handleCheckPayPalStatus = async (user: User) => {
+    if (!user.subscriptionId?.startsWith("I-") && !user.paypalId) {
+      toast.error("למשתמש אין מנוי PayPal");
+      return;
+    }
+
+    const subId = user.subscriptionId?.startsWith("I-") ? user.subscriptionId : user.paypalId;
+    setCheckingUser(user.id);
+    try {
+      const res = await fetch("/api/admin/check-paypal-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subscriptionId: subId, userEmail: user.email }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        const p = data.paypal;
+        toast.success(
+          `סטטוס PayPal: ${p.status}\n` +
+          (p.subscriberEmail ? `מייל: ${p.subscriberEmail}\n` : '') +
+          (p.lastPayment ? `תשלום אחרון: ${new Date(p.lastPayment).toLocaleDateString('he-IL')}\n` : '') +
+          (p.nextBillingTime ? `חיוב הבא: ${new Date(p.nextBillingTime).toLocaleDateString('he-IL')}` : ''),
+          { duration: 8000 }
+        );
+        if (onRefresh) onRefresh();
+      } else {
+        toast.error(data.error || "שגיאה בבדיקת סטטוס");
+      }
+    } catch (error) {
+      console.error("Error checking PayPal status:", error);
+      toast.error("שגיאה בבדיקת סטטוס PayPal");
+    } finally {
+      setCheckingUser(null);
+    }
+  };
 
   // Handle cancel PayPal subscription for a user
   const handleCancelSubscription = async (user: User) => {
@@ -105,11 +147,8 @@ export default function AdminUserTable({
 
       if (res.ok) {
         toast.success(data.message || "המנוי בוטל בהצלחה");
-        // Update the user in the table
-        await onUpdateUser(user.id, {
-          subscriptionId: null,
-          cancellationDate: new Date().toISOString(),
-        } as any);
+        // Refresh the user list to show updated data
+        if (onRefresh) onRefresh();
       } else {
         toast.error(data.error || "שגיאה בביטול המנוי");
       }
@@ -777,6 +816,26 @@ export default function AdminUserTable({
                         </button>
                       )}
                     </div>
+                    {(user.subscriptionId?.startsWith("I-") || user.paypalId) && (
+                      <button
+                        onClick={() => handleCheckPayPalStatus(user)}
+                        disabled={checkingUser === user.id || isUpdating}
+                        className={`${
+                          checkingUser === user.id
+                            ? 'bg-blue-200 text-blue-600 cursor-wait'
+                            : 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer'
+                        } px-2 py-1 rounded-md text-xs transition-colors flex items-center justify-center gap-1 w-full`}
+                      >
+                        {checkingUser === user.id ? (
+                          <>
+                            <span className="inline-block h-3 w-3 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+                            בודק...
+                          </>
+                        ) : (
+                          'בדוק סטטוס PayPal'
+                        )}
+                      </button>
+                    )}
                     {user.subscriptionId?.startsWith("I-") && user.paypalStatus === "ACTIVE" && (
                       <button
                         onClick={() => handleCancelSubscription(user)}
