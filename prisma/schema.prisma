@@ -42,8 +42,9 @@ model User {
   passwordResets PasswordReset[]
 
   watchedVideos  WatchedVideo[]
-  messageReads   MessageRead[]
-  messageReplies MessageReply[]
+  messageReads      MessageRead[]
+  messageDismisses  MessageDismiss[]
+  messageReplies    MessageReply[]
   purchases      Purchase[]
   liveEventRegistrations LiveEventRegistration[]
 }
@@ -109,8 +110,9 @@ model Message {
   updatedAt      DateTime @updatedAt
   isActive       Boolean  @default(true) // Allow admin to deactivate messages
   
-  messageReads  MessageRead[]
-  replies       MessageReply[]
+  messageReads    MessageRead[]
+  messageDismisses MessageDismiss[]
+  replies          MessageReply[]
 }
 
 model MessageRead {
@@ -123,6 +125,18 @@ model MessageRead {
   message Message @relation(fields: [messageId], references: [id])
   
   @@unique([userId, messageId]) // Prevent duplicate reads
+}
+
+model MessageDismiss {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  messageId String   @db.ObjectId
+  createdAt DateTime @default(now())
+  
+  user    User    @relation(fields: [userId], references: [id])
+  message Message @relation(fields: [messageId], references: [id])
+  
+  @@unique([userId, messageId])
 }
 
 model MessageReply {

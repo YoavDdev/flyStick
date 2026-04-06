@@ -31,8 +31,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
+    // Get dismissed message IDs for this user
+    const dismissedMessages = await prisma.messageDismiss.findMany({
+      where: { userId: user.id },
+      select: { messageId: true },
+    });
+    const dismissedIds = new Set(dismissedMessages.map((d: { messageId: string }) => d.messageId));
+
     // Get all active messages (broadcast + targeted to this user)
-    const allMessages = await prisma.message.findMany({
+    const allMessagesRaw = await prisma.message.findMany({
       where: {
         isActive: true,
         OR: [
@@ -48,6 +55,9 @@ export async function GET(request: NextRequest) {
       },
       orderBy: { createdAt: "desc" },
     });
+
+    // Filter out dismissed messages
+    const allMessages = allMessagesRaw.filter((msg: { id: string }) => !dismissedIds.has(msg.id));
 
     // Get messages that user has already read with read timestamps
     const readMessages = await prisma.messageRead.findMany({
@@ -82,6 +92,42 @@ export async function GET(request: NextRequest) {
       { error: "Internal server error" },
       { status: 500 }
     );
+  }
+}
+
+// DELETE: User dismisses (hides) a message
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions) as SessionUser;
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const { messageId } = await request.json();
+    if (!messageId) {
+      return NextResponse.json({ error: "Message ID is required" }, { status: 400 });
+    }
+
+    await prisma.messageDismiss.upsert({
+      where: {
+        userId_messageId: { userId: user.id, messageId },
+      },
+      update: {},
+      create: { userId: user.id, messageId },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error dismissing message:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 

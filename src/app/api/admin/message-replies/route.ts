@@ -95,3 +95,36 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "שגיאת שרת" }, { status: 500 });
   }
 }
+
+// DELETE: Admin deletes a specific reply
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions) as any;
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const adminUser = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+
+    if (!adminUser || adminUser.subscriptionId !== "Admin") {
+      return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+    }
+
+    const { replyId } = await request.json();
+
+    if (!replyId) {
+      return NextResponse.json({ error: "replyId is required" }, { status: 400 });
+    }
+
+    await prisma.messageReply.delete({
+      where: { id: replyId },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error("Error deleting reply:", error);
+    return NextResponse.json({ error: "שגיאת שרת" }, { status: 500 });
+  }
+}

@@ -307,11 +307,10 @@ const DashboardPage = () => {
             {/* Header with decorative element */}
             <div className="relative overflow-hidden rounded-xl bg-[#D5C4B7]/20 p-5 sm:p-8 border border-[#D5C4B7]/30">              
               <motion.div variants={itemVariants} className="relative z-10">
-                <div className="flex justify-between items-start mb-2">
-                  <h1 className="text-2xl sm:text-3xl font-bold text-[#2D3142] text-center flex-1">
+                <div className="flex justify-center items-start mb-2">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#2D3142] text-center">
                     {session.user?.name ? `שלום, ${session.user.name}` : 'ברוך הבא'}
                   </h1>
-                  <UserMessageNotification className="ml-4" />
                 </div>
                 <p className="text-base sm:text-lg text-[#3D3D3D] text-center">
                   {subscriptionId === "Admin" ? 

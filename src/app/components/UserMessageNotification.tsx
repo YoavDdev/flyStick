@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaEnvelope, FaEnvelopeOpen, FaTimes, FaExternalLinkAlt, FaReply, FaCheck } from "react-icons/fa";
+import { FaEnvelope, FaEnvelopeOpen, FaTimes, FaExternalLinkAlt, FaReply, FaCheck, FaTrashAlt } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 
@@ -110,6 +110,29 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
       } catch (error) {
         console.error("Error auto-marking messages as read:", error);
       }
+    }
+  };
+
+  const handleDismissMessage = async (messageId: string) => {
+    try {
+      const res = await fetch("/api/user/messages", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messageId }),
+      });
+      if (res.ok) {
+        setMessages((prev) => ({
+          unreadMessages: prev.unreadMessages.filter((m) => m.id !== messageId),
+          readMessages: prev.readMessages.filter((m) => m.id !== messageId),
+        }));
+        setUnreadCount((prev) => {
+          const wasUnread = messages.unreadMessages.some((m) => m.id === messageId);
+          return wasUnread ? Math.max(0, prev - 1) : prev;
+        });
+        toast.success("ההודעה נמחקה");
+      }
+    } catch (err) {
+      toast.error("שגיאה במחיקת ההודעה");
     }
   };
 
@@ -256,8 +279,15 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
                         key={message.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="bg-[#D5C4B7]/30 border border-[#D5C4B7] rounded-lg p-3 shadow-sm"
+                        className="bg-[#D5C4B7]/30 border border-[#D5C4B7] rounded-lg p-3 shadow-sm group relative"
                       >
+                        <button
+                          onClick={() => handleDismissMessage(message.id)}
+                          className="absolute top-2 left-2 text-[#3D3D3D]/30 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                          title="מחק הודעה"
+                        >
+                          <FaTrashAlt className="text-[11px]" />
+                        </button>
                         <div className="flex justify-between items-start mb-1">
                           <h3 className="font-bold text-[#2D3142] text-sm">
                             {message.title}
@@ -345,8 +375,15 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
                         key={message.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="bg-white border border-[#D5C4B7]/30 rounded-lg p-3 shadow-sm opacity-70"
+                        className="bg-white border border-[#D5C4B7]/30 rounded-lg p-3 shadow-sm opacity-70 group relative"
                       >
+                        <button
+                          onClick={() => handleDismissMessage(message.id)}
+                          className="absolute top-2 left-2 text-[#3D3D3D]/20 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                          title="מחק הודעה"
+                        >
+                          <FaTrashAlt className="text-[11px]" />
+                        </button>
                         <h3 className="font-bold text-[#2D3142] text-sm mb-1">
                           {message.title}
                         </h3>

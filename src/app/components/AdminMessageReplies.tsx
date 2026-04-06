@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaReply, FaEnvelope, FaEnvelopeOpen, FaChevronDown, FaChevronUp, FaCheck } from "react-icons/fa";
+import { FaReply, FaEnvelope, FaEnvelopeOpen, FaChevronDown, FaChevronUp, FaCheck, FaTrashAlt } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 interface Reply {
   id: string;
@@ -65,6 +66,22 @@ const AdminMessageReplies = () => {
     const interval = setInterval(fetchReplies, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  const deleteReply = async (replyId: string) => {
+    try {
+      const res = await fetch("/api/admin/message-replies", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ replyId }),
+      });
+      if (res.ok) {
+        toast.success("התשובה נמחקה");
+        fetchReplies();
+      }
+    } catch (err) {
+      toast.error("שגיאה במחיקה");
+    }
+  };
 
   const markAsRead = async (messageId: string) => {
     try {
@@ -224,10 +241,17 @@ const AdminMessageReplies = () => {
                             {msg.replies.map((reply) => (
                               <div
                                 key={reply.id}
-                                className={`px-4 py-3 ${
+                                className={`px-4 py-3 group/reply relative ${
                                   !reply.isRead ? "bg-blue-50/50" : ""
                                 }`}
                               >
+                                <button
+                                  onClick={() => deleteReply(reply.id)}
+                                  className="absolute top-2 left-2 text-[#3D3D3D]/20 hover:text-red-500 transition-colors opacity-0 group-hover/reply:opacity-100"
+                                  title="מחק תשובה"
+                                >
+                                  <FaTrashAlt className="text-[11px]" />
+                                </button>
                                 <div className="flex items-center justify-between mb-1">
                                   <div className="flex items-center gap-2">
                                     {reply.user.image ? (
