@@ -425,14 +425,78 @@ const DashboardPage = () => {
                       </div>
                     ),
                     communication: (
-                      <div className="space-y-6">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                          <AdminMessageComposer />
-                          <AdminNewsletterComposer />
+                      <div className="space-y-8" style={{ direction: "rtl" }}>
+                        {/* Section Header */}
+                        <div className="text-center">
+                          <h2 className="text-2xl font-bold text-[#2D3142] mb-2">📬 מרכז התקשורת</h2>
+                          <p className="text-[#3D3D3D]/60 text-sm max-w-xl mx-auto">
+                            ניהול כל ערוצי התקשורת עם המשתמשים — הודעות מערכת, ניוזלטרים, הודעות ממוקדות ותשובות
+                          </p>
                         </div>
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                          <AdminTargetedMessageComposer />
-                          <AdminMessageReplies />
+
+                        {/* Row 1: Broadcast tools */}
+                        <div>
+                          <div className="flex items-center gap-2 mb-3 pr-1">
+                            <div className="w-8 h-8 rounded-full bg-[#D5C4B7]/30 flex items-center justify-center text-sm">📢</div>
+                            <div>
+                              <h3 className="font-bold text-[#2D3142] text-base">שליחה לכולם</h3>
+                              <p className="text-xs text-[#3D3D3D]/50">הודעות גורפות לכל המשתמשים או מנויי הניוזלטר</p>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div className="bg-white/60 border border-[#D5C4B7]/20 rounded-xl p-4">
+                              <div className="mb-3">
+                                <span className="text-xs font-bold text-[#2D3142]/70 bg-[#F7F3EB] px-2 py-1 rounded-full">✉️ הודעת מערכת + אימייל</span>
+                                <p className="text-[10px] text-[#3D3D3D]/50 mt-1.5 leading-relaxed">
+                                  מופיעה במעטפה לכל User רשום. מי שגם רשום לניוזלטר מקבל אימייל.
+                                </p>
+                              </div>
+                              <AdminMessageComposer />
+                            </div>
+                            <div className="bg-white/60 border border-[#D5C4B7]/20 rounded-xl p-4">
+                              <div className="mb-3">
+                                <span className="text-xs font-bold text-[#2D3142]/70 bg-[#F7F3EB] px-2 py-1 rounded-full">📰 ניוזלטר בלבד</span>
+                                <p className="text-[10px] text-[#3D3D3D]/50 mt-1.5 leading-relaxed">
+                                  אימייל בלבד למנויי הניוזלטר. לא יוצר הודעה במעטפה.
+                                </p>
+                              </div>
+                              <AdminNewsletterComposer />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="border-t border-[#D5C4B7]/20" />
+
+                        {/* Row 2: Targeted + Replies */}
+                        <div>
+                          <div className="flex items-center gap-2 mb-3 pr-1">
+                            <div className="w-8 h-8 rounded-full bg-[#2D3142]/10 flex items-center justify-center text-sm">🎯</div>
+                            <div>
+                              <h3 className="font-bold text-[#2D3142] text-base">תקשורת ממוקדת</h3>
+                              <p className="text-xs text-[#3D3D3D]/50">הודעות לקבוצות ספציפיות או משתמשים בודדים, עם אפשרות לתשובה</p>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div className="bg-white/60 border border-[#D5C4B7]/20 rounded-xl p-4">
+                              <div className="mb-3">
+                                <span className="text-xs font-bold text-[#2D3142]/70 bg-[#F7F3EB] px-2 py-1 rounded-full">🎯 הודעה ממוקדת</span>
+                                <p className="text-[10px] text-[#3D3D3D]/50 mt-1.5 leading-relaxed">
+                                  שלח לקבוצה (מנויים פעילים, רוכשי סדרות, וכו׳) או למשתמש בודד. אפשרות לאפשר תשובה.
+                                </p>
+                              </div>
+                              <AdminTargetedMessageComposer />
+                            </div>
+                            <div className="bg-white/60 border border-[#D5C4B7]/20 rounded-xl p-4">
+                              <div className="mb-3">
+                                <span className="text-xs font-bold text-[#2D3142]/70 bg-[#F7F3EB] px-2 py-1 rounded-full">💬 תשובות</span>
+                                <p className="text-[10px] text-[#3D3D3D]/50 mt-1.5 leading-relaxed">
+                                  צפה בתשובות שמשתמשים שלחו להודעות שאפשרת בהן תגובה.
+                                </p>
+                              </div>
+                              <AdminMessageReplies />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     ),
