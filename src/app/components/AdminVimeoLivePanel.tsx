@@ -268,19 +268,36 @@ const AdminVimeoLivePanel = () => {
               <input type="text" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full border border-[#D5C4B7] rounded-lg px-3 py-2 text-sm bg-white" placeholder="שיעור לכל הרמות" />
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-xs text-[#5D5D5D] block mb-1">תאריך *</label>
                 <input type="date" value={form.scheduledAt} onChange={(e) => setForm({ ...form, scheduledAt: e.target.value })} className="w-full border border-[#D5C4B7] rounded-lg px-3 py-2 text-sm bg-white" />
               </div>
               <div>
-                <label className="text-xs text-[#5D5D5D] block mb-1">שעה *</label>
-                <input type="time" value={form.scheduledTime} onChange={(e) => setForm({ ...form, scheduledTime: e.target.value })} className="w-full border border-[#D5C4B7] rounded-lg px-3 py-2 text-sm bg-white" />
+                <label className="text-xs text-[#5D5D5D] block mb-1">שעה * (HH:MM)</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={form.scheduledTime}
+                  onChange={(e) => {
+                    let val = e.target.value.replace(/[^\d:]/g, "");
+                    // Auto-insert colon after 2 digits
+                    if (val.length === 2 && !val.includes(":") && form.scheduledTime.length < val.length) {
+                      val = val + ":";
+                    }
+                    if (val.length <= 5) {
+                      setForm({ ...form, scheduledTime: val });
+                    }
+                  }}
+                  placeholder="21:00"
+                  className="w-full border border-[#D5C4B7] rounded-lg px-3 py-2 text-sm bg-white text-center"
+                  maxLength={5}
+                />
               </div>
-              <div>
-                <label className="text-xs text-[#5D5D5D] block mb-1">משך (דקות)</label>
-                <input type="number" value={form.estimatedDuration} onChange={(e) => setForm({ ...form, estimatedDuration: parseInt(e.target.value) || 60 })} className="w-full border border-[#D5C4B7] rounded-lg px-3 py-2 text-sm bg-white" />
-              </div>
+            </div>
+            <div className="w-1/2">
+              <label className="text-xs text-[#5D5D5D] block mb-1">משך (דקות)</label>
+              <input type="number" value={form.estimatedDuration} onChange={(e) => setForm({ ...form, estimatedDuration: parseInt(e.target.value) || 60 })} className="w-full border border-[#D5C4B7] rounded-lg px-3 py-2 text-sm bg-white" />
             </div>
 
             {/* Vimeo Embed URL - show as info if already saved, editable if not */}

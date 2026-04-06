@@ -32,13 +32,13 @@ const Countdown = ({ targetDate }: { targetDate: string }) => {
     calc(); const i = setInterval(calc, 1000); return () => clearInterval(i);
   }, [targetDate]);
   return (
-    <div className="flex gap-3 justify-center" dir="rtl">
+    <div className="flex gap-2 sm:gap-3 justify-center" dir="ltr">
       {[{v:tl.d,l:"ימים"},{v:tl.h,l:"שעות"},{v:tl.m,l:"דקות"},{v:tl.s,l:"שניות"}].map((b,i)=>(
         <div key={i} className="flex flex-col items-center">
-          <div className="bg-white/80 border border-[#D5C4B7] rounded-xl w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shadow-md">
-            <span className="text-xl sm:text-2xl font-bold text-[#2D3142]">{b.v.toString().padStart(2,"0")}</span>
+          <div className="bg-white/80 border border-[#D5C4B7] rounded-lg sm:rounded-xl w-11 h-11 sm:w-16 sm:h-16 flex items-center justify-center shadow-md">
+            <span className="text-base sm:text-2xl font-bold text-[#2D3142]">{b.v.toString().padStart(2,"0")}</span>
           </div>
-          <span className="text-[10px] text-[#5D5D5D] mt-1">{b.l}</span>
+          <span className="text-[9px] sm:text-[10px] text-[#5D5D5D] mt-0.5 sm:mt-1">{b.l}</span>
         </div>
       ))}
     </div>
@@ -177,10 +177,10 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
 
       {/* Legend */}
       <div className="border-b border-[#D5C4B7]/20 p-2 flex items-center justify-center gap-4 text-[10px] text-[#5D5D5D]">
-        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded-full bg-red-500 inline-flex items-center justify-center text-white text-[8px]">5</span> שידור חי</span>
-        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded-full bg-[#B56B4A] inline-flex items-center justify-center text-white text-[8px]">5</span> מתוזמן</span>
-        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded-full bg-[#B8A99C] inline-flex items-center justify-center text-white text-[8px]">5</span> הסתיים</span>
-        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded-full bg-orange-400 inline-flex items-center justify-center text-white text-[8px]">5</span> בוטל</span>
+        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded bg-red-500/80 inline-flex items-center justify-center text-white text-[8px]">5</span> שידור חי</span>
+        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded bg-[#4A4E69]/80 inline-flex items-center justify-center text-white text-[8px]">5</span> מתוזמן</span>
+        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded bg-[#B8A99C]/60 inline-flex items-center justify-center text-white text-[8px]">5</span> הסתיים</span>
+        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded bg-orange-400/70 inline-flex items-center justify-center text-white text-[8px]">5</span> בוטל</span>
       </div>
 
       {/* Day names */}
@@ -206,16 +206,18 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
             <button
               key={i}
               onClick={() => dayEvts.length > 0 && setSelectedDay(isSelected ? null : day)}
-              className={`min-h-[52px] sm:min-h-[64px] p-1 border-b border-l border-[#D5C4B7]/10 flex flex-col items-center transition-colors relative ${
-                isSelected ? "bg-[#D5C4B7]/20" : dayEvts.length > 0 ? "hover:bg-[#D5C4B7]/10 cursor-pointer" : ""
+              className={`min-h-[52px] sm:min-h-[64px] p-1 border-b border-l border-[#D5C4B7]/10 flex flex-col items-center justify-center transition-colors relative ${
+                hasLive ? "bg-red-500/80 animate-pulse" :
+                hasScheduled ? "bg-[#4A4E69]/80" :
+                hasCancelled ? "bg-orange-400/70" :
+                hasEnded ? "bg-[#B8A99C]/60" :
+                isSelected ? "bg-[#D5C4B7]/20" :
+                dayEvts.length > 0 ? "hover:bg-[#D5C4B7]/10 cursor-pointer" : ""
               }`}
             >
-              <span className={`text-sm font-medium mt-1 w-7 h-7 flex items-center justify-center rounded-full ${
-                hasLive ? "bg-red-500 text-white animate-pulse" :
-                hasScheduled ? "bg-[#B56B4A] text-white" :
-                hasCancelled ? "bg-orange-400 text-white" :
-                hasEnded ? "bg-[#B8A99C] text-white" :
-                isToday ? "text-[#B56B4A] font-bold underline underline-offset-2 decoration-2 decoration-[#B56B4A]" :
+              <span className={`text-sm font-medium ${
+                (hasLive || hasScheduled || hasCancelled || hasEnded) ? "text-white" :
+                isToday ? "text-[#4A4E69] font-bold underline underline-offset-2 decoration-2 decoration-[#4A4E69]" :
                 "text-[#2D3142]"
               }`}>{day}</span>
             </button>
@@ -240,7 +242,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
                 <div className="flex items-center gap-3">
                   <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
                     e.status === "live" ? "bg-red-500 animate-pulse" :
-                    e.status === "scheduled" ? "bg-[#B56B4A]" :
+                    e.status === "scheduled" ? "bg-[#4A4E69]" :
                     e.status === "cancelled" ? "bg-orange-400" : "bg-gray-400"
                   }`} />
                   <div className="flex-1 min-w-0">
@@ -307,29 +309,29 @@ const UpcomingList = ({ events, isLoggedIn, registeredIds, onToggleRegister, reg
   const nextEvent = upcoming[0];
 
   return (
-    <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-[#D5C4B7]/30 shadow-lg p-6">
+    <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-[#D5C4B7]/30 shadow-lg p-3 sm:p-6">
       {/* Next event highlight */}
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center gap-2 bg-[#D5C4B7]/20 border border-[#D5C4B7]/40 rounded-full px-4 py-1.5 mb-4">
-          <svg className="w-4 h-4 text-[#B56B4A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="text-center mb-3 sm:mb-6">
+        <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-[#D5C4B7]/20 border border-[#D5C4B7]/40 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 mb-2 sm:mb-4">
+          <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#B56B4A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>
-          <span className="text-sm text-[#2D3142] font-medium">השיעור הבא</span>
+          <span className="text-xs sm:text-sm text-[#2D3142] font-medium">השיעור הבא</span>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-[#2D3142] mb-2">{nextEvent.title}</h2>
-        {nextEvent.description && <p className="text-[#5D5D5D] text-sm mb-2">{nextEvent.description}</p>}
-        <p className="text-[#B56B4A] font-medium">
+        <h2 className="text-xl sm:text-3xl font-bold text-[#2D3142] mb-1 sm:mb-2">{nextEvent.title}</h2>
+        {nextEvent.description && <p className="text-[#5D5D5D] text-xs sm:text-sm mb-1 sm:mb-2">{nextEvent.description}</p>}
+        <p className="text-[#B56B4A] font-medium text-sm sm:text-base">
           יום {HEBREW_DAYS[new Date(nextEvent.scheduledAt).getDay()]}, {new Date(nextEvent.scheduledAt).getDate()} {HEBREW_MONTHS[new Date(nextEvent.scheduledAt).getMonth()]} | {fmt(new Date(nextEvent.scheduledAt))}
         </p>
-        <div className="mt-4">
+        <div className="mt-2 sm:mt-4">
           <Countdown targetDate={nextEvent.scheduledAt} />
         </div>
-        <div className="mt-4 flex items-center justify-center gap-3">
+        <div className="mt-2 sm:mt-4 flex items-center justify-center gap-2 sm:gap-3">
           <RegisterButton event={nextEvent} isLoggedIn={isLoggedIn} isRegistered={registeredIds.includes(nextEvent.id)} onToggle={onToggleRegister} registering={registering} />
           <AddToCalendarButton event={nextEvent} />
         </div>
         {nextEvent.registrationCount > 0 && (
-          <p className="text-xs text-[#5D5D5D] mt-2">{nextEvent.registrationCount} נרשמו לשיעור</p>
+          <p className="text-xs text-[#5D5D5D] mt-1 sm:mt-2">{nextEvent.registrationCount} נרשמו לשיעור</p>
         )}
       </div>
 
@@ -343,7 +345,7 @@ const UpcomingList = ({ events, isLoggedIn, registeredIds, onToggleRegister, reg
               return (
                 <div key={e.id} className="p-3 rounded-xl bg-[#F7F3EB] hover:bg-[#D5C4B7]/10 transition-colors space-y-2">
                   <div className="flex items-center gap-3">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#B56B4A] flex-shrink-0" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#4A4E69] flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-[#2D3142] truncate">{e.title}</p>
                     </div>
@@ -424,7 +426,7 @@ const AdminLiveControlBar = ({ isAdmin, streamState, allEvents, onAction }: {
         <div className="flex items-center justify-between gap-3">
           {/* Status indicator */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            <div className={`w-2.5 h-2.5 rounded-full ${isLive ? "bg-red-500 animate-pulse" : nextScheduled ? "bg-[#B56B4A]" : "bg-gray-500"}`} />
+            <div className={`w-2.5 h-2.5 rounded-full ${isLive ? "bg-red-500 animate-pulse" : nextScheduled ? "bg-[#4A4E69]" : "bg-gray-500"}`} />
             <span className="text-xs font-medium">
               {isLive ? "משדר עכשיו" : nextScheduled ? "יש אירוע מתוזמן" : "אין אירועים"}
             </span>
@@ -621,13 +623,13 @@ const LiveStreamPage = () => {
 
   return (
     <div className="min-h-screen bg-[#F7F3EB]" dir="rtl">
-      <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto space-y-8">
+      <div className="pt-16 sm:pt-24 pb-10 sm:pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto space-y-4 sm:space-y-8">
 
           {/* PAGE HEADER */}
           <div className="text-center">
-            <h1 className="text-3xl sm:text-4xl font-bold text-[#2D3142] mb-2">שיעורים בשידור חי</h1>
-            <p className="text-[#5D5D5D] max-w-xl mx-auto">שיעורים חיים עם בועז נחייסי. צפו בשידור, בדקו את לוח השידורים וחזרו לצפות בהקלטות.</p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-[#2D3142] mb-1 sm:mb-2">שיעורים בשידור חי</h1>
+            <p className="text-[#5D5D5D] text-sm sm:text-base max-w-xl mx-auto">שיעורים חיים עם בועז נחייסי. צפו בשידור, בדקו את לוח השידורים וחזרו לצפות בהקלטות.</p>
           </div>
 
           {/* LIVE STREAM SECTION */}

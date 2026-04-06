@@ -208,7 +208,7 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
       {/* Notification Icon */}
       <motion.button
         onClick={handleModalOpen}
-        className={`relative p-2 rounded-full bg-[#F7F3EB] hover:bg-[#D5C4B7] transition-colors duration-200 ${className}`}
+        className={`relative p-2.5 w-10 h-10 rounded-full bg-[#E5DFD0]/70 hover:bg-[#D5C4B7] shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center ${className}`}
         whileHover={{ opacity: 0.9 }}
         whileTap={{ scale: 0.95 }}
       >
