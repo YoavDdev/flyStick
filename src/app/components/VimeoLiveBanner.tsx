@@ -47,9 +47,9 @@ const VimeoLiveBanner = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Adjust body padding
+  // Adjust body padding (don't push navbar on /live page)
   useEffect(() => {
-    if (bannerState !== "none") {
+    if (bannerState !== "none" && pathname !== "/live") {
       document.documentElement.style.setProperty("--live-banner-height", `${BANNER_HEIGHT}px`);
     } else {
       document.documentElement.style.setProperty("--live-banner-height", "0px");
@@ -57,7 +57,7 @@ const VimeoLiveBanner = () => {
     return () => {
       document.documentElement.style.setProperty("--live-banner-height", "0px");
     };
-  }, [bannerState]);
+  }, [bannerState, pathname]);
 
   // Don't show on live page itself
   if (pathname === "/live") {
