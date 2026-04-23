@@ -28,6 +28,14 @@ const AdminVimeoLivePanel = () => {
   const [sendingMsg, setSendingMsg] = useState(false);
   const [msgSuccess, setMsgSuccess] = useState<string | null>(null);
 
+  // Monthly theme state
+  const [themeMonth, setThemeMonth] = useState(() => new Date().getMonth() + 1);
+  const [themeYear, setThemeYear] = useState(() => new Date().getFullYear());
+  const [themeTitle, setThemeTitle] = useState("");
+  const [themeSaving, setThemeSaving] = useState(false);
+  const [themeLoaded, setThemeLoaded] = useState(false);
+  const [themeSaved, setThemeSaved] = useState(false);
+
   // Form state
   const [form, setForm] = useState({
     title: "",
@@ -68,6 +76,61 @@ const AdminVimeoLivePanel = () => {
   useEffect(() => {
     fetchEvents();
   }, []);
+
+  // Fetch monthly theme when month/year changes
+  useEffect(() => {
+    const fetchTheme = async () => {
+      setThemeLoaded(false);
+      try {
+        const res = await fetch(`/api/admin/monthly-theme?month=${themeMonth}&year=${themeYear}`, { headers: getAuthHeaders() });
+        const data = await res.json();
+        if (data.success && data.theme) {
+          setThemeTitle(data.theme.title);
+        } else {
+          setThemeTitle("");
+        }
+      } catch { setThemeTitle(""); }
+      setThemeLoaded(true);
+    };
+    fetchTheme();
+  }, [themeMonth, themeYear]);
+
+  const saveTheme = async () => {
+    if (!themeTitle.trim()) return;
+    setThemeSaving(true);
+    setThemeSaved(false);
+    try {
+      const res = await fetch("/api/admin/monthly-theme", {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ month: themeMonth, year: themeYear, title: themeTitle.trim() }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setThemeSaved(true);
+        setTimeout(() => setThemeSaved(false), 3000);
+      } else {
+        setError(data.error || "שגיאה בשמירת נושא חודשי");
+      }
+    } catch {
+      setError("שגיאה בשמירת נושא חודשי");
+    }
+    setThemeSaving(false);
+  };
+
+  const deleteTheme = async () => {
+    setThemeSaving(true);
+    try {
+      await fetch(`/api/admin/monthly-theme?month=${themeMonth}&year=${themeYear}`, {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+      });
+      setThemeTitle("");
+    } catch { /* ignore */ }
+    setThemeSaving(false);
+  };
+
+  const HEBREW_MONTHS = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
 
   // Get the saved embed URL from the most recent event
   const savedEmbedUrl = events.length > 0
@@ -252,6 +315,79 @@ const AdminVimeoLivePanel = () => {
 
       <div className="p-4 space-y-4" dir="rtl">
         {error && <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{error}</div>}
+
+        {/* Monthly Theme Section */}
+        <div className="bg-gradient-to-r from-[#D5C4B7]/10 to-[#B8A99C]/10 border border-[#D5C4B7]/40 rounded-xl p-4 space-y-3">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-base">📋</span>
+            <h4 className="font-bold text-[#2D3142] text-sm">נושא החודש</h4>
+          </div>
+
+          {/* Month/Year selector */}
+          <div className="flex items-center gap-2">
+            <select
+              value={themeMonth}
+              onChange={(e) => setThemeMonth(parseInt(e.target.value))}
+              className="border border-[#D5C4B7] rounded-lg px-3 py-1.5 text-sm bg-white flex-1"
+            >
+              {HEBREW_MONTHS.map((name, i) => (
+                <option key={i} value={i + 1}>{name}</option>
+              ))}
+            </select>
+            <input
+              type="number"
+              value={themeYear}
+              onChange={(e) => setThemeYear(parseInt(e.target.value) || new Date().getFullYear())}
+              className="border border-[#D5C4B7] rounded-lg px-3 py-1.5 text-sm bg-white w-24 text-center"
+              min={2024}
+              max={2030}
+            />
+          </div>
+
+          {/* Theme title input */}
+          {themeLoaded && (
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={themeTitle}
+                onChange={(e) => setThemeTitle(e.target.value)}
+                placeholder={`כותרת נושא ל${HEBREW_MONTHS[themeMonth - 1]} ${themeYear}...`}
+                className="flex-1 border border-[#D5C4B7] rounded-lg px-3 py-2 text-sm bg-white"
+              />
+              <button
+                onClick={saveTheme}
+                disabled={themeSaving || !themeTitle.trim()}
+                className="bg-[#2D3142] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#2D3142]/80 transition-colors disabled:opacity-50 flex-shrink-0"
+              >
+                {themeSaving ? "..." : "שמור"}
+              </button>
+              {themeTitle.trim() && (
+                <button
+                  onClick={deleteTheme}
+                  disabled={themeSaving}
+                  className="text-red-400 hover:text-red-600 px-2 py-2 rounded-lg text-sm transition-colors disabled:opacity-50 flex-shrink-0"
+                  title="מחק נושא"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Saved confirmation */}
+          {themeSaved && (
+            <p className="text-xs text-green-600 font-medium">✅ נושא החודש נשמר!</p>
+          )}
+
+          {/* Preview */}
+          {themeTitle.trim() && (
+            <div className="bg-white/60 border border-[#D5C4B7]/20 rounded-lg p-2.5 text-center">
+              <p className="text-[10px] text-[#5D5D5D] mb-0.5">תצוגה מקדימה:</p>
+              <p className="text-sm font-bold text-[#2D3142]">{HEBREW_MONTHS[themeMonth - 1]} {themeYear}</p>
+              <p className="text-xs text-[#B56B4A] font-medium">{themeTitle}</p>
+            </div>
+          )}
+        </div>
 
         {/* Create/Edit Form */}
         {showForm && (

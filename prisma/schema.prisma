@@ -361,6 +361,17 @@ model ShopOrder {
   items           ShopOrderItem[]
 }
 
+model MonthlyTheme {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  month     Int      // 1-12
+  year      Int      // e.g. 2026
+  title     String   // Monthly topic title (e.g. "גמישות וכוח ליבה")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([month, year])
+}
+
 model LiveEvent {
   id                String   @id @default(auto()) @map("_id") @db.ObjectId
   title             String

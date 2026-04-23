@@ -128,12 +128,13 @@ const RegisterButton = ({ event, isLoggedIn, isRegistered, onToggle, registering
 };
 
 // ============ CALENDAR ============
-const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, registering }: {
+const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, registering, monthlyThemes }: {
   events: any[];
   isLoggedIn: boolean;
   registeredIds: string[];
   onToggleRegister: (eventId: string) => void;
   registering: string | null;
+  monthlyThemes: Record<string, string>;
 }) => {
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -169,7 +170,12 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
         <button onClick={() => setCurrentMonth(new Date(year, month + 1, 1))} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/50 transition-colors">
           <svg className="w-5 h-5 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
         </button>
-        <h2 className="text-lg font-bold text-[#2D3142]">{HEBREW_MONTHS[month]} {year}</h2>
+        <div className="text-center">
+          <h2 className="text-lg font-bold text-[#2D3142]">{HEBREW_MONTHS[month]} {year}</h2>
+          {monthlyThemes[`${year}-${month + 1}`] && (
+            <p className="text-xs text-[#B56B4A] font-medium mt-0.5">{monthlyThemes[`${year}-${month + 1}`]}</p>
+          )}
+        </div>
         <button onClick={() => setCurrentMonth(new Date(year, month - 1, 1))} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/50 transition-colors">
           <svg className="w-5 h-5 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
         </button>
@@ -512,17 +518,25 @@ const LiveStreamPage = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [registeredIds, setRegisteredIds] = useState<string[]>([]);
   const [registering, setRegistering] = useState<string | null>(null);
+  const [monthlyThemes, setMonthlyThemes] = useState<Record<string, string>>({});
 
   const fetchStreamData = useCallback(async () => {
     try {
-      const [currentRes, eventsRes] = await Promise.all([
+      const [currentRes, eventsRes, themesRes] = await Promise.all([
         fetch("/api/live/current"),
         fetch("/api/live/events"),
+        fetch("/api/live/monthly-theme"),
       ]);
       const currentData = await currentRes.json();
       const eventsData = await eventsRes.json();
+      const themesData = await themesRes.json();
       if (currentData.success) { setStream(currentData.stream); setStreamState(currentData.streamState); }
       if (eventsData.success) { setAllEvents(eventsData.events || []); }
+      if (themesData.success && themesData.themes) {
+        const map: Record<string, string> = {};
+        themesData.themes.forEach((t: any) => { map[`${t.year}-${t.month}`] = t.title; });
+        setMonthlyThemes(map);
+      }
     } catch (error) {
       console.error("Error fetching stream:", error);
     } finally { setLoading(false); }
@@ -706,7 +720,7 @@ const LiveStreamPage = () => {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
               לוח שידורים
             </h2>
-            <EventCalendar events={allEvents} isLoggedIn={!!session} registeredIds={registeredIds} onToggleRegister={handleToggleRegister} registering={registering} />
+            <EventCalendar events={allEvents} isLoggedIn={!!session} registeredIds={registeredIds} onToggleRegister={handleToggleRegister} registering={registering} monthlyThemes={monthlyThemes} />
           </div>
 
           {/* INFO CARDS (when not live) */}
