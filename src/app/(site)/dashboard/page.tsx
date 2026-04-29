@@ -825,6 +825,12 @@ const DashboardPage = () => {
                   link="/series"
                   icon={<FaPlay size={24} />}
                 />
+                <DashboardCard
+                  title="עדכוני שידורים חיים"
+                  description="נהל את העדכונים שתרצה לקבל על השיעורים החיים"
+                  link="/dashboard/live-notifications"
+                  icon={<FaCalendarAlt size={24} />}
+                />
               </motion.div>
             )}
 

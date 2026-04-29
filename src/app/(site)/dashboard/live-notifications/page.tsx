@@ -195,7 +195,7 @@ export default function LiveNotificationsPage() {
                         >
                           <span
                             className={`inline-block h-10 w-10 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
-                              reg.wantsEmailUpdates ? "translate-x-12" : "translate-x-1"
+                              reg.wantsEmailUpdates ? "-translate-x-1" : "translate-x-12"
                             }`}
                           >
                             {updating === reg.id ? (

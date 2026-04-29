@@ -73,7 +73,7 @@ export async function POST(req: Request) {
               <!-- Event Details Card -->
               <div style="background: linear-gradient(135deg, #F7F3EB 0%, #E8DFD0 100%); border-radius: 15px; padding: 25px; margin-bottom: 30px; border-right: 4px solid #B56B4A;">
                 <h2 style="margin: 0 0 15px 0; color: #2D3142; font-size: 22px;">
-                  📹 ${event.title}
+                  ${event.title}
                 </h2>
                 ${event.description ? `
                   <p style="margin: 0 0 15px 0; color: #5D5D5D; font-size: 15px; line-height: 1.6;">
@@ -81,17 +81,17 @@ export async function POST(req: Request) {
                   </p>
                 ` : ''}
                 <p style="margin: 0; color: #B56B4A; font-size: 16px; font-weight: bold;">
-                  🗓️ ${eventDateTime}
+                  ${eventDateTime}
                 </p>
                 <p style="margin: 10px 0 0 0; color: #5D5D5D; font-size: 14px;">
-                  ⏱️ משך משוער: ${event.estimatedDuration} דקות
+                  משך משוער: ${event.estimatedDuration} דקות
                 </p>
               </div>
 
               <!-- Email Updates Section -->
               <div style="background: #FFF9F0; border: 2px dashed #D5C4B7; border-radius: 15px; padding: 25px; margin-bottom: 30px;">
                 <h3 style="margin: 0 0 15px 0; color: #2D3142; font-size: 18px;">
-                  🔔 רוצה לקבל עדכונים על השיעור?
+                  רוצה לקבל עדכונים על השיעור?
                 </h3>
                 <p style="margin: 0 0 20px 0; color: #5D5D5D; font-size: 15px; line-height: 1.7;">
                   נשמח לעדכן אותך במייל אם יהיו שינויים בשיעור:
@@ -115,18 +115,18 @@ export async function POST(req: Request) {
               <!-- How to Join -->
               <div style="background: #F0F8FF; border-radius: 15px; padding: 25px; margin-bottom: 30px;">
                 <h3 style="margin: 0 0 15px 0; color: #2D3142; font-size: 18px;">
-                  📺 איך להצטרף לשיעור?
+                  איך להצטרף לשיעור?
                 </h3>
                 <ol style="margin: 0; padding-right: 20px; color: #5D5D5D; font-size: 15px; line-height: 1.8;">
                   <li>היכנס לאתר <strong>Studio Boaz Online</strong> בזמן השיעור</li>
                   <li>לך לעמוד <strong>שידורים חיים</strong></li>
-                  <li>השיעור יופיע אוטומטית - פשוט תלחץ play! 🎬</li>
+                  <li>השיעור יופיע אוטומטית - פשוט תלחץ play!</li>
                 </ol>
               </div>
 
               <p style="font-size: 15px; color: #5D5D5D; margin: 0; line-height: 1.7;">
-                מצפים לראות אותך בשיעור! 💪<br>
-                <strong style="color: #B56B4A;">בועז והצוות</strong>
+                מצפה לראות אותך בשיעור!<br>
+                <strong style="color: #B56B4A;">בועז</strong>
               </p>
             </td>
           </tr>
