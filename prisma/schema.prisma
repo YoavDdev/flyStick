@@ -393,6 +393,7 @@ model LiveEventRegistration {
   userId      String    @db.ObjectId
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   registeredAt DateTime @default(now())
+  wantsEmailUpdates Boolean @default(false) // Does user want email updates for this event?
 
   @@unique([eventId, userId])
 }

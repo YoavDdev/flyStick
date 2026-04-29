@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create registration (upsert to avoid duplicates)
-    await prisma.liveEventRegistration.upsert({
+    const registration = await prisma.liveEventRegistration.upsert({
       where: {
         eventId_userId: { eventId, userId: user.id },
       },
@@ -67,6 +67,13 @@ export async function POST(request: NextRequest) {
         userId: user.id,
       },
     });
+
+    // Send confirmation email (don't wait for it, run in background)
+    fetch(`${process.env.NEXTAUTH_URL}/api/live-events/send-registration-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ eventId, registrationId: registration.id }),
+    }).catch((err) => console.error("Failed to send registration email:", err));
 
     // Get updated count
     const count = await prisma.liveEventRegistration.count({ where: { eventId } });

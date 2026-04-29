@@ -168,6 +168,7 @@ const AdminVimeoLivePanel = () => {
     setError("");
 
     const scheduledAt = new Date(`${form.scheduledAt}T${form.scheduledTime}:00`);
+    const oldScheduledAt = editingEvent ? new Date(editingEvent.scheduledAt) : null;
 
     try {
       const method = editingEvent ? "PUT" : "POST";
@@ -183,6 +184,27 @@ const AdminVimeoLivePanel = () => {
 
       const data = await res.json();
       if (data.success) {
+        // Check if time changed and send email notifications
+        if (editingEvent && oldScheduledAt && scheduledAt.getTime() !== oldScheduledAt.getTime()) {
+          const timeDiff = Math.abs(scheduledAt.getTime() - oldScheduledAt.getTime());
+          const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+          
+          // Determine update type
+          const updateType = daysDiff > 1 ? "rescheduled" : "time_change";
+          
+          // Send notifications (don't wait for it)
+          fetch("/api/live-events/send-update-notifications", {
+            method: "POST",
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+              eventId: editingEvent.id,
+              updateType,
+              oldDateTime: oldScheduledAt.toISOString(),
+              newDateTime: scheduledAt.toISOString(),
+            }),
+          }).catch((err) => console.error("Failed to send update notifications:", err));
+        }
+        
         resetForm();
         fetchEvents();
       } else {
@@ -203,8 +225,22 @@ const AdminVimeoLivePanel = () => {
         body: JSON.stringify({ id: eventId, status: newStatus }),
       });
       const data = await res.json();
-      if (data.success) fetchEvents();
-      else setError(data.error || "שגיאה בעדכון סטטוס");
+      if (data.success) {
+        // Send cancellation notification if status changed to cancelled
+        if (newStatus === "cancelled") {
+          fetch("/api/live-events/send-update-notifications", {
+            method: "POST",
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+              eventId,
+              updateType: "cancelled",
+            }),
+          }).catch((err) => console.error("Failed to send cancellation notification:", err));
+        }
+        fetchEvents();
+      } else {
+        setError(data.error || "שגיאה בעדכון סטטוס");
+      }
     } catch (err) {
       setError("שגיאה בעדכון סטטוס");
     }
@@ -410,24 +446,13 @@ const AdminVimeoLivePanel = () => {
                 <input type="date" value={form.scheduledAt} onChange={(e) => setForm({ ...form, scheduledAt: e.target.value })} className="w-full border border-[#D5C4B7] rounded-lg px-3 py-2 text-sm bg-white" />
               </div>
               <div>
-                <label className="text-xs text-[#5D5D5D] block mb-1">שעה * (HH:MM)</label>
+                <label className="text-xs text-[#5D5D5D] block mb-1">שעה *</label>
                 <input
-                  type="text"
-                  inputMode="numeric"
+                  type="time"
                   value={form.scheduledTime}
-                  onChange={(e) => {
-                    let val = e.target.value.replace(/[^\d:]/g, "");
-                    // Auto-insert colon after 2 digits
-                    if (val.length === 2 && !val.includes(":") && form.scheduledTime.length < val.length) {
-                      val = val + ":";
-                    }
-                    if (val.length <= 5) {
-                      setForm({ ...form, scheduledTime: val });
-                    }
-                  }}
-                  placeholder="21:00"
+                  onChange={(e) => setForm({ ...form, scheduledTime: e.target.value })}
                   className="w-full border border-[#D5C4B7] rounded-lg px-3 py-2 text-sm bg-white text-center"
-                  maxLength={5}
+                  required
                 />
               </div>
             </div>

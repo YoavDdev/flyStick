@@ -32,13 +32,13 @@ const Countdown = ({ targetDate }: { targetDate: string }) => {
     calc(); const i = setInterval(calc, 1000); return () => clearInterval(i);
   }, [targetDate]);
   return (
-    <div className="flex gap-2 sm:gap-3 justify-center" dir="ltr">
+    <div className="flex gap-1.5 sm:gap-2 justify-center" dir="ltr">
       {[{v:tl.d,l:"ימים"},{v:tl.h,l:"שעות"},{v:tl.m,l:"דקות"},{v:tl.s,l:"שניות"}].map((b,i)=>(
         <div key={i} className="flex flex-col items-center">
-          <div className="bg-white/80 border border-[#D5C4B7] rounded-lg sm:rounded-xl w-11 h-11 sm:w-16 sm:h-16 flex items-center justify-center shadow-md">
-            <span className="text-base sm:text-2xl font-bold text-[#2D3142]">{b.v.toString().padStart(2,"0")}</span>
+          <div className="bg-white/80 border border-[#D5C4B7] rounded-lg w-9 h-9 sm:w-12 sm:h-12 flex items-center justify-center shadow-sm">
+            <span className="text-sm sm:text-lg font-bold text-[#2D3142]">{b.v.toString().padStart(2,"0")}</span>
           </div>
-          <span className="text-[9px] sm:text-[10px] text-[#5D5D5D] mt-0.5 sm:mt-1">{b.l}</span>
+          <span className="text-[8px] sm:text-[9px] text-[#5D5D5D] mt-0.5">{b.l}</span>
         </div>
       ))}
     </div>
@@ -138,6 +138,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
 }) => {
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [emptyDayMessage, setEmptyDayMessage] = useState<string | null>(null);
 
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
@@ -164,42 +165,42 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
   const selectedEvents = selectedDay ? (byDay[selectedDay] || []) : [];
 
   return (
-    <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-[#D5C4B7]/30 shadow-lg overflow-hidden">
+    <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-[#D5C4B7]/20 shadow-xl overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#D5C4B7]/30 to-[#B8A99C]/20 p-4 flex items-center justify-between">
-        <button onClick={() => setCurrentMonth(new Date(year, month + 1, 1))} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/50 transition-colors">
-          <svg className="w-5 h-5 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+      <div className="bg-gradient-to-r from-[#D5C4B7]/20 to-[#B8A99C]/10 p-4 sm:p-5 flex items-center justify-between gap-3">
+        <button onClick={() => setCurrentMonth(new Date(year, month - 1, 1))} className="bg-white/70 hover:bg-white shadow-sm hover:shadow-md text-[#2D3142] px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap">
+          חודש קודם
         </button>
-        <div className="text-center">
-          <h2 className="text-lg font-bold text-[#2D3142]">{HEBREW_MONTHS[month]} {year}</h2>
+        <div className="text-center flex-1">
+          <h2 className="text-lg sm:text-xl font-bold text-[#2D3142] mb-0.5">{HEBREW_MONTHS[month]} {year}</h2>
           {monthlyThemes[`${year}-${month + 1}`] && (
-            <p className="text-xs text-[#B56B4A] font-medium mt-0.5">{monthlyThemes[`${year}-${month + 1}`]}</p>
+            <p className="text-xs sm:text-sm text-[#B56B4A] font-medium">{monthlyThemes[`${year}-${month + 1}`]}</p>
           )}
         </div>
-        <button onClick={() => setCurrentMonth(new Date(year, month - 1, 1))} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/50 transition-colors">
-          <svg className="w-5 h-5 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        <button onClick={() => setCurrentMonth(new Date(year, month + 1, 1))} className="bg-white/70 hover:bg-white shadow-sm hover:shadow-md text-[#2D3142] px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap">
+          חודש הבא
         </button>
       </div>
 
-      {/* Legend */}
-      <div className="border-b border-[#D5C4B7]/20 p-2 flex items-center justify-center gap-4 text-[10px] text-[#5D5D5D]">
-        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded bg-red-500/80 inline-flex items-center justify-center text-white text-[8px]">5</span> שידור חי</span>
-        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded bg-[#4A4E69]/80 inline-flex items-center justify-center text-white text-[8px]">5</span> מתוזמן</span>
-        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded bg-[#B8A99C]/60 inline-flex items-center justify-center text-white text-[8px]">5</span> הסתיים</span>
-        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded bg-orange-400/70 inline-flex items-center justify-center text-white text-[8px]">5</span> בוטל</span>
+      {/* Legend - elegant */}
+      <div className="border-b border-[#D5C4B7]/15 p-3 sm:p-4 flex items-center justify-center gap-4 sm:gap-6 text-xs text-[#5D5D5D] bg-[#F7F3EB]/30">
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-gradient-to-br from-[#B56B4A] to-[#9a5a3d] shadow-sm"></span> <span className="font-medium">חי</span></span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] shadow-sm"></span> <span className="font-medium">מתוזמן</span></span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-gradient-to-br from-[#9D8E81] to-[#8A7B72] shadow-sm"></span> <span className="font-medium">הסתיים</span></span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-gradient-to-br from-[#C9A88A] to-[#B8977A] shadow-sm"></span> <span className="font-medium">בוטל</span></span>
       </div>
 
       {/* Day names */}
-      <div className="grid grid-cols-7 border-b border-[#D5C4B7]/20">
+      <div className="grid grid-cols-7 border-b border-[#D5C4B7]/15 bg-gradient-to-b from-[#F7F3EB]/20 to-transparent">
         {HEBREW_DAYS_SHORT.map((d) => (
-          <div key={d} className="text-center py-2 text-xs font-medium text-[#5D5D5D]">{d}</div>
+          <div key={d} className="text-center py-2 sm:py-3 text-xs sm:text-sm font-semibold text-[#2D3142]/70">{d}</div>
         ))}
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-7">
+      {/* Grid - elegant spacing */}
+      <div className="grid grid-cols-7 gap-[1px] bg-[#D5C4B7]/10 p-[1px]">
         {cells.map((day, i) => {
-          if (!day) return <div key={i} className="min-h-[52px] sm:min-h-[64px] bg-[#F7F3EB]/30" />;
+          if (!day) return <div key={i} className="min-h-[50px] sm:min-h-[60px] bg-white/50" />;
           const dayEvts = byDay[day] || [];
           const isToday = isThisMonth && day === today.getDate();
           const isSelected = selectedDay === day;
@@ -211,35 +212,58 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
           return (
             <button
               key={i}
-              onClick={() => dayEvts.length > 0 && setSelectedDay(isSelected ? null : day)}
-              className={`min-h-[52px] sm:min-h-[64px] p-1 border-b border-l border-[#D5C4B7]/10 flex flex-col items-center justify-center transition-colors relative ${
-                hasLive ? "bg-red-500/80 animate-pulse" :
-                hasScheduled ? "bg-[#4A4E69]/80" :
-                hasCancelled ? "bg-orange-400/70" :
-                hasEnded ? "bg-[#B8A99C]/60" :
-                isSelected ? "bg-[#D5C4B7]/20" :
-                dayEvts.length > 0 ? "hover:bg-[#D5C4B7]/10 cursor-pointer" : ""
+              onClick={() => {
+                if (dayEvts.length > 0) {
+                  setSelectedDay(isSelected ? null : day);
+                  setEmptyDayMessage(null);
+                } else {
+                  setEmptyDayMessage(`אין שיעורים מתוזמנים ב-${day} ${HEBREW_MONTHS[month]}`);
+                  setSelectedDay(null);
+                }
+              }}
+              className={`min-h-[50px] sm:min-h-[60px] p-2 flex flex-col items-center justify-center transition-all duration-200 relative group ${
+                hasLive ? "bg-gradient-to-br from-[#B56B4A] to-[#9a5a3d] shadow-lg animate-pulse" :
+                hasScheduled ? "bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] shadow-md hover:shadow-lg" :
+                hasCancelled ? "bg-gradient-to-br from-[#C9A88A] to-[#B8977A] shadow-sm" :
+                hasEnded ? "bg-gradient-to-br from-[#9D8E81] to-[#8A7B72] shadow-sm" :
+                isSelected ? "bg-[#D5C4B7]/30 shadow-inner" :
+                dayEvts.length > 0 ? "bg-white hover:bg-[#D5C4B7]/20 cursor-pointer hover:shadow-md" : "bg-white"
               }`}
             >
-              <span className={`text-sm font-medium ${
-                (hasLive || hasScheduled || hasCancelled || hasEnded) ? "text-white" :
-                isToday ? "text-[#4A4E69] font-bold underline underline-offset-2 decoration-2 decoration-[#4A4E69]" :
-                "text-[#2D3142]"
+              <span className={`text-sm sm:text-base font-semibold transition-all ${
+                (hasLive || hasScheduled || hasCancelled || hasEnded) ? "text-white drop-shadow-sm" :
+                isToday ? "text-[#B56B4A] font-bold text-base sm:text-lg" :
+                "text-[#2D3142] group-hover:text-[#4A4E69]"
               }`}>{day}</span>
+              {isToday && !hasLive && !hasScheduled && !hasEnded && !hasCancelled && (
+                <div className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-[#B56B4A]"></div>
+              )}
             </button>
           );
         })}
       </div>
 
-      {/* Selected day detail */}
+      {/* Empty day message */}
+      {emptyDayMessage && (
+        <div className="border-t border-[#D5C4B7]/20 p-4 bg-gradient-to-r from-[#F7F3EB]/50 to-[#D5C4B7]/20">
+          <div className="flex items-center justify-center gap-2 text-[#5D5D5D]">
+            <svg className="w-5 h-5 text-[#B56B4A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <p className="text-sm font-medium">{emptyDayMessage}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Selected day detail - elegant */}
       {selectedDay && selectedEvents.length > 0 && (
-        <div className="border-t border-[#D5C4B7]/30 p-4 space-y-2">
-          <h3 className="font-bold text-[#2D3142] text-sm">
+        <div className="border-t border-[#D5C4B7]/20 p-4 sm:p-5 space-y-2.5 sm:space-y-3 bg-gradient-to-b from-[#F7F3EB]/30 to-white/50">
+          <h3 className="font-bold text-[#2D3142] text-sm sm:text-base mb-1">
             יום {HEBREW_DAYS[new Date(year, month, selectedDay).getDay()]} {selectedDay} {HEBREW_MONTHS[month]}
           </h3>
           {selectedEvents.map((e: any) => {
             const inner = (
-              <div className={`p-3 rounded-xl flex flex-col gap-2 ${
+              <div className={`p-3 sm:p-4 rounded-xl flex flex-col gap-2 shadow-sm hover:shadow-md transition-all ${
                 e.status === "live" ? "bg-red-50 border border-red-200" :
                 e.status === "scheduled" ? "bg-blue-50 border border-blue-200" :
                 e.status === "cancelled" ? "bg-orange-50 border border-orange-200" :
@@ -315,24 +339,24 @@ const UpcomingList = ({ events, isLoggedIn, registeredIds, onToggleRegister, reg
   const nextEvent = upcoming[0];
 
   return (
-    <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-[#D5C4B7]/30 shadow-lg p-3 sm:p-6">
-      {/* Next event highlight */}
-      <div className="text-center mb-3 sm:mb-6">
+    <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-[#D5C4B7]/30 shadow-md p-3 sm:p-4">
+      {/* Next event highlight - compact */}
+      <div className="text-center mb-2 sm:mb-4">
         <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-[#D5C4B7]/20 border border-[#D5C4B7]/40 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 mb-2 sm:mb-4">
           <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#B56B4A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>
           <span className="text-xs sm:text-sm text-[#2D3142] font-medium">השיעור הבא</span>
         </div>
-        <h2 className="text-xl sm:text-3xl font-bold text-[#2D3142] mb-1 sm:mb-2">{nextEvent.title}</h2>
-        {nextEvent.description && <p className="text-[#5D5D5D] text-xs sm:text-sm mb-1 sm:mb-2">{nextEvent.description}</p>}
-        <p className="text-[#B56B4A] font-medium text-sm sm:text-base">
+        <h2 className="text-lg sm:text-2xl font-bold text-[#2D3142] mb-1">{nextEvent.title}</h2>
+        {nextEvent.description && <p className="text-[#5D5D5D] text-xs sm:text-sm mb-1">{nextEvent.description}</p>}
+        <p className="text-[#B56B4A] font-medium text-xs sm:text-sm">
           יום {HEBREW_DAYS[new Date(nextEvent.scheduledAt).getDay()]}, {new Date(nextEvent.scheduledAt).getDate()} {HEBREW_MONTHS[new Date(nextEvent.scheduledAt).getMonth()]} | {fmt(new Date(nextEvent.scheduledAt))}
         </p>
-        <div className="mt-2 sm:mt-4">
+        <div className="mt-2 sm:mt-3">
           <Countdown targetDate={nextEvent.scheduledAt} />
         </div>
-        <div className="mt-2 sm:mt-4 flex items-center justify-center gap-2 sm:gap-3">
+        <div className="mt-2 sm:mt-3 flex items-center justify-center gap-2">
           <RegisterButton event={nextEvent} isLoggedIn={isLoggedIn} isRegistered={registeredIds.includes(nextEvent.id)} onToggle={onToggleRegister} registering={registering} />
           <AddToCalendarButton event={nextEvent} />
         </div>
@@ -341,15 +365,15 @@ const UpcomingList = ({ events, isLoggedIn, registeredIds, onToggleRegister, reg
         )}
       </div>
 
-      {/* Other upcoming */}
+      {/* Other upcoming - compact */}
       {upcoming.length > 1 && (
-        <div className="border-t border-[#D5C4B7]/20 pt-4">
-          <h3 className="font-medium text-[#2D3142] text-sm mb-3">שידורים נוספים</h3>
-          <div className="space-y-2">
+        <div className="border-t border-[#D5C4B7]/20 pt-2 sm:pt-3">
+          <h3 className="font-medium text-[#2D3142] text-xs sm:text-sm mb-2">שידורים נוספים</h3>
+          <div className="space-y-1.5">
             {upcoming.slice(1).map((e) => {
               const d = new Date(e.scheduledAt);
               return (
-                <div key={e.id} className="p-3 rounded-xl bg-[#F7F3EB] hover:bg-[#D5C4B7]/10 transition-colors space-y-2">
+                <div key={e.id} className="p-2 sm:p-2.5 rounded-lg bg-[#F7F3EB] hover:bg-[#D5C4B7]/10 transition-colors space-y-1.5">
                   <div className="flex items-center gap-3">
                     <div className="w-2.5 h-2.5 rounded-full bg-[#4A4E69] flex-shrink-0" />
                     <div className="flex-1 min-w-0">
@@ -711,8 +735,42 @@ const LiveStreamPage = () => {
             </div>
           )}
 
-          {/* UPCOMING EVENTS + COUNTDOWN (when not live) */}
-          {!isLive && <UpcomingList events={allEvents} isLoggedIn={!!session} registeredIds={registeredIds} onToggleRegister={handleToggleRegister} registering={registering} />}
+          {/* NEXT EVENT COUNTDOWN ONLY (no list) */}
+          {!isLive && (() => {
+            const nextEvent = allEvents
+              .filter(e => e.status === "scheduled")
+              .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())[0];
+            
+            if (!nextEvent) return null;
+            
+            return (
+              <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-[#D5C4B7]/30 shadow-md p-3 sm:p-4">
+                <div className="text-center">
+                  <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-[#D5C4B7]/20 border border-[#D5C4B7]/40 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 mb-2">
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#B56B4A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <span className="text-xs sm:text-sm text-[#2D3142] font-medium">השיעור הבא</span>
+                  </div>
+                  <h2 className="text-lg sm:text-2xl font-bold text-[#2D3142] mb-1">{nextEvent.title}</h2>
+                  {nextEvent.description && <p className="text-[#5D5D5D] text-xs sm:text-sm mb-1">{nextEvent.description}</p>}
+                  <p className="text-[#B56B4A] font-medium text-xs sm:text-sm">
+                    יום {HEBREW_DAYS[new Date(nextEvent.scheduledAt).getDay()]}, {new Date(nextEvent.scheduledAt).getDate()} {HEBREW_MONTHS[new Date(nextEvent.scheduledAt).getMonth()]} | {fmt(new Date(nextEvent.scheduledAt))}
+                  </p>
+                  <div className="mt-2 sm:mt-3">
+                    <Countdown targetDate={nextEvent.scheduledAt} />
+                  </div>
+                  <div className="mt-2 sm:mt-3 flex items-center justify-center gap-2">
+                    <RegisterButton event={nextEvent} isLoggedIn={!!session} isRegistered={registeredIds.includes(nextEvent.id)} onToggle={handleToggleRegister} registering={registering} />
+                    <AddToCalendarButton event={nextEvent} />
+                  </div>
+                  {nextEvent.registrationCount > 0 && (
+                    <p className="text-xs text-[#5D5D5D] mt-1 sm:mt-2">{nextEvent.registrationCount} נרשמו לשיעור</p>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* MONTHLY CALENDAR - always visible */}
           <div>
@@ -722,6 +780,34 @@ const LiveStreamPage = () => {
             </h2>
             <EventCalendar events={allEvents} isLoggedIn={!!session} registeredIds={registeredIds} onToggleRegister={handleToggleRegister} registering={registering} monthlyThemes={monthlyThemes} />
           </div>
+
+          {/* EMAIL UPDATES INFO */}
+          {session && (
+            <div className="bg-gradient-to-r from-[#FFF9F0] to-[#F7F3EB] border-2 border-dashed border-[#D5C4B7] rounded-2xl p-5 sm:p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#B56B4A] to-[#9a5a3d] rounded-full flex items-center justify-center shadow-md">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-[#2D3142] mb-2 flex items-center gap-2">
+                    🔔 רוצים לקבל עדכונים על השיעורים?
+                  </h3>
+                  <p className="text-sm text-[#5D5D5D] mb-3 leading-relaxed">
+                    כשנרשמים לשיעור, תקבלו מייל אישור עם אפשרות לקבל עדכונים על שינויים - ביטולים, דחיות או שינויי שעה.
+                  </p>
+                  <div className="flex flex-wrap gap-2 text-xs">
+                    <span className="bg-white/70 px-3 py-1.5 rounded-full text-[#5D5D5D] border border-[#D5C4B7]/30">✅ מייל אישור הרשמה</span>
+                    <span className="bg-white/70 px-3 py-1.5 rounded-full text-[#5D5D5D] border border-[#D5C4B7]/30">📧 עדכונים על שינויים</span>
+                    <span className="bg-white/70 px-3 py-1.5 rounded-full text-[#5D5D5D] border border-[#D5C4B7]/30">⚙️ שליטה מלאה בהעדפות</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* INFO CARDS (when not live) */}
           {!isLive && (
