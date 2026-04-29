@@ -69,11 +69,20 @@ export async function POST(request: NextRequest) {
     });
 
     // Send confirmation email (don't wait for it, run in background)
+    console.log("📧 Attempting to send registration email to:", user.email);
     fetch(`${process.env.NEXTAUTH_URL}/api/live-events/send-registration-email`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ eventId, registrationId: registration.id }),
-    }).catch((err) => console.error("Failed to send registration email:", err));
+    })
+      .then((res) => {
+        if (res.ok) {
+          console.log("✅ Registration email sent successfully to:", user.email);
+        } else {
+          console.error("❌ Failed to send registration email. Status:", res.status);
+        }
+      })
+      .catch((err) => console.error("❌ Error sending registration email:", err));
 
     // Get updated count
     const count = await prisma.liveEventRegistration.count({ where: { eventId } });
