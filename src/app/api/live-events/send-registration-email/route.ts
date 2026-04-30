@@ -67,7 +67,7 @@ export async function POST(req: Request) {
               </p>
               
               <p style="font-size: 16px; color: #5D5D5D; margin: 0 0 30px 0; line-height: 1.8;">
-                נרשמת בהצלחה לשיעור החי שלנו! 🎉
+                נרשמת/נרשמת בהצלחה לשיעור החי! 🎉
               </p>
 
               <!-- Event Details Card -->
@@ -108,7 +108,7 @@ export async function POST(req: Request) {
                   </a>
                 </div>
                 <p style="margin: 15px 0 0 0; color: #9D8E81; font-size: 13px; text-align: center; line-height: 1.6;">
-                  תוכל לשנות את ההעדפה בכל עת מהדשבורד שלך
+                  תוכל/י לשנות את ההעדפה בכל עת מהדשבורד שלך
                 </p>
               </div>
 
@@ -118,14 +118,14 @@ export async function POST(req: Request) {
                   איך להצטרף לשיעור?
                 </h3>
                 <ol style="margin: 0; padding-right: 20px; color: #5D5D5D; font-size: 15px; line-height: 1.8;">
-                  <li>היכנס לאתר <strong>Studio Boaz Online</strong> בזמן השיעור</li>
-                  <li>לך לעמוד <strong>שידורים חיים</strong></li>
-                  <li>השיעור יופיע אוטומטית - פשוט תלחץ play!</li>
+                  <li>היכנס/י לאתר <strong>Studio Boaz Online</strong> בזמן השיעור</li>
+                  <li>לך/י לעמוד <strong>שידורים חיים</strong></li>
+                  <li>השיעור יופיע אוטומטית - פשוט תלחץ/י play!</li>
                 </ol>
               </div>
 
               <p style="font-size: 15px; color: #5D5D5D; margin: 0; line-height: 1.7;">
-                מצפה לראות אותך בשיעור!<br>
+                מצפה לראות אותך/אותך בשיעור!<br>
                 <strong style="color: #B56B4A;">בועז</strong>
               </p>
             </td>

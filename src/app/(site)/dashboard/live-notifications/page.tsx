@@ -272,10 +272,10 @@ export default function LiveNotificationsPage() {
               </svg>
             </div>
             <h3 className="text-xl font-bold text-[#2D3142] mb-2">
-              עדיין לא נרשמת לשיעורים
+              עדיין לא נרשמת/נרשמת לשיעורים
             </h3>
             <p className="text-[#5D5D5D] mb-6">
-              כשתירשם לשיעור חי, תוכל לנהל כאן את העדכונים שתרצה לקבל
+              כשתירשם/תירשמי לשיעור חי, תוכל/י לנהל כאן את העדכונים שתרצה/תרצי לקבל
             </p>
             <Link
               href="/live"
