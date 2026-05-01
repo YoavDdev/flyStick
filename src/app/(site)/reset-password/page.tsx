@@ -38,15 +38,15 @@ const ResetPasswordPage = () => {
 
       if (response.ok) {
         toast.success(
-          "איפוס הסיסמה הצליח. אתה יכול להתחבר עכשיו עם הסיסמה החדשה שלך.",
+          "איפוס הסיסמה הצליח. ניתן להתחבר עכשיו עם הסיסמה החדשה.",
         );
         router.push("/login"); // Redirect to the login page or any desired page
       } else {
-        toast.error("איפוס הסיסמה נכשל. אנא נסה שוב.");
+        toast.error("איפוס הסיסמה נכשל. יש לנסות שוב.");
       }
     } catch (error) {
       console.error("Error resetting password:", error);
-      toast.error("משהו השתבש. אנא נסה שוב מאוחר יותר.");
+      toast.error("משהו השתבש. יש לנסות שוב מאוחר יותר.");
     }
   };
 
@@ -55,7 +55,7 @@ const ResetPasswordPage = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-[#F0E9DF] rounded-2xl shadow-md border border-[#D5C4B7] p-8 mb-8">
           <h2 className="mt-4 text-center text-3xl font-bold leading-9 tracking-tight text-[#2D3142]">
-            אפס את הסיסמה שלך
+            איפוס סיסמה
           </h2>
           <div className="w-16 h-1 bg-[#B8A99C] mx-auto mt-4 rounded-full"></div>
         </div>

@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       success: true,
       jobId,
       status: "started",
-      message: "סנכרון PayPal התחיל ברקע. תוכל לבדוק את הסטטוס בעמוד הניהול."
+      message: "סנכרון PayPal התחיל ברקע. ניתן לבדוק את הסטטוס בעמוד הניהול."
     });
     
   } catch (error) {

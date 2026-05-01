@@ -797,7 +797,7 @@ const LiveStreamPage = () => {
                     🔔 רוצים לקבל עדכונים על השיעורים?
                   </h3>
                   <p className="text-sm text-[#5D5D5D] mb-3 leading-relaxed">
-                    כשנרשמים לשיעור, תקבלו מייל אישור עם אפשרות לקבל עדכונים על שינויים - ביטולים, דחיות או שינויי שעה.
+                    כשנרשמים לשיעור, נשלח מייל אישור עם אפשרות לקבל עדכונים על שינויים - ביטולים, דחיות או שינויי שעה.
                   </p>
                   <div className="flex flex-wrap gap-2 text-xs">
                     <span className="bg-white/70 px-3 py-1.5 rounded-full text-[#5D5D5D] border border-[#D5C4B7]/30">✅ מייל אישור הרשמה</span>

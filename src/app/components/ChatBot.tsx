@@ -275,7 +275,7 @@ const ChatBot = () => {
                   שלום! איך אוכל לעזור?
                 </p>
                 <p className="text-[#5D5D5D] text-xs leading-relaxed">
-                  אני יכול לעזור לך למצוא שיעורים, להמליץ על תרגילים ולענות על שאלות
+                  ניתן לקבל עזרה במציאת שיעורים, המלצות על תרגילים ומענה על שאלות
                 </p>
                 {/* Quick suggestions */}
                 <div className="flex flex-wrap gap-2 justify-center mt-4">

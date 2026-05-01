@@ -38,7 +38,7 @@ export default function UnsubscribePage() {
       } catch (error) {
         console.error('Unsubscribe error:', error);
         setStatus('error');
-        setMessage('שגיאה בביטול המנוי. אנא נסה שוב מאוחר יותר.');
+        setMessage('שגיאה בביטול המנוי. יש לנסות שוב מאוחר יותר.');
       }
     };
 
@@ -62,7 +62,7 @@ export default function UnsubscribePage() {
           <>
             <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#D5C4B7] border-t-transparent mx-auto mb-4"></div>
             <h1 className="text-2xl font-bold text-[#2D3142] mb-4">מבטל מנוי...</h1>
-            <p className="text-[#3D3D3D]">אנא המתן בזמן שאנו מעבדים את הבקשה שלך</p>
+            <p className="text-[#3D3D3D]">נא להמתין בזמן עיבוד הבקשה</p>
           </>
         )}
 
@@ -71,13 +71,13 @@ export default function UnsubscribePage() {
             <div className="text-green-500 text-6xl mb-4">✓</div>
             <h1 className="text-2xl font-bold text-[#2D3142] mb-4">המנוי בוטל בהצלחה</h1>
             <p className="text-[#3D3D3D] mb-6">
-              המנוי שלך לניוזלטר של Studio Boaz בוטל בהצלחה.
+              המנוי לניוזלטר של Studio Boaz בוטל בהצלחה.
             </p>
             <p className="text-[#3D3D3D] mb-6">
-              אם תרצה להירשם שוב בעתיד, תמיד תוכל לעשות זאת דרך האתר שלנו.
+              במידת הצורך, ניתן להירשם שוב בעתיד דרך האתר.
             </p>
             <p className="text-[#3D3D3D] mb-8">
-              תודה שהיית חלק מהקהילה שלנו!
+              תודה על ההשתתפות בקהילה שלנו!
             </p>
             <Link
               href="/"
@@ -93,10 +93,10 @@ export default function UnsubscribePage() {
             <div className="text-yellow-500 text-6xl mb-4">⚠</div>
             <h1 className="text-2xl font-bold text-[#2D3142] mb-4">המנוי כבר בוטל</h1>
             <p className="text-[#3D3D3D] mb-6">
-              המנוי שלך לניוזלטר כבר בוטל בעבר.
+              המנוי לניוזלטר כבר בוטל בעבר.
             </p>
             <p className="text-[#3D3D3D] mb-8">
-              אם תרצה להירשם שוב, תוכל לעשות זאת דרך האתר שלנו.
+              במידת הצורך, ניתן להירשם שוב דרך האתר.
             </p>
             <Link
               href="/"
@@ -113,14 +113,14 @@ export default function UnsubscribePage() {
             <h1 className="text-2xl font-bold text-[#2D3142] mb-4">שגיאה בביטול המנוי</h1>
             <p className="text-[#3D3D3D] mb-6">{message}</p>
             <p className="text-[#3D3D3D] mb-8">
-              אנא נסה שוב מאוחר יותר או צור קשר עמנו לקבלת עזרה.
+              יש לנסות שוב מאוחר יותר או ליצור קשר לקבלת עזרה.
             </p>
             <div className="space-y-3">
               <button
                 onClick={() => window.location.reload()}
                 className="w-full bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] py-3 px-6 rounded-lg transition-colors duration-200 font-medium"
               >
-                נסה שוב
+                לנסות שוב
               </button>
               <Link
                 href="/"

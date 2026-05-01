@@ -35,7 +35,7 @@ class ConvertkitEmailForm extends Component {
       const json_res = await res.json();
       
       if (res.ok) {
-        toast.success('📧 נרשמת בהצלחה לניוזלטר! נשמח לשתף אותך בעדכונים', {
+        toast.success('📧 ההרשמה לניוזלטר בוצעה בהצלחה! נשמח לשתף בעדכונים', {
           duration: 4000,
           position: 'top-center',
           style: {
@@ -53,7 +53,7 @@ class ConvertkitEmailForm extends Component {
           email: "",
         });
       } else {
-        toast.error(json_res.error || '❌ אירעה שגיאה ברישום לנייוזלטר - אנא נסה שוב', {
+        toast.error(json_res.error || '❌ אירעה שגיאה ברישום לנייוזלטר - יש לנסות שוב', {
           duration: 4000,
           position: 'top-center',
           style: {
@@ -68,7 +68,7 @@ class ConvertkitEmailForm extends Component {
       }
     } catch (error) {
       console.error('Newsletter subscription error:', error);
-      toast.error('❌ אירעה שגיאה ברישום לניוזלטר - אנא נסה שוב', {
+      toast.error('❌ אירעה שגיאה ברישום לניוזלטר - יש לנסות שוב', {
         duration: 4000,
         position: 'top-center',
         style: {
@@ -107,7 +107,7 @@ class ConvertkitEmailForm extends Component {
             name="email"
             id="newsletter-input"
             autoComplete="email"
-            placeholder="הכניסו את האימייל שלכם"
+            placeholder="הזנת כתובת אימייל"
             value={email}
             onChange={this.emailHandler}
             onFocus={() => this.setState({ isFocused: true })}

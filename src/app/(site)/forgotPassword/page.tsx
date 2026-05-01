@@ -13,7 +13,7 @@ const ForgotPasswordPage = () => {
     try {
       // Perform validation on the email if needed
       if (!email) {
-        toast.error("אנא הכנס כתובת אימייל תקינה.");
+        toast.error("יש להזין כתובת אימייל תקינה.");
         return;
       }
 
@@ -28,18 +28,18 @@ const ForgotPasswordPage = () => {
 
       if (response.ok) {
         toast.success(
-          "איפוס הסיסמה הותחל. בדוק את האימייל שלך להוראות נוספות.",
+          "איפוס הסיסמה הותחל. מייל עם הוראות נשלח לאימייל הרשום.",
           {
             duration: 5000, // Set the duration in milliseconds
           },
         );
         router.push("/login"); // Redirect to login page or any desired page
       } else {
-        toast.error("איפוס הסיסמה נכשל. אנא נסה שוב.");
+        toast.error("איפוס הסיסמה נכשל. יש לנסות שוב.");
       }
     } catch (error) {
       console.error("Error initiating password reset:", error);
-      toast.error("משהו השתבש. אנא נסה שוב מאוחר יותר.");
+      toast.error("משהו השתבש. יש לנסות שוב מאוחר יותר.");
     }
   };
 
@@ -48,11 +48,11 @@ const ForgotPasswordPage = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-[#F0E9DF] rounded-2xl shadow-md border border-[#D5C4B7] p-8 mb-8">
           <h2 className="mt-4 text-center text-3xl font-bold leading-9 tracking-tight text-[#2D3142]">
-            שכחת את הסיסמה שלך?
+            שכחתם את הסיסמה?
           </h2>
           <div className="w-16 h-1 bg-[#B8A99C] mx-auto mt-4 rounded-full"></div>
           <p className="mt-4 text-center text-sm text-[#2D3142]/80">
-            לא לדאוג, נשלח לך אימייל עם הוראות לאיפוס הסיסמה
+            מייל עם הוראות לאיפוס הסיסמה בדרך
           </p>
         </div>
       </div>
@@ -74,7 +74,7 @@ const ForgotPasswordPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full rounded-lg border-0 py-3 px-4 text-[#2D3142] bg-white/90 shadow-sm ring-1 ring-inset ring-[#D5C4B7] placeholder:text-[#B8A99C] focus:ring-2 focus:ring-inset focus:ring-[#B8A99C] focus:outline-none sm:text-sm sm:leading-6 transition-all duration-200"
-                  placeholder="הכנס את האימייל שלך"
+                  placeholder="כתובת האימייל"
                 />
               </div>
             </div>
@@ -90,7 +90,7 @@ const ForgotPasswordPage = () => {
 
             <div className="mt-4 p-3 bg-[#F7F3EB] rounded-lg border border-[#D5C4B7]/50">
               <p className="text-xs text-[#2D3142]/70 text-center leading-5">
-                לא קיבלת מייל? בדוק/י בתיקיית הספאם (דואר זבל).
+                לא קיבלת מייל? ניתן לבדוק בתיקיית הספאם (דואר זבל).
               </p>
             </div>
 

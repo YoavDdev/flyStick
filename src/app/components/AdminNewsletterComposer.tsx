@@ -91,7 +91,7 @@ const AdminNewsletterComposer = () => {
       }
     } catch (error) {
       console.error('Newsletter sending error:', error);
-      toast.error('שגיאה בשליחת הניוזלטר. אנא נסה שוב.');
+      toast.error('שגיאה בשליחת הניוזלטר. יש לנסות שוב.');
     } finally {
       setIsLoading(false);
     }
@@ -129,7 +129,7 @@ const AdminNewsletterComposer = () => {
   const removeSubscriber = async (subscriberId: string, email: string) => {
     if (!session?.user?.email) return;
     
-    if (!confirm(`האם אתה בטוח שברצונך להסיר את ${email} מרשימת המנויים?`)) {
+    if (!confirm(`בטוחים שרוצים להסיר את ${email} מרשימת המנויים?`)) {
       return;
     }
     

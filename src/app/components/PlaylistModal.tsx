@@ -78,7 +78,7 @@ const PlaylistModal = ({
             <div className="relative z-10">
               {folderNames.length > 0 ? (
                 <div className="mb-6">
-                  <h3 className="text-lg font-medium text-[#2D3142] mb-3 text-right">הרשימות שלך:</h3>
+                  <h3 className="text-lg font-medium text-[#2D3142] mb-3 text-right">הרשימות:</h3>
                   <ul className="space-y-3">
                     {folderNames.map((folderName, index) => (
                       <li key={index}>
@@ -97,7 +97,7 @@ const PlaylistModal = ({
                   </ul>
                 </div>
               ) : (
-                <p className="text-center text-[#2D3142] mb-4">אין לך רשימות עדיין</p>
+                <p className="text-center text-[#2D3142] mb-4">אין רשימות עדיין</p>
               )}
               
               <div className="mt-6">

@@ -428,7 +428,7 @@ const WabiSabiNavbar = () => {
                 transition={{ delay: 0.4 }}
                 className="mb-8 space-y-4"
               >
-                <h3 className="text-[#8E9A7C] font-medium mb-3 sm:mb-4 pr-1 text-base sm:text-lg">האיזור האישי שלך</h3>
+                <h3 className="text-[#8E9A7C] font-medium mb-3 sm:mb-4 pr-1 text-base sm:text-lg">איזור אישי</h3>
                 <motion.div className="space-y-4">
                   <Link href="/dashboard" onClick={closeMobileMenu}>
                     <motion.div 

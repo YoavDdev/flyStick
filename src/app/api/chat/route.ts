@@ -313,12 +313,12 @@ export async function POST(request: NextRequest) {
         temperature: 0.7,
       });
 
-      const reply = secondCompletion.choices[0]?.message?.content || "מצטער, לא הצלחתי לעבד את הבקשה.";
+      const reply = secondCompletion.choices[0]?.message?.content || "לא ניתן היה לעבד את הבקשה.";
       return NextResponse.json({ success: true, message: reply });
     }
 
     // No tool call - AI answered directly (e.g. general questions)
-    const reply = firstMessage?.content || "מצטער, לא הצלחתי לעבד את הבקשה.";
+    const reply = firstMessage?.content || "לא ניתן היה לעבד את הבקשה.";
 
     return NextResponse.json({
       success: true,

@@ -106,9 +106,9 @@ export async function GET(request: NextRequest) {
       <body>
         <div class="container">
           <h1>המנוי בוטל בהצלחה</h1>
-          <p>המנוי שלך לניוזלטר של Studio Boaz בוטל בהצלחה.</p>
-          <p>אם תרצה להירשם שוב בעתיד, תמיד תוכל לעשות זאת דרך האתר שלנו.</p>
-          <p>תודה שהיית חלק מהקהילה שלנו!</p>
+          <p>המנוי לניוזלטר של Studio Boaz בוטל בהצלחה.</p>
+          <p>במידת הצורך, ניתן להירשם שוב בעתיד דרך האתר.</p>
+          <p>תודה על ההשתתפות בקהילה שלנו!</p>
           <a href="https://studioboazonline.com" class="btn">חזרה לאתר</a>
         </div>
       </body>
@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Newsletter unsubscribe error:', error);
     return NextResponse.json(
-      { error: 'שגיאה בביטול המנוי. אנא נסה שוב מאוחר יותר.' },
+      { error: 'שגיאה בביטול המנוי. יש לנסות שוב מאוחר יותר.' },
       { status: 500 }
     );
   }
@@ -174,7 +174,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Newsletter unsubscribe error:', error);
     return NextResponse.json(
-      { error: 'שגיאה בביטול המנוי. אנא נסה שוב מאוחר יותר.' },
+      { error: 'שגיאה בביטול המנוי. יש לנסות שוב מאוחר יותר.' },
       { status: 500 }
     );
   }

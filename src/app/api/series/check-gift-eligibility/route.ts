@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     if (senderEmail === normalizedRecipientEmail) {
       return NextResponse.json({
         eligible: false,
-        error: "לא ניתן לשלוח מתנה לעצמך. ניתן לרכוש את הסדרה ישירות."
+        error: "לא ניתן לשלוח מתנה לעצמו. ניתן לרכוש את הסדרה ישירות."
       });
     }
 

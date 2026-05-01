@@ -202,7 +202,7 @@ const DashboardPage = () => {
     try {
       if (session?.user) {
         const confirmed = window.confirm(
-          "האם אתה בטוח שברצונך לבטל את המנוי שלך?"
+          "לבטל את המנוי?"
         );
 
         if (confirmed) {
@@ -309,23 +309,23 @@ const DashboardPage = () => {
               <motion.div variants={itemVariants} className="relative z-10">
                 <div className="flex justify-center items-start mb-2">
                   <h1 className="text-2xl sm:text-3xl font-bold text-[#2D3142] text-center">
-                    {session.user?.name ? `שלום, ${session.user.name}` : 'ברוך הבא'}
+                    {session.user?.name ? `שלום ${session.user.name}` : 'היי'}
                   </h1>
                 </div>
                 <p className="text-base sm:text-lg text-[#3D3D3D] text-center">
                   {subscriptionId === "Admin" ? 
-                    'ברוך הבא לדשבורד האישי שלך, מנהל יקר!' :
+                    'הדשבורד האישי מחכה כאן' :
                   isSeriesOnlyUser ?
-                    'ברוך הבא לאיזור הסדרות שלך! כאן תוכל לגשת לכל הסדרות שרכשת' :
+                    'האיזור האישי מחכה כאן. ניתן לגשת לכל הסדרות שנרכשו' :
                   subscriptionId === "trial_30" ? 
-                    `ברוך הבא לדשבורד האישי שלך! נותרו לך ${userStats.daysLeft} ימים בתקופת הניסיון` :
+                    `נשארו ${userStats.daysLeft} ימים בתקופת הניסיון` :
                   subscriptionId === "free" ? 
-                    'ברוך הבא לדשבורד האישי שלך! אתה נהנה מגישה חופשית לתכני הסטודיו' :
+                    'גישה חופשית זמינה לכל תכני הסטודיו' :
                   subscriptionId && subscriptionId.startsWith("I-") && userStats.cancellationDate ? 
-                    `המנוי שלך בוטל. נותרו לך עוד ${userStats.daysLeft} ימי גישה לתכנים` :
+                    `המנוי בוטל. נשארו ${userStats.daysLeft} ימי גישה לתכנים` :
                   subscriptionId && subscriptionId.startsWith("I-") ? 
-                    'ברוך הבא לדשבורד האישי שלך בסטודיו בועז אונליין' :
-                    'ברוך הבא לדשבורד האישי שלך בסטודיו בועז אונליין'}
+                    'הדשבורד האישי מחכה בסטודיו בועז אונליין' :
+                    'הדשבורד האישי מחכה בסטודיו בועז אונליין'}
                 </p>
                 
               </motion.div>
@@ -578,7 +578,7 @@ const DashboardPage = () => {
                     הצטרף לקבוצת הוואטסאפ שלנו
                   </h3>
                   <p className="text-sm sm:text-base text-[#3D3D3D] mb-4">
-                    הצטרף לקהילה שלנו בוואטסאפ כדי לקבל עדכונים, טיפים, ולהיות בקשר ישיר עם בועז והצוות. כאן תוכלו לשאול שאלות ולקבל תמיכה מהקהילה.
+                    הצטרפו לקהילת הוואטסאפ לעדכונים, טיפים, וקשר ישיר עם בועז והצוות. ניתן לשאול שאלות ולקבל תמיכה מהקהילה.
                   </p>
                   
                   <motion.button
@@ -699,11 +699,10 @@ const DashboardPage = () => {
                     <>
                       <div className="bg-green-100 text-green-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
                         <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-                        <p>המנוי שלך פעיל</p>
+                        <p>מנוי פעיל</p>
                       </div>
                       <p className="mb-4">
-                        אתה נהנה כרגע מגישה מלאה לכל התכנים שלנו. אם ברצונך לבטל
-                        את המנוי שלך, אנא לחץ על הכפתור למטה או צור קשר ב
+                        גישה מלאה זמינה לכל התכנים. לביטול המנוי, יש ללחוץ על הכפתור למטה או ליצור קשר ב
                         <Link
                           href="/contact"
                           className="text-[#B8A99C] hover:text-[#D5C4B7] mx-1"
@@ -728,13 +727,10 @@ const DashboardPage = () => {
                     <>
                       <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
                         <span className="w-3 h-3 bg-yellow-500 rounded-full"></span>
-                        <p>המנוי שלך בתהליך ביטול</p>
+                        <p>המנוי בתהליך ביטול</p>
                       </div>
                       <p>
-                        המנוי שלך נמצא בתהליך ביטול. תוכל להמשיך להנות מהתכנים
-                        שלנו עד תום תקופת החיוב הנוכחית. במידה ואתה מעוניין
-                        להפסיק את תהליך הביטול ולהמשיך במנוי, צור איתנו קשר
-                        ב&apos;צרו קשר&apos;.
+                        המנוי בתהליך ביטול. ניתן להמשיך ליהנות מהתכנים עד תום תקופת החיוב. לחידוש המנוי, יש ליצור קשר.
                       </p>
                     </>
                   )}
@@ -743,11 +739,10 @@ const DashboardPage = () => {
                     <>
                       <div className="bg-red-100 text-red-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
                         <span className="w-3 h-3 bg-red-500 rounded-full"></span>
-                        <p>המנוי שלך בוטל</p>
+                        <p>המנוי בוטל</p>
                       </div>
                       <p className="mb-4">
-                        המנוי שלך בוטל בהצלחה. לחידוש המנוי לחצו על הכפתור
-                        מטה.
+                        המנוי בוטל. לחידוש, יש ללחוץ על הכפתור מטה.
                       </p>
                       <Link href="/#Pricing">
                         <motion.span 
@@ -755,7 +750,7 @@ const DashboardPage = () => {
                           whileHover={{ y: -2 }}
                           whileTap={{ y: 0 }}
                         >
-                          חדש את המנוי שלך
+                          חידוש המנוי
                         </motion.span>
                       </Link>
                     </>
@@ -768,8 +763,7 @@ const DashboardPage = () => {
                         <p>אין מנוי פעיל</p>
                       </div>
                       <p className="mb-4">
-                        אין לך מנוי פעיל. להצטרפות למנוי חדש ולהנות מתכני
-                        הסטודיו, לחצו על הכפתור מטה.
+                        אין מנוי פעיל. להצטרפות למנוי ולגישה לתכני הסטודיו, יש ללחוץ על הכפתור מטה.
                       </p>
                       <Link href="/#Pricing">
                         <motion.span 
@@ -797,7 +791,7 @@ const DashboardPage = () => {
               >
                 <DashboardCard
                   title="הסרטונים שלי"
-                  description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
+                  description="צפייה בסרטונים שהחלו וחזרה אליהם בקלות"
                   link="/user/watched"
                   icon={<FaVideo size={24} />}
                 />
@@ -815,7 +809,7 @@ const DashboardPage = () => {
                 />
                 <DashboardCard
                   title="טכניקות"
-                  description="למד טכניקות חדשות ושפר את המיומנויות שלך"
+                  description="טכניקות חדשות לשיפור המיומנויות"
                   link="/styles"
                   icon={<AiOutlineExperiment size={24} />}
                 />
@@ -827,7 +821,7 @@ const DashboardPage = () => {
                 />
                 <DashboardCard
                   title="עדכוני שידורים חיים"
-                  description="נהל את העדכונים שתרצה לקבל על השיעורים החיים"
+                  description="ניהול העדכונים על השיעורים החיים"
                   link="/dashboard/live-notifications"
                   icon={<FaCalendarAlt size={24} />}
                 />
@@ -841,7 +835,7 @@ const DashboardPage = () => {
                   <div className="bg-[#D5C4B7] p-3 rounded-full">
                     <FaVideo size={24} className="text-[#2D3142]" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#2D3142]">הסדרות שרכשתי</h3>
+                  <h3 className="text-xl font-bold text-[#2D3142]">הסדרות שנרכשו</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {purchasedSeries.map((purchase, index) => (
@@ -937,8 +931,8 @@ const DashboardPage = () => {
                 הרשמו לניוזלטר שלנו
               </h3>
               <p className="text-center text-sm sm:text-base text-[#3D3D3D] mb-4 sm:mb-6">
-                כדי לקבל הסברים שימושיים שיעזרו לכם להתנהל בסטודיו ולדעת מה
-                מתאים עבורכם ומדי פעם תקבלו עדכון על סרט חשוב, המלצה, הרצאה חדשה
+                כדי לקבל הסברים שימושיים לניהול בסטודיו ולדעת מה
+                מתאים, ומדי פעם יישלח עדכון על סרט חשוב, המלצה, הרצאה חדשה
                 וכו&apos;.
               </p>
 

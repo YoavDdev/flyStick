@@ -95,7 +95,7 @@ const DashboardPage = () => {
     try {
       if (session?.user) {
         const confirmed = window.confirm(
-          "האם אתה בטוח שברצונך לבטל את המנוי שלך?"
+          "האם לבטל את המנוי?"
         );
 
         if (confirmed) {
@@ -273,12 +273,12 @@ const DashboardPage = () => {
                   </div>
                   
                   <p className="text-[#3D3D3D] mb-4">
-                    {subscriptionInfo.type === 'admin' && 'ברוכים הבאים למערכת הניהול של סטודיו בועז. כאן תוכלו לנהל את כל תוכן האתר.'}
-                    {subscriptionInfo.type === 'free' && 'תודה שהצטרפתם לסטודיו בועז. שדרגו למנוי מלא כדי לקבל גישה לכל התכנים.'}
-                    {subscriptionInfo.type === 'trial' && 'ברוכים הבאים לתקופת הניסיון! זה הזמן לחקור את כל התכנים שלנו.'}
-                    {subscriptionInfo.type === 'premium' && 'תודה שבחרתם בסטודיו בועז. אנחנו שמחים שאתם איתנו.'}
-                    {subscriptionInfo.type === 'grace' && 'המנוי שלך בוטל אך עדיין יש לך גישה לתכנים בתקופת הגרייס.'}
-                    {subscriptionInfo.type === 'none' && 'הצטרפו למנוי כדי לקבל גישה לכל התכנים שלנו.'}
+                    {subscriptionInfo.type === 'admin' && 'ברוכים הבאים למערכת הניהול של סטודיו בועז. כאן ניתן לנהל את כל תוכן האתר.'}
+                    {subscriptionInfo.type === 'free' && 'תודה על ההצטרפות לסטודיו בועז. שדרוג למנוי מלא יאפשר גישה לכל התכנים.'}
+                    {subscriptionInfo.type === 'trial' && 'ברוכים הבאים לתקופת הניסיון! זה הזמן לחקור את כל התכנים.'}
+                    {subscriptionInfo.type === 'premium' && 'תודה על הבחירה בסטודיו בועז. אנחנו שמחים!'}
+                    {subscriptionInfo.type === 'grace' && 'המנוי בוטל אך עדיין יש גישה לתכנים בתקופת הגרייס.'}
+                    {subscriptionInfo.type === 'none' && 'הצטרפו למנוי כדי לקבל גישה לכל התכנים.'}
                     {subscriptionInfo.type === 'unknown' && 'ברוכים הבאים לסטודיו בועז אונליין.'}
                   </p>
                   
@@ -399,7 +399,7 @@ const DashboardPage = () => {
                   <DashboardCard
                     title="המועדפים שלי"
                     icon={<FaRegHeart className="text-3xl text-[#2D3142]" />}
-                    description="הסרטונים המועדפים עליכם"
+                    description="הסרטונים המועדפים"
                     linkText="המועדפים שלי"
                     linkHref="/user/favorites"
                     bgColor="bg-gradient-to-br from-[#F7F3EB] to-[#EFE8DD]"
@@ -414,7 +414,7 @@ const DashboardPage = () => {
                   <DashboardCard
                     title="ניהול המנוי"
                     icon={<MdOutlineSubscriptions className="text-3xl text-[#2D3142]" />}
-                    description="נהלו את המנוי שלכם"
+                    description="ניהול המנוי"
                     linkText="ביטול מנוי"
                     onClick={cancelSubscription}
                     bgColor="bg-gradient-to-br from-[#F7F3EB] to-[#EFE8DD]"
@@ -446,8 +446,8 @@ const DashboardPage = () => {
                 הרשמו לניוזלטר שלנו
               </h3>
               <p className="text-center text-sm sm:text-base text-[#3D3D3D] mb-4 sm:mb-6">
-                כדי לקבל הסברים שימושיים שיעזרו לכם להתנהל בסטודיו ולדעת מה
-                מתאים עבורכם ומדי פעם תקבלו עדכון על סרט חשוב, המלצה, הרצאה חדשה
+                כדי לקבל הסברים שימושיים שיעזרו להתנהל בסטודיו ולדעת מה
+                מתאים ומדי פעם עדכונים על סרט חשוב, המלצה, הרצאה חדשה
                 וכו&apos;.
               </p>
 

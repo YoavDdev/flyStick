@@ -250,7 +250,7 @@ const SeriesMarketplace = () => {
             </h1>
             
             <p className="text-base md:text-xl text-[#2D3142]/80 max-w-3xl mx-auto mb-6 md:mb-8 leading-relaxed">
-              גלו עולם של ידע מקצועי עם סדרות וידאו איכותיות שיקחו אתכם לשלב הבא.
+              גלו עולם של ידע מקצועי עם סדרות וידאו איכותיות שילוו לשלב הבא.
               <br />
               <span className="text-[#D9713C] font-semibold">למידה מותאמת אישית, תוצאות מוכחות.</span>
             </p>
@@ -264,7 +264,7 @@ const SeriesMarketplace = () => {
               >
                 <div className="flex items-center justify-center gap-2 text-[#2D3142]">
                   <div className="text-center">
-                    <p className="font-bold text-sm md:text-base">מנוי פעיל - יש לך גישה לכל הסדרות</p>
+                    <p className="font-bold text-sm md:text-base">מנוי פעיל - גישה זמינה לכל הסדרות</p>
                   </div>
                 </div>
               </motion.div>
@@ -310,7 +310,7 @@ const SeriesMarketplace = () => {
                 }}
               />
               <p className="relative text-[#B56B4A] font-medium text-base px-6 py-2 bg-[#F7F3EB]/80 backdrop-blur-sm rounded-full border border-[#D5C4B7]/30 shadow-sm">
-                הסדרות מחכות לכם למטה
+                הסדרות מחכות למטה
               </p>
             </div>
             
@@ -576,7 +576,7 @@ const SeriesMarketplace = () => {
                               </div>
                             </div>
                             <div className="bg-white/60 rounded-lg p-3 mt-3">
-                              <p className="text-xs text-[#2D3142] font-medium">💡 שימו לב: הסדרה תישלח למקבל/ת המתנה, לא אליכם</p>
+                              <p className="text-xs text-[#2D3142] font-medium">💡 שימו לב: הסדרה תישלח למקבל/ת המתנה בלבד</p>
                             </div>
                           </div>
 

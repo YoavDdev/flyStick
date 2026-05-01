@@ -349,7 +349,7 @@ const StylesPage = () => {
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-medium tracking-wide text-[#3D3D3D] mb-4">
-              <span className="border-b-2 border-[#B56B4A] pb-1">בחרו את הטכניקה שלכם</span>
+              <span className="border-b-2 border-[#B56B4A] pb-1">בחירת טכניקה</span>
             </h1>
             <p className="text-lg text-[#5D5D5D] max-w-2xl mx-auto">
               אנו מציעים מגוון רחב של טכניקות תנועה לכל הרמות, מתחילים ועד מתקדמים

@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     // Block sending gift to yourself
     if (senderEmail === normalizedRecipientEmail) {
       return NextResponse.json(
-        { error: "לא ניתן לשלוח מתנה לעצמך. ניתן לרכוש את הסדרה ישירות." },
+        { error: "לא ניתן לשלוח מתנה לעצמו. ניתן לרכוש את הסדרה ישירות." },
         { status: 400 }
       );
     }
@@ -193,7 +193,7 @@ export async function POST(request: NextRequest) {
       });
 
       // 2. Email to SENDER (confirmation)
-      const senderSubject = `✅ המתנה שלך נשלחה בהצלחה! - ${series.title}`;
+      const senderSubject = `✅ המתנה נשלחה בהצלחה! - ${series.title}`;
       const senderHtml = buildSenderConfirmationEmail({
         senderName,
         recipientEmail: normalizedRecipientEmail,
@@ -266,8 +266,8 @@ function buildRecipientEmail({ senderName, recipientName, seriesTitle, giftMessa
     ? `<a href="${baseUrl}/series" style="display: inline-block; background: linear-gradient(135deg, #D5C4B7, #B8A99C); color: white; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 17px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">צפייה בקורס עכשיו</a>`
     : `<a href="${baseUrl}/series/register" style="display: inline-block; background: linear-gradient(135deg, #D5C4B7, #B8A99C); color: white; padding: 16px 40px; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 17px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">להרשמה וצפייה בקורס</a>`;
   const accessNote = isRegistered
-    ? 'הקורס כבר מחכה לכם באתר בתפריט "קורסים".'
-    : 'כדי לצפות בקורס, עליכם תחילה להירשם באתר וליצור חשבון ללא עלות. הקורס מחכה לכם באתר בתפריט "קורסים".';
+    ? 'הקורס מחכה באתר בתפריט "קורסים".'
+    : 'לצפייה בקורס, יש להירשם באתר וליצור חשבון ללא עלות. הקורס מחכה באתר בתפריט "קורסים".';
 
   return `
     <!DOCTYPE html>
@@ -306,7 +306,7 @@ function buildRecipientEmail({ senderName, recipientName, seriesTitle, giftMessa
           <p style="color: #2D3142; font-size: 19px; font-weight: bold; line-height: 1.5; margin: 15px 0;">איזה כיף, כמה אוהבים אותך!<br/>קיבלת מתנה מרגשת במיוחד.</p>
           
           <p style="color: #2D3142; font-size: 16px; line-height: 1.8; margin: 20px 0;">
-            <strong style="color: #B8A99C;">${senderName}</strong> רכש/ה עבורך קורס בנושא <strong>"${seriesTitle}"</strong> מהסטודיו המקיף, העמוק והמתקדם ביותר לתנועה גופנית ומנטלית של בועז נחייסי.
+            <strong style="color: #B8A99C;">${senderName}</strong> רכש/ה במתנה קורס בנושא <strong>"${seriesTitle}"</strong> מהסטודיו המקיף, העמוק והמתקדם ביותר לתנועה גופנית ומנטלית של בועז נחייסי.
           </p>
           
           <p style="color: #5D5D5D; font-size: 15px; line-height: 1.7; margin: 20px 0;">
@@ -359,7 +359,7 @@ function buildSenderConfirmationEmail({ senderName, recipientEmail, recipientNam
         <div style="padding: 30px;">
           <p style="color: #2D3142; font-size: 16px; line-height: 1.8;">${senderName} יקר/ה,</p>
           <p style="color: #2D3142; font-size: 16px; line-height: 1.8;">
-            המתנה שלך נשלחה בהצלחה!
+            המתנה נשלחה בהצלחה!
           </p>
           
           <div style="background: #F7F3EB; padding: 20px; border-radius: 10px; margin: 20px 0;">

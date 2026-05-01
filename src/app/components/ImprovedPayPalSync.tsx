@@ -63,7 +63,10 @@ export default function ImprovedPayPalSync() {
       const data = await response.json();
       
       toast.success(
-        `🚀 סנכרון PayPal התחיל ברקע!\n\nהתהליך יעבד את כל המשתמשים בצורה מדורגת.\nתוכל לבדוק את ההתקדמות כאן.`,
+        `🚀 סנכרון PayPal התחיל ברקע!
+
+התהליך יעבד את כל המשתמשים בצורה מדורגת.
+ניתן לבדוק את ההתקדמות כאן.`,
         { duration: 8000 }
       );
 

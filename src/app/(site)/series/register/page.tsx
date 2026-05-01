@@ -69,7 +69,7 @@ const SeriesRegisterPage = () => {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success("🎉 נרשמת בהצלחה! כעת תוכל לרכוש סדרות");
+        toast.success("🎉 ההרשמה הושלמה בהצלחה! כעת ניתן לרכוש סדרות");
         
         // Auto-login after registration
         const { signIn } = await import("next-auth/react");
@@ -157,7 +157,7 @@ const SeriesRegisterPage = () => {
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-3 bg-white/80 border border-[#D5C4B7]/50 rounded-xl text-[#2D3142] placeholder-[#5D5D5D]/60 focus:outline-none focus:ring-2 focus:ring-[#B8A99C] focus:border-[#B8A99C] transition-all"
-                  placeholder="הכנס את שמך המלא"
+                  placeholder="הזנת שם מלא"
                 />
               </div>
 
@@ -173,7 +173,7 @@ const SeriesRegisterPage = () => {
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-3 bg-white/80 border border-[#D5C4B7]/50 rounded-xl text-[#2D3142] placeholder-[#5D5D5D]/60 focus:outline-none focus:ring-2 focus:ring-[#B8A99C] focus:border-[#B8A99C] transition-all"
-                  placeholder="הכנס את כתובת האימייל שלך"
+                  placeholder="הזנת כתובת האימייל"
                 />
               </div>
 
@@ -233,7 +233,7 @@ const SeriesRegisterPage = () => {
                 </div>
                 <div className="flex items-center text-[#5D5D5D]">
                   <FaStar className="text-[#B8A99C] mr-3 flex-shrink-0" />
-                  <span>גישה מיידית לתכנים שרכשת</span>
+                  <span>גישה מיידית לתכנים שנרכשו</span>
                 </div>
                 <div className="flex items-center text-[#5D5D5D]">
                   <FaStar className="text-[#B8A99C] mr-3 flex-shrink-0" />
@@ -266,7 +266,7 @@ const SeriesRegisterPage = () => {
             {/* Login Link */}
             <div className="mt-6 text-center">
               <p className="text-[#5D5D5D]">
-                כבר יש לך חשבון?{" "}
+                כבר יש חשבון?{" "}
                 <Link href={`/login?returnUrl=${encodeURIComponent(returnUrl === '/' ? '/series' : returnUrl)}`} className="text-[#B8A99C] hover:text-[#2D3142] transition-colors font-medium">
                   התחבר כאן
                 </Link>

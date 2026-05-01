@@ -194,7 +194,7 @@ const Page = () => {
                 </h1>
                 <p className="text-lg text-[#3D3D3D] text-center">
                   {!loading && (folderNames.length === 0
-                    ? "אין לך תיקיות עדיין"
+                    ? "אין תיקיות עדיין"
                     : "כאן תנהלו את הסרטים ששמרתם")}
                 </p>
                 
@@ -216,10 +216,10 @@ const Page = () => {
                 <div className="bg-gradient-to-r from-[#F7F3EB] to-[#E8DDD4] p-6 rounded-xl shadow-md border border-[#D5C4B7]/30">
                   <div className="text-center">
                     <h2 className="text-xl font-bold text-[#2D3142] mb-4">
-                      מקווים שנהנת מתקופת המנוי והתחדשת בידע חדש ומעניין לגוף ולתודעה. זוהי רק פרידה זמנית אנו בטוחים.
+                      מקווים שתקופת המנוי הייתה מועילה ועשירה בידע חדש ומעניין לגוף ולתודעה. זוהי רק פרידה זמנית אנו בטוחים.
                     </h2>
                     <p className="text-lg text-[#3D3D3D] leading-relaxed">
-                      נותרו לך {graceDaysLeft} ימים נוספים כדי להנות מהתכנים המתחדשים ולתת לגוף שלך עוד מהידע והתנועה להם הוא זקוק
+                      נותרו {graceDaysLeft} ימים נוספים כדי להנות מהתכנים המתחדשים ולתת לגוף עוד מהידע והתנועה
                     </p>
                   </div>
                 </div>
@@ -357,7 +357,7 @@ const Page = () => {
               <h1 className="text-3xl font-bold text-[#2D3142] mb-6">
                 אנא היכנס כדי להמשיך
               </h1>
-              <p className="text-[#3D3D3D] mb-8">כדי לצפות בספרייה האישית שלך, עליך להתחבר לחשבון שלך</p>
+              <p className="text-[#3D3D3D] mb-8">כדי לצפות בספרייה האישית, יש להתחבר לחשבון</p>
               <Link href="/login">
                 <motion.div 
                   className="inline-block bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] px-8 py-3 rounded-lg shadow-sm transition-colors duration-300"

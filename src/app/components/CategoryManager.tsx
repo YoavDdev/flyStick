@@ -125,7 +125,7 @@ const CategoryManager: React.FC = () => {
   };
 
   const deleteCategory = async (categoryId: string) => {
-    if (!confirm('האם אתה בטוח שברצונך למחוק קטגוריה זו?')) {
+    if (!confirm('בטוחים שרוצים למחוק קטגוריה זו?')) {
       return;
     }
 
@@ -207,7 +207,7 @@ const CategoryManager: React.FC = () => {
   };
 
   const deleteSubCategory = async (subCategoryId: string) => {
-    if (!confirm('האם אתה בטוח שברצונך למחוק תת-קטגוריה זו?')) {
+    if (!confirm('בטוחים שרוצים למחוק תת-קטגוריה זו?')) {
       return;
     }
 

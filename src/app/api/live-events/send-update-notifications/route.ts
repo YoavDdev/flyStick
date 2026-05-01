@@ -153,7 +153,7 @@ export async function POST(req: Request) {
                 </div>
               ` : ''}
               <p style="font-size: 14px; color: #9D8E81; margin-top: 30px;">
-                <a href="${process.env.NEXTAUTH_URL}/dashboard/live-notifications" style="color: #B56B4A;">נהל את העדפות העדכונים שלך</a>
+                <a href="${process.env.NEXTAUTH_URL}/dashboard/live-notifications" style="color: #B56B4A;">ניהול העדפות העדכונים</a>
               </p>
               <p style="color: #5D5D5D; margin-top: 20px;">תודה,<br><strong style="color: #B56B4A;">בועז והצוות</strong></p>
             </div>

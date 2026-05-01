@@ -226,7 +226,7 @@ function buildNotificationEmail({
           <p style="color: #2D3142; font-size: 16px; line-height: 1.6; margin-bottom: 15px;">${greeting}</p>
           
           <p style="color: #2D3142; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
-            מחכה לך הודעה חדשה באתר הסטודיו:
+            הודעה חדשה באתר הסטודיו:
           </p>
           
           <div style="background: #F7F3EB; border-right: 4px solid #D5C4B7; padding: 15px; border-radius: 8px; margin: 20px 0;">

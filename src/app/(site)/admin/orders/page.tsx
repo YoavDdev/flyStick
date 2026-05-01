@@ -121,7 +121,7 @@ export default function AdminOrdersPage() {
   };
 
   const deleteOrder = async (orderId: string, orderNumber: string) => {
-    if (!confirm(`האם אתה בטוח שברצונך למחוק את הזמנה #${orderNumber}?`)) {
+    if (!confirm(`בטוחים שרוצים למחוק את הזמנה #${orderNumber}?`)) {
       return;
     }
 

@@ -448,7 +448,7 @@ const AdminFolderMetadataManager: React.FC = () => {
       {isOpen && (
         <div className="p-6">
           <div className="mb-4 text-sm text-[#5D5D5D] text-center">
-            כאן תוכל לנהל את המטא-דאטה של כל התיקיות מ-Vimeo. תיקיות עם רקע כתום הן חדשות ומשתמשות בהגדרות ברירת המחדל.
+            כאן ניתן לנהל את המטא-דאטה של כל התיקיות מ-Vimeo. תיקיות עם רקע כתום הן חדשות ומשתמשות בהגדרות ברירת המחדל.
           </div>
 
       <div className="space-y-4">

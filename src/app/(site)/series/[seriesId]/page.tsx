@@ -278,7 +278,7 @@ const SeriesViewPage = () => {
               transition={{ delay: 0.7 }}
             >
               <p className="text-[#5D5D5D] text-xl leading-relaxed mb-6">
-                {accessData.series.description || "סדרה מרגשת בדרך אליכם! אנחנו עובדים קשה כדי להביא לכם תוכן איכותי ומקצועי."}
+                {accessData.series.description || "סדרה מרגשת בדרך! אנחנו עובדים קשה כדי להביא תוכן איכותי ומקצועי."}
               </p>
               
               <div className="flex flex-wrap justify-center gap-4 text-[#2D3142]">
@@ -323,7 +323,7 @@ const SeriesViewPage = () => {
                     <FaClock className="text-white text-2xl" />
                   </div>
                   <h4 className="font-bold text-[#2D3142] mb-2">שווה ההמתנה</h4>
-                  <p className="text-[#5D5D5D]">תוכן שיעזור לכם להתקדם</p>
+                  <p className="text-[#5D5D5D]">תוכן שיעזור להתקדם</p>
                 </div>
               </div>
             </motion.div>
@@ -458,7 +458,7 @@ const SeriesViewPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 }}
                   >
-                    {accessData.series.description || "התחל את המסע שלך עם סדרת הווידאו המקצועית הזו. כל פרק בנוי בקפידה כדי לקחת אותך שלב אחר שלב לעומק הנושא."}
+                    {accessData.series.description || "סדרת ווידאו מקצועית למסע מעשיר. כל פרק בנוי בקפידה לליווי שלב אחר שלב לעומק הנושא."}
                   </motion.p>
                 </div>
 
@@ -549,7 +549,7 @@ const SeriesViewPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <h3 className="text-2xl font-bold text-[#2D3142] mb-8 text-center">מה תקבלו בסדרה הזו</h3>
+          <h3 className="text-2xl font-bold text-[#2D3142] mb-8 text-center">מה כלול בסדרה</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <motion.div 
               className="text-center group"
@@ -633,7 +633,7 @@ const SeriesViewPage = () => {
                 <div className="bg-gradient-to-r from-[#B8A99C] to-[#D5C4B7] p-4 rounded-2xl w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-xl">
                   <span className="text-4xl">👑</span>
                 </div>
-                <h3 className="text-2xl font-bold text-[#2D3142] mb-4 text-center">סוג הגישה שלך</h3>
+                <h3 className="text-2xl font-bold text-[#2D3142] mb-4 text-center">סוג הגישה</h3>
                 <div className="space-y-4 text-[#5D5D5D] leading-relaxed">
                   <div className="bg-gradient-to-r from-[#B8A99C]/10 to-[#D5C4B7]/10 p-4 rounded-xl border border-[#D5C4B7]/30">
                     <p className="text-center text-xl font-bold text-[#2D3142] mb-2">
@@ -642,15 +642,15 @@ const SeriesViewPage = () => {
                        accessData.accessType === 'admin' ? '👑 גישת מנהל' : '🚀 גישה פעילה'}
                     </p>
                   </div>
-                  <p className="mt-4">יש לך גישה מלאה לכל התכנים בסדרה זו:</p>
+                  <p className="mt-4">גישה מלאה זמינה לכל התכנים בסדרה זו:</p>
                   <ul className="list-disc list-inside space-y-2 mr-4">
                     <li>צפייה בכל הפרקים ללא הגבלה</li>
-                    <li>מעקב אחר ההתקדמות שלך</li>
-                    <li>גישה מכל מכשיר שתרצה</li>
+                    <li>מעקב אחרי ההתקדמות</li>
+                    <li>גישה מכל מכשיר</li>
                     <li>תמיכה טכנית מלאה</li>
                   </ul>
                   <p className="text-sm bg-[#B8A99C]/10 p-3 rounded-lg mt-4">
-                    ✨ <strong>הערה:</strong> ההתקדמות שלך נשמרת אוטומטית
+                    ✨ <strong>הערה:</strong> ההתקדמות נשמרת אוטומטית
                   </p>
                 </div>
               </>
@@ -686,16 +686,16 @@ const SeriesViewPage = () => {
                 </div>
                 <h3 className="text-2xl font-bold text-[#2D3142] mb-4 text-center">גישה ללא הגבלה</h3>
                 <div className="space-y-4 text-[#5D5D5D] leading-relaxed">
-                  <p>הסדרה שלך לתמיד! <strong className="text-[#2D3142]">ללא הגבלת זמן או צפיות.</strong></p>
+                  <p>הסדרה לתמיד! <strong className="text-[#2D3142]">ללא הגבלת זמן או צפיות.</strong></p>
                   <ul className="list-disc list-inside space-y-2 mr-4">
-                    <li><strong className="text-[#2D3142]">אין תפוגה</strong> - הסדרה שלך לצמיתות</li>
-                    <li><strong className="text-[#2D3142]">צפיות בלתי מוגבלות</strong> - חזור כמה שתרצה</li>
+                    <li><strong className="text-[#2D3142]">אין תפוגה</strong> - הסדרה לצמיתות</li>
+                    <li><strong className="text-[#2D3142]">צפיות בלתי מוגבלות</strong> - ניתן לחזור כמה שרוצים</li>
                     <li><strong className="text-[#2D3142]">עדכונים עתידיים</strong> - אוטומטית וחינם</li>
                     <li><strong className="text-[#2D3142]">זמין תמיד</strong> - 24/7 מכל מקום</li>
                     <li><strong className="text-[#2D3142]">כל המכשירים</strong> - מחשב, טאבלט, נייד</li>
                   </ul>
                   <p className="text-sm bg-[#D5C4B7]/10 p-3 rounded-lg mt-4">
-                    🌟 <strong>הבטחה:</strong> ברגע שרכשת את הסדרה, היא שלך לתמיד
+                    🌟 <strong>הבטחה:</strong> ברגע הרכישה, הסדרה שייכת לתמיד
                   </p>
                 </div>
               </>

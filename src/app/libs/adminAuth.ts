@@ -52,7 +52,7 @@ export async function verifyAdminAccess(request: NextRequest): Promise<AdminAuth
       return {
         isAuthenticated: false,
         isAdmin: false,
-        error: "לא מחובר למערכת"
+        error: "אין חיבור למערכת"
       }
     }
 

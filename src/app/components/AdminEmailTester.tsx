@@ -58,7 +58,7 @@ const AdminEmailTester = () => {
     );
 
     setIsLoading(false);
-    toast.success("כל הבדיקות הסתיימו - בדוק את המייל שלך!");
+    toast.success("כל הבדיקות הסתיימו - יש לבדוק את תיבת המייל!");
   };
 
   const handleSingleTest = async (testType: string) => {

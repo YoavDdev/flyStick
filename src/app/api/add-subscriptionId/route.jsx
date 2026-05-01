@@ -80,26 +80,26 @@ export async function POST(request) {
       await resend.emails.send({
         from: 'Studio Boaz Online <info@mail.studioboazonline.com>',
         to: [email],
-        subject: 'זהו. יש לך מנוי והכל פתוח לפניך!',
+        subject: 'זהו. המנוי פעיל והכל פתוח!',
         html: `
           <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; max-width: 600px; margin: 0 auto; background: #F7F3EB; padding: 20px; border-radius: 12px;">
             <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-              <h2 style="color: #2D3142; margin-top: 0; font-size: 22px; text-align: center;">זהו. יש לך מנוי והכל פתוח לפניך!</h2>
+              <h2 style="color: #2D3142; margin-top: 0; font-size: 22px; text-align: center;">זהו. המנוי פעיל והכל פתוח!</h2>
               
               <p style="color: #3D3D3D; line-height: 1.8; font-size: 16px; margin-bottom: 20px;">
-                מחכים לכם שיעורים בכל הרמות, הרצאות תוכן, סדנאות והשתלמויות ומלא שמחה בלב.
+                מחכים שיעורים בכל הרמות, הרצאות תוכן, סדנאות והשתלמויות ומלא שמחה בלב.
               </p>
               
               <p style="color: #3D3D3D; line-height: 1.8; font-size: 16px; margin-bottom: 20px;">
-                אני יודע כי הגוף שלכם יודה לכם על הבחירה וההחלטה להצטרף לקהילת מנויי הסטודיו.
+                אני יודע כי הגוף יודה על הבחירה וההחלטה להצטרף לקהילת מנויי הסטודיו.
               </p>
               
               <p style="color: #3D3D3D; line-height: 1.8; font-size: 16px; margin-bottom: 20px;">
-                אני גאה בכם שבחרתם בדרך שלי ואין לי ספק שתרגישו בפנים עמוק מחיאות כפיים על התובנות שתרכשו וילכו איתכם לאורך החיים. כי זה כל מה שמעניין אותי, בועז, הקיום של עצמנו.
+                אני גאה שבחרתם בדרך שלי ואין לי ספק שיהיה תחושה עמוקה של מחיאות כפיים פנימיות על התובנות שירכשו וילכו לאורך החיים. כי זה כל מה שמעניין אותי, בועז, הקיום של עצמנו.
               </p>
               
               <p style="color: #3D3D3D; line-height: 1.8; font-size: 16px; margin-bottom: 20px;">
-                אז בלי יותר מדי מילים, כנסו למדריך השימוש באתר שנמצא בשדה התחתון של כל דף ואם יש לכם שאלות, יצרתי עבורכם דרכים שונות.
+                אז בלי יותר מדי מילים, כנסו למדריך השימוש באתר שנמצא בשדה התחתון של כל דף ואם יש שאלות, יצרתי דרכים שונות.
               </p>
               
               <p style="color: #3D3D3D; line-height: 1.8; font-size: 16px; margin-bottom: 25px;">

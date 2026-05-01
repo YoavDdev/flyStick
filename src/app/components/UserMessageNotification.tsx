@@ -320,7 +320,7 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
                               <div className="bg-green-50 border border-green-200 rounded-md p-2">
                                 <div className="flex items-center gap-1 mb-1">
                                   <FaCheck className="text-green-500 text-[10px]" />
-                                  <span className="text-[10px] text-green-700 font-medium">התשובה שלך:</span>
+                                  <span className="text-[10px] text-green-700 font-medium">התשובה שנשלחה:</span>
                                 </div>
                                 <p className="text-xs text-green-800">{message.replies[0].content}</p>
                               </div>
@@ -411,7 +411,7 @@ const UserMessageNotification = ({ className = "" }: UserMessageNotificationProp
                               <div className="bg-green-50/70 border border-green-200/50 rounded-md p-2">
                                 <div className="flex items-center gap-1 mb-1">
                                   <FaCheck className="text-green-400 text-[10px]" />
-                                  <span className="text-[10px] text-green-600 font-medium">התשובה שלך:</span>
+                                  <span className="text-[10px] text-green-600 font-medium">התשובה שנשלחה:</span>
                                 </div>
                                 <p className="text-xs text-green-700">{message.replies[0].content}</p>
                               </div>

@@ -99,7 +99,7 @@ const DashboardPage = () => {
     try {
       if (session?.user) {
         const confirmed = window.confirm(
-          "האם אתה בטוח שברצונך לבטל את המנוי שלך?"
+          "בטוחים שרוצים לבטל את המנוי?"
         );
 
         if (confirmed) {
@@ -221,7 +221,7 @@ const DashboardPage = () => {
         color: 'bg-yellow-100 text-yellow-800',
         icon: <AiOutlineExperiment className="mr-1" />,
         message: trialStartDate 
-          ? `תקופת הניסיון שלך תסתיים ב-${formatDate(new Date(trialStartDate).setDate(new Date(trialStartDate).getDate() + 30))}`
+          ? `תקופת הניסיון תסתיים ב-${formatDate(new Date(trialStartDate).setDate(new Date(trialStartDate).getDate() + 30))}`
           : 'תאריך התחלה חסר - יש לעדכן את המשתמש',
         showUpgradeButton: true,
       };
@@ -236,7 +236,7 @@ const DashboardPage = () => {
           text: 'מנוי פרימיום (תקופת חסד)',
           color: 'bg-orange-100 text-orange-800',
           icon: <FaCrown className="mr-1" />,
-          message: `המנוי שלך בוטל אך יישאר פעיל עד ${formatDate(new Date(cancellationDate).setDate(new Date(cancellationDate).getDate() + 30))}`,
+          message: `המנוי בוטל אך יישאר פעיל עד ${formatDate(new Date(cancellationDate).setDate(new Date(cancellationDate).getDate() + 30))}`,
           showUpgradeButton: false,
         };
       }
@@ -376,7 +376,7 @@ const DashboardPage = () => {
                   <DashboardCard
                     title="המועדפים שלי"
                     icon={<FaRegHeart className="text-3xl text-[#2D3142]" />}
-                    description="הסרטונים המועדפים עליכם"
+                    description="הסרטונים המועדפים"
                     link="/user/favorites"
                   />
                 </motion.div>
@@ -388,7 +388,7 @@ const DashboardPage = () => {
                   <DashboardCard
                     title="ניהול המנוי"
                     icon={<MdOutlineSubscriptions className="text-3xl text-[#2D3142]" />}
-                    description="נהלו את המנוי שלכם"
+                    description="ניהול המנוי"
                     link="/user"
                   />
                 </motion.div>
@@ -414,8 +414,8 @@ const DashboardPage = () => {
                 הרשמו לניוזלטר שלנו
               </h3>
               <p className="text-center text-sm sm:text-base text-[#3D3D3D] mb-4 sm:mb-6">
-                כדי לקבל הסברים שימושיים שיעזרו לכם להתנהל בסטודיו ולדעת מה
-                מתאים עבורכם ומדי פעם תקבלו עדכון על סרט חשוב, המלצה, הרצאה חדשה
+                כדי לקבל הסברים שימושיים שיעזרו להתנהל בסטודיו ולדעת מה
+                מתאים ומדי פעם עדכונים על סרט חשוב, המלצה, הרצאה חדשה
                 וכו&apos;.
               </p>
 

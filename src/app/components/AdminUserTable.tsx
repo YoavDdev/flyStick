@@ -130,7 +130,7 @@ export default function AdminUserTable({
     }
 
     const confirmed = window.confirm(
-      `האם אתה בטוח שברצונך לבטל את מנוי PayPal של ${user.name || user.email}?\n\nפעולה זו תבטל את המנוי ב-PayPal ותפסיק חיובים עתידיים.`
+      `בטוחים שרוצים לבטל את מנוי PayPal של ${user.name || user.email}?\n\nפעולה זו תבטל את המנוי ב-PayPal ותפסיק חיובים עתידיים.`
     );
 
     if (!confirmed) return;
@@ -178,7 +178,7 @@ export default function AdminUserTable({
   // Handle save edit
   const handleSaveEdit = async (userId: string) => {
     // Show confirmation dialog
-    if (!window.confirm('האם אתה בטוח שברצונך לשמור את השינויים?')) {
+    if (!window.confirm('בטוחים שרוצים לשמור את השינויים?')) {
       return; // User canceled
     }
     
@@ -525,7 +525,7 @@ export default function AdminUserTable({
                           }, 2000);
                         }}
                       >
-                        נסה שוב
+                        לנסות שוב
                       </button>
                     )}
                   </div>
@@ -886,7 +886,7 @@ export default function AdminUserTable({
               {deleteConfirmation.step === 1 ? (
                 <div className="text-right">
                   <p className="text-sm text-[#3D3D3D] mb-4">
-                    האם אתה בטוח שברצונך למחוק את המשתמש:
+                    בטוחים שרוצים למחוק את המשתמש:
                   </p>
                   <p className="text-base font-semibold text-[#B56B4A] mb-4">
                     {deleteConfirmation.userEmail}

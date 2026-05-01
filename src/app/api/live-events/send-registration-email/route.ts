@@ -91,10 +91,10 @@ export async function POST(req: Request) {
               <!-- Email Updates Section -->
               <div style="background: #FFF9F0; border: 2px dashed #D5C4B7; border-radius: 15px; padding: 25px; margin-bottom: 30px;">
                 <h3 style="margin: 0 0 15px 0; color: #2D3142; font-size: 18px;">
-                  רוצה לקבל עדכונים על השיעור?
+                  לקבל עדכונים על השיעור?
                 </h3>
                 <p style="margin: 0 0 20px 0; color: #5D5D5D; font-size: 15px; line-height: 1.7;">
-                  נשמח לעדכן אותך במייל אם יהיו שינויים בשיעור:
+                  נשמח לעדכן במייל אם יהיו שינויים בשיעור:
                 </p>
                 <ul style="margin: 0 0 20px 0; padding-right: 20px; color: #5D5D5D; font-size: 14px; line-height: 1.8;">
                   <li>שינוי שעה או תאריך</li>
@@ -104,11 +104,11 @@ export async function POST(req: Request) {
                 </ul>
                 <div style="text-align: center;">
                   <a href="${updatePreferenceUrl}" style="display: inline-block; background: linear-gradient(135deg, #B56B4A 0%, #9a5a3d 100%); color: white; text-decoration: none; padding: 15px 40px; border-radius: 30px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(181, 107, 74, 0.3);">
-                    כן, אני רוצה לקבל עדכונים 📧
+                    כן, לקבל עדכונים 📧
                   </a>
                 </div>
                 <p style="margin: 15px 0 0 0; color: #9D8E81; font-size: 13px; text-align: center; line-height: 1.6;">
-                  תוכל/י לשנות את ההעדפה בכל עת מהדשבורד שלך
+                  ניתן לשנות את ההעדפה בכל עת מהדשבורד
                 </p>
               </div>
 
@@ -135,7 +135,7 @@ export async function POST(req: Request) {
           <tr>
             <td style="background: #F7F3EB; padding: 30px; text-align: center; border-top: 1px solid #D5C4B7;">
               <p style="margin: 0 0 10px 0; color: #9D8E81; font-size: 13px;">
-                Studio Boaz Online - הסטודיו המקוון שלך לפיתוח גוף ונפש
+                Studio Boaz Online - הסטודיו המקוון לפיתוח גוף ונפש
               </p>
               <p style="margin: 0; color: #B8A99C; font-size: 12px;">
                 <a href="${process.env.NEXTAUTH_URL}" style="color: #B56B4A; text-decoration: none;">studioboaz.online</a>

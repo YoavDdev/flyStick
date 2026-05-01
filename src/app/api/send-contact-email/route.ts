@@ -98,21 +98,21 @@ export async function POST(request: NextRequest) {
     await resend.emails.send({
       from: 'Studio Boaz <info@mail.studioboazonline.com>',
       to: [email],
-      subject: 'תודה שיצרת קשר - המסע שלנו מתחיל',
+      subject: 'תודה על יצירת הקשר - המסע שלנו מתחיל',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #F7F3EB; direction: rtl;">
           <div style="background-color: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            <h2 style="color: #2D3142; margin-bottom: 20px; text-align: center; direction: rtl;">תודה שיצרת קשר</h2>
+            <h2 style="color: #2D3142; margin-bottom: 20px; text-align: center; direction: rtl;">תודה על יצירת הקשר</h2>
             
             <p style="color: #3D3D3D; line-height: 1.8; margin-bottom: 25px; text-align: right;">${name} יקר/ה,</p>
             
             <p style="color: #3D3D3D; line-height: 1.8; margin-bottom: 25px; text-align: right;">
-              שמח שפנית אלי ויצרת קשר.
+              שמח על הפנייה ויצירת הקשר.
             </p>
             
             <p style="color: #3D3D3D; line-height: 1.8; margin-bottom: 25px; text-align: right;">
-              אחזור אליך בהקדם האפשרי. בינתיים, אני מזמין אותך להתחיל את המסע שלך בסטודיו - 
-              לגלות את הכח המרפא והגדול שטמון בגופך.
+              אחזור בהקדם האפשרי. בינתיים, ניתן להתחיל את המסע בסטודיו - 
+              לגלות את הכח המרפא והגדול שטמון בגוף.
             </p>
             
             <p style="color: #3D3D3D; line-height: 1.8; margin-bottom: 25px; text-align: right;">
@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
             
             <div style="text-align: center; margin: 30px 0;">
               <a href="https://studioboazonline.com/dashboard" style="background-color: #D5C4B7; color: #2D3142; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-                התחל את המסע כאן
+                התחלת המסע כאן
               </a>
             </div>
             

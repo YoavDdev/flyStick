@@ -138,7 +138,7 @@ export default function AdminProductManager() {
   };
 
   const handleHide = async (productId: string) => {
-    if (!confirm("האם אתה בטוח שברצונך להסתיר מוצר זה?")) return;
+    if (!confirm("בטוחים שרוצים להסתיר מוצר זה?")) return;
 
     try {
       const response = await fetch("/api/admin/products", {
@@ -158,7 +158,7 @@ export default function AdminProductManager() {
   };
 
   const handlePermanentDelete = async (productId: string, productName: string) => {
-    if (!confirm(`⚠️ מחיקה קבועה!\n\nהאם אתה בטוח שברצונך למחוק לצמיתות את המוצר "${productName}"?\n\nפעולה זו לא ניתנת לביטול!`)) return;
+    if (!confirm(`⚠️ מחיקה קבועה!\n\nבטוחים שרוצים למחוק לצמיתות את המוצר "${productName}"?\n\nפעולה זו לא ניתנת לביטול!`)) return;
 
     try {
       const response = await fetch(`/api/admin/products?id=${productId}`, {

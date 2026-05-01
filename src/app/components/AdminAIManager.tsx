@@ -101,7 +101,7 @@ const AdminAIManager = () => {
             <div>
               <p className="font-bold text-[#2D3142]">הפעלת העוזר החכם</p>
               <p className="text-sm text-[#5D5D5D]">
-                {enabled ? "המשתמשים יכולים לשוחח עם העוזר" : "העוזר מוסתר מהמשתמשים"}
+                {enabled ? "ניתן לשוחח עם העוזר" : "העוזר מוסתר מהמשתמשים"}
               </p>
             </div>
             <button
@@ -250,7 +250,7 @@ const AdminAIManager = () => {
               <div className="bg-purple-100/50 rounded-lg p-3 border border-purple-200">
                 <p className="font-bold text-purple-900 text-sm mb-1">⚡ סיכום — מה לעשות עכשיו?</p>
                 <ol className="text-xs text-purple-800 space-y-1 mr-3 list-decimal">
-                  <li>היכנס ל-<strong>Vimeo</strong> → לכל סרטון הוסף <strong>תיאור בעברית</strong> (1-2 משפטים)</li>
+                  <li>כניסה ל-<strong>Vimeo</strong> → לכל סרטון הוספת <strong>תיאור בעברית</strong> (1-2 משפטים)</li>
                   <li>ודא ש<strong>שמות הסרטונים</strong> ברורים ומתארים את התוכן</li>
                   <li>ב<strong>ניהול תיקיות</strong> למעלה, מלא תיאור + רמה + קטגוריה</li>
                   <li>העוזר <strong>מתעדכן אוטומטית</strong> תוך שעה מכל שינוי!</li>

@@ -637,10 +637,10 @@ useEffect(() => {
           <div className="mx-auto max-w-7xl px-8 pb-10">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-base font-semibold leading-7 text-[#B56B4A] no-wrap">
-                המסע שלך והצרכים שלך בהתאמה אישית
+                המסע והצרכים בהתאמה אישית
               </h2>
               <p className="mt-2 text-3xl font-bold tracking-tight text-[#2D3142] sm:text-4xl">
-                גלו את השיעור הבא שלכם
+                גלו את השיעור הבא
               </p>
               
             </div>
@@ -670,7 +670,7 @@ useEffect(() => {
                   <span className="font-bold text-[#B56B4A]">אופס!</span> 🤷‍♂️ לא
                   נמצאו סרטונים עבור הנושא{" "}
                   <span className="font-bold">&quot;{searchQuery}&quot;</span> .
-                  נסה להשתמש בכמות קטנה יותר של נושאים לתוצאות טובות יותר!{" "}
+                  כדאי להשתמש בכמות קטנה יותר של נושאים לתוצאות טובות יותר!{" "}
                 </p>
               </div>
             ) : (

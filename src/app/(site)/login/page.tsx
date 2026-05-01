@@ -31,11 +31,11 @@ const Page = () => {
     const callback = await signIn("credentials", { ...data, redirect: false });
 
     if (callback?.error) {
-      toast.error("❌ אירעה שגיאה בהתחברות - אנא נסה שוב");
+      toast.error("❌ אירעה שגיאה בהתחברות - יש לנסות שוב");
     }
 
     if (callback?.ok && !callback?.error) {
-      toast.success("🎉 התחברת בהצלחה! ברוך הבא");
+      toast.success("🎉 ההתחברה בוצעה בהצלחה!");
       trackLogin("credentials");
     }
 
@@ -52,7 +52,7 @@ const Page = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-[#F0E9DF] rounded-2xl shadow-md border border-[#D5C4B7] p-8 mb-8">
           <h2 className="mt-4 text-center text-3xl font-bold leading-9 tracking-tight text-[#2D3142]">
-            היכנס לחשבון שלך
+            כניסה לחשבון
           </h2>
           <div className="w-16 h-1 bg-[#B8A99C] mx-auto mt-4 rounded-full"></div>
         </div>
@@ -78,7 +78,7 @@ const Page = () => {
                   value={data.email}
                   onChange={(e) => setData({ ...data, email: e.target.value })}
                   className="block w-full rounded-lg border-0 py-3 px-4 text-[#2D3142] bg-white/90 shadow-sm ring-1 ring-inset ring-[#D5C4B7] placeholder:text-[#B8A99C] focus:ring-2 focus:ring-inset focus:ring-[#B8A99C] focus:outline-none sm:text-sm sm:leading-6 transition-all duration-200"
-                  placeholder="הכנס את האימייל שלך"
+                  placeholder="כתובת האימייל"
                 />
               </div>
             </div>
@@ -103,8 +103,8 @@ const Page = () => {
                   value={data.password}
                   onChange={(e) => setData({ ...data, password: e.target.value })}
                   className="block w-full rounded-lg border-0 py-3 px-4 text-[#2D3142] bg-white/90 shadow-sm ring-1 ring-inset ring-[#D5C4B7] placeholder:text-[#B8A99C] focus:ring-2 focus:ring-inset focus:ring-[#B8A99C] focus:outline-none sm:text-sm sm:leading-6 transition-all duration-200"
-                  placeholder="הכנס את הסיסמה שלך"
-                  onError={() => toast.error("🔐 אימייל או סיסמה שגויים - אנא בדוק ונסה שוב")}
+                  placeholder="סיסמה"
+                  onError={() => toast.error("🔐 אימייל או סיסמה שגויים - יש לבדוק ולנסות שוב")}
                 />
               </div>
               <div className="mt-3 text-right">
@@ -112,7 +112,7 @@ const Page = () => {
                   href="/forgotPassword"
                   className="text-sm text-[#D9713C] hover:text-[#B8A99C] transition-colors duration-200 hover:underline focus:outline-none"
                 >
-                  <p>שכחת את הסיסמה שלך?</p>
+                  <p>שכחתם את הסיסמה?</p>
                 </Link>
               </div>
             </div>

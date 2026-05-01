@@ -49,13 +49,13 @@ const WabiSabiContact = () => {
           message: '',
           honeypot: ''
         });
-        toast.success('הודעתך נשלחה בהצלחה! נחזור אליך בהקדם.');
+        toast.success('ההודעה נשלחה בהצלחה! נחזור בהקדם.');
       } else {
-        toast.error(result.error || 'שגיאה בשליחת ההודעה. אנא נסה שוב.');
+        toast.error(result.error || 'שגיאה בשליחת ההודעה. יש לנסות שוב.');
       }
     } catch (error) {
       console.error('Error sending contact email:', error);
-      toast.error('שגיאה בשליחת ההודעה. אנא בדוק את החיבור לאינטרנט ונסה שוב.');
+      toast.error('שגיאה בשליחת ההודעה. יש לבדוק את החיבור לאינטרנט ולנסות שוב.');
     } finally {
       setIsSubmitting(false);
     }
@@ -85,7 +85,7 @@ const WabiSabiContact = () => {
             צרו קשר
           </h2>
           <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed" style={{ color: '#F5F1EB', textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)', opacity: '0.9' }}>
-            יש לכם שאלות? רוצים לדעת יותר על השיעורים? אנחנו כאן בשבילכם. צרו קשר ונחזור אליכם במהירות.
+            יש שאלות? מעוניינים לדעת יותר על השיעורים? אנחנו כאן לעזור. צרו קשר ונחזור במהירות.
           </p>
         </motion.div>
 
@@ -167,7 +167,7 @@ const WabiSabiContact = () => {
                       }}
                       onFocus={(e) => e.currentTarget.style.outline = '2px solid #B8A99C'}
                       onBlur={(e) => e.currentTarget.style.outline = 'none'}
-                      placeholder="הכניסו את שמכם"
+                      placeholder="הזנת שם"
                     />
                   </div>
                   
@@ -211,7 +211,7 @@ const WabiSabiContact = () => {
                     }}
                     onFocus={(e) => e.currentTarget.style.outline = '2px solid #B8A99C'}
                     onBlur={(e) => e.currentTarget.style.outline = 'none'}
-                    placeholder="כתובת האימייל שלכם"
+                    placeholder="הזנת כתובת אימייל"
                   />
                 </div>
 
@@ -233,7 +233,7 @@ const WabiSabiContact = () => {
                     }}
                     onFocus={(e) => e.currentTarget.style.outline = '2px solid #B8A99C'}
                     onBlur={(e) => e.currentTarget.style.outline = 'none'}
-                    placeholder="כתבו לנו את השאלה או ההודעה שלכם..."
+                    placeholder="הזנת שאלה או הודעה..."
                   />
                 </div>
 

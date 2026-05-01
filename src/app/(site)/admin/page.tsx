@@ -58,7 +58,7 @@ export default function AdminPage() {
           setIsAdmin(true);
           fetchUsers();
         } else {
-          toast.error("אין לך הרשאות גישה לאזור זה");
+          toast.error("אין הרשאות גישה לאזור זה");
           router.push("/");
         }
       } catch (error) {
@@ -410,7 +410,7 @@ export default function AdminPage() {
                   
                   // Show detailed error for debugging
                   toast.error(
-                    `❌ שגיאה בסנכרון PayPal: ${errorMessage}\n\nבדוק את הקונסול לפרטים נוספים`,
+                    `❌ שגיאה בסנכרון PayPal: ${errorMessage}\n\nיש לבדוק את הקונסול לפרטים נוספים`,
                     { duration: 8000 }
                   );
                 }
@@ -512,7 +512,7 @@ export default function AdminPage() {
                     `PayPal Credentials: ${diagnosticData.environment.hasPayPalClientId && diagnosticData.environment.hasPayPalClientSecret ? '✅' : '❌'}\n` +
                     `Database: ${diagnosticData.database.connectionOk ? '✅' : '❌'}\n` +
                     `PayPal Users: ${diagnosticData.database.paypalUserCount}\n` +
-                    `בדוק את הקונסול לפרטים מלאים`,
+                    `יש לבדוק את הקונסול לפרטים מלאים`,
                     { id: toastId, duration: 10000 }
                   );
                   

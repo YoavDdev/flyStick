@@ -74,7 +74,7 @@ export async function POST(request) {
             <p style="color: #3D3D3D; line-height: 1.6; margin-bottom: 20px; text-align: right;">שלום ${user.name || ''},</p>
             
             <p style="color: #3D3D3D; line-height: 1.6; margin-bottom: 20px; text-align: right;">
-              קיבלנו בקשה לאיפוס הסיסמה שלך. לחץ על הקישור למטה כדי לאפס את הסיסמה:
+              קיבלנו בקשה לאיפוס הסיסמה. לחץ על הקישור למטה כדי לאפס את הסיסמה:
             </p>
             
             <div style="text-align: center; margin: 30px 0;">

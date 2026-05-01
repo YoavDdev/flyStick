@@ -90,7 +90,7 @@ export default function SeriesLayout({
                 </h2>
                 <p className="text-xl text-white/90 mb-8 leading-relaxed">
                   הסדרות הן רק התחלה! גלו את האתר המלא שלנו עם מגוון רחב של שיעורים, טכניקות מתקדמות, 
-                  תכנים מקצועיים ותמיכה אישית שתלווה אתכם בכל שלב במסע.
+                  תכנים מקצועיים ותמיכה אישית שתלווה בכל שלב במסע.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -132,7 +132,7 @@ export default function SeriesLayout({
                   />
                   <div>
                     <p className="font-bold text-white">Studio Boaz</p>
-                    <p className="text-xs text-white/70">המסע שלכם מתחיל כאן</p>
+                    <p className="text-xs text-white/70">המסע מתחיל כאן</p>
                   </div>
                 </div>
                 

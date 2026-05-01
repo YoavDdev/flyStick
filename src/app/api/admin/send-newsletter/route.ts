@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Newsletter sending error:', error);
     return NextResponse.json(
-      { error: 'שגיאה בשליחת הניוזלטר. אנא נסה שוב מאוחר יותר.' },
+      { error: 'שגיאה בשליחת הניוזלטר. יש לנסות שוב מאוחר יותר.' },
       { status: 500 }
     );
   }

@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "Studio Boaz Online - בועז סטודיו און לין",
-    description: "Studio Boaz Online - בועז סטודיו און לין. המקום שלכם לאימונים אישיים ותנועה מרפאה עם בועז נחייסי",
+    description: "Studio Boaz Online - בועז סטודיו און לין. אימונים אישיים ותנועה מרפאה עם בועז נחייסי",
     url: "https://www.studioboazonline.com/",
     type: "website",
     siteName: "Studio Boaz Online",

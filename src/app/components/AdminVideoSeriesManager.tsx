@@ -155,7 +155,7 @@ const AdminVideoSeriesManager = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("האם אתה בטוח שברצונך למחוק את הסדרה?")) return;
+    if (!confirm("בטוחים שרוצים למחוק את הסדרה?")) return;
 
     try {
       const response = await fetch(`/api/admin/video-series?id=${id}`, {

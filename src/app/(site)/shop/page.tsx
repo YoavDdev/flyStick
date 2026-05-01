@@ -136,7 +136,7 @@ export default function ShopPage() {
 
               <p className="text-lg sm:text-xl text-[#2D3142]/60 font-light leading-relaxed max-w-2xl mx-auto mb-8">
                 ברוכים הבאים לחנות המקוונת של <strong className="font-normal">Studio Boaz</strong>. 
-                כאן תוכלו למצוא מוצרים מיוחדים שנבחרו בקפידה עבורכם.
+                כאן ניתן למצוא מוצרים מיוחדים שנבחרו בקפידה.
               </p>
 
               <div className="flex flex-wrap justify-center gap-6">
@@ -184,7 +184,7 @@ export default function ShopPage() {
                 אין מוצרים זמינים כרגע
               </p>
               <p className="text-[#2D3142]/30 text-sm font-light">
-                בקרוב תוכלו למצוא כאן מוצרים מיוחדים
+                בקרוב יהיו כאן מוצרים מיוחדים
               </p>
             </div>
           ) : (

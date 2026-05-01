@@ -83,7 +83,7 @@ const WabiSabiFooter = () => {
                 />
               </div>
               <p className="text-sm leading-relaxed" style={{ color: '#2D3142' }}>
-                סטודיו אונליין של בועז נחייסי - המקום שלך לפילאטיס, יוגה ותנועה מכל מקום ובכל זמן.
+                סטודיו אונליין של בועז נחייסי - לפילאטיס, יוגה ותנועה מכל מקום ובכל זמן.
               </p>
               <div className="flex justify-center space-x-4 rtl:space-x-reverse mt-6">
                 {socialLinks.map((item) => (
@@ -176,7 +176,7 @@ const WabiSabiFooter = () => {
               הירשמו לניוזלטר שלנו
             </h3>
             <p className="text-sm mb-4 text-center leading-relaxed" style={{ color: '#2D3142', opacity: '0.8' }}>
-              עדכון ארועים, חדשות, שיעורים חדשים העולים לאתר ישלחו לתיבת הדואר שלכם.
+              עדכון ארועים, חדשות, שיעורים חדשים העולים לאתר ישלחו לתיבת הדואר.
             </p>
             <div className="rounded-xl p-4 bg-white/10" style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', border: '1px solid #D5C4B7' }}>
               <NewsletterSignUpForm />

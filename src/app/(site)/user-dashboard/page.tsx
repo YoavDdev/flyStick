@@ -151,8 +151,8 @@ const UserDashboardPage = () => {
       className="grid grid-cols-1 md:grid-cols-2 gap-6"
     >
       <motion.div variants={itemVariants} className="col-span-1 md:col-span-2 bg-[#F7F3EB] rounded-xl p-6 border border-[#D5C4B7]/30 shadow-md">
-        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">{session?.user?.name ? `שלום ${session.user.name}, מנהל!` : 'ברוך הבא, מנהל!'}</h2>
-        <p className="text-[#3D3D3D] mb-4">יש לך גישה מלאה לכל התכנים והכלים הניהוליים.</p>
+        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">{session?.user?.name ? `שלום ${session.user.name}, מנהל!` : 'שלום, מנהל!'}</h2>
+        <p className="text-[#3D3D3D] mb-4">גישה מלאה זמינה לכל התכנים והכלים הניהוליים.</p>
         <div className="flex flex-wrap gap-4 mt-4">
           <Link href="/admin">
             <motion.span 
@@ -169,7 +169,7 @@ const UserDashboardPage = () => {
       <motion.div variants={itemVariants}>
         <DashboardCard
           title="הסרטונים שלי"
-          description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
+          description="צפייה בסרטונים שהחלו וחזרה אליהם בקלות"
           link="/user/watched"
           icon={<FaVideo size={24} />}
         />
@@ -196,7 +196,7 @@ const UserDashboardPage = () => {
       <motion.div variants={itemVariants}>
         <DashboardCard
           title="טכניקות"
-          description="למד טכניקות חדשות ושפר את המיומנויות שלך"
+          description="למידת טכניקות חדשות ושיפור המיומנויות"
           link="/techniques"
           icon={<AiOutlineExperiment size={24} />}
         />
@@ -212,12 +212,12 @@ const UserDashboardPage = () => {
       className="grid grid-cols-1 md:grid-cols-2 gap-6"
     >
       <motion.div variants={itemVariants} className="col-span-1 md:col-span-2 bg-[#F7F3EB] rounded-xl p-6 border border-[#D5C4B7]/30 shadow-md">
-        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">{session?.user?.name ? `שלום ${session.user.name}!` : 'ברוך הבא!'}</h2>
+        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">{session?.user?.name ? `שלום ${session.user.name}!` : 'שלום!'}</h2>
         <div className="bg-green-100 text-green-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
           <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-          <p>המנוי שלך פעיל</p>
+          <p>מנוי פעיל</p>
         </div>
-        <p className="text-[#3D3D3D] mb-4">יש לך גישה מלאה לכל התכנים בסטודיו.</p>
+        <p className="text-[#3D3D3D] mb-4">גישה מלאה זמינה לכל התכנים בסטודיו.</p>
         <div className="flex flex-wrap gap-4 mt-4">
           <button
             onClick={handleWhatsAppJoin}
@@ -232,7 +232,7 @@ const UserDashboardPage = () => {
       <motion.div variants={itemVariants}>
         <DashboardCard
           title="הסרטונים שלי"
-          description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
+          description="צפייה בסרטונים שהחלו וחזרה אליהם בקלות"
           link="/user/watched"
           icon={<FaVideo size={24} />}
         />
@@ -259,7 +259,7 @@ const UserDashboardPage = () => {
       <motion.div variants={itemVariants}>
         <DashboardCard
           title="טכניקות"
-          description="למד טכניקות חדשות ושפר את המיומנויות שלך"
+          description="למידת טכניקות חדשות ושיפור המיומנויות"
           link="/techniques"
           icon={<AiOutlineExperiment size={24} />}
         />
@@ -275,12 +275,12 @@ const UserDashboardPage = () => {
       className="grid grid-cols-1 md:grid-cols-2 gap-6"
     >
       <motion.div variants={itemVariants} className="col-span-1 md:col-span-2 bg-[#F7F3EB] rounded-xl p-6 border border-[#D5C4B7]/30 shadow-md">
-        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">{session?.user?.name ? `שלום ${session.user.name}!` : 'ברוך הבא!'}</h2>
+        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">{session?.user?.name ? `שלום ${session.user.name}!` : 'שלום!'}</h2>
         <div className="bg-amber-100 text-amber-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
           <span className="w-3 h-3 bg-amber-500 rounded-full"></span>
-          <p>המנוי שלך בוטל</p>
+          <p>המנוי בוטל</p>
         </div>
-        <p className="text-[#3D3D3D] mb-4">המנוי שלך בוטל בהצלחה. לחידוש המנוי לחצו על הכפתור מטה.</p>
+        <p className="text-[#3D3D3D] mb-4">המנוי בוטל בהצלחה. לחידוש המנוי יש ללחוץ על הכפתור מטה.</p>
         <div className="flex flex-wrap gap-4 mt-4">
           <Link href="/#Pricing">
             <motion.span 
@@ -288,7 +288,7 @@ const UserDashboardPage = () => {
               whileHover={{ y: -2 }}
               whileTap={{ y: 0 }}
             >
-              חדש את המנוי שלך
+              חידוש המנוי
             </motion.span>
           </Link>
         </div>
@@ -297,7 +297,7 @@ const UserDashboardPage = () => {
       <motion.div variants={itemVariants}>
         <DashboardCard
           title="הסרטונים שלי"
-          description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
+          description="צפייה בסרטונים שהחלו וחזרה אליהם בקלות"
           link="/user/watched"
           icon={<FaVideo size={24} />}
         />
@@ -322,15 +322,15 @@ const UserDashboardPage = () => {
       className="grid grid-cols-1 md:grid-cols-2 gap-6"
     >
       <motion.div variants={itemVariants} className="col-span-1 md:col-span-2 bg-[#F7F3EB] rounded-xl p-6 border border-[#D5C4B7]/30 shadow-md">
-        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">{session?.user?.name ? `שלום ${session.user.name}, ברוך הבא לתקופת הניסיון!` : 'ברוך הבא לתקופת הניסיון!'}</h2>
+        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">{session?.user?.name ? `שלום ${session.user.name}, תקופת הניסיון פעילה!` : 'שלום, תקופת הניסיון פעילה!'}</h2>
         <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
           <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
           <p>מנוי ניסיון פעיל</p>
         </div>
         <p className="text-[#3D3D3D] mb-4">
           {trialDaysLeft !== null 
-            ? `נותרו לך ${trialDaysLeft} ימים בתקופת הניסיון. יש לך גישה מלאה לכל התכנים בסטודיו.` 
-            : 'יש לך גישה מלאה לכל התכנים בסטודיו במהלך תקופת הניסיון.'}
+            ? `נשארו ${trialDaysLeft} ימים בתקופת הניסיון. גישה מלאה זמינה לכל התכנים בסטודיו.` 
+            : 'גישה מלאה זמינה לכל התכנים בסטודיו במהלך תקופת הניסיון.'}
         </p>
         <div className="flex flex-wrap gap-4 mt-4">
           <Link href="/#Pricing">
@@ -355,7 +355,7 @@ const UserDashboardPage = () => {
       <motion.div variants={itemVariants}>
         <DashboardCard
           title="הסרטונים שלי"
-          description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
+          description="צפייה בסרטונים שהחלו וחזרה אליהם בקלות"
           link="/user/watched"
           icon={<FaVideo size={24} />}
         />
@@ -382,7 +382,7 @@ const UserDashboardPage = () => {
       <motion.div variants={itemVariants}>
         <DashboardCard
           title="טכניקות"
-          description="למד טכניקות חדשות ושפר את המיומנויות שלך"
+          description="למידת טכניקות חדשות ושיפור המיומנויות"
           link="/techniques"
           icon={<AiOutlineExperiment size={24} />}
         />
@@ -398,12 +398,12 @@ const UserDashboardPage = () => {
       className="grid grid-cols-1 md:grid-cols-2 gap-6"
     >
       <motion.div variants={itemVariants} className="col-span-1 md:col-span-2 bg-[#F7F3EB] rounded-xl p-6 border border-[#D5C4B7]/30 shadow-md">
-        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">{session?.user?.name ? `שלום ${session.user.name}!` : 'ברוך הבא!'}</h2>
+        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">{session?.user?.name ? `שלום ${session.user.name}!` : 'שלום!'}</h2>
         <div className="bg-green-100 text-green-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
           <span className="w-3 h-3 bg-green-500 rounded-full"></span>
           <p>גישה חופשית</p>
         </div>
-        <p className="text-[#3D3D3D] mb-4">יש לך גישה לתכנים מוגבלים בסטודיו. שדרג למנוי מלא לגישה לכל התכנים.</p>
+        <p className="text-[#3D3D3D] mb-4">גישה זמינה לתכנים מוגבלים. לגישה מלאה לכל התכנים, יש לשדרג למנוי.</p>
         <div className="flex flex-wrap gap-4 mt-4">
           <Link href="/#Pricing">
             <motion.span 
@@ -445,12 +445,12 @@ const UserDashboardPage = () => {
       className="grid grid-cols-1 md:grid-cols-2 gap-6"
     >
       <motion.div variants={itemVariants} className="col-span-1 md:col-span-2 bg-[#F7F3EB] rounded-xl p-6 border border-[#D5C4B7]/30 shadow-md">
-        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">{session?.user?.name ? `שלום ${session.user.name}!` : 'ברוך הבא!'}</h2>
+        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">{session?.user?.name ? `שלום ${session.user.name}!` : 'שלום!'}</h2>
         <div className="bg-gray-100 text-gray-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
           <span className="w-3 h-3 bg-gray-500 rounded-full"></span>
           <p>אין מנוי פעיל</p>
         </div>
-        <p className="text-[#3D3D3D] mb-4">אין לך מנוי פעיל. להצטרפות למנוי חדש ולהנות מתכני הסטודיו, לחצו על הכפתור מטה.</p>
+        <p className="text-[#3D3D3D] mb-4">אין מנוי פעיל. להצטרפות למנוי חדש יש ללחוץ על הכפתור מטה.</p>
         <div className="flex flex-wrap gap-4 mt-4">
           <Link href="/#Pricing">
             <motion.span 
@@ -492,12 +492,12 @@ const UserDashboardPage = () => {
       className="grid grid-cols-1 md:grid-cols-2 gap-6"
     >
       <motion.div variants={itemVariants} className="col-span-1 md:col-span-2 bg-[#F7F3EB] rounded-xl p-6 border border-[#D5C4B7]/30 shadow-md">
-        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">ברוך הבא!</h2>
+        <h2 className="text-2xl font-bold text-[#2D3142] mb-4">שלום!</h2>
         <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-md mb-4 flex items-center gap-2">
           <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
           <p>מנוי פעיל</p>
         </div>
-        <p className="text-[#3D3D3D] mb-4">יש לך גישה מלאה לכל התכנים בסטודיו.</p>
+        <p className="text-[#3D3D3D] mb-4">גישה מלאה זמינה לכל התכנים בסטודיו.</p>
         <div className="flex flex-wrap gap-4 mt-4">
           <button
             onClick={handleWhatsAppJoin}
@@ -512,7 +512,7 @@ const UserDashboardPage = () => {
       <motion.div variants={itemVariants}>
         <DashboardCard
           title="הסרטונים שלי"
-          description="צפה בסרטונים שהתחלת לראות וחזור אליהם בקלות"
+          description="צפייה בסרטונים שהחלו וחזרה אליהם בקלות"
           link="/user/watched"
           icon={<FaVideo size={24} />}
         />
@@ -539,7 +539,7 @@ const UserDashboardPage = () => {
       <motion.div variants={itemVariants}>
         <DashboardCard
           title="טכניקות"
-          description="למד טכניקות חדשות ושפר את המיומנויות שלך"
+          description="למידת טכניקות חדשות ושיפור המיומנויות"
           link="/techniques"
           icon={<AiOutlineExperiment size={24} />}
         />
@@ -568,7 +568,7 @@ const UserDashboardPage = () => {
           </h3>
           <p className="text-[#3D3D3D] mb-4">
             הצטרף לקבוצת הוואטסאפ שלנו כדי לקבל עדכונים, טיפים, ולהיות בקשר ישיר עם בועז והצוות. 
-            כאן תוכלו לשאול שאלות, לקבל תמיכה מהקהילה ולהתחבר עם מתאמנים אחרים.
+            כאן ניתן לשאול שאלות, לקבל תמיכה מהקהילה ולהתחבר עם מתאמנים אחרים.
           </p>
           
           <motion.button

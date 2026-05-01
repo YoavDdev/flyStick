@@ -13,7 +13,7 @@ const includedFeatures = [
   "מאות שיעורים מקצועיים בנושאי תנועה, נשימה, יציבה וריפוי",
   "כלים מתקדמים לשיפור הגוף והנפש לכל רמה ומגדר",
   "שיטות מגוונות: קונטרולוג׳י, פילאטיס, תודעה ופלייסטיק",
-  "אימונים קצרים וארוכים המותאמים לזמן שלך",
+  "אימונים קצרים וארוכים - מתאימים לכל לוח זמנים",
   "שמירת סרטונים מועדפים והמשך צפייה מהנקודה האחרונה",
   "תמיכה אישית וקהילה מקצועית לליווי מלא",
   "עדכונים ותכונות חדשות באופן קבוע",
@@ -114,7 +114,7 @@ export default function WabiSabiPricing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                מאגר עצום של ידע שיאפשר לך להתחבר לגופך, להעמיק את הבנתך הסומטית ולהעשיר את הידע שלך באנטומיה יישומית וכיצד להביא את התובנות הללו לשיעור עם מתאמנים בכל הרמות.
+                מאגר עצום של ידע להתחברות לגוף, להעמקת הבנה סומטית והעשרת הידע באנטומיה יישומית. התובנות יועברו לשיעור עם מתאמנים בכל הרמות.
               </motion.p>
               <motion.ul
                 role="list"
@@ -274,7 +274,7 @@ export default function WabiSabiPricing() {
                         {/* Hidden PayPal buttons that will be shown when custom buttons are clicked */}
                         <div id="paypal-button-container" className="mt-4 hidden">
                           <div className="bg-white/10 p-4 rounded-lg border border-white/20 mb-4" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
-                            <p className="text-sm text-[#5D5D5D] mb-2">בחרו את אמצעי התשלום המועדף עליכם:</p>
+                            <p className="text-sm text-[#5D5D5D] mb-2">בחירת אמצעי תשלום מועדף:</p>
                           </div>
                           <PayPalScriptProvider
                             options={{

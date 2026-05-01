@@ -72,15 +72,15 @@ export async function POST(request: NextRequest) {
             <h2 style="color: #2D3142; margin-bottom: 20px; text-align: center; direction: rtl;">ברוכים הבאים למסע הפנימי</h2>
             
             <p style="color: #3D3D3D; line-height: 1.8; margin-bottom: 25px; text-align: right;">
-              אני מאד שמח שהצטרפת!
+              שמח על ההצטרפות!
             </p>
             
             <p style="color: #3D3D3D; line-height: 1.8; margin-bottom: 25px; text-align: right;">
-              מדי פעם תקבלו ממני מייל עם תכנים מעוררי מחשבה, כלים פרקטיים לעבודה, המלצות על שיעורים וסדנאות ואף ארועים המתרחשים בכל הארץ וזו תהיה הזדמנות לפגוש אותי ואת הקהילה היפה שנבנתה לאורך השנים, קהילת אנשי הלב.
+              מדי פעם יופצו תכנים מעוררי מחשבה, כלים פרקטיים לעבודה, המלצות על שיעורים וסדנאות ואף ארועים המתרחשים בכל הארץ. זו הזדמנות לפגוש את בועז ואת הקהילה היפה שנבנתה לאורך השנים, קהילת אנשי הלב.
             </p>
             
             <p style="color: #3D3D3D; line-height: 1.8; margin-bottom: 25px; text-align: right;">
-              תמיד טוב להתחיל ממשהו וזה בהחלט צעד קטן שאני מקווה שיגדל ויוביל אותך להשתתף ולתרגל איתי את סודות הגוף והתודעה.
+              תמיד טוב להתחיל ממשהו וזה בהחלט צעד קטן שאני מקווה שיגדל ויוביל להשתתפות ותרגול של סודות הגוף והתודעה.
             </p>
             
             <p style="color: #3D3D3D; line-height: 1.8; margin-bottom: 25px; text-align: right;">
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
             
             <div style="text-align: center; margin: 30px 0;">
               <a href="https://studioboazonline.com/dashboard" style="background-color: #D5C4B7; color: #2D3142; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-                התחל את המסע
+                להתחיל את המסע
               </a>
             </div>
             
@@ -114,14 +114,14 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { message: 'ברוך הבא למסע שלנו המשותף! כמו שמים זורמים, כך גם התובנות שלנו יזרמו אליך. בדוק את האימייל שלך לקבלת הודעת הברכה.' },
+      { message: 'ההרשמה הושלמה בהצלחה! כמו שמים זורמים, כך גם התובנות יזרמו. יש לבדוק את תיבת המייל לקבלת הודעת הברכה.' },
       { status: 200 }
     );
 
   } catch (error) {
     console.error('Newsletter subscription error:', error);
     return NextResponse.json(
-      { error: 'שגיאה ברישום לניוזלטר. אנא נסה שוב מאוחר יותר.' },
+      { error: 'שגיאה ברישום לניוזלטר. יש לנסות שוב מאוחר יותר.' },
       { status: 500 }
     );
   }

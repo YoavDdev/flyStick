@@ -70,7 +70,7 @@ const StylesPage = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-[#2D3142] mb-4">
-            בחרו את הטכניקה שלכם
+            בחירת טכניקה
           </h1>
           <p className="text-lg text-[#5D5D5D] max-w-2xl mx-auto">
             אנו מציעים מגוון רחב של טכניקות תנועה לכל הרמות, מתחילים ועד מתקדמים

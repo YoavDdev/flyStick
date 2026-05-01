@@ -51,7 +51,7 @@ export function rateLimit(config: RateLimitConfig) {
       // Rate limit exceeded
       return NextResponse.json(
         { 
-          error: config.message || 'יותר מדי בקשות. נסה שוב מאוחר יותר.',
+          error: config.message || 'יותר מדי בקשות. יש לנסות שוב מאוחר יותר.',
           retryAfter: Math.ceil((current.resetTime - now) / 1000)
         },
         { 
@@ -78,27 +78,27 @@ export const rateLimitConfigs = {
   adminActions: {
     windowMs: 60 * 1000, // 1 minute
     maxRequests: 10, // 10 requests per minute
-    message: 'יותר מדי פעולות מנהל. נסה שוב בעוד דקה.'
+    message: 'יותר מדי פעולות מנהל. יש לנסות שוב בעוד דקה.'
   },
   
   // Moderate for authentication
   auth: {
     windowMs: 15 * 60 * 1000, // 15 minutes
     maxRequests: 5, // 5 attempts per 15 minutes
-    message: 'יותר מדי ניסיונות התחברות. נסה שוב בעוד 15 דקות.'
+    message: 'יותר מדי ניסיונות התחברות. יש לנסות שוב בעוד 15 דקות.'
   },
   
   // Lenient for general API calls
   general: {
     windowMs: 60 * 1000, // 1 minute
     maxRequests: 60, // 60 requests per minute
-    message: 'יותר מדי בקשות. נסה שוב בעוד דקה.'
+    message: 'יותר מדי בקשות. יש לנסות שוב בעוד דקה.'
   },
   
   // Very strict for PayPal operations
   paypal: {
     windowMs: 5 * 60 * 1000, // 5 minutes
     maxRequests: 3, // 3 requests per 5 minutes
-    message: 'יותר מדי פעולות PayPal. נסה שוב בעוד 5 דקות.'
+    message: 'יותר מדי פעולות PayPal. יש לנסות שוב בעוד 5 דקות.'
   }
 }

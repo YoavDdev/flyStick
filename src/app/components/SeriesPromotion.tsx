@@ -141,7 +141,7 @@ const SeriesPromotion = () => {
             רוצים לרכוש סדרה בודדת?
           </h2>
           <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed mb-6">
-            מעוניינים בהכשרה קצרה וממוקדת? אתר הסדרות שלנו מציע סדרות בודדות לרכישה - תשלום חד פעמי לכל סדרה, שלכם לתמיד
+            מעוניינים בהכשרה קצרה וממוקדת? אתר הסדרות שלנו מציע סדרות בודדות לרכישה - תשלום חד פעמי לכל סדרה, גישה לצמיתות
           </p>
           <Link href="/series">
             <motion.button
@@ -392,7 +392,7 @@ const SeriesPromotion = () => {
                             </div>
                           </div>
                           <div className="bg-white/60 rounded p-2 mt-2">
-                            <p className="text-xs text-[#2D3142] font-medium">💡 הסדרה תישלח למקבל/ת, לא אליכם</p>
+                            <p className="text-xs text-[#2D3142] font-medium">💡 הסדרה תישלח למקבל/ת המתנה</p>
                           </div>
                         </div>
                         <div className="space-y-2">

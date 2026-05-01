@@ -142,7 +142,7 @@ const AdminMessageComposer = ({ onMessageSent }: AdminMessageComposerProps) => {
                 id="content"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="כתוב כאן את תוכן ההודעה שתרצה לשלוח לכל המשתמשים..."
+                placeholder="כתוב כאן את תוכן ההודעה לשליחה לכל המשתמשים..."
                 rows={4}
                 className="w-full p-3 border border-[#D5C4B7]/50 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-[#D5C4B7]/30 bg-white resize-vertical"
                 required
@@ -166,9 +166,9 @@ const AdminMessageComposer = ({ onMessageSent }: AdminMessageComposerProps) => {
                 />
                 <div className="mt-2 text-xs text-[#3D3D3D]/70 bg-blue-50 p-2 rounded border-r-4 border-blue-300">
                   <p>💡 <strong>איך להשתמש:</strong></p>
-                  <p>1. לך לעמוד הסרטונים</p>
-                  <p>2. לחץ על הכפתור 📤 ליד הסרטון (רק למנהלים)</p>
-                  <p>3. הדבק כאן את המזהה שהועתק</p>
+                  <p>1. מעבר לעמוד הסרטונים</p>
+                  <p>2. לחיצה על הכפתור 📤 ליד הסרטון (רק למנהלים)</p>
+                  <p>3. הדבקת המזהה שהועתק כאן</p>
                   <p>4. הקישור יווצר אוטומטית! ✨</p>
                 </div>
               </div>
@@ -248,7 +248,7 @@ const AdminMessageComposer = ({ onMessageSent }: AdminMessageComposerProps) => {
                 type="button"
                 onClick={async () => {
                   const confirmed = window.confirm(
-                    "האם אתה בטוח שברצונך למחוק את כל ההודעות לכל המשתמשים?\n\nפעולה זו בלתי הפיכה!"
+                    "בטוחים שרוצים למחוק את כל ההודעות לכל המשתמשים?\n\nפעולה זו בלתי הפיכה!"
                   );
                   
                   if (!confirmed) return;

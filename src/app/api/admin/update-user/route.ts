@@ -18,14 +18,14 @@ export async function POST(req: NextRequest) {
     
     if (!authResult.isAuthenticated) {
       return NextResponse.json(
-        { error: authResult.error || "אינך מחובר למערכת" },
+        { error: authResult.error || "אין חיבור למערכת" },
         { status: 401 }
       );
     }
     
     if (!authResult.isAdmin) {
       return NextResponse.json(
-        { error: authResult.error || "אין לך הרשאות מנהל" },
+        { error: authResult.error || "אין הרשאות מנהל" },
         { status: 403 }
       );
     }

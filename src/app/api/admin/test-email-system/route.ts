@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       const message = await prisma.message.create({
         data: {
           title: "🧪 בדיקת הודעת מערכת",
-          content: `זוהי הודעת בדיקה שנשלחה ב-${timestamp}. אם אתה רואה את זה, המערכת עובדת!`,
+          content: `זוהי הודעת בדיקה שנשלחה ב-${timestamp}. אם ההודעה נקראת, המערכת עובדת!`,
           targetUserIds: [user.id], // Only target the admin user
           isActive: true,
         },
@@ -99,10 +99,10 @@ export async function POST(request: NextRequest) {
               </div>
               <div style="padding: 25px;">
                 <p style="color: #2D3142; font-size: 16px;">שלום ${user.name || ""},</p>
-                <p style="color: #2D3142; font-size: 15px;">מחכה לך הודעה חדשה באתר הסטודיו:</p>
+                <p style="color: #2D3142; font-size: 15px;">הודעה חדשה באתר הסטודיו:</p>
                 <div style="background: #F7F3EB; border-right: 4px solid #D5C4B7; padding: 15px; border-radius: 8px; margin: 20px 0;">
                   <h3 style="color: #2D3142; margin: 0 0 8px 0;">🧪 בדיקת הודעת מערכת</h3>
-                  <p style="color: #3D3D3D; font-size: 14px; margin: 0;">זוהי הודעת בדיקה. אם אתה רואה את זה - המערכת עובדת מצוין!</p>
+                  <p style="color: #3D3D3D; font-size: 14px; margin: 0;">זוהי הודעת בדיקה. אם ההודעה נקראת - המערכת עובדת מצוין!</p>
                 </div>
                 <div style="text-align: center; margin: 25px 0;">
                   <a href="https://studioboazonline.com/dashboard" style="background: linear-gradient(135deg, #D5C4B7, #B8A99C); color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 15px; display: inline-block;">
