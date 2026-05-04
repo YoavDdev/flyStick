@@ -300,9 +300,6 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
                   <div className="flex items-center gap-2 flex-wrap">
                     <RegisterButton event={e} isLoggedIn={isLoggedIn} isRegistered={registeredIds.includes(e.id)} onToggle={onToggleRegister} registering={registering} />
                     <AddToCalendarButton event={e} />
-                    {e.registrationCount > 0 && (
-                      <span className="text-[10px] text-[#5D5D5D]">{e.registrationCount} נרשמו</span>
-                    )}
                   </div>
                 )}
                 {e.status === "live" && (
@@ -610,8 +607,6 @@ const LiveStreamPage = () => {
         const data = await res.json();
         if (data.success) {
           setRegisteredIds(prev => prev.filter(id => id !== eventId));
-          // Update count in allEvents
-          setAllEvents(prev => prev.map(e => e.id === eventId ? { ...e, registrationCount: data.count } : e));
         }
       } else {
         const res = await fetch("/api/live/register", {
@@ -622,7 +617,6 @@ const LiveStreamPage = () => {
         const data = await res.json();
         if (data.success) {
           setRegisteredIds(prev => [...prev, eventId]);
-          setAllEvents(prev => prev.map(e => e.id === eventId ? { ...e, registrationCount: data.count } : e));
         }
       }
     } catch { /* ignore */ }
@@ -774,9 +768,6 @@ const LiveStreamPage = () => {
                     <RegisterButton event={nextEvent} isLoggedIn={!!session} isRegistered={registeredIds.includes(nextEvent.id)} onToggle={handleToggleRegister} registering={registering} />
                     <AddToCalendarButton event={nextEvent} />
                   </div>
-                  {nextEvent.registrationCount > 0 && (
-                    <p className="text-xs text-[#5D5D5D] mt-1 sm:mt-2">{nextEvent.registrationCount} נרשמו לשיעור</p>
-                  )}
                 </div>
               </div>
             );
