@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
@@ -139,6 +139,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [emptyDayMessage, setEmptyDayMessage] = useState<string | null>(null);
+  const selectedEventsRef = useRef<HTMLDivElement>(null);
 
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
@@ -216,6 +217,15 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
                 if (dayEvts.length > 0) {
                   setSelectedDay(isSelected ? null : day);
                   setEmptyDayMessage(null);
+                  // Scroll to selected events after a short delay
+                  if (!isSelected) {
+                    setTimeout(() => {
+                      selectedEventsRef.current?.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'nearest' 
+                      });
+                    }, 100);
+                  }
                 } else {
                   setEmptyDayMessage(`אין שיעורים מתוזמנים ב-${day} ${HEBREW_MONTHS[month]}`);
                   setSelectedDay(null);
@@ -257,7 +267,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
 
       {/* Selected day detail - elegant */}
       {selectedDay && selectedEvents.length > 0 && (
-        <div className="border-t border-[#D5C4B7]/20 p-4 sm:p-5 space-y-2.5 sm:space-y-3 bg-gradient-to-b from-[#F7F3EB]/30 to-white/50">
+        <div ref={selectedEventsRef} className="border-t border-[#D5C4B7]/20 p-4 sm:p-5 space-y-2.5 sm:space-y-3 bg-gradient-to-b from-[#F7F3EB]/30 to-white/50 animate-fadeIn">
           <h3 className="font-bold text-[#2D3142] text-sm sm:text-base mb-1">
             יום {HEBREW_DAYS[new Date(year, month, selectedDay).getDay()]} {selectedDay} {HEBREW_MONTHS[month]}
           </h3>
