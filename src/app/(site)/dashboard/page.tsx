@@ -27,8 +27,6 @@ import AdminAIManager from "../../components/AdminAIManager";
 import AdminTabs from "../../components/AdminTabs";
 import AdminTargetedMessageComposer from "../../components/AdminTargetedMessageComposer";
 import AdminMessageReplies from "../../components/AdminMessageReplies";
-import EmailSystemChecker from "../../components/EmailSystemChecker";
-import EmailLogsViewer from "../../components/EmailLogsViewer";
 
 // Note: Metadata cannot be exported from client components
 // SEO protection should be handled at the layout level
@@ -469,32 +467,26 @@ const DashboardPage = () => {
                         {/* Divider */}
                         <div className="border-t border-[#D5C4B7]/20" />
 
-                        {/* Email System Checker */}
-                        <div>
-                          <div className="flex items-center gap-2 mb-3 pr-1">
-                            <div className="w-8 h-8 rounded-full bg-[#2D3142]/10 flex items-center justify-center text-sm">🔍</div>
-                            <div>
-                              <h3 className="text-sm font-bold text-[#2D3142]">בדיקת מערכת מיילים</h3>
-                              <p className="text-[10px] text-[#3D3D3D]/50">בדוק אם Resend עובד תקין</p>
+                        {/* Email Tools Link */}
+                        <Link
+                          href="/dashboard/email-tools"
+                          className="block bg-gradient-to-r from-[#D5C4B7]/10 to-[#B8A99C]/10 hover:from-[#D5C4B7]/20 hover:to-[#B8A99C]/20 border border-[#D5C4B7]/30 rounded-xl p-4 transition-all group"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#B56B4A] to-[#9a5a3d] flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                                <span className="text-xl">🔧</span>
+                              </div>
+                              <div>
+                                <h3 className="text-sm font-bold text-[#2D3142]">כלי בדיקת מיילים</h3>
+                                <p className="text-[10px] text-[#3D3D3D]/50">בדוק מערכת Resend וצפה בלוג מיילים</p>
+                              </div>
                             </div>
+                            <svg className="w-5 h-5 text-[#B56B4A] group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
                           </div>
-                          <EmailSystemChecker />
-                        </div>
-
-                        {/* Divider */}
-                        <div className="border-t border-[#D5C4B7]/20" />
-
-                        {/* Email Logs Viewer */}
-                        <div>
-                          <div className="flex items-center gap-2 mb-3 pr-1">
-                            <div className="w-8 h-8 rounded-full bg-[#2D3142]/10 flex items-center justify-center text-sm">📊</div>
-                            <div>
-                              <h3 className="text-sm font-bold text-[#2D3142]">לוג מיילים</h3>
-                              <p className="text-[10px] text-[#3D3D3D]/50">צפה במיילים שנשלחו ונכשלו</p>
-                            </div>
-                          </div>
-                          <EmailLogsViewer />
-                        </div>
+                        </Link>
 
                         {/* Divider */}
                         <div className="border-t border-[#D5C4B7]/20" />
