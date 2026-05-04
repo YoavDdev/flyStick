@@ -275,7 +275,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
             const inner = (
               <div className={`p-3 sm:p-4 rounded-xl flex flex-col gap-2 shadow-sm hover:shadow-md transition-all ${
                 e.status === "live" ? "bg-red-50 border border-red-200" :
-                e.status === "scheduled" ? "bg-blue-50 border border-blue-200" :
+                e.status === "scheduled" ? "bg-[#FFF9F0] border border-[#D5C4B7]" :
                 e.status === "cancelled" ? "bg-orange-50 border border-orange-200" :
                 "bg-gray-50 border border-gray-200"
               } ${e.status === "ended" ? "hover:bg-gray-100 cursor-pointer" : ""}`}>
