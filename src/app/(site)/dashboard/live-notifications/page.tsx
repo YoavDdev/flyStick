@@ -187,39 +187,23 @@ export default function LiveNotificationsPage() {
                         <button
                           onClick={() => toggleEmailUpdates(reg.id, reg.wantsEmailUpdates)}
                           disabled={updating === reg.id}
-                          className={`relative inline-flex h-12 w-24 items-center rounded-full transition-all duration-300 ${
+                          className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
                             reg.wantsEmailUpdates
-                              ? "bg-gradient-to-r from-[#B56B4A] to-[#9a5a3d]"
-                              : "bg-gray-300"
-                          } ${updating === reg.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                              ? "bg-gradient-to-r from-[#B56B4A] to-[#9a5a3d] text-white shadow-md hover:shadow-lg"
+                              : "bg-gray-200 text-[#5D5D5D] hover:bg-gray-300"
+                          } ${updating === reg.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:scale-105"}`}
                         >
-                          <span
-                            className={`inline-block h-10 w-10 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
-                              reg.wantsEmailUpdates ? "-translate-x-1" : "translate-x-12"
-                            }`}
-                          >
-                            {updating === reg.id ? (
-                              <div className="flex items-center justify-center h-full">
-                                <div className="w-4 h-4 border-2 border-[#B56B4A] border-t-transparent rounded-full animate-spin"></div>
-                              </div>
-                            ) : (
-                              <div className="flex items-center justify-center h-full">
-                                {reg.wantsEmailUpdates ? (
-                                  <svg className="w-5 h-5 text-[#B56B4A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                  </svg>
-                                ) : (
-                                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                  </svg>
-                                )}
-                              </div>
-                            )}
-                          </span>
+                          {updating === reg.id ? (
+                            <div className="flex items-center gap-2">
+                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                              <span>מעדכן...</span>
+                            </div>
+                          ) : (
+                            <span>
+                              {reg.wantsEmailUpdates ? "בטל עדכונים" : "הפעל עדכונים"}
+                            </span>
+                          )}
                         </button>
-                        <p className="text-xs text-center mt-2 text-[#5D5D5D]">
-                          {reg.wantsEmailUpdates ? "מקבל עדכונים" : "לא מקבל עדכונים"}
-                        </p>
                       </div>
                     </div>
                   </div>

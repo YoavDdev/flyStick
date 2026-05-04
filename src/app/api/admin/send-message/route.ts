@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions as authOptionsImport } from "../../auth/[...nextauth]/route.jsx";
 import prisma from "../../../libs/prismadb";
 import { Resend } from 'resend';
+import { logEmail } from "../../../libs/emailLogger";
 
 const authOptions = authOptionsImport as any;
 
