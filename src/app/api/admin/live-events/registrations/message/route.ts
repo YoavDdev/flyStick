@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 import { verifyAdminAccess } from "@/app/libs/adminAuth";
 import { Resend } from "resend";
+import { logEmail } from "@/app/libs/emailLogger";
 
 // POST - Send a message to all registrants of a specific event
 export async function POST(request: NextRequest) {
@@ -53,15 +54,53 @@ export async function POST(request: NextRequest) {
 
       const emailPromises = users.map(async (user: { email: string; name: string | null }) => {
         try {
-          await resend.emails.send({
+          const { data, error } = await resend.emails.send({
             from: 'Studio Boaz <info@mail.studioboazonline.com>',
             to: user.email,
             subject: `הודעה חדשה מבועז - ${title}`,
             html: buildNotificationEmail({ name: user.name, title, content }),
           });
-          console.log(`✅ Email sent to ${user.email}`);
+          
+          if (error) {
+            console.error(`❌ Failed to send email to ${user.email}:`, error);
+            
+            // Log failed email
+            await logEmail({
+              to: user.email,
+              from: 'Studio Boaz <info@mail.studioboazonline.com>',
+              subject: `הודעה חדשה מבועז - ${title}`,
+              emailType: 'live_event_message',
+              status: 'failed',
+              errorMessage: JSON.stringify(error),
+              metadata: { eventId, messageTitle: title }
+            });
+          } else {
+            console.log(`✅ Email sent to ${user.email}`);
+            
+            // Log successful email
+            await logEmail({
+              to: user.email,
+              from: 'Studio Boaz <info@mail.studioboazonline.com>',
+              subject: `הודעה חדשה מבועז - ${title}`,
+              emailType: 'live_event_message',
+              status: 'sent',
+              resendId: data?.id,
+              metadata: { eventId, messageTitle: title }
+            });
+          }
         } catch (emailErr) {
           console.error(`❌ Failed to send email to ${user.email}:`, emailErr);
+          
+          // Log failed email
+          await logEmail({
+            to: user.email,
+            from: 'Studio Boaz <info@mail.studioboazonline.com>',
+            subject: `הודעה חדשה מבועז - ${title}`,
+            emailType: 'live_event_message',
+            status: 'failed',
+            errorMessage: emailErr instanceof Error ? emailErr.message : String(emailErr),
+            metadata: { eventId, messageTitle: title }
+          });
         }
       });
 

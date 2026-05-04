@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 
       const emailPromises = eligibleRecipients.map(async (recipient: { email: string; name: string | null; unsubscribeToken: string }) => {
         try {
-          const { error } = await resend.emails.send({
+          const { data, error } = await resend.emails.send({
             from: 'Studio Boaz <info@mail.studioboazonline.com>',
             to: recipient.email,
             subject: `הודעה חדשה מבועז - ${title}`,
@@ -96,13 +96,46 @@ export async function POST(request: NextRequest) {
           if (error) {
             console.error(`❌ Failed to send to ${recipient.email}:`, error);
             emailsFailed++;
+            
+            // Log failed email
+            await logEmail({
+              to: recipient.email,
+              from: 'Studio Boaz <info@mail.studioboazonline.com>',
+              subject: `הודעה חדשה מבועז - ${title}`,
+              emailType: 'admin_broadcast',
+              status: 'failed',
+              errorMessage: JSON.stringify(error),
+              metadata: { messageTitle: title }
+            });
           } else {
             console.log(`✅ Email sent to ${recipient.email}`);
             emailsSent++;
+            
+            // Log successful email
+            await logEmail({
+              to: recipient.email,
+              from: 'Studio Boaz <info@mail.studioboazonline.com>',
+              subject: `הודעה חדשה מבועז - ${title}`,
+              emailType: 'admin_broadcast',
+              status: 'sent',
+              resendId: data?.id,
+              metadata: { messageTitle: title }
+            });
           }
         } catch (emailErr) {
           console.error(`❌ Error sending to ${recipient.email}:`, emailErr);
           emailsFailed++;
+          
+          // Log failed email
+          await logEmail({
+            to: recipient.email,
+            from: 'Studio Boaz <info@mail.studioboazonline.com>',
+            subject: `הודעה חדשה מבועז - ${title}`,
+            emailType: 'admin_broadcast',
+            status: 'failed',
+            errorMessage: emailErr instanceof Error ? emailErr.message : String(emailErr),
+            metadata: { messageTitle: title }
+          });
         }
       });
 
