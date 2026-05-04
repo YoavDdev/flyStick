@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
+import { logEmail } from "@/app/libs/emailLogger";
 
 // GET - Get my registrations (for the logged-in user)
 export async function GET(request: NextRequest) {
@@ -75,14 +76,49 @@ export async function POST(request: NextRequest) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ eventId, registrationId: registration.id }),
     })
-      .then((res) => {
+      .then(async (res) => {
         if (res.ok) {
           console.log("✅ Registration email sent successfully to:", user.email);
+          // Log successful email
+          await logEmail({
+            to: user.email,
+            from: 'Studio Boaz <info@mail.studioboazonline.com>',
+            subject: 'נרשמת בהצלחה לשיעור חי',
+            emailType: 'live_event_registration',
+            status: 'sent',
+            userId: user.id,
+            metadata: { eventId, registrationId: registration.id }
+          });
         } else {
-          console.error("❌ Failed to send registration email. Status:", res.status);
+          const errorText = await res.text();
+          console.error("❌ Failed to send registration email. Status:", res.status, "Error:", errorText);
+          // Log failed email
+          await logEmail({
+            to: user.email,
+            from: 'Studio Boaz <info@mail.studioboazonline.com>',
+            subject: 'נרשמת בהצלחה לשיעור חי',
+            emailType: 'live_event_registration',
+            status: 'failed',
+            errorMessage: `HTTP ${res.status}: ${errorText}`,
+            userId: user.id,
+            metadata: { eventId, registrationId: registration.id }
+          });
         }
       })
-      .catch((err) => console.error("❌ Error sending registration email:", err));
+      .catch(async (err) => {
+        console.error("❌ Error sending registration email:", err);
+        // Log failed email
+        await logEmail({
+          to: user.email,
+          from: 'Studio Boaz <info@mail.studioboazonline.com>',
+          subject: 'נרשמת בהצלחה לשיעור חי',
+          emailType: 'live_event_registration',
+          status: 'failed',
+          errorMessage: err.message || String(err),
+          userId: user.id,
+          metadata: { eventId, registrationId: registration.id }
+        });
+      });
 
     // Get updated count
     const count = await prisma.liveEventRegistration.count({ where: { eventId } });

@@ -27,6 +27,8 @@ import AdminAIManager from "../../components/AdminAIManager";
 import AdminTabs from "../../components/AdminTabs";
 import AdminTargetedMessageComposer from "../../components/AdminTargetedMessageComposer";
 import AdminMessageReplies from "../../components/AdminMessageReplies";
+import EmailSystemChecker from "../../components/EmailSystemChecker";
+import EmailLogsViewer from "../../components/EmailLogsViewer";
 
 // Note: Metadata cannot be exported from client components
 // SEO protection should be handled at the layout level
@@ -462,6 +464,36 @@ const DashboardPage = () => {
                               <AdminNewsletterComposer />
                             </div>
                           </div>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="border-t border-[#D5C4B7]/20" />
+
+                        {/* Email System Checker */}
+                        <div>
+                          <div className="flex items-center gap-2 mb-3 pr-1">
+                            <div className="w-8 h-8 rounded-full bg-[#2D3142]/10 flex items-center justify-center text-sm">🔍</div>
+                            <div>
+                              <h3 className="text-sm font-bold text-[#2D3142]">בדיקת מערכת מיילים</h3>
+                              <p className="text-[10px] text-[#3D3D3D]/50">בדוק אם Resend עובד תקין</p>
+                            </div>
+                          </div>
+                          <EmailSystemChecker />
+                        </div>
+
+                        {/* Divider */}
+                        <div className="border-t border-[#D5C4B7]/20" />
+
+                        {/* Email Logs Viewer */}
+                        <div>
+                          <div className="flex items-center gap-2 mb-3 pr-1">
+                            <div className="w-8 h-8 rounded-full bg-[#2D3142]/10 flex items-center justify-center text-sm">📊</div>
+                            <div>
+                              <h3 className="text-sm font-bold text-[#2D3142]">לוג מיילים</h3>
+                              <p className="text-[10px] text-[#3D3D3D]/50">צפה במיילים שנשלחו ונכשלו</p>
+                            </div>
+                          </div>
+                          <EmailLogsViewer />
                         </div>
 
                         {/* Divider */}

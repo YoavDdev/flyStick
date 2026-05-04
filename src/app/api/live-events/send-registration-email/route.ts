@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 import { Resend } from 'resend';
+import { logEmail } from "@/app/libs/emailLogger";
 
 const HEBREW_DAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
 const HEBREW_MONTHS = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
@@ -149,7 +150,7 @@ export async function POST(req: Request) {
     `;
 
     // Send email using Resend
-    const { error } = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: 'Studio Boaz <info@mail.studioboazonline.com>',
       to: user.email!,
       subject: `✅ נרשמת בהצלחה: ${event.title}`,
@@ -158,8 +159,33 @@ export async function POST(req: Request) {
 
     if (error) {
       console.error("❌ Resend error:", error);
+      
+      // Log failed email
+      await logEmail({
+        to: user.email!,
+        from: 'Studio Boaz <info@mail.studioboazonline.com>',
+        subject: `✅ נרשמת בהצלחה: ${event.title}`,
+        emailType: 'live_event_registration',
+        status: 'failed',
+        errorMessage: JSON.stringify(error),
+        userId: user.id,
+        metadata: { eventId, registrationId }
+      });
+      
       return NextResponse.json({ error: "Failed to send email" }, { status: 500 });
     }
+
+    // Log successful email
+    await logEmail({
+      to: user.email!,
+      from: 'Studio Boaz <info@mail.studioboazonline.com>',
+      subject: `✅ נרשמת בהצלחה: ${event.title}`,
+      emailType: 'live_event_registration',
+      status: 'sent',
+      resendId: data?.id,
+      userId: user.id,
+      metadata: { eventId, registrationId, eventTitle: event.title }
+    });
 
     console.log("✅ Registration email sent successfully to:", user.email);
     return NextResponse.json({ success: true });

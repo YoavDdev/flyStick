@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 import bcrypt from "bcrypt";
 import prisma from "../../libs/prismadb";
 import { NextResponse } from "next/server";
+import { logEmail } from "../../libs/emailLogger";
 
 export async function POST(request) {
   const body = await request.json();
@@ -138,7 +139,7 @@ export async function POST(request) {
     const { Resend } = await import('resend');
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    await resend.emails.send({
+    const emailResult = await resend.emails.send({
       from: 'Studio Boaz Online <info@mail.studioboazonline.com>',
       to: [normalizedEmail],
       subject: 'ברוך הבא לסטודיו',
@@ -179,9 +180,35 @@ export async function POST(request) {
       `
     });
 
+    // Log successful email
+    await logEmail({
+      to: normalizedEmail,
+      from: 'Studio Boaz Online <info@mail.studioboazonline.com>',
+      subject: 'ברוך הבא לסטודיו',
+      emailType: 'welcome',
+      status: emailResult.error ? 'failed' : 'sent',
+      resendId: emailResult.data?.id,
+      errorMessage: emailResult.error ? JSON.stringify(emailResult.error) : undefined,
+      userId: user.id,
+      metadata: { name, registrationSource }
+    });
+
     console.log("🎉 Welcome email sent successfully to:", normalizedEmail);
   } catch (welcomeError) {
     console.error("❌ Error sending welcome email:", welcomeError);
+    
+    // Log failed email
+    await logEmail({
+      to: normalizedEmail,
+      from: 'Studio Boaz Online <info@mail.studioboazonline.com>',
+      subject: 'ברוך הבא לסטודיו',
+      emailType: 'welcome',
+      status: 'failed',
+      errorMessage: welcomeError.message || String(welcomeError),
+      userId: user.id,
+      metadata: { name, registrationSource }
+    });
+    
     // Don't fail registration if welcome email fails
   }
 

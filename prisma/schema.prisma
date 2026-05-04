@@ -431,3 +431,22 @@ model SaleConfig {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
+
+model EmailLog {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  to              String   // Recipient email
+  from            String   // Sender email
+  subject         String   // Email subject
+  emailType       String   // Type: "welcome", "reset_password", "subscription", "newsletter", etc.
+  status          String   // Status: "sent", "failed", "pending"
+  resendId        String?  // Resend email ID if successful
+  errorMessage    String?  // Error message if failed
+  userId          String?  @db.ObjectId // Optional user ID
+  metadata        Json?    // Additional metadata
+  createdAt       DateTime @default(now())
+  
+  @@index([to])
+  @@index([emailType])
+  @@index([status])
+  @@index([createdAt])
+}
