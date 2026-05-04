@@ -819,27 +819,6 @@ const LiveStreamPage = () => {
             </div>
           )}
 
-          {/* INFO CARDS (when not live) */}
-          {!isLive && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-white/70 rounded-2xl p-5 border border-[#D5C4B7]/30 shadow text-center">
-                <p className="text-2xl mb-2">🎯</p>
-                <p className="text-sm font-medium text-[#2D3142]">שידור חינם</p>
-                <p className="text-xs text-[#5D5D5D]">לרשומים בלבד</p>
-              </div>
-              <div className="bg-white/70 rounded-2xl p-5 border border-[#D5C4B7]/30 shadow text-center">
-                <p className="text-2xl mb-2">💬</p>
-                <p className="text-sm font-medium text-[#2D3142]">צ׳אט בזמן אמת</p>
-                <p className="text-xs text-[#5D5D5D]">דברו עם בועז</p>
-              </div>
-              <div className="bg-white/70 rounded-2xl p-5 border border-[#D5C4B7]/30 shadow text-center">
-                <p className="text-2xl mb-2">🔄</p>
-                <p className="text-sm font-medium text-[#2D3142]">צפייה חוזרת</p>
-                <p className="text-xs text-[#5D5D5D]">למנויים בלבד</p>
-              </div>
-            </div>
-          )}
-
           {/* CTA for non-logged in */}
           {!session && (
             <div className="bg-gradient-to-r from-[#D5C4B7]/20 to-[#B8A99C]/20 rounded-2xl p-6 border border-[#D5C4B7]/30 text-center">

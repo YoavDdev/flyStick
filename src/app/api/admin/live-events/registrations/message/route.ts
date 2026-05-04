@@ -20,14 +20,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "חסרים שדות חובה" }, { status: 400 });
     }
 
-    // Get all registrant userIds for this event
+    // Get all registrant userIds for this event who want email updates
     const registrations = await prisma.liveEventRegistration.findMany({
-      where: { eventId },
+      where: { 
+        eventId,
+        wantsEmailUpdates: true  // Only users who want updates
+      },
       select: { userId: true },
     });
 
     if (registrations.length === 0) {
-      return NextResponse.json({ error: "אין נרשמים לאירוע זה" }, { status: 400 });
+      return NextResponse.json({ error: "אין נרשמים שרוצים לקבל עדכונים לאירוע זה" }, { status: 400 });
     }
 
     const targetUserIds = registrations.map((r: { userId: string }) => r.userId);
