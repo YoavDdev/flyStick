@@ -217,14 +217,18 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
                 if (dayEvts.length > 0) {
                   setSelectedDay(isSelected ? null : day);
                   setEmptyDayMessage(null);
-                  // Scroll to selected events after a short delay
+                  // Scroll to selected events after a short delay (mobile only)
                   if (!isSelected) {
                     setTimeout(() => {
-                      selectedEventsRef.current?.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'nearest' 
-                      });
-                    }, 100);
+                      if (selectedEventsRef.current && window.innerWidth < 768) {
+                        const elementPosition = selectedEventsRef.current.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - 150;
+                        window.scrollTo({
+                          top: offsetPosition,
+                          behavior: 'smooth'
+                        });
+                      }
+                    }, 150);
                   }
                 } else {
                   setEmptyDayMessage(`אין שיעורים מתוזמנים ב-${day} ${HEBREW_MONTHS[month]}`);
