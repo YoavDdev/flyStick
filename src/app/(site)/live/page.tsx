@@ -278,11 +278,11 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
           />
           
           {/* Modal Container - z-20 */}
-          <div className="relative h-full flex items-center justify-center p-3 sm:p-4 z-20">
+          <div className="absolute inset-0 flex items-center justify-center p-3 sm:p-4 z-20">
             {/* Modal Box */}
             <div 
               className="bg-white rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full flex flex-col" 
-              style={{ maxHeight: '90vh' }}
+              style={{ maxHeight: '90dvh' }}
             >
               
               {/* Header - קבוע */}
