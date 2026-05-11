@@ -390,117 +390,22 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
 };
 
 // ============ ADMIN EVENT REGISTRATIONS ============
-const AdminEventRegistrations = ({ eventId, eventTitle }: { eventId: string; eventTitle: string }) => {
-  const [registrations, setRegistrations] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const [error, setError] = useState("");
+const AdminEventRegistrations = ({ eventId }: { eventId: string; eventTitle: string }) => {
+  const [count, setCount] = useState<number | null>(null);
 
-  const fetchRegistrations = async () => {
-    if (expanded) {
-      setExpanded(false);
-      return;
-    }
-    
-    setLoading(true);
-    setExpanded(true);
-    setError("");
-    
-    try {
-      const res = await fetch(`/api/admin/live-events/registrations?eventId=${eventId}`);
-      const data = await res.json();
-      
-      if (data.success) {
-        setRegistrations(data.registrations || []);
-      } else {
-        setError(data.error || "שגיאה בטעינת נרשמים");
-      }
-    } catch (err) {
-      setError("שגיאה בטעינת נרשמים");
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    fetch(`/api/admin/live-events/registrations?eventId=${eventId}`)
+      .then((r) => r.json())
+      .then((data) => { if (data.success) setCount(data.registrations?.length ?? 0); })
+      .catch(() => {});
+  }, [eventId]);
 
   return (
-    <div className="mt-3">
-      <button
-        onClick={fetchRegistrations}
-        className={`w-full text-xs px-3 py-1.5 rounded-lg border transition-all ${
-          expanded
-            ? "bg-[#B56B4A] text-white border-[#B56B4A]"
-            : "bg-white text-[#2D3142] border-[#D5C4B7] hover:bg-[#D5C4B7]/20"
-        }`}
-      >
-        <span className="flex items-center justify-center gap-1.5">
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-          {expanded ? "הסתר" : `נרשמים: ${registrations.length || "?"}`}
-        </span>
-      </button>
-
-      {expanded && (
-        <div className="mt-2 bg-white/70 backdrop-blur-sm rounded-lg border border-[#D5C4B7]/30 p-2">
-          {loading && (
-            <div className="text-center py-3">
-              <div className="inline-block w-4 h-4 border-2 border-[#B56B4A] border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          )}
-
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-[10px] p-2 rounded text-center">
-              {error}
-            </div>
-          )}
-
-          {!loading && !error && registrations.length === 0 && (
-            <div className="text-center py-3 text-[10px] text-[#5D5D5D]">
-              אין נרשמים
-            </div>
-          )}
-
-          {!loading && !error && registrations.length > 0 && (
-            <div className="space-y-1">
-              <div className="bg-[#D5C4B7]/20 rounded px-2 py-1 mb-1.5">
-                <p className="text-[10px] font-bold text-[#2D3142] text-center">
-                  סה"כ: {registrations.length}
-                </p>
-              </div>
-              
-              <div className="max-h-48 overflow-y-auto space-y-0.5">
-                {registrations.map((reg: any, idx: number) => (
-                  <div
-                    key={reg.id}
-                    className="bg-white/80 rounded px-2 py-1.5 border border-[#D5C4B7]/20 hover:border-[#B56B4A]/40 transition-colors"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                        <span className="text-[9px] font-bold text-[#2D3142] bg-[#D5C4B7]/30 px-1.5 py-0.5 rounded">
-                          {idx + 1}
-                        </span>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[10px] font-bold text-[#2D3142] truncate">
-                            {reg.userName}
-                          </p>
-                          <p className="text-[9px] text-[#5D5D5D] truncate">
-                            {reg.userEmail}
-                          </p>
-                        </div>
-                      </div>
-                      {reg.isSubscriber && (
-                        <svg className="w-3 h-3 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+    <div className="w-full text-xs px-3 py-1.5 rounded-lg border border-[#D5C4B7] bg-white text-[#2D3142] flex items-center justify-center gap-1.5">
+      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      נרשמים: {count === null ? "..." : count}
     </div>
   );
 };
