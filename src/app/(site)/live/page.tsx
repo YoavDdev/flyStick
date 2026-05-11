@@ -279,30 +279,39 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
 
       {/* Modal for selected day events */}
       {showModal && selectedDay && selectedEvents.length > 0 && (
-        <div className="fixed top-0 left-0 right-0 bottom-0 z-[9999] flex items-center justify-center p-3 sm:p-4" dir="rtl" style={{ width: '100vw', height: '100vh' }}>
+        <div className="fixed inset-0 z-[9999]" dir="rtl" style={{ overflow: 'hidden' }}>
           {/* Backdrop */}
           <div 
-            className="absolute top-0 left-0 right-0 bottom-0 bg-black/75"
+            className="absolute inset-0 bg-black/70"
             onClick={() => { setShowModal(false); setSelectedDay(null); }}
-            style={{ width: '100%', height: '100%' }}
           />
           
-          {/* Modal content */}
-          <div className="relative bg-white rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full overflow-y-auto" style={{ maxHeight: '85vh', zIndex: 10 }}>
-            {/* Close button - ALWAYS VISIBLE */}
-            <button
-              onClick={() => { setShowModal(false); setSelectedDay(null); }}
-              className="absolute top-3 left-3 z-20 w-11 h-11 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors shadow-2xl border-2 border-white"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+          {/* Modal Container */}
+          <div className="absolute inset-0 flex items-center justify-center p-3 sm:p-4">
+            {/* Modal Box */}
+            <div className="relative bg-white rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full flex flex-col" style={{ maxHeight: '90vh' }}>
+              
+              {/* Header - קבוע */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-[#D5C4B7]/20 flex-shrink-0">
+                <button
+                  onClick={() => { setShowModal(false); setSelectedDay(null); }}
+                  className="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+                
+                <h3 className="font-bold text-[#2D3142] text-base sm:text-lg flex-1 text-center">
+                  יום {HEBREW_DAYS[new Date(year, month, selectedDay).getDay()]} {selectedDay} {HEBREW_MONTHS[month]}
+                </h3>
+                
+                <div className="w-10"></div>
+              </div>
 
-            <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
-              <h3 className="font-bold text-[#2D3142] text-lg sm:text-xl mb-3 sm:mb-4 pr-10 sm:pr-12">
-                יום {HEBREW_DAYS[new Date(year, month, selectedDay).getDay()]} {selectedDay} {HEBREW_MONTHS[month]}
-              </h3>
+              {/* Content - עם scroll */}
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+                <div className="space-y-3 sm:space-y-4">
               
               {selectedEvents.map((e: any) => {
                 const inner = (
@@ -360,6 +369,8 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
                   <div key={e.id}>{inner}</div>
                 );
               })}
+                </div>
+              </div>
             </div>
           </div>
         </div>
