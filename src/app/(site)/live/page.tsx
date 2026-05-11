@@ -102,10 +102,16 @@ const RegisterButton = ({ event, isLoggedIn, isRegistered, onToggle, registering
 
   const isBusy = registering === event.id;
 
+  const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isBusy) onToggle(event.id);
+  };
+
   return (
     <button
-      onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggle(event.id); }}
-      onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); }}
+      onClick={handleClick}
+      onTouchEnd={handleClick}
       disabled={isBusy}
       className={`inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full transition-colors flex-shrink-0 ${
         isRegistered
