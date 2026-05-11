@@ -273,13 +273,13 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
         >
           {/* Backdrop */}
           <div 
-            className="absolute inset-0 bg-black/70"
+            className="absolute inset-0 bg-black/70 -z-10"
             onClick={() => { setShowModal(false); setSelectedDay(null); }}
           />
           
           {/* Modal Box */}
           <div 
-            className="relative bg-white rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full flex flex-col z-10" 
+            className="relative bg-white rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full flex flex-col" 
             style={{ maxHeight: '90vh' }}
           >
               
