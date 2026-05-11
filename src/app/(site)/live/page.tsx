@@ -283,13 +283,13 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
           className="fixed inset-0 z-[9999]" 
           dir="rtl" 
           style={{ overflow: 'hidden' }}
-          onTouchMove={(e) => e.preventDefault()}
-          onWheel={(e) => e.preventDefault()}
         >
           {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-black/70"
             onClick={() => { setShowModal(false); setSelectedDay(null); }}
+            onTouchMove={(e) => e.preventDefault()}
+            onWheel={(e) => e.preventDefault()}
             style={{ touchAction: 'none' }}
           />
           
