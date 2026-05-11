@@ -143,6 +143,18 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
   const [showModal, setShowModal] = useState(false);
   const selectedEventsRef = useRef<HTMLDivElement>(null);
 
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showModal]);
+
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
   const firstDayOfWeek = new Date(year, month, 1).getDay();
@@ -267,15 +279,15 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
 
       {/* Modal for selected day events */}
       {showModal && selectedDay && selectedEvents.length > 0 && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4" dir="rtl">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 overflow-hidden" dir="rtl" style={{ minHeight: '100vh' }}>
           {/* Backdrop */}
           <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => { setShowModal(false); setSelectedDay(null); }}
           />
           
           {/* Modal content */}
-          <div className="relative bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full max-h-[85vh] sm:max-h-[80vh] overflow-y-auto">
+          <div className="relative bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full overflow-y-auto" style={{ maxHeight: '85vh' }}>
             {/* Close button */}
             <button
               onClick={() => { setShowModal(false); setSelectedDay(null); }}
