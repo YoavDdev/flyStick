@@ -290,6 +290,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
           <div 
             className="bg-white rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full flex flex-col" 
             style={{ maxHeight: '90dvh' }}
+            onClick={(e) => e.stopPropagation()}
           >
               
               {/* Header - קבוע */}
