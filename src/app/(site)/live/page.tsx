@@ -143,27 +143,6 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
   const [showModal, setShowModal] = useState(false);
   const selectedEventsRef = useRef<HTMLDivElement>(null);
 
-  // Prevent body scroll when modal is open
-  useEffect(() => {
-    if (showModal) {
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-    } else {
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, parseInt(scrollY || '0') * -1);
-    }
-    return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-    };
-  }, [showModal]);
-
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
   const firstDayOfWeek = new Date(year, month, 1).getDay();
