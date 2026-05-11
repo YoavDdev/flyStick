@@ -319,6 +319,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
                   touchAction: 'pan-y',
                   overscrollBehavior: 'contain'
                 }}
+                onClick={(e) => e.stopPropagation()}
               >
                 <div className="space-y-3 sm:space-y-4">
               
