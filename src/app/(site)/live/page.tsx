@@ -279,17 +279,28 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
 
       {/* Modal for selected day events */}
       {showModal && selectedDay && selectedEvents.length > 0 && (
-        <div className="fixed inset-0 z-[9999]" dir="rtl" style={{ overflow: 'hidden' }}>
+        <div 
+          className="fixed inset-0 z-[9999]" 
+          dir="rtl" 
+          style={{ overflow: 'hidden' }}
+          onTouchMove={(e) => e.preventDefault()}
+          onWheel={(e) => e.preventDefault()}
+        >
           {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-black/70"
             onClick={() => { setShowModal(false); setSelectedDay(null); }}
+            style={{ touchAction: 'none' }}
           />
           
           {/* Modal Container */}
-          <div className="absolute inset-0 flex items-center justify-center p-3 sm:p-4">
+          <div className="absolute inset-0 flex items-center justify-center p-3 sm:p-4 pointer-events-none">
             {/* Modal Box */}
-            <div className="relative bg-white rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full flex flex-col" style={{ maxHeight: '90vh' }}>
+            <div 
+              className="relative bg-white rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full flex flex-col pointer-events-auto" 
+              style={{ maxHeight: '90vh' }}
+              onClick={(e) => e.stopPropagation()}
+            >
               
               {/* Header - קבוע */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-[#D5C4B7]/20 flex-shrink-0">
