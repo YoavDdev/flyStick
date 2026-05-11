@@ -128,17 +128,19 @@ const RegisterButton = ({ event, isLoggedIn, isRegistered, onToggle, registering
 };
 
 // ============ CALENDAR ============
-const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, registering, monthlyThemes }: {
+const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, registering, monthlyThemes, isAdmin }: {
   events: any[];
   isLoggedIn: boolean;
   registeredIds: string[];
   onToggleRegister: (eventId: string) => void;
   registering: string | null;
   monthlyThemes: Record<string, string>;
+  isAdmin?: boolean;
 }) => {
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [emptyDayMessage, setEmptyDayMessage] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
   const selectedEventsRef = useRef<HTMLDivElement>(null);
 
   const year = currentMonth.getFullYear();
@@ -166,7 +168,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
   const selectedEvents = selectedDay ? (byDay[selectedDay] || []) : [];
 
   return (
-    <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-[#D5C4B7]/20 shadow-xl overflow-hidden">
+    <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-[#D5C4B7]/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#D5C4B7]/20 to-[#B8A99C]/10 p-4 sm:p-5 flex items-center justify-between gap-3">
         <button onClick={() => setCurrentMonth(new Date(year, month - 1, 1))} className="bg-white/70 hover:bg-white shadow-sm hover:shadow-md text-[#2D3142] px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap">
@@ -215,24 +217,18 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
               key={i}
               onClick={() => {
                 if (dayEvts.length > 0) {
-                  setSelectedDay(isSelected ? null : day);
-                  setEmptyDayMessage(null);
-                  // Scroll to selected events after a short delay (mobile only)
-                  if (!isSelected) {
-                    setTimeout(() => {
-                      if (selectedEventsRef.current && window.innerWidth < 768) {
-                        const elementPosition = selectedEventsRef.current.getBoundingClientRect().top;
-                        const offsetPosition = elementPosition + window.pageYOffset - 150;
-                        window.scrollTo({
-                          top: offsetPosition,
-                          behavior: 'smooth'
-                        });
-                      }
-                    }, 150);
+                  if (isSelected) {
+                    setSelectedDay(null);
+                    setShowModal(false);
+                  } else {
+                    setSelectedDay(day);
+                    setShowModal(true);
                   }
+                  setEmptyDayMessage(null);
                 } else {
                   setEmptyDayMessage(`אין שיעורים מתוזמנים ב-${day} ${HEBREW_MONTHS[month]}`);
                   setSelectedDay(null);
+                  setShowModal(false);
                 }
               }}
               className={`min-h-[50px] sm:min-h-[60px] p-2 flex flex-col items-center justify-center transition-all duration-200 relative group ${
@@ -269,66 +265,209 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
         </div>
       )}
 
-      {/* Selected day detail - elegant */}
-      {selectedDay && selectedEvents.length > 0 && (
-        <div ref={selectedEventsRef} className="border-t border-[#D5C4B7]/20 p-4 sm:p-5 space-y-2.5 sm:space-y-3 bg-gradient-to-b from-[#F7F3EB]/30 to-white/50 animate-fadeIn">
-          <h3 className="font-bold text-[#2D3142] text-sm sm:text-base mb-1">
-            יום {HEBREW_DAYS[new Date(year, month, selectedDay).getDay()]} {selectedDay} {HEBREW_MONTHS[month]}
-          </h3>
-          {selectedEvents.map((e: any) => {
-            const inner = (
-              <div className={`p-3 sm:p-4 rounded-xl flex flex-col gap-2 shadow-sm hover:shadow-md transition-all ${
-                e.status === "live" ? "bg-red-50 border border-red-200" :
-                e.status === "scheduled" ? "bg-[#FFF9F0] border border-[#D5C4B7]" :
-                e.status === "cancelled" ? "bg-orange-50 border border-orange-200" :
-                "bg-gray-50 border border-gray-200"
-              } ${e.status === "ended" ? "hover:bg-gray-100 cursor-pointer" : ""}`}>
-                <div className="flex items-center gap-3">
-                  <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
-                    e.status === "live" ? "bg-red-500 animate-pulse" :
-                    e.status === "scheduled" ? "bg-[#4A4E69]" :
-                    e.status === "cancelled" ? "bg-orange-400" : "bg-gray-400"
-                  }`} />
-                  <div className="flex-1 min-w-0">
-                    <p className={`font-medium text-sm ${e.status === "cancelled" ? "line-through text-[#5D5D5D]" : "text-[#2D3142]"}`}>{e.title}</p>
-                    <p className="text-xs text-[#5D5D5D]">
-                      {fmt(new Date(e.scheduledAt))} | {e.estimatedDuration} דקות
-                      {e.status === "ended" && " | הסתיים"}
-                    {e.status === "cancelled" && " | בוטל"}
-                      {e.status === "live" && " | משדר עכשיו!"}
-                    </p>
-                    {e.description && <p className="text-xs text-[#5D5D5D] mt-1">{e.description}</p>}
+      {/* Modal for selected day events */}
+      {showModal && selectedDay && selectedEvents.length > 0 && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4" dir="rtl">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => { setShowModal(false); setSelectedDay(null); }}
+          />
+          
+          {/* Modal content */}
+          <div className="relative bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full max-h-[85vh] sm:max-h-[80vh] overflow-y-auto">
+            {/* Close button */}
+            <button
+              onClick={() => { setShowModal(false); setSelectedDay(null); }}
+              className="sticky top-2 left-2 sm:absolute sm:top-4 sm:left-4 z-10 w-9 h-9 sm:w-10 sm:h-10 bg-[#2D3142] hover:bg-[#B56B4A] text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
+            >
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+              <h3 className="font-bold text-[#2D3142] text-lg sm:text-xl mb-3 sm:mb-4 pr-10 sm:pr-12">
+                יום {HEBREW_DAYS[new Date(year, month, selectedDay).getDay()]} {selectedDay} {HEBREW_MONTHS[month]}
+              </h3>
+              
+              {selectedEvents.map((e: any) => {
+                const inner = (
+                  <div className={`p-4 rounded-xl flex flex-col gap-3 shadow-md hover:shadow-lg transition-all ${
+                    e.status === "live" ? "bg-red-50 border-2 border-red-300" :
+                    e.status === "scheduled" ? "bg-[#FFF9F0] border-2 border-[#D5C4B7]" :
+                    e.status === "cancelled" ? "bg-orange-50 border-2 border-orange-300" :
+                    "bg-gray-50 border-2 border-gray-300"
+                  } ${e.status === "ended" ? "hover:bg-gray-100 cursor-pointer" : ""}` }>
+                    <div className="flex items-start gap-3">
+                      <div className={`w-3 h-3 rounded-full flex-shrink-0 mt-1 ${
+                        e.status === "live" ? "bg-red-500 animate-pulse" :
+                        e.status === "scheduled" ? "bg-[#4A4E69]" :
+                        e.status === "cancelled" ? "bg-orange-400" : "bg-gray-400"
+                      }`} />
+                      <div className="flex-1 min-w-0">
+                        <p className={`font-bold text-base mb-1 ${e.status === "cancelled" ? "line-through text-[#5D5D5D]" : "text-[#2D3142]"}` }>{e.title}</p>
+                        <p className="text-sm text-[#5D5D5D] mb-2">
+                          {fmt(new Date(e.scheduledAt))} | {e.estimatedDuration} דקות
+                          {e.status === "ended" && " | הסתיים"}
+                          {e.status === "cancelled" && " | בוטל"}
+                          {e.status === "live" && " | משדר עכשיו!"}
+                        </p>
+                        {e.description && <p className="text-sm text-[#5D5D5D]">{e.description}</p>}
+                      </div>
+                    </div>
+                    {e.status === "scheduled" && (
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <RegisterButton event={e} isLoggedIn={isLoggedIn} isRegistered={registeredIds.includes(e.id)} onToggle={onToggleRegister} registering={registering} />
+                        <AddToCalendarButton event={e} />
+                      </div>
+                    )}
+                    {e.status === "live" && (
+                      <span className="text-sm bg-red-500 text-white px-3 py-1.5 rounded-full flex-shrink-0 font-bold">שידור חי</span>
+                    )}
+                    {e.status === "ended" && (
+                      <span className="inline-flex items-center gap-1.5 text-sm bg-[#D5C4B7]/30 text-[#2D3142] px-3 py-1.5 rounded-full border border-[#D5C4B7]/60 font-medium">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        צפה בהקלטה
+                      </span>
+                    )}
+                    {e.status === "cancelled" && (
+                      <span className="text-sm bg-orange-100 text-orange-700 px-3 py-1.5 rounded-full flex-shrink-0 font-medium">בוטל</span>
+                    )}
+                    
+                    {/* Admin: Show registrations for scheduled events */}
+                    {isAdmin && e.status === "scheduled" && (
+                      <AdminEventRegistrations eventId={e.id} eventTitle={e.title} />
+                    )}
                   </div>
-                </div>
-                {e.status === "scheduled" && (
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <RegisterButton event={e} isLoggedIn={isLoggedIn} isRegistered={registeredIds.includes(e.id)} onToggle={onToggleRegister} registering={registering} />
-                    <AddToCalendarButton event={e} />
-                  </div>
-                )}
-                {e.status === "live" && (
-                  <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full flex-shrink-0">שידור חי</span>
-                )}
-                {e.status === "ended" && (
-                  <span className="inline-flex items-center gap-1 text-xs bg-[#D5C4B7]/20 text-[#2D3142] px-2.5 py-1 rounded-full border border-[#D5C4B7]/40">
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    צפה בהקלטה
-                  </span>
-                )}
-                {e.status === "cancelled" && (
-                  <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full flex-shrink-0 font-medium">בוטל</span>
-                )}
-              </div>
-            );
-            return e.status === "ended" ? (
-              <Link key={e.id} href={`/explore?video=${encodeURIComponent(e.title)}`}>{inner}</Link>
-            ) : (
-              <div key={e.id}>{inner}</div>
-            );
-          })}
+                );
+                return e.status === "ended" ? (
+                  <Link key={e.id} href={`/explore?video=${encodeURIComponent(e.title)}`} onClick={() => setShowModal(false)}>{inner}</Link>
+                ) : (
+                  <div key={e.id}>{inner}</div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       )}
 
+    </div>
+  );
+};
+
+// ============ ADMIN EVENT REGISTRATIONS ============
+const AdminEventRegistrations = ({ eventId, eventTitle }: { eventId: string; eventTitle: string }) => {
+  const [registrations, setRegistrations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [error, setError] = useState("");
+
+  const fetchRegistrations = async () => {
+    if (expanded) {
+      setExpanded(false);
+      return;
+    }
+    
+    setLoading(true);
+    setExpanded(true);
+    setError("");
+    
+    try {
+      const res = await fetch(`/api/admin/live-events/registrations?eventId=${eventId}`);
+      const data = await res.json();
+      
+      if (data.success) {
+        setRegistrations(data.registrations || []);
+      } else {
+        setError(data.error || "שגיאה בטעינת נרשמים");
+      }
+    } catch (err) {
+      setError("שגיאה בטעינת נרשמים");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="mt-3">
+      <button
+        onClick={fetchRegistrations}
+        className={`w-full text-xs px-3 py-1.5 rounded-lg border transition-all ${
+          expanded
+            ? "bg-[#B56B4A] text-white border-[#B56B4A]"
+            : "bg-white text-[#2D3142] border-[#D5C4B7] hover:bg-[#D5C4B7]/20"
+        }`}
+      >
+        <span className="flex items-center justify-center gap-1.5">
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          {expanded ? "הסתר" : `נרשמים: ${registrations.length || "?"}`}
+        </span>
+      </button>
+
+      {expanded && (
+        <div className="mt-2 bg-white/70 backdrop-blur-sm rounded-lg border border-[#D5C4B7]/30 p-2">
+          {loading && (
+            <div className="text-center py-3">
+              <div className="inline-block w-4 h-4 border-2 border-[#B56B4A] border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-[10px] p-2 rounded text-center">
+              {error}
+            </div>
+          )}
+
+          {!loading && !error && registrations.length === 0 && (
+            <div className="text-center py-3 text-[10px] text-[#5D5D5D]">
+              אין נרשמים
+            </div>
+          )}
+
+          {!loading && !error && registrations.length > 0 && (
+            <div className="space-y-1">
+              <div className="bg-[#D5C4B7]/20 rounded px-2 py-1 mb-1.5">
+                <p className="text-[10px] font-bold text-[#2D3142] text-center">
+                  סה"כ: {registrations.length}
+                </p>
+              </div>
+              
+              <div className="max-h-48 overflow-y-auto space-y-0.5">
+                {registrations.map((reg: any, idx: number) => (
+                  <div
+                    key={reg.id}
+                    className="bg-white/80 rounded px-2 py-1.5 border border-[#D5C4B7]/20 hover:border-[#B56B4A]/40 transition-colors"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                        <span className="text-[9px] font-bold text-[#2D3142] bg-[#D5C4B7]/30 px-1.5 py-0.5 rounded">
+                          {idx + 1}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[10px] font-bold text-[#2D3142] truncate">
+                            {reg.userName}
+                          </p>
+                          <p className="text-[9px] text-[#5D5D5D] truncate">
+                            {reg.userEmail}
+                          </p>
+                        </div>
+                      </div>
+                      {reg.isSubscriber && (
+                        <svg className="w-3 h-3 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -350,7 +489,7 @@ const UpcomingList = ({ events, isLoggedIn, registeredIds, onToggleRegister, reg
   const nextEvent = upcoming[0];
 
   return (
-    <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-[#D5C4B7]/30 shadow-md p-3 sm:p-4">
+    <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-[#D5C4B7]/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-4 sm:p-5">
       {/* Next event highlight - compact */}
       <div className="text-center mb-2 sm:mb-4">
         <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-[#D5C4B7]/20 border border-[#D5C4B7]/40 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 mb-2 sm:mb-4">
@@ -418,7 +557,7 @@ const PastEventsList = ({ events }: { events: any[] }) => {
   if (past.length === 0) return null;
 
   return (
-    <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-[#D5C4B7]/30 shadow-lg p-6">
+    <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-[#D5C4B7]/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-6">
       <h3 className="font-bold text-[#2D3142] mb-3">שיעורים שהסתיימו</h3>
       <div className="space-y-2">
         {past.map((e) => {
@@ -670,7 +809,7 @@ const LiveStreamPage = () => {
   return (
     <div className="min-h-screen bg-[#F7F3EB]" dir="rtl">
       <div className="pt-16 sm:pt-24 pb-10 sm:pb-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto space-y-4 sm:space-y-8">
+        <div className="max-w-5xl mx-auto space-y-4 sm:space-y-6">
 
           {/* PAGE HEADER */}
           <div className="text-center">
@@ -678,62 +817,96 @@ const LiveStreamPage = () => {
             <p className="text-[#5D5D5D] text-sm sm:text-base max-w-xl mx-auto">שיעורים חיים עם בועז נחייסי. צפו בשידור, בדקו את לוח השידורים וחזרו לצפות בהקלטות.</p>
           </div>
 
+          {/* NEXT EVENT COUNTDOWN - HIGHLIGHTED AT TOP */}
+          {!isLive && (() => {
+            const nextEvent = allEvents
+              .filter(e => e.status === "scheduled")
+              .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())[0];
+            
+            if (!nextEvent) return null;
+            
+            return (
+              <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-[#D5C4B7]/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-4 sm:p-6">
+                <div className="text-center">
+                  <h2 className="text-xl sm:text-2xl font-bold text-[#2D3142] mb-2">השיעור הבא</h2>
+                  <h3 className="text-lg sm:text-xl font-semibold text-[#B56B4A] mb-1">{nextEvent.title}</h3>
+                  {nextEvent.description && <p className="text-[#5D5D5D] text-xs sm:text-sm mb-2">{nextEvent.description}</p>}
+                  <p className="text-[#2D3142] font-medium text-sm mb-3">
+                    יום {HEBREW_DAYS[new Date(nextEvent.scheduledAt).getDay()]}, {new Date(nextEvent.scheduledAt).getDate()} {HEBREW_MONTHS[new Date(nextEvent.scheduledAt).getMonth()]} | {fmt(new Date(nextEvent.scheduledAt))}
+                  </p>
+                  <div className="mb-3">
+                    <Countdown targetDate={nextEvent.scheduledAt} />
+                  </div>
+                  <div className="flex items-center justify-center gap-2 flex-wrap">
+                    <RegisterButton event={nextEvent} isLoggedIn={!!session} isRegistered={registeredIds.includes(nextEvent.id)} onToggle={handleToggleRegister} registering={registering} />
+                    <AddToCalendarButton event={nextEvent} />
+                  </div>
+                  
+                  {/* Admin: Show registrations */}
+                  {isAdmin && (
+                    <AdminEventRegistrations eventId={nextEvent.id} eventTitle={nextEvent.title} />
+                  )}
+                </div>
+              </div>
+            );
+          })()}
+
           {/* LIVE STREAM SECTION */}
           {isLive && (
             <div>
-              <div className="text-center mb-4">
+              <div className="text-center mb-3 sm:mb-4">
                 <LivePulse />
-                <h2 className="text-xl sm:text-2xl font-bold text-[#2D3142] mt-2">{stream.title}</h2>
-                {stream.description && <p className="text-[#5D5D5D] mt-1">{stream.description}</p>}
+                <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-[#2D3142] mt-2">{stream.title}</h2>
+                {stream.description && <p className="text-[#5D5D5D] text-sm sm:text-base mt-1">{stream.description}</p>}
               </div>
 
               {session ? (
                 <>
                   {getVimeoEmbedUrl(stream) ? (
                     getVimeoEmbedUrl(stream)!.includes("/interaction") ? (
-                      <div className="bg-black rounded-2xl overflow-hidden shadow-xl" style={{ minHeight: "70vh" }}>
-                        <iframe src={`${getVimeoEmbedUrl(stream)}?autoplay=1`} className="w-full h-full" style={{ minHeight: "70vh" }} allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share" allowFullScreen title={stream.title} />
+                      <div className="bg-black rounded-xl sm:rounded-2xl overflow-hidden shadow-xl" style={{ minHeight: "60vh" }}>
+                        <iframe src={`${getVimeoEmbedUrl(stream)}?autoplay=1`} className="w-full h-full" style={{ minHeight: "60vh" }} allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share" allowFullScreen title={stream.title} />
                       </div>
                     ) : (
-                      <div className="bg-black rounded-2xl overflow-hidden shadow-xl aspect-video">
+                      <div className="bg-black rounded-xl sm:rounded-2xl overflow-hidden shadow-xl aspect-video">
                         <iframe src={`${getVimeoEmbedUrl(stream)}?autoplay=1`} className="w-full h-full" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen title={stream.title} />
                       </div>
                     )
                   ) : (
-                    <div className="bg-black rounded-2xl overflow-hidden shadow-xl aspect-video flex items-center justify-center">
-                      <p className="text-xl text-white">השידור יתחיל בקרוב...</p>
+                    <div className="bg-black rounded-xl sm:rounded-2xl overflow-hidden shadow-xl aspect-video flex items-center justify-center">
+                      <p className="text-base sm:text-lg md:text-xl text-white px-4">השידור יתחיל בקרוב...</p>
                     </div>
                   )}
 
-                  <div className="mt-4 bg-white/70 rounded-2xl p-4 border border-[#D5C4B7]/30 shadow-md flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-[#D5C4B7] rounded-full flex items-center justify-center">
-                        <svg className="w-5 h-5 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                  <div className="mt-3 sm:mt-4 bg-white/70 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-[#D5C4B7]/30 shadow-md flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#D5C4B7] rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#2D3142]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                       </div>
-                      <div><p className="font-bold text-[#2D3142] text-sm">בועז נחייסי</p><p className="text-xs text-[#5D5D5D]">מורה ומנחה</p></div>
+                      <div><p className="font-bold text-[#2D3142] text-xs sm:text-sm">בועז נחייסי</p><p className="text-[10px] sm:text-xs text-[#5D5D5D]">מורה ומנחה</p></div>
                     </div>
-                    <p className="text-xs text-[#5D5D5D]">ההקלטה תהיה זמינה לאחר השידור למנויים בלבד</p>
+                    <p className="text-[10px] sm:text-xs text-[#5D5D5D] text-center sm:text-right">ההקלטה תהיה זמינה לאחר השידור למנויים בלבד</p>
                   </div>
                 </>
               ) : (
-                <div className="bg-gradient-to-b from-[#2D3142] to-[#1a1d2e] rounded-2xl overflow-hidden shadow-xl aspect-video flex flex-col items-center justify-center text-center p-8 relative">
+                <div className="bg-gradient-to-b from-[#2D3142] to-[#1a1d2e] rounded-xl sm:rounded-2xl overflow-hidden shadow-xl aspect-video flex flex-col items-center justify-center text-center p-4 sm:p-6 md:p-8 relative">
                   <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-red-500 rounded-full blur-3xl animate-pulse" />
-                    <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-[#D5C4B7] rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
+                    <div className="absolute top-1/4 left-1/4 w-24 h-24 sm:w-32 sm:h-32 bg-red-500 rounded-full blur-3xl animate-pulse" />
+                    <div className="absolute bottom-1/4 right-1/4 w-32 h-32 sm:w-40 sm:h-40 bg-[#D5C4B7] rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
                   </div>
                   <div className="relative z-10">
-                    <div className="flex items-center justify-center gap-2 mb-4">
-                      <div className="relative"><div className="w-3 h-3 bg-red-500 rounded-full"></div><div className="absolute inset-0 w-3 h-3 bg-red-500 rounded-full animate-ping"></div></div>
-                      <span className="text-red-400 font-bold">שידור חי עכשיו</span>
+                    <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+                      <div className="relative"><div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-500 rounded-full"></div><div className="absolute inset-0 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-ping"></div></div>
+                      <span className="text-red-400 font-bold text-xs sm:text-sm">שידור חי עכשיו</span>
                     </div>
-                    <svg className="w-16 h-16 text-white/30 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                    <h3 className="text-white text-xl sm:text-2xl font-bold mb-2">הירשמו כדי לצפות בשידור</h3>
-                    <p className="text-white/60 text-sm mb-6 max-w-md">השידור החי פתוח לכל מי שרשום באתר. הירשמו בחינם כדי להצטרף לשיעור עם בועז נחייסי.</p>
-                    <div className="flex flex-col sm:flex-row items-center gap-3 justify-center">
-                      <Link href="/register" className="bg-white text-[#2D3142] px-6 py-3 rounded-full font-bold text-sm hover:bg-[#D5C4B7] transition-colors shadow-lg">
+                    <svg className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-white/30 mx-auto mb-3 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                    <h3 className="text-white text-base sm:text-lg md:text-xl lg:text-2xl font-bold mb-2 px-2">הירשמו כדי לצפות בשידור</h3>
+                    <p className="text-white/60 text-xs sm:text-sm mb-4 sm:mb-6 max-w-md px-2">השידור החי פתוח לכל מי שרשום באתר. הירשמו בחינם כדי להצטרף לשיעור עם בועז נחייסי.</p>
+                    <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 justify-center w-full px-2">
+                      <Link href="/register" className="bg-white text-[#2D3142] px-5 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm hover:bg-[#D5C4B7] transition-colors shadow-lg w-full sm:w-auto text-center">
                         הרשמה חינם
                       </Link>
-                      <Link href="/login" className="text-white/80 border border-white/30 px-6 py-3 rounded-full text-sm hover:bg-white/10 transition-colors">
+                      <Link href="/login" className="text-white/80 border border-white/30 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm hover:bg-white/10 transition-colors w-full sm:w-auto text-center">
                         כבר רשומים? התחברו
                       </Link>
                     </div>
@@ -743,85 +916,33 @@ const LiveStreamPage = () => {
             </div>
           )}
 
-          {/* NEXT EVENT COUNTDOWN ONLY (no list) */}
-          {!isLive && (() => {
-            const nextEvent = allEvents
-              .filter(e => e.status === "scheduled")
-              .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())[0];
-            
-            if (!nextEvent) return null;
-            
-            return (
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-[#D5C4B7]/30 shadow-md p-3 sm:p-4">
-                <div className="text-center">
-                  <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-[#D5C4B7]/20 border border-[#D5C4B7]/40 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 mb-2">
-                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#B56B4A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                    <span className="text-xs sm:text-sm text-[#2D3142] font-medium">השיעור הבא</span>
-                  </div>
-                  <h2 className="text-lg sm:text-2xl font-bold text-[#2D3142] mb-1">{nextEvent.title}</h2>
-                  {nextEvent.description && <p className="text-[#5D5D5D] text-xs sm:text-sm mb-1">{nextEvent.description}</p>}
-                  <p className="text-[#B56B4A] font-medium text-xs sm:text-sm">
-                    יום {HEBREW_DAYS[new Date(nextEvent.scheduledAt).getDay()]}, {new Date(nextEvent.scheduledAt).getDate()} {HEBREW_MONTHS[new Date(nextEvent.scheduledAt).getMonth()]} | {fmt(new Date(nextEvent.scheduledAt))}
-                  </p>
-                  <div className="mt-2 sm:mt-3">
-                    <Countdown targetDate={nextEvent.scheduledAt} />
-                  </div>
-                  <div className="mt-2 sm:mt-3 flex items-center justify-center gap-2">
-                    <RegisterButton event={nextEvent} isLoggedIn={!!session} isRegistered={registeredIds.includes(nextEvent.id)} onToggle={handleToggleRegister} registering={registering} />
-                    <AddToCalendarButton event={nextEvent} />
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
 
           {/* MONTHLY CALENDAR - always visible */}
           <div>
-            <h2 className="text-xl font-bold text-[#2D3142] mb-3 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-[#2D3142] mb-2 flex items-center gap-2">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
               לוח שידורים
             </h2>
-            <EventCalendar events={allEvents} isLoggedIn={!!session} registeredIds={registeredIds} onToggleRegister={handleToggleRegister} registering={registering} monthlyThemes={monthlyThemes} />
+            <p className="text-sm text-[#5D5D5D] mb-3">לחץ על השיעור לבירור והרשמה</p>
+            <EventCalendar events={allEvents} isLoggedIn={!!session} registeredIds={registeredIds} onToggleRegister={handleToggleRegister} registering={registering} monthlyThemes={monthlyThemes} isAdmin={isAdmin} />
           </div>
 
-          {/* EMAIL UPDATES INFO */}
-          {session && (
-            <div className="bg-gradient-to-r from-[#FFF9F0] to-[#F7F3EB] border-2 border-dashed border-[#D5C4B7] rounded-2xl p-5 sm:p-6">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#B56B4A] to-[#9a5a3d] rounded-full flex items-center justify-center shadow-md">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold text-[#2D3142] mb-2 flex items-center gap-2">
-                    🔔 רוצים לקבל עדכונים על השיעורים?
-                  </h3>
-                  <p className="text-sm text-[#5D5D5D] mb-3 leading-relaxed">
-                    כשנרשמים לשיעור, נשלח מייל אישור עם אפשרות לקבל עדכונים על שינויים - ביטולים, דחיות או שינויי שעה.
-                  </p>
-                  <div className="flex flex-wrap gap-2 text-xs">
-                    <span className="bg-white/70 px-3 py-1.5 rounded-full text-[#5D5D5D] border border-[#D5C4B7]/30">✅ מייל אישור הרשמה</span>
-                    <span className="bg-white/70 px-3 py-1.5 rounded-full text-[#5D5D5D] border border-[#D5C4B7]/30">📧 עדכונים על שינויים</span>
-                    <span className="bg-white/70 px-3 py-1.5 rounded-full text-[#5D5D5D] border border-[#D5C4B7]/30">⚙️ שליטה מלאה בהעדפות</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* CTA for non-logged in */}
+          {/* CTA for non-logged in users */}
           {!session && (
-            <div className="bg-gradient-to-r from-[#D5C4B7]/20 to-[#B8A99C]/20 rounded-2xl p-6 border border-[#D5C4B7]/30 text-center">
-              <p className="text-[#2D3142] font-bold text-lg mb-2">רוצים לצפות בהקלטות של כל השיעורים?</p>
-              <p className="text-[#5D5D5D] mb-4 text-sm">הצטרפו לסטודיו בועז אונליין וקבלו גישה למאות שיעורים ותכנים בלעדיים</p>
+            <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-[#D5C4B7]/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-6 sm:p-8 text-center">
+              <h3 className="text-xl sm:text-2xl font-bold text-[#2D3142] mb-3">
+                רוצים לצפות בהקלטות של כל השיעורים?
+              </h3>
+              <p className="text-sm sm:text-base text-[#5D5D5D] mb-6 max-w-xl mx-auto">
+                הצטרפו לסטודיו בועז אונליין וקבלו גישה למאות שיעורים ותכנים בלעדיים
+              </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link href="/register" className="bg-gradient-to-r from-[#D5C4B7] to-[#B8A99C] text-white px-8 py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all inline-block">הרשמה חינם</Link>
-                <Link href="/pricing" className="bg-white text-[#2D3142] px-8 py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all border border-[#D5C4B7] inline-block">תוכניות מנוי</Link>
+                <Link href="/pricing" className="bg-gradient-to-r from-[#B56B4A] to-[#9a5a3d] text-white px-8 py-3 rounded-2xl font-medium shadow-md hover:shadow-lg transition-all inline-block">
+                  תוכניות מנוי
+                </Link>
+                <Link href="/register" className="bg-white text-[#2D3142] px-8 py-3 rounded-2xl font-medium shadow-md hover:shadow-lg transition-all border-2 border-[#D5C4B7] inline-block">
+                  הרשמה חינם
+                </Link>
               </div>
             </div>
           )}
