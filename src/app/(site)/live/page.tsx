@@ -279,22 +279,23 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
 
       {/* Modal for selected day events */}
       {showModal && selectedDay && selectedEvents.length > 0 && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 overflow-hidden" dir="rtl" style={{ minHeight: '100vh' }}>
+        <div className="fixed top-0 left-0 right-0 bottom-0 z-[9999] flex items-center justify-center p-3 sm:p-4" dir="rtl" style={{ width: '100vw', height: '100vh' }}>
           {/* Backdrop */}
           <div 
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute top-0 left-0 right-0 bottom-0 bg-black/75"
             onClick={() => { setShowModal(false); setSelectedDay(null); }}
+            style={{ width: '100%', height: '100%' }}
           />
           
           {/* Modal content */}
-          <div className="relative bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full overflow-y-auto" style={{ maxHeight: '85vh' }}>
-            {/* Close button */}
+          <div className="relative bg-white rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full overflow-y-auto" style={{ maxHeight: '85vh', zIndex: 10 }}>
+            {/* Close button - ALWAYS VISIBLE */}
             <button
               onClick={() => { setShowModal(false); setSelectedDay(null); }}
-              className="sticky top-2 left-2 sm:absolute sm:top-4 sm:left-4 z-10 w-9 h-9 sm:w-10 sm:h-10 bg-[#2D3142] hover:bg-[#B56B4A] text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
+              className="absolute top-3 left-3 z-20 w-11 h-11 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors shadow-2xl border-2 border-white"
             >
-              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
 
