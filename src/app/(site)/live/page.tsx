@@ -177,7 +177,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
   const selectedEvents = selectedDay ? (byDay[selectedDay] || []) : [];
 
   return (
-    <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-[#D5C4B7]/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden">
+    <div className="bg-white rounded-2xl border border-[#D5C4B7]/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#D5C4B7]/20 to-[#B8A99C]/10 p-4 sm:p-5 flex items-center justify-between gap-3">
         <button onClick={() => setCurrentMonth(new Date(year, month - 1, 1))} className="bg-white/70 hover:bg-white shadow-sm hover:shadow-md text-[#2D3142] px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap">
