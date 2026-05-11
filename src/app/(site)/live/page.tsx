@@ -271,19 +271,18 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
           className="fixed inset-0 z-[9999]" 
           dir="rtl"
         >
-          {/* Backdrop - behind everything */}
+          {/* Backdrop - z-10 */}
           <div 
-            className="absolute inset-0 bg-black/70"
+            className="absolute inset-0 bg-black/70 z-10"
             onClick={() => { setShowModal(false); setSelectedDay(null); }}
-            style={{ pointerEvents: 'auto' }}
           />
           
-          {/* Modal Container - centered */}
-          <div className="relative h-full flex items-center justify-center p-3 sm:p-4" style={{ pointerEvents: 'none' }}>
-            {/* Modal Box - clickable */}
+          {/* Modal Container - z-20 */}
+          <div className="relative h-full flex items-center justify-center p-3 sm:p-4 z-20">
+            {/* Modal Box */}
             <div 
               className="bg-white rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full flex flex-col" 
-              style={{ maxHeight: '90vh', pointerEvents: 'auto' }}
+              style={{ maxHeight: '90vh' }}
             >
               
               {/* Header - קבוע */}
