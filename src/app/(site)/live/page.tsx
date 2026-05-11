@@ -72,6 +72,8 @@ const AddToCalendarButton = ({ event }: { event: any }) => (
     href={getGoogleCalendarUrl(event)}
     target="_blank"
     rel="noopener noreferrer"
+    onClick={(e) => e.stopPropagation()}
+    onTouchEnd={(e) => e.stopPropagation()}
     className="inline-flex items-center gap-1.5 text-xs bg-white text-[#2D3142] px-3 py-1.5 rounded-full hover:bg-[#D5C4B7]/20 transition-colors border border-[#D5C4B7]/50 shadow-sm"
   >
     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
@@ -103,6 +105,7 @@ const RegisterButton = ({ event, isLoggedIn, isRegistered, onToggle, registering
   return (
     <button
       onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggle(event.id); }}
+      onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); }}
       disabled={isBusy}
       className={`inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full transition-colors flex-shrink-0 ${
         isRegistered
