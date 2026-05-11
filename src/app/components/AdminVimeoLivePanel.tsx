@@ -646,6 +646,15 @@ const AdminVimeoLivePanel = () => {
                       <span className={`px-2 py-0.5 rounded-full text-xs ${cfg.color}`}>{cfg.text}</span>
                       <span className="truncate flex-1">{event.title}</span>
                       <span className="text-xs whitespace-nowrap">{formatDate(event.scheduledAt)}</span>
+                      {event.status === "ended" && (
+                        <button
+                          onClick={() => handleStatusChange(event.id, "scheduled")}
+                          className="text-xs text-orange-500 hover:text-orange-700 font-medium whitespace-nowrap"
+                          title="החזר לסטטוס מתוזמן"
+                        >
+                          ↩ שחזר
+                        </button>
+                      )}
                       <button onClick={() => handleDelete(event.id)} className="text-xs text-red-400 hover:text-red-600">מחק</button>
                     </div>
                   );
