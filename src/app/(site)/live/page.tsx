@@ -268,23 +268,20 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
       {/* Modal for selected day events */}
       {showModal && selectedDay && selectedEvents.length > 0 && (
         <div 
-          className="fixed inset-0 z-[9999]" 
+          className="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center p-3 sm:p-4" 
           dir="rtl"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowModal(false);
+              setSelectedDay(null);
+            }
+          }}
         >
-          {/* Backdrop - z-10 */}
+          {/* Modal Box */}
           <div 
-            className="absolute inset-0 bg-black/70 z-10"
-            onClick={() => { setShowModal(false); setSelectedDay(null); }}
-            style={{ pointerEvents: 'auto' }}
-          />
-          
-          {/* Modal Container - z-20 */}
-          <div className="absolute inset-0 flex items-center justify-center p-3 sm:p-4 z-20" style={{ pointerEvents: 'none' }}>
-            {/* Modal Box */}
-            <div 
-              className="bg-white rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full flex flex-col" 
-              style={{ maxHeight: '90dvh', pointerEvents: 'auto' }}
-            >
+            className="bg-white rounded-xl sm:rounded-2xl border border-[#D5C4B7]/20 shadow-2xl max-w-2xl w-full flex flex-col" 
+            style={{ maxHeight: '90dvh' }}
+          >
               
               {/* Header - קבוע */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-[#D5C4B7]/20 flex-shrink-0">
@@ -374,7 +371,6 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
                 </div>
               </div>
             </div>
-          </div>
         </div>
       )}
 
