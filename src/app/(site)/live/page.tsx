@@ -297,9 +297,6 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
           <div 
             className="absolute inset-0 bg-black/70"
             onClick={() => { setShowModal(false); setSelectedDay(null); }}
-            onTouchMove={(e) => e.preventDefault()}
-            onWheel={(e) => e.preventDefault()}
-            style={{ touchAction: 'none' }}
           />
           
           {/* Modal Container */}
