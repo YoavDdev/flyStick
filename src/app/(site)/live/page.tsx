@@ -113,22 +113,22 @@ const RegisterButton = ({ event, isLoggedIn, isRegistered, onToggle, registering
       onClick={handleClick}
       onTouchEnd={handleClick}
       disabled={isBusy}
-      className={`inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full transition-colors flex-shrink-0 ${
+      className={`inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full transition-colors flex-shrink-0 shadow-sm ${
         isRegistered
           ? "bg-green-100 text-green-700 border border-green-300 hover:bg-red-50 hover:text-red-600 hover:border-red-300"
           : "bg-[#9D8E81] text-white hover:bg-[#8A7B72]"
       } disabled:opacity-50`}
     >
       {isBusy ? (
-        <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+        <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
       ) : isRegistered ? (
         <>
-          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
           <span className="group-hover:hidden">נרשמת</span>
         </>
       ) : (
         <>
-          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
           הרשם לשיעור
         </>
       )}
@@ -273,7 +273,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
             >
               <span className={`relative text-sm sm:text-base font-semibold transition-all flex items-center justify-center ${
                 isToday
-                  ? "w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#B56B4A] text-white shadow-sm"
+                  ? "w-7 h-6 sm:w-8 sm:h-7 rounded bg-[#2D3142] text-white"
                   : (hasLive || hasScheduled || hasCancelled || hasEnded)
                     ? "text-white drop-shadow-sm"
                     : "text-[#2D3142] group-hover:text-[#4A4E69]"
