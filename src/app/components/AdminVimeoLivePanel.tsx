@@ -655,7 +655,7 @@ const AdminVimeoLivePanel = () => {
                         >
                           ערוך
                         </button>
-                        {event.status === "ended" && (
+                        {(event.status === "ended" || event.status === "cancelled") && (
                           <button
                             onClick={() => handleStatusChange(event.id, "scheduled")}
                             className="text-xs text-orange-500 hover:text-orange-700 font-medium whitespace-nowrap"

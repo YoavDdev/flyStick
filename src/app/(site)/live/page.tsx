@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+const VideoPlayer = dynamic(() => import("../../components/VideoPlayer"), { ssr: false });
 
 const HEBREW_MONTHS = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
 const HEBREW_DAYS = ["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
@@ -137,7 +139,7 @@ const RegisterButton = ({ event, isLoggedIn, isRegistered, onToggle, registering
 };
 
 // ============ CALENDAR ============
-const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, registering, monthlyThemes, isAdmin }: {
+const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, registering, monthlyThemes, isAdmin, onPlayRecording }: {
   events: any[];
   isLoggedIn: boolean;
   registeredIds: string[];
@@ -145,6 +147,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
   registering: string | null;
   monthlyThemes: Record<string, string>;
   isAdmin?: boolean;
+  onPlayRecording?: (title: string) => void;
 }) => {
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -394,7 +397,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
                   </div>
                 );
                 return e.status === "ended" ? (
-                  <Link key={e.id} href={`/explore?video=${encodeURIComponent(e.title)}`} onClick={closeModal}>{inner}</Link>
+                  <button key={e.id} className="w-full text-right cursor-pointer" onClick={() => { closeModal(); onPlayRecording?.(e.title); }}>{inner}</button>
                 ) : (
                   <div key={e.id}>{inner}</div>
                 );
@@ -648,9 +651,12 @@ const LiveStreamPage = () => {
   const [allEvents, setAllEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [hasContentAccess, setHasContentAccess] = useState(false);
   const [registeredIds, setRegisteredIds] = useState<string[]>([]);
   const [registering, setRegistering] = useState<string | null>(null);
   const [monthlyThemes, setMonthlyThemes] = useState<Record<string, string>>({});
+  const [playingRecording, setPlayingRecording] = useState<{ embedHtml: string | null; videoUri: string | null; title: string } | null>(null);
+  const [loadingRecording, setLoadingRecording] = useState(false);
 
   const fetchStreamData = useCallback(async () => {
     try {
@@ -691,6 +697,7 @@ const LiveStreamPage = () => {
         const adminData = await adminRes.json();
         const regData = await regRes.json();
         setIsAdmin(adminData.isAdmin === true);
+        setHasContentAccess(adminData.hasContentAccess === true);
         if (regData.success) setRegisteredIds(regData.registeredEventIds || []);
       } catch { /* ignore */ }
     };
@@ -750,6 +757,25 @@ const LiveStreamPage = () => {
       alert("שגיאת רשת");
     }
   };
+
+  const handlePlayRecording = useCallback(async (title: string) => {
+    setLoadingRecording(true);
+    try {
+      const res = await fetch(`/api/videos?query=${encodeURIComponent(title)}&per_page=5`);
+      const data = await res.json();
+      const videos: any[] = data.data || [];
+      const match = videos.find((v: any) =>
+        v.name?.toLowerCase().replace(/\s+/g, " ").trim() === title.toLowerCase().replace(/\s+/g, " ").trim()
+      ) || videos[0];
+      if (match) {
+        setPlayingRecording({ embedHtml: match.embed?.html || null, videoUri: match.uri || null, title: match.name || title });
+      }
+    } catch (e) {
+      console.error("Failed to load recording:", e);
+    } finally {
+      setLoadingRecording(false);
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -884,7 +910,7 @@ const LiveStreamPage = () => {
               לוח שידורים
             </h2>
             <p className="text-xs text-[#5D5D5D] mb-3">לחץ על השיעור לבירור והרשמה</p>
-            <EventCalendar events={allEvents} isLoggedIn={!!session} registeredIds={registeredIds} onToggleRegister={handleToggleRegister} registering={registering} monthlyThemes={monthlyThemes} isAdmin={isAdmin} />
+            <EventCalendar events={allEvents} isLoggedIn={!!session} registeredIds={registeredIds} onToggleRegister={handleToggleRegister} registering={registering} monthlyThemes={monthlyThemes} isAdmin={isAdmin} onPlayRecording={handlePlayRecording} />
           </div>
 
           {/* CTA for non-logged in users */}
@@ -909,6 +935,28 @@ const LiveStreamPage = () => {
 
         </div>
       </div>
+
+      {/* Recording video player overlay */}
+      {playingRecording && (
+        <VideoPlayer
+          videoUri={playingRecording.videoUri}
+          embedHtml={playingRecording.embedHtml}
+          onClose={() => setPlayingRecording(null)}
+          isSubscriber={hasContentAccess}
+          isAdmin={isAdmin}
+          videoName={playingRecording.title}
+        />
+      )}
+
+      {/* Loading recording indicator */}
+      {loadingRecording && (
+        <div className="fixed inset-0 z-[9998] bg-black/60 flex items-center justify-center">
+          <div className="bg-white rounded-2xl px-8 py-6 flex items-center gap-3 shadow-2xl">
+            <div className="w-5 h-5 border-2 border-[#2D3142] border-t-transparent rounded-full animate-spin" />
+            <span className="text-[#2D3142] font-medium text-sm">טוען הקלטה...</span>
+          </div>
+        </div>
+      )}
 
       {/* Admin floating control bar */}
       <AdminLiveControlBar
