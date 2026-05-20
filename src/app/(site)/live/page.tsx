@@ -93,7 +93,7 @@ const RegisterButton = ({ event, isLoggedIn, isRegistered, onToggle, registering
 
   if (!isLoggedIn) {
     return (
-      <Link href="/register" className="inline-flex items-center gap-1 text-[10px] bg-[#B56B4A] text-white px-2.5 py-1 rounded-full hover:bg-[#9a5a3d] transition-colors flex-shrink-0">
+      <Link href="/register" className="inline-flex items-center gap-1 text-[10px] bg-[#9D8E81] text-white px-2.5 py-1 rounded-full hover:bg-[#8A7B72] transition-colors flex-shrink-0">
         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
         הירשם
       </Link>
@@ -116,7 +116,7 @@ const RegisterButton = ({ event, isLoggedIn, isRegistered, onToggle, registering
       className={`inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full transition-colors flex-shrink-0 ${
         isRegistered
           ? "bg-green-100 text-green-700 border border-green-300 hover:bg-red-50 hover:text-red-600 hover:border-red-300"
-          : "bg-[#B56B4A] text-white hover:bg-[#9a5a3d]"
+          : "bg-[#9D8E81] text-white hover:bg-[#8A7B72]"
       } disabled:opacity-50`}
     >
       {isBusy ? (
@@ -152,6 +152,28 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
   const [showModal, setShowModal] = useState(false);
   const selectedEventsRef = useRef<HTMLDivElement>(null);
 
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedDay(null);
+  };
+
+  // Android back button: push history state when modal opens, pop it on close
+  useEffect(() => {
+    if (showModal) {
+      window.history.pushState({ modal: "live-event" }, "");
+    }
+  }, [showModal]);
+
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (showModal) {
+        closeModal();
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [showModal]);
+
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
   const firstDayOfWeek = new Date(year, month, 1).getDay();
@@ -184,7 +206,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
           חודש קודם
         </button>
         <div className="text-center flex-1">
-          <h2 className="text-lg sm:text-xl font-bold text-[#2D3142] mb-0.5">{HEBREW_MONTHS[month]} {year}</h2>
+          <h2 className="text-base sm:text-lg font-semibold text-[#2D3142] mb-0.5">{HEBREW_MONTHS[month]} {year}</h2>
           {monthlyThemes[`${year}-${month + 1}`] && (
             <p className="text-xs sm:text-sm text-[#B56B4A] font-medium">{monthlyThemes[`${year}-${month + 1}`]}</p>
           )}
@@ -249,14 +271,13 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
                 dayEvts.length > 0 ? "bg-white hover:bg-[#D5C4B7]/20 cursor-pointer hover:shadow-md" : "bg-white"
               }`}
             >
-              <span className={`text-sm sm:text-base font-semibold transition-all ${
-                (hasLive || hasScheduled || hasCancelled || hasEnded) ? "text-white drop-shadow-sm" :
-                isToday ? "text-[#B56B4A] font-bold text-base sm:text-lg" :
-                "text-[#2D3142] group-hover:text-[#4A4E69]"
+              <span className={`relative text-sm sm:text-base font-semibold transition-all flex items-center justify-center ${
+                isToday
+                  ? "w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#B56B4A] text-white shadow-sm"
+                  : (hasLive || hasScheduled || hasCancelled || hasEnded)
+                    ? "text-white drop-shadow-sm"
+                    : "text-[#2D3142] group-hover:text-[#4A4E69]"
               }`}>{day}</span>
-              {isToday && !hasLive && !hasScheduled && !hasEnded && !hasCancelled && (
-                <div className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-[#B56B4A]"></div>
-              )}
             </button>
           );
         })}
@@ -281,8 +302,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
           dir="rtl"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
-              setShowModal(false);
-              setSelectedDay(null);
+              window.history.back();
             }
           }}
         >
@@ -296,7 +316,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
               {/* Header - קבוע */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-[#D5C4B7]/20 flex-shrink-0">
                 <button
-                  onClick={() => { setShowModal(false); setSelectedDay(null); }}
+                  onClick={() => window.history.back()}
                   className="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -374,7 +394,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
                   </div>
                 );
                 return e.status === "ended" ? (
-                  <Link key={e.id} href={`/explore?video=${encodeURIComponent(e.title)}`} onClick={() => setShowModal(false)}>{inner}</Link>
+                  <Link key={e.id} href={`/explore?video=${encodeURIComponent(e.title)}`} onClick={closeModal}>{inner}</Link>
                 ) : (
                   <div key={e.id}>{inner}</div>
                 );
@@ -434,11 +454,11 @@ const UpcomingList = ({ events, isLoggedIn, registeredIds, onToggleRegister, reg
           <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#B56B4A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>
-          <span className="text-xs sm:text-sm text-[#2D3142] font-medium">השיעור הבא</span>
+          <span className="text-xs sm:text-sm text-[#2D3142] font-normal">השיעור הבא</span>
         </div>
-        <h2 className="text-lg sm:text-2xl font-bold text-[#2D3142] mb-1">{nextEvent.title}</h2>
+        <h2 className="text-base sm:text-lg font-normal text-[#2D3142] mb-1">{nextEvent.title}</h2>
         {nextEvent.description && <p className="text-[#5D5D5D] text-xs sm:text-sm mb-1">{nextEvent.description}</p>}
-        <p className="text-[#B56B4A] font-medium text-xs sm:text-sm">
+        <p className="text-[#5D5D5D] text-xs sm:text-sm">
           יום {HEBREW_DAYS[new Date(nextEvent.scheduledAt).getDay()]}, {new Date(nextEvent.scheduledAt).getDate()} {HEBREW_MONTHS[new Date(nextEvent.scheduledAt).getMonth()]} | {fmt(new Date(nextEvent.scheduledAt))}
         </p>
         <div className="mt-2 sm:mt-3">
@@ -496,7 +516,7 @@ const PastEventsList = ({ events }: { events: any[] }) => {
 
   return (
     <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-[#D5C4B7]/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-6">
-      <h3 className="font-bold text-[#2D3142] mb-3">שיעורים שהסתיימו</h3>
+      <h3 className="text-sm font-semibold text-[#2D3142] mb-3">שיעורים שהסתיימו</h3>
       <div className="space-y-2">
         {past.map((e) => {
           const d = new Date(e.scheduledAt);
@@ -751,8 +771,9 @@ const LiveStreamPage = () => {
 
           {/* PAGE HEADER */}
           <div className="text-center">
-            <h1 className="text-2xl sm:text-4xl font-bold text-[#2D3142] mb-1 sm:mb-2">שיעורים בשידור חי</h1>
-            <p className="text-[#5D5D5D] text-sm sm:text-base max-w-xl mx-auto">שיעורים חיים עם בועז נחייסי. צפו בשידור, בדקו את לוח השידורים וחזרו לצפות בהקלטות.</p>
+            <h1 className="text-2xl sm:text-3xl font-semibold text-[#2D3142] mb-2">שיעורים בשידור חי</h1>
+            <div className="w-12 h-0.5 bg-[#B56B4A] mx-auto mb-3 rounded-full"></div>
+            <p className="text-[#5D5D5D] text-sm sm:text-base max-w-xl mx-auto font-normal">שיעורים חיים עם בועז נחייסי. צפו בשידור, בדקו את לוח השידורים וחזרו לצפות בהקלטות.</p>
           </div>
 
           {/* NEXT EVENT COUNTDOWN - HIGHLIGHTED AT TOP */}
@@ -766,10 +787,11 @@ const LiveStreamPage = () => {
             return (
               <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-[#D5C4B7]/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-4 sm:p-6">
                 <div className="text-center">
-                  <h2 className="text-xl sm:text-2xl font-bold text-[#2D3142] mb-2">השיעור הבא</h2>
-                  <h3 className="text-lg sm:text-xl font-semibold text-[#B56B4A] mb-1">{nextEvent.title}</h3>
+                  <p className="text-xs text-[#B56B4A] font-medium tracking-wide uppercase mb-1">השיעור הבא</p>
+                  <h2 className="text-lg sm:text-xl font-semibold text-[#2D3142] mb-1">{nextEvent.title}</h2>
+                  <div className="w-8 h-0.5 bg-[#D5C4B7] mx-auto mb-2 rounded-full"></div>
                   {nextEvent.description && <p className="text-[#5D5D5D] text-xs sm:text-sm mb-2">{nextEvent.description}</p>}
-                  <p className="text-[#2D3142] font-medium text-sm mb-3">
+                  <p className="text-[#5D5D5D] text-xs sm:text-sm mb-3">
                     יום {HEBREW_DAYS[new Date(nextEvent.scheduledAt).getDay()]}, {new Date(nextEvent.scheduledAt).getDate()} {HEBREW_MONTHS[new Date(nextEvent.scheduledAt).getMonth()]} | {fmt(new Date(nextEvent.scheduledAt))}
                   </p>
                   <div className="mb-3">
@@ -794,8 +816,8 @@ const LiveStreamPage = () => {
             <div>
               <div className="text-center mb-3 sm:mb-4">
                 <LivePulse />
-                <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-[#2D3142] mt-2">{stream.title}</h2>
-                {stream.description && <p className="text-[#5D5D5D] text-sm sm:text-base mt-1">{stream.description}</p>}
+                <h2 className="text-base sm:text-lg font-semibold text-[#2D3142] mt-2">{stream.title}</h2>
+                {stream.description && <p className="text-[#5D5D5D] text-xs sm:text-sm mt-1">{stream.description}</p>}
               </div>
 
               {session ? (
@@ -841,7 +863,7 @@ const LiveStreamPage = () => {
                     <h3 className="text-white text-base sm:text-lg md:text-xl lg:text-2xl font-bold mb-2 px-2">הירשמו כדי לצפות בשידור</h3>
                     <p className="text-white/60 text-xs sm:text-sm mb-4 sm:mb-6 max-w-md px-2">השידור החי פתוח לכל מי שרשום באתר. הירשמו בחינם כדי להצטרף לשיעור עם בועז נחייסי.</p>
                     <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 justify-center w-full px-2">
-                      <Link href="/register" className="bg-white text-[#2D3142] px-5 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm hover:bg-[#D5C4B7] transition-colors shadow-lg w-full sm:w-auto text-center">
+                      <Link href="/register" className="bg-white/90 text-[#2D3142] px-5 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm hover:bg-white transition-colors shadow-lg w-full sm:w-auto text-center">
                         הרשמה חינם
                       </Link>
                       <Link href="/login" className="text-white/80 border border-white/30 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm hover:bg-white/10 transition-colors w-full sm:w-auto text-center">
@@ -857,28 +879,28 @@ const LiveStreamPage = () => {
 
           {/* MONTHLY CALENDAR - always visible */}
           <div>
-            <h2 className="text-xl font-bold text-[#2D3142] mb-2 flex items-center gap-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            <h2 className="text-base sm:text-lg font-semibold text-[#2D3142] mb-1 flex items-center gap-2">
+              <svg className="w-4 h-4 text-[#B56B4A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
               לוח שידורים
             </h2>
-            <p className="text-sm text-[#5D5D5D] mb-3">לחץ על השיעור לבירור והרשמה</p>
+            <p className="text-xs text-[#5D5D5D] mb-3">לחץ על השיעור לבירור והרשמה</p>
             <EventCalendar events={allEvents} isLoggedIn={!!session} registeredIds={registeredIds} onToggleRegister={handleToggleRegister} registering={registering} monthlyThemes={monthlyThemes} isAdmin={isAdmin} />
           </div>
 
           {/* CTA for non-logged in users */}
           {!session && (
             <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-[#D5C4B7]/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-6 sm:p-8 text-center">
-              <h3 className="text-xl sm:text-2xl font-bold text-[#2D3142] mb-3">
+              <h3 className="text-lg sm:text-xl font-semibold text-[#2D3142] mb-3">
                 רוצים לצפות בהקלטות של כל השיעורים?
               </h3>
               <p className="text-sm sm:text-base text-[#5D5D5D] mb-6 max-w-xl mx-auto">
                 הצטרפו לסטודיו בועז אונליין וקבלו גישה למאות שיעורים ותכנים בלעדיים
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link href="/pricing" className="bg-gradient-to-r from-[#B56B4A] to-[#9a5a3d] text-white px-8 py-3 rounded-2xl font-medium shadow-md hover:shadow-lg transition-all inline-block">
+                <Link href="/pricing" className="bg-[#9D8E81] text-white px-8 py-3 rounded-2xl font-medium shadow-md hover:shadow-lg transition-all inline-block hover:bg-[#8A7B72]">
                   תוכניות מנוי
                 </Link>
-                <Link href="/register" className="bg-white text-[#2D3142] px-8 py-3 rounded-2xl font-medium shadow-md hover:shadow-lg transition-all border-2 border-[#D5C4B7] inline-block">
+                <Link href="/register" className="bg-white text-[#2D3142] px-8 py-3 rounded-2xl font-medium shadow-md hover:shadow-lg transition-all border border-[#D5C4B7] inline-block hover:bg-[#F7F3EB]">
                   הרשמה חינם
                 </Link>
               </div>

@@ -478,7 +478,7 @@ const AdminVimeoLivePanel = () => {
             ) : (
               <div>
                 <label className="text-xs text-[#5D5D5D] block mb-1">Vimeo Embed URL (פעם אחת בלבד)</label>
-                <input type="text" value={form.vimeoEmbedUrl} onChange={(e) => setForm({ ...form, vimeoEmbedUrl: e.target.value })} className="w-full border border-[#D5C4B7] rounded-lg px-3 py-2 text-sm bg-white font-mono text-xs" dir="ltr" placeholder="https://vimeo.com/event/XXXXX/embed/XXXXX/interaction" />
+                <input type="text" value={form.vimeoEmbedUrl} onChange={(e) => setForm({ ...form, vimeoEmbedUrl: e.target.value })} className="w-full border border-[#D5C4B7] rounded-lg px-3 py-2 text-xs bg-white font-mono" dir="ltr" placeholder="https://vimeo.com/event/XXXXX/embed/XXXXX/interaction" />
                 <p className="text-[10px] text-[#5D5D5D] mt-1">ב-Vimeo: Embed → העתק את ה-src URL מתוך ה-iframe. מספיק פעם אחת — ישמר לכל השידורים הבאים.</p>
               </div>
             )}
@@ -642,20 +642,30 @@ const AdminVimeoLivePanel = () => {
                 {pastEvents.map((event) => {
                   const cfg = statusConfig[event.status] || statusConfig.ended;
                   return (
-                    <div key={event.id} className="flex items-center gap-3 p-2 rounded-lg text-sm text-[#5D5D5D] hover:bg-[#F7F3EB]/50">
-                      <span className={`px-2 py-0.5 rounded-full text-xs ${cfg.color}`}>{cfg.text}</span>
-                      <span className="truncate flex-1">{event.title}</span>
-                      <span className="text-xs whitespace-nowrap">{formatDate(event.scheduledAt)}</span>
-                      {event.status === "ended" && (
+                    <div key={event.id} className="p-2 rounded-lg text-sm text-[#5D5D5D] hover:bg-[#F7F3EB]/50">
+                      <div className="flex items-center gap-3">
+                        <span className={`px-2 py-0.5 rounded-full text-xs flex-shrink-0 ${cfg.color}`}>{cfg.text}</span>
+                        <span className="truncate flex-1">{event.title}</span>
+                        <span className="text-xs whitespace-nowrap">{formatDate(event.scheduledAt)}</span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-1.5 pr-1">
                         <button
-                          onClick={() => handleStatusChange(event.id, "scheduled")}
-                          className="text-xs text-orange-500 hover:text-orange-700 font-medium whitespace-nowrap"
-                          title="החזר לסטטוס מתוזמן"
+                          onClick={() => openEditForm(event)}
+                          className="text-xs bg-white text-[#2D3142] px-2.5 py-1 rounded-lg border border-[#D5C4B7] hover:bg-[#D5C4B7]/20 transition-colors"
                         >
-                          ↩ שחזר
+                          ערוך
                         </button>
-                      )}
-                      <button onClick={() => handleDelete(event.id)} className="text-xs text-red-400 hover:text-red-600">מחק</button>
+                        {event.status === "ended" && (
+                          <button
+                            onClick={() => handleStatusChange(event.id, "scheduled")}
+                            className="text-xs text-orange-500 hover:text-orange-700 font-medium whitespace-nowrap"
+                            title="החזר לסטטוס מתוזמן"
+                          >
+                            ↩ שחזר
+                          </button>
+                        )}
+                        <button onClick={() => handleDelete(event.id)} className="text-xs text-red-400 hover:text-red-600">מחק</button>
+                      </div>
                     </div>
                   );
                 })}

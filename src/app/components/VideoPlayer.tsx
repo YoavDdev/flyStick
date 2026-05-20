@@ -697,42 +697,36 @@ const VideoPlayer = ({
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          // Width is calculated based on max height to prevent overflow
-          // In landscape: limit width so video height stays within viewport
           width: isMobileLandscape || isFullscreen 
             ? 'min(95vw, calc(85vh * 16 / 9))' 
             : isMobilePortrait 
               ? 'min(90vw, calc(60vh * 16 / 9))'
               : 'min(56rem, calc(85vh * 16 / 9))',
         }}
-      />
-
-      {/* Close button */}
-      <button
-        className={`absolute text-white text-sm cursor-pointer bg-black bg-opacity-50 hover:bg-opacity-70 p-2 rounded-full shadow-md z-10 flex items-center justify-center border border-white/30 transition-all duration-200 ${
-          isMobileLandscape || isFullscreen 
-            ? 'top-4 right-4' 
-            : isMobilePortrait ? 'top-4 right-4' : 'top-16 right-6'
-        }`}
-        onClick={handleCloseButton}
-        aria-label="Close video"
-        title="Close video"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={1.5}
+        {/* Close button - anchored to top-right of video box */}
+        <button
+          className="absolute -top-4 -right-4 text-white cursor-pointer bg-black bg-opacity-60 hover:bg-opacity-90 p-2 rounded-full shadow-lg z-20 flex items-center justify-center border border-white/30 transition-all duration-200"
+          onClick={handleCloseButton}
+          aria-label="Close video"
+          title="Close video"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
       
       {/* Hint text */}
       {!isMobileLandscape && !isFullscreen && (
