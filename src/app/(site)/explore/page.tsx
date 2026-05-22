@@ -637,7 +637,7 @@ useEffect(() => {
           <div className="mx-auto max-w-7xl px-8 pb-10">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-base font-semibold leading-7 text-[#B56B4A] no-wrap">
-                המסע והצרכים בהתאמה אישית
+                    כל התכנים זמינים לצפייה במקום אחד
               </h2>
               <p className="mt-2 text-3xl font-bold tracking-tight text-[#2D3142] sm:text-4xl">
                 גלו את השיעור הבא
