@@ -200,7 +200,29 @@ const Page = () => {
 
       const data = response.data;
       // Filter out upcoming live events (type "live" with no duration), keep recorded live sessions
-      const videosData = data.data.filter((v: any) => v.type !== "live" || (v.type === "live" && v.duration > 0));
+      // Replace temporary live event titles with user-friendly title
+      const placeholderTitles = ["פה אתה עולה לליב", "עלה לליב", "live event", "upcoming live"];
+      const videosData = data.data.filter((v: any) => {
+        // Filter out upcoming live events
+        const isUpcomingLive = v.type === "live" && v.duration === 0;
+        return !isUpcomingLive;
+      }).map((v: any) => {
+        // Replace temporary live titles
+        const title = v.name || "";
+        const hasPlaceholderTitle = placeholderTitles.some(placeholder => 
+          title.toLowerCase().includes(placeholder.toLowerCase())
+        );
+        
+        if (hasPlaceholderTitle) {
+          return {
+            ...v,
+            name: "הקלטה מהלייב האחרון",
+            originalTitle: v.name
+          };
+        }
+        
+        return v;
+      });
 
       if (videosData.length === 0 && page === 1) {
         // Set noResults to true if no videos are found on the first page

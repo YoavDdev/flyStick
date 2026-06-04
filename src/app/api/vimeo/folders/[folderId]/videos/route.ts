@@ -44,8 +44,27 @@ export async function GET(
 
     const videos = response.data.data || [];
     
+    // Replace temporary live event titles with user-friendly title
+    const placeholderTitles = ["פה אתה עולה לליב", "עלה לליב", "live event", "upcoming live"];
+    const processedVideos = videos.map((video: any) => {
+      const title = video.name || "";
+      const hasPlaceholderTitle = placeholderTitles.some(placeholder => 
+        title.toLowerCase().includes(placeholder.toLowerCase())
+      );
+      
+      if (hasPlaceholderTitle) {
+        return {
+          ...video,
+          name: "הקלטה מהלייב האחרון",
+          originalTitle: video.name
+        };
+      }
+      
+      return video;
+    });
+    
     // Format the video data
-    const formattedVideos = videos.map((video: any) => ({
+    const formattedVideos = processedVideos.map((video: any) => ({
       uri: video.uri,
       name: video.name || "Untitled Video",
       description: video.description || "",

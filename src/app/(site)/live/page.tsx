@@ -4,6 +4,8 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { FaCopy } from "react-icons/fa";
+import { toast } from "react-hot-toast";
 const VideoPlayer = dynamic(() => import("../../components/VideoPlayer"), { ssr: false });
 
 const HEBREW_MONTHS = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
@@ -361,14 +363,48 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
                         e.status === "cancelled" ? "bg-orange-400" : "bg-gray-400"
                       }`} />
                       <div className="flex-1 min-w-0">
-                        <p className={`font-bold text-base mb-1 ${e.status === "cancelled" ? "line-through text-[#5D5D5D]" : "text-[#2D3142]"}` }>{e.title}</p>
+                        <div className="flex items-start justify-between gap-2">
+                          <p className={`font-bold text-base mb-1 ${e.status === "cancelled" ? "line-through text-[#5D5D5D]" : "text-[#2D3142]"}` }>{e.title}</p>
+                          {/* Copy Title Button - Admin Only */}
+                          {isAdmin && (
+                            <button
+                              onClick={(ev) => {
+                                ev.stopPropagation();
+                                navigator.clipboard.writeText(e.title);
+                                toast.success("הכותרת הועתקה!");
+                              }}
+                              className="flex-shrink-0 p-1.5 text-[#B8A99C] hover:text-[#2D3142] hover:bg-[#D5C4B7]/20 rounded transition-all"
+                              title="העתק כותרת"
+                            >
+                              <FaCopy className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
                         <p className="text-sm text-[#5D5D5D] mb-2">
                           {fmt(new Date(e.scheduledAt))} | {e.estimatedDuration} דקות
                           {e.status === "ended" && " | הסתיים"}
                           {e.status === "cancelled" && " | בוטל"}
                           {e.status === "live" && " | משדר עכשיו!"}
                         </p>
-                        {e.description && <p className="text-sm text-[#5D5D5D]">{e.description}</p>}
+                        {e.description && (
+                          <div className="flex items-start justify-between gap-2">
+                            <p className="text-sm text-[#5D5D5D]">{e.description}</p>
+                            {/* Copy Description Button - Admin Only */}
+                            {isAdmin && (
+                              <button
+                                onClick={(ev) => {
+                                  ev.stopPropagation();
+                                  navigator.clipboard.writeText(e.description);
+                                  toast.success("התיאור הועתק!");
+                                }}
+                                className="flex-shrink-0 p-1.5 text-[#B8A99C] hover:text-[#2D3142] hover:bg-[#D5C4B7]/20 rounded transition-all"
+                                title="העתק תיאור"
+                              >
+                                <FaCopy className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                     {e.status === "scheduled" && (

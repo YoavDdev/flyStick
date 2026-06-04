@@ -50,9 +50,31 @@ export async function GET(request: NextRequest) {
       timeout: 10000, // 10 second timeout
     });
     
+    // Replace temporary live event titles with user-friendly title
+    const placeholderTitles = ["פה אתה עולה לליב", "עלה לליב", "live event", "upcoming live"];
+    const processedData = {
+      ...response.data,
+      data: response.data.data.map((video: any) => {
+        const title = video.name || "";
+        const hasPlaceholderTitle = placeholderTitles.some(placeholder => 
+          title.toLowerCase().includes(placeholder.toLowerCase())
+        );
+        
+        if (hasPlaceholderTitle) {
+          return {
+            ...video,
+            name: "הקלטה מהלייב האחרון",
+            originalTitle: video.name // Keep original for reference
+          };
+        }
+        
+        return video;
+      })
+    };
+    
     // Cache the response
     videoCache.set(cacheKey, {
-      data: response.data,
+      data: processedData,
       timestamp: Date.now()
     });
     

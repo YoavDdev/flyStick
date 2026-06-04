@@ -73,11 +73,19 @@ export async function POST(request) {
           return null;
         }
         
-        // Create video data object
+        // Check for temporary live event titles and replace with user-friendly title
+        const placeholderTitles = ["פה אתה עולה לליב", "עלה לליב", "live event", "upcoming live"];
+        const title = res.data.name || "";
+        const hasPlaceholderTitle = placeholderTitles.some(placeholder => 
+          title.toLowerCase().includes(placeholder.toLowerCase())
+        );
+        
+        // Create video data object with replaced title if needed
         const videoData = {
           uri: res.data.uri,
           embedHtml: res.data.embed?.html || "",
-          name: res.data.name || "Untitled Video",
+          name: hasPlaceholderTitle ? "הקלטה מהלייב האחרון" : (res.data.name || "Untitled Video"),
+          originalTitle: hasPlaceholderTitle ? res.data.name : undefined,
           description: res.data.description || "",
           thumbnailUri: res.data.pictures?.sizes?.[5]?.link || "",
           duration: res.data.duration || 0,

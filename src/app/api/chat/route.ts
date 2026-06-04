@@ -121,7 +121,27 @@ async function fetchFolderVideos(folderName: string): Promise<string> {
       }
     );
 
-    const videos = videosRes.data.data || [];
+    let videos = videosRes.data.data || [];
+    
+    // Replace temporary live event titles with user-friendly title
+    const placeholderTitles = ["פה אתה עולה לליב", "עלה לליב", "live event", "upcoming live"];
+    videos = videos.map((v: any) => {
+      const title = v.name || "";
+      const hasPlaceholderTitle = placeholderTitles.some(placeholder => 
+        title.toLowerCase().includes(placeholder.toLowerCase())
+      );
+      
+      if (hasPlaceholderTitle) {
+        return {
+          ...v,
+          name: "הקלטה מהלייב האחרון",
+          originalTitle: v.name
+        };
+      }
+      
+      return v;
+    });
+    
     if (videos.length === 0) {
       return `אין סרטונים בתיקיה "${folderName}".`;
     }
