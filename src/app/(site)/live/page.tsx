@@ -226,7 +226,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-gradient-to-br from-[#B56B4A] to-[#9a5a3d] shadow-sm"></span> <span className="font-medium">חי</span></span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-gradient-to-br from-[#D5C4B7] to-[#B8A99C] shadow-sm"></span> <span className="font-medium">מתוזמן</span></span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-gradient-to-br from-[#9D8E81] to-[#8A7B72] shadow-sm"></span> <span className="font-medium">הסתיים</span></span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-gradient-to-br from-[#C9A88A] to-[#B8977A] shadow-sm"></span> <span className="font-medium">בוטל</span></span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-gradient-to-br from-[#C9A88A] to-[#B8977A] shadow-sm"></span> <span className="font-medium">בוטל / השלמה</span></span>
       </div>
 
       {/* Day names */}
@@ -416,14 +416,16 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
                     {e.status === "live" && (
                       <span className="text-sm bg-red-500 text-white px-3 py-1.5 rounded-full flex-shrink-0 font-bold">שידור חי</span>
                     )}
-                    {e.status === "ended" && (
-                      <span className="inline-flex items-center gap-1.5 text-sm bg-[#D5C4B7]/30 text-[#2D3142] px-3 py-1.5 rounded-full border border-[#D5C4B7]/60 font-medium">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        צפה בהקלטה
-                      </span>
-                    )}
-                    {e.status === "cancelled" && (
-                      <span className="text-sm bg-orange-100 text-orange-700 px-3 py-1.5 rounded-full flex-shrink-0 font-medium">בוטל</span>
+                    {(e.status === "ended" || e.status === "cancelled") && (
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {e.status === "cancelled" && (
+                          <span className="text-sm bg-orange-100 text-orange-700 px-3 py-1.5 rounded-full flex-shrink-0 font-medium">בוטל</span>
+                        )}
+                        <span className="inline-flex items-center gap-1.5 text-sm bg-[#D5C4B7]/30 text-[#2D3142] px-3 py-1.5 rounded-full border border-[#D5C4B7]/60 font-medium">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                          {e.status === "cancelled" ? "השלמה זמינה" : "צפה בהקלטה"}
+                        </span>
+                      </div>
                     )}
                     
                     {/* Admin: Show registrations for scheduled events */}
@@ -432,7 +434,7 @@ const EventCalendar = ({ events, isLoggedIn, registeredIds, onToggleRegister, re
                     )}
                   </div>
                 );
-                return e.status === "ended" ? (
+                return (e.status === "ended" || e.status === "cancelled") ? (
                   <button key={e.id} className="w-full text-right cursor-pointer" onClick={() => { closeModal(); onPlayRecording?.(e.title); }}>{inner}</button>
                 ) : (
                   <div key={e.id}>{inner}</div>
@@ -693,6 +695,7 @@ const LiveStreamPage = () => {
   const [monthlyThemes, setMonthlyThemes] = useState<Record<string, string>>({});
   const [playingRecording, setPlayingRecording] = useState<{ embedHtml: string | null; videoUri: string | null; title: string } | null>(null);
   const [loadingRecording, setLoadingRecording] = useState(false);
+  const [noRecordingTitle, setNoRecordingTitle] = useState<string | null>(null);
 
   const fetchStreamData = useCallback(async () => {
     try {
@@ -794,17 +797,33 @@ const LiveStreamPage = () => {
     }
   };
 
+  const fuzzyMatch = (videoName: string, eventTitle: string): number => {
+    const normalize = (s: string) => s.toLowerCase().replace(/[^\u0590-\u05ffa-z0-9\s]/g, "").replace(/\s+/g, " ").trim();
+    const a = normalize(videoName);
+    const b = normalize(eventTitle);
+    if (a === b) return 1;
+    if (a.includes(b) || b.includes(a)) return 0.9;
+    const wordsA = a.split(" ");
+    const wordsB = b.split(" ");
+    const shared = wordsA.filter(w => w.length > 1 && wordsB.includes(w)).length;
+    return shared / Math.max(wordsA.length, wordsB.length);
+  };
+
   const handlePlayRecording = useCallback(async (title: string) => {
     setLoadingRecording(true);
     try {
-      const res = await fetch(`/api/videos?query=${encodeURIComponent(title)}&per_page=5`);
+      const res = await fetch(`/api/videos?query=${encodeURIComponent(title)}&per_page=10`);
       const data = await res.json();
       const videos: any[] = data.data || [];
-      const match = videos.find((v: any) =>
-        v.name?.toLowerCase().replace(/\s+/g, " ").trim() === title.toLowerCase().replace(/\s+/g, " ").trim()
-      ) || videos[0];
-      if (match) {
-        setPlayingRecording({ embedHtml: match.embed?.html || null, videoUri: match.uri || null, title: match.name || title });
+      const scored = videos
+        .map((v: any) => ({ v, score: fuzzyMatch(v.name || "", title) }))
+        .sort((a, b) => b.score - a.score);
+      const best = scored[0];
+      if (best && best.score >= 0.5) {
+        setPlayingRecording({ embedHtml: best.v.embed?.html || null, videoUri: best.v.uri || null, title: best.v.name || title });
+      } else {
+        setPlayingRecording(null);
+        setNoRecordingTitle(title);
       }
     } catch (e) {
       console.error("Failed to load recording:", e);
@@ -990,6 +1009,38 @@ const LiveStreamPage = () => {
           <div className="bg-white rounded-2xl px-8 py-6 flex items-center gap-3 shadow-2xl">
             <div className="w-5 h-5 border-2 border-[#2D3142] border-t-transparent rounded-full animate-spin" />
             <span className="text-[#2D3142] font-medium text-sm">טוען הקלטה...</span>
+          </div>
+        </div>
+      )}
+
+      {/* No recording modal */}
+      {noRecordingTitle && (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center p-4"
+          dir="rtl"
+          onClick={() => setNoRecordingTitle(null)}
+        >
+          <div
+            className="bg-white rounded-2xl border border-[#D5C4B7]/30 shadow-2xl max-w-sm w-full p-6 flex flex-col items-center text-center gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-16 h-16 bg-[#FFF9F0] border border-[#D5C4B7] rounded-full flex items-center justify-center text-3xl">
+              🎬
+            </div>
+            <div>
+              <h3 className="font-bold text-[#2D3142] text-lg mb-1">ההקלטה בדרך!</h3>
+              <p className="text-[#5D5D5D] text-sm leading-relaxed">
+                בועז עובד על עריכת ההקלטה של<br />
+                <span className="font-semibold text-[#2D3142]">"{noRecordingTitle}"</span>
+              </p>
+              <p className="text-[#B8A99C] text-xs mt-2">היא תהיה זמינה כאן בקרוב 🙏</p>
+            </div>
+            <button
+              onClick={() => setNoRecordingTitle(null)}
+              className="w-full bg-[#D5C4B7] hover:bg-[#B8A99C] text-[#2D3142] font-medium py-2.5 rounded-xl transition-colors text-sm"
+            >
+              הבנתי, תודה
+            </button>
           </div>
         </div>
       )}
