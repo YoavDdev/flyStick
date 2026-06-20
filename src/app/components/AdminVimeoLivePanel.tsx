@@ -709,7 +709,7 @@ const AdminVimeoLivePanel = () => {
                         )}
                         {event.status === "cancelled" && (
                           completionSuccess === event.id ? (
-                            <span className="text-xs text-green-600 font-medium">✅ מייל נשלח!</span>
+                            <span className="text-xs text-green-600 font-medium">✅ הודעה נשלחה!</span>
                           ) : (
                             <button
                               onClick={() => sendCompletionNotification(event.id)}
@@ -717,7 +717,7 @@ const AdminVimeoLivePanel = () => {
                               className="text-xs bg-[#B56B4A] text-white px-2.5 py-1 rounded-lg hover:bg-[#9a5a3d] transition-colors disabled:opacity-50 whitespace-nowrap"
                               title="שלח מייל לנרשמים שההשלמה זמינה"
                             >
-                              {sendingCompletion === event.id ? "שולח..." : "📹 שלח מייל השלמה"}
+                              {sendingCompletion === event.id ? "שולח..." : "📹 הודע על השלמה"}
                             </button>
                           )
                         )}
