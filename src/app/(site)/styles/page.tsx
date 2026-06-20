@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from 'next/link';
 
@@ -278,6 +278,8 @@ const StylesPage = () => {
   const [folders, setFolders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const foldersGridRef = useRef<HTMLDivElement>(null);
+  const filterRef = useRef<HTMLDivElement>(null);
 
   // Fetch folders from API
   const fetchFolders = async () => {
@@ -356,9 +358,9 @@ const StylesPage = () => {
             </p>
             
             {/* Category filter buttons */}
-            <div className="flex flex-wrap justify-center gap-2 mt-8 rtl">
+            <div ref={filterRef} className="flex flex-wrap justify-center gap-2 mt-8 rtl">
               <button
-                onClick={() => setSelectedCategory(null)}
+                onClick={() => { setSelectedCategory(null); }}
                 className={`px-5 py-2 rounded-full text-sm transition-all duration-300 ${
                   selectedCategory === null 
                   ? 'bg-[#D5C4B7] text-[#3D3D3D] shadow-md' 
@@ -369,7 +371,7 @@ const StylesPage = () => {
                 {folders.map((folder) => (
                 <button
                 key={folder.uri}
-                onClick={() => setSelectedCategory(folder.name)}
+                onClick={() => { setSelectedCategory(folder.name); setTimeout(() => { if (filterRef.current) { const filterBottom = filterRef.current.getBoundingClientRect().bottom + window.scrollY + 16 - 80; window.scrollTo({ top: filterBottom, behavior: 'smooth' }); } }, 80); }}
                 className={`px-5 py-2 rounded-full text-sm transition-all duration-300 whitespace-nowrap ${selectedCategory === folder.name 
                   ? 'bg-[#D5C4B7] text-[#3D3D3D] shadow-md' 
                   : 'bg-[#F7F3EB] text-[#5D5D5D] border border-[#D5C4B7] hover:bg-[#E6DEDA]'}`}
@@ -390,7 +392,7 @@ const StylesPage = () => {
 
           {/* Folders grid */}
           {!loading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div ref={foldersGridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredFolders.map((folder) => (
                 <div 
                   key={folder.uri} 
