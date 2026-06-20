@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from 'next/link';
+import { useRouter } from "next/navigation";
 
 // Import folder metadata helpers
 import { getFolderMetadata, folderMetadata } from "@/config/folder-metadata";
@@ -275,11 +276,10 @@ const CategoryIcon = ({ name, customIcon }: { name: string; customIcon?: string 
 
 const StylesPage = () => {
   const { data: session } = useSession();
+  const router = useRouter();
   const [folders, setFolders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const foldersGridRef = useRef<HTMLDivElement>(null);
-  const filterRef = useRef<HTMLDivElement>(null);
 
   // Fetch folders from API
   const fetchFolders = async () => {
@@ -349,19 +349,19 @@ const StylesPage = () => {
       <div className="relative z-10 pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 sm:mb-12">
             <h1 className="text-3xl md:text-4xl font-medium tracking-wide text-[#3D3D3D] mb-4">
               <span className="border-b-2 border-[#B56B4A] pb-1">בחירת טכניקה</span>
             </h1>
-            <p className="text-lg text-[#5D5D5D] max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-[#5D5D5D] max-w-2xl mx-auto">
               אנו מציעים מגוון רחב של טכניקות תנועה לכל הרמות, מתחילים ועד מתקדמים
             </p>
             
             {/* Category filter buttons */}
-            <div ref={filterRef} className="flex flex-wrap justify-center gap-2 mt-8 rtl">
+            <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mt-5 sm:mt-8 rtl">
               <button
                 onClick={() => { setSelectedCategory(null); }}
-                className={`px-5 py-2 rounded-full text-sm transition-all duration-300 ${
+                className={`px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm transition-all duration-300 whitespace-nowrap ${
                   selectedCategory === null 
                   ? 'bg-[#D5C4B7] text-[#3D3D3D] shadow-md' 
                   : 'bg-[#F7F3EB] text-[#5D5D5D] border border-[#D5C4B7] hover:bg-[#E6DEDA]'}`}
@@ -371,8 +371,8 @@ const StylesPage = () => {
                 {folders.map((folder) => (
                 <button
                 key={folder.uri}
-                onClick={() => { setSelectedCategory(folder.name); setTimeout(() => { if (filterRef.current) { const filterBottom = filterRef.current.getBoundingClientRect().bottom + window.scrollY + 16 - 80; window.scrollTo({ top: filterBottom, behavior: 'smooth' }); } }, 80); }}
-                className={`px-5 py-2 rounded-full text-sm transition-all duration-300 whitespace-nowrap ${selectedCategory === folder.name 
+                onClick={() => { router.push(`/styles/${encodeURIComponent(folder.name)}`); }}
+                className={`px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm transition-all duration-300 whitespace-nowrap ${selectedCategory === folder.name 
                   ? 'bg-[#D5C4B7] text-[#3D3D3D] shadow-md' 
                   : 'bg-[#F7F3EB] text-[#5D5D5D] border border-[#D5C4B7] hover:bg-[#E6DEDA]'}`}
 
@@ -392,7 +392,7 @@ const StylesPage = () => {
 
           {/* Folders grid */}
           {!loading && (
-            <div ref={foldersGridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredFolders.map((folder) => (
                 <div 
                   key={folder.uri} 
