@@ -3,18 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import prisma from "@/app/libs/prismadb";
 import { Resend } from 'resend';
-
-const HEBREW_DAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
-const HEBREW_MONTHS = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
-
-function formatDateTime(date: Date) {
-  const day = HEBREW_DAYS[date.getDay()];
-  const dateNum = date.getDate();
-  const month = HEBREW_MONTHS[date.getMonth()];
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  return `יום ${day}, ${dateNum} ${month} בשעה ${hours}:${minutes}`;
-}
+import { formatDateTimeIsrael } from "@/app/utils/dateUtils";
 
 export async function POST(req: Request) {
   try {
@@ -83,11 +72,11 @@ export async function POST(req: Request) {
           </p>
           ${oldDateTime ? `
             <p style="font-size: 15px; color: #9D8E81; margin: 0 0 10px 0; text-decoration: line-through;">
-              שעה קודמת: ${formatDateTime(new Date(oldDateTime))}
+              שעה קודמת: ${formatDateTimeIsrael(oldDateTime)}
             </p>
           ` : ''}
           <p style="font-size: 16px; color: #B56B4A; margin: 0 0 20px 0; font-weight: bold;">
-            ✅ שעה חדשה: ${formatDateTime(new Date(event.scheduledAt))}
+            ✅ שעה חדשה: ${formatDateTimeIsrael(event.scheduledAt)}
           </p>
         `;
         break;
@@ -99,7 +88,7 @@ export async function POST(req: Request) {
             מצטערים! השיעור בוטל
           </p>
           <p style="font-size: 15px; color: #5D5D5D; margin: 0 0 20px 0;">
-            השיעור שהיה אמור להתקיים ב-${formatDateTime(new Date(event.scheduledAt))} בוטל.
+            השיעור שהיה אמור להתקיים ב-${formatDateTimeIsrael(event.scheduledAt)} בוטל.
             נעדכן אותך כשיהיה שיעור חדש במקומו.
           </p>
         `;
@@ -113,11 +102,26 @@ export async function POST(req: Request) {
           </p>
           ${oldDateTime ? `
             <p style="font-size: 15px; color: #9D8E81; margin: 0 0 10px 0; text-decoration: line-through;">
-              מועד קודם: ${formatDateTime(new Date(oldDateTime))}
+              מועד קודם: ${formatDateTimeIsrael(oldDateTime)}
             </p>
           ` : ''}
           <p style="font-size: 16px; color: #B56B4A; margin: 0 0 20px 0; font-weight: bold;">
-            ✅ מועד חדש: ${formatDateTime(new Date(event.scheduledAt))}
+            ✅ מועד חדש: ${formatDateTimeIsrael(event.scheduledAt)}
+          </p>
+        `;
+        break;
+
+      case "completed":
+        subject = `🎬 ההשלמה זמינה: ${event.title}`;
+        updateMessage = `
+          <p style="font-size: 16px; color: #2D3142; margin: 0 0 20px 0; font-weight: bold;">
+            ההקלטה של השיעור זמינה לצפייה!
+          </p>
+          <p style="font-size: 15px; color: #5D5D5D; margin: 0 0 20px 0;">
+            השיעור שהיה אמור להתקיים ב-${formatDateTimeIsrael(event.scheduledAt)} הושלם והוקלטה גרסת ההשלמה שלו.
+          </p>
+          <p style="font-size: 15px; color: #B56B4A; margin: 0 0 20px 0; font-weight: bold;">
+            ✅ ניתן כעת לצפות בהקלטה דרך לוח השידורים!
           </p>
         `;
         break;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 interface LiveEvent {
   id: string;
@@ -27,6 +27,11 @@ const AdminVimeoLivePanel = () => {
   const [msgForm, setMsgForm] = useState<{ eventId: string; title: string; content: string } | null>(null);
   const [sendingMsg, setSendingMsg] = useState(false);
   const [msgSuccess, setMsgSuccess] = useState<string | null>(null);
+  const [sendingCompletion, setSendingCompletion] = useState<string | null>(null);
+  const [completionSuccess, setCompletionSuccess] = useState<string | null>(null);
+
+  const [highlightForm, setHighlightForm] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
 
   // Monthly theme state
   const [themeMonth, setThemeMonth] = useState(() => new Date().getMonth() + 1);
@@ -158,6 +163,23 @@ const AdminVimeoLivePanel = () => {
     setShowForm(true);
   };
 
+  // Scroll to form and highlight it when it opens or when editing another event
+  useEffect(() => {
+    if (showForm && formRef.current) {
+      setHighlightForm(true);
+      const timer = setTimeout(() => {
+        if (formRef.current) {
+          formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 50);
+      const highlightTimer = setTimeout(() => setHighlightForm(false), 1500);
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(highlightTimer);
+      };
+    }
+  }, [showForm, editingEvent]);
+
   const handleSave = async () => {
     if (!form.title || !form.scheduledAt || !form.scheduledTime) {
       setError("חסרים שדות חובה: כותרת, תאריך ושעה");
@@ -244,6 +266,27 @@ const AdminVimeoLivePanel = () => {
     } catch (err) {
       setError("שגיאה בעדכון סטטוס");
     }
+  };
+
+  const sendCompletionNotification = async (eventId: string) => {
+    setSendingCompletion(eventId);
+    try {
+      const res = await fetch("/api/live-events/send-update-notifications", {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ eventId, updateType: "completed" }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCompletionSuccess(eventId);
+        setTimeout(() => setCompletionSuccess(null), 4000);
+      } else {
+        setError(data.error || "שגיאה בשליחת מייל");
+      }
+    } catch {
+      setError("שגיאה בשליחת מייל");
+    }
+    setSendingCompletion(null);
   };
 
   const handleDelete = async (eventId: string) => {
@@ -427,7 +470,7 @@ const AdminVimeoLivePanel = () => {
 
         {/* Create/Edit Form */}
         {showForm && (
-          <div className="bg-[#F7F3EB] border border-[#D5C4B7]/50 rounded-xl p-4 space-y-3">
+          <div ref={formRef} className={`bg-[#F7F3EB] border-2 rounded-xl p-4 space-y-3 transition-colors duration-300 ${highlightForm ? "border-[#B56B4A] shadow-lg" : "border-[#D5C4B7]/50"}`}>
             <h4 className="font-bold text-[#2D3142] text-sm">{editingEvent ? "עריכת שידור" : "שידור חדש"}</h4>
 
             <div>
@@ -648,7 +691,7 @@ const AdminVimeoLivePanel = () => {
                         <span className="truncate flex-1">{event.title}</span>
                         <span className="text-xs whitespace-nowrap">{formatDate(event.scheduledAt)}</span>
                       </div>
-                      <div className="flex items-center gap-2 mt-1.5 pr-1">
+                      <div className="flex items-center gap-2 mt-1.5 pr-1 flex-wrap">
                         <button
                           onClick={() => openEditForm(event)}
                           className="text-xs bg-white text-[#2D3142] px-2.5 py-1 rounded-lg border border-[#D5C4B7] hover:bg-[#D5C4B7]/20 transition-colors"
@@ -663,6 +706,20 @@ const AdminVimeoLivePanel = () => {
                           >
                             ↩ שחזר
                           </button>
+                        )}
+                        {event.status === "cancelled" && (
+                          completionSuccess === event.id ? (
+                            <span className="text-xs text-green-600 font-medium">✅ מייל נשלח!</span>
+                          ) : (
+                            <button
+                              onClick={() => sendCompletionNotification(event.id)}
+                              disabled={sendingCompletion === event.id}
+                              className="text-xs bg-[#B56B4A] text-white px-2.5 py-1 rounded-lg hover:bg-[#9a5a3d] transition-colors disabled:opacity-50 whitespace-nowrap"
+                              title="שלח מייל לנרשמים שההשלמה זמינה"
+                            >
+                              {sendingCompletion === event.id ? "שולח..." : "📹 שלח מייל השלמה"}
+                            </button>
+                          )
                         )}
                         <button onClick={() => handleDelete(event.id)} className="text-xs text-red-400 hover:text-red-600">מחק</button>
                       </div>

@@ -40,6 +40,43 @@ export function formatDate(
   }
 }
 
+const HEBREW_DAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+const HEBREW_MONTHS = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
+
+/**
+ * Format a date in Israel timezone (Asia/Jerusalem) with Hebrew day/month names.
+ * Example: יום ראשון, 20 יוני בשעה 13:00
+ */
+export function formatDateTimeIsrael(dateInput: string | number | Date): string {
+  try {
+    const d = dateInput instanceof Date ? dateInput : new Date(dateInput);
+    if (isNaN(d.getTime())) return "";
+
+    const formatter = new Intl.DateTimeFormat("he-IL", {
+      timeZone: "Asia/Jerusalem",
+      weekday: "long",
+      day: "numeric",
+      month: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+    const parts = formatter.formatToParts(d);
+    const getPart = (type: string) => parts.find((p) => p.type === type)?.value || "";
+
+    const dayName = getPart("weekday"); // already Hebrew day name from Intl
+    const dateNum = Number(getPart("day"));
+    const monthName = HEBREW_MONTHS[Number(getPart("month")) - 1] || getPart("month");
+    const hours = getPart("hour");
+    const minutes = getPart("minute");
+
+    return `יום ${dayName}, ${dateNum} ${monthName} בשעה ${hours}:${minutes}`;
+  } catch {
+    return "";
+  }
+}
+
 /**
  * Check if a cancellation date is still within the grace period.
  * Defaults to 30 days grace.

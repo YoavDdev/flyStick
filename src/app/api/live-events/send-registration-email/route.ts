@@ -2,18 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 import { Resend } from 'resend';
 import { logEmail } from "@/app/libs/emailLogger";
-
-const HEBREW_DAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
-const HEBREW_MONTHS = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
-
-function formatDateTime(date: Date) {
-  const day = HEBREW_DAYS[date.getDay()];
-  const dateNum = date.getDate();
-  const month = HEBREW_MONTHS[date.getMonth()];
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  return `יום ${day}, ${dateNum} ${month} בשעה ${hours}:${minutes}`;
-}
+import { formatDateTimeIsrael } from "@/app/utils/dateUtils";
 
 export async function POST(req: Request) {
   try {
@@ -37,7 +26,7 @@ export async function POST(req: Request) {
     // Initialize Resend
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const eventDateTime = formatDateTime(new Date(event.scheduledAt));
+    const eventDateTime = formatDateTimeIsrael(event.scheduledAt);
     const updatePreferenceUrl = `${process.env.NEXTAUTH_URL}/dashboard/live-notifications?eventId=${event.id}`;
 
     // Build email HTML
