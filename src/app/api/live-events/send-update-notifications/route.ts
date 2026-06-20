@@ -175,6 +175,23 @@ export async function POST(req: Request) {
 
     await Promise.all(emailPromises);
 
+    // Create system message for all users when completion is available
+    if (updateType === "completed") {
+      try {
+        await prisma.message.create({
+          data: {
+            title: `🎬 הקלטה זמינה: ${event.title}`,
+            content: `השיעור "${event.title}" שהיה אמור להתקיים ב-${formatDateTimeIsrael(event.scheduledAt)} הושלם — ניתן כעת לצפות בהקלטה!`,
+            link: "/live",
+            linkText: "לצפייה בהקלטה",
+            isActive: true,
+          },
+        });
+      } catch (msgErr: any) {
+        console.error("Error creating completion message (non-blocking):", msgErr.message);
+      }
+    }
+
     return NextResponse.json({ 
       success: true, 
       emailsSent: registrations.length 
